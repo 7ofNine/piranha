@@ -112,7 +112,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const Psym &arg)
 	{
-		piranha_assert(derivedConstCast->empty());
+		PIRANHA_ASSERT(derivedConstCast->empty());
 		named_series_append_arg<arguments_description>::run(s, argumentsTuple, arg);
 	}
 
@@ -121,8 +121,8 @@ namespace piranha
 	template <int N>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const Psym &arg)
 	{
-		p_static_check(N >= 0, "Trying to append argument with invalid index.");
-		piranha_assert(derivedConstCast->empty());
+		PIRANHA_STATIC_CHECK(N >= 0, "Trying to append argument with invalid index.");
+		PIRANHA_ASSERT(derivedConstCast->empty());
 		// Check that the argument is not already present in this set.
 		for (VectorPsym::iterator it = argumentsTuple.template get<N>().begin(); it != argumentsTuple.template get<N>().end(); ++it) 
 		{
@@ -236,7 +236,7 @@ namespace piranha
 			const std::vector<std::pair<bool, std::size_t> > &l = layout.get_head();
 			const std::size_t l_size = l.size();
 			// The layout must have at least all arguments in v1.
-			piranha_assert(l_size >= v1.size());
+			PIRANHA_ASSERT(l_size >= v1.size());
 			// Memorize the old vector.
 			const VectorPsym old(v1);
 			// Make space.
@@ -247,7 +247,7 @@ namespace piranha
 				if (l[i].first) 
                 {
 					// The argument was present in the old arguments sets. Copy it over.
-					piranha_assert(l[i].second < old.size());
+					PIRANHA_ASSERT(l[i].second < old.size());
 					if (i < v1.size())
 					{
 						v1[i] = old[l[i].second];
@@ -259,7 +259,7 @@ namespace piranha
 				} else 
                 {
 					// The argument was not present in the old arguments sets. Fetch it from a2.
-					piranha_assert(i < v2.size());
+					PIRANHA_ASSERT(i < v2.size());
 					if (i < v1.size()) 
                     {
 						v1[i] = v2[i];
@@ -360,7 +360,7 @@ namespace piranha
 		static void run(const TrimFlags &tf, ArgsTuple &argsTuple) 
 		{
 			const std::size_t size = tf.get_head().size();
-			piranha_assert(size == argsTuple.get_head().size());
+			PIRANHA_ASSERT(size == argsTuple.get_head().size());
 			VectorPsym new_vector;
 			for (std::size_t i = 0; i < size; ++i) 
 			{
@@ -434,7 +434,7 @@ namespace piranha
 
 		typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type    pos_tuple_type;
 
-		p_static_check(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
+		PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 			"Size mismatch for position and cache tuples in series substitution.");
 
 		const Psym p(name);
@@ -463,7 +463,7 @@ namespace piranha
 	{
 		if (n < 0 || n >= boost::tuples::length<ArgsTupleType>::value) 
 		{
-			piranha_throw(value_error,"splitting level must be a non-negative integer less than the echelon level of the series");
+			PIRANHA_THROW(value_error,"splitting level must be a non-negative integer less than the echelon level of the series");
 		}
 
 		std::vector<std::vector<Derived> > retval;

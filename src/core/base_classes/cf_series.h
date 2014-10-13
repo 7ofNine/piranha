@@ -105,7 +105,7 @@ namespace piranha
 			Derived &mult_by(const T &, const ArgsTuple &);
 
 			template <class T, class ArgsTuple>
-			Derived &divide_by(const T &, const ArgsTuple &);
+			Derived &divideBy(const T &, const ArgsTuple &);
 
 			template <class ArgsTuple>
 			Derived pow(const double &, const ArgsTuple &) const;

@@ -35,7 +35,7 @@ namespace piranha
 	template <int ExpoArgsPosition, int ExpoTermPosition, class Degree, class Derived>
 	class base_power_series
 	{
-			p_static_check(ExpoArgsPosition >= 0, "Invalid expo args position.");
+			PIRANHA_STATIC_CHECK(ExpoArgsPosition >= 0, "Invalid expo args position.");
 
 			template <class Term>
 			struct degree_binary_predicate

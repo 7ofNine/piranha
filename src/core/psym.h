@@ -159,7 +159,7 @@ namespace piranha
 				if (it == PsymManager::container.end()) 
 				{
 					std::pair<it_type, bool> const res = PsymManager::container.insert(p);
-					piranha_assert(res.second);
+					PIRANHA_ASSERT(res.second);
 					m_it = res.first;
 
 				} else 
@@ -262,7 +262,7 @@ namespace piranha
 				if (it == PsymManager::container.end()) 
 				{
 					const std::pair<it_type, bool> res = PsymManager::container.insert(p);
-					piranha_assert(res.second);
+					PIRANHA_ASSERT(res.second);
 					m_it = res.first;
 				} else 
 				{

@@ -54,7 +54,7 @@ namespace piranha
 			template <class ArgsTuple>
 			bool is_canonical(const ArgsTuple &) const 
             {
-				return (ancestor::m_key.sign() > 0);
+				return (ancestor::key.sign() > 0);
 			}
 
 
@@ -81,31 +81,31 @@ namespace piranha
 								 multiplication_result &res, const ArgsTuple &argsTuple) 
             {
 				// Perform the trigonometric multiplication.
-				t1.m_key.multiply(t2.m_key, res.template get<0>().m_key, res.template get<1>().m_key);
+				t1.key.multiply(t2.key, res.template get<0>().key, res.template get<1>().key);
 				// Handle coefficient multiplication. Do the first coefficient, then assign the second one.
 				// TODO: maybe provide the semantics to coefficients for something like this:
-				// cf1.multiply_by_cf(cf2,res.template get<0>().m_cf,argsTuple),
+				// cf1.multiply_by_cf(cf2,res.template get<0>().cf,argsTuple),
 				// so that we can avoid a copy.
-				res.template get<0>().m_cf = t1.m_cf;
-				res.template get<0>().m_cf.mult_by(t2.m_cf, argsTuple);
-				res.template get<0>().m_cf.divide_by(2, argsTuple);
-				res.template get<1>().m_cf = res.template get<0>().m_cf;
+				res.template get<0>().cf = t1.cf;
+				res.template get<0>().cf.mult_by(t2.cf, argsTuple);
+				res.template get<0>().cf.divideBy(2, argsTuple);
+				res.template get<1>().cf = res.template get<0>().cf;
 				// Now adjust the signs according to werner's formulas.
-				if (t1.m_key.get_flavour() == t2.m_key.get_flavour()) 
+				if (t1.key.getFlavour() == t2.key.getFlavour()) 
                 {
-					res.template get<0>().m_key.set_flavour(true);
-					res.template get<1>().m_key.set_flavour(true);
-					if (!t1.m_key.get_flavour()) 
+					res.template get<0>().key.setFlavour(true);
+					res.template get<1>().key.setFlavour(true);
+					if (!t1.key.getFlavour()) 
                     {
-						res.template get<1>().m_cf.invert_sign(argsTuple);
+						res.template get<1>().cf.invert_sign(argsTuple);
 					}
 				} else 
                 {
-					res.template get<0>().m_key.set_flavour(false);
-					res.template get<1>().m_key.set_flavour(false);
-					if (t1.m_key.get_flavour()) 
+					res.template get<0>().key.setFlavour(false);
+					res.template get<1>().key.setFlavour(false);
+					if (t1.key.getFlavour()) 
                     {
-						res.template get<0>().m_cf.invert_sign(argsTuple);
+						res.template get<0>().cf.invert_sign(argsTuple);
 					}
 				}
 
@@ -120,10 +120,10 @@ namespace piranha
 			template <class ArgsTuple>
 			void invert_trig_args(const ArgsTuple &argsTuple) 
             {
-				ancestor::m_key.invert_sign();
-				if (!(ancestor::m_key.get_flavour())) 
+				ancestor::key.invert_sign();
+				if (!(ancestor::key.getFlavour())) 
                 {
-					ancestor::m_cf.invert_sign(argsTuple);
+					ancestor::cf.invert_sign(argsTuple);
 				}
 			}
 	};

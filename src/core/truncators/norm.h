@@ -50,7 +50,7 @@ namespace truncators {
 					template <class Term>
 					bool operator()(const Term *t1, const Term *t2) const
 					{
-						const double n1(t1->m_cf.norm(m_argsTuple) * t1->m_key.norm(m_argsTuple)), n2(t2->m_cf.norm(m_argsTuple) * t2->m_key.norm(m_argsTuple));
+						const double n1(t1->cf.norm(m_argsTuple) * t1->key.norm(m_argsTuple)), n2(t2->cf.norm(m_argsTuple) * t2->key.norm(m_argsTuple));
 						return n1 > n2;
 					}
 
@@ -99,28 +99,28 @@ namespace truncators {
 						// NOTE: share this check in some kind of base truncator class?
 						if (step_size < 1) 
 						{
-							piranha_throw(value_error,
+							PIRANHA_THROW(value_error,
 								"please use a step size of at least 1");
 						}
 
 						if (m_truncation_level == 0) 
 						{
-							piranha_throw(value_error,"no value set for norm-based truncation, "
+							PIRANHA_THROW(value_error,"no value set for norm-based truncation, "
 								"cannot calculate limit of power series expansion");
 						}
 
 						const double norm = x.base_norm(argsTuple);
-						piranha_assert(norm >= 0);
+						PIRANHA_ASSERT(norm >= 0);
 						if (norm >= 1) 
 						{
-							piranha_throw(value_error,"the norm of the argument of the power series expansion is >= 1: "
+							PIRANHA_THROW(value_error,"the norm of the argument of the power series expansion is >= 1: "
 								"the norm truncator is unable to give an estimate of the power series limit");
 						}
 
 						// Let's prevent log10(0) below.
 						if (norm == 0) 
 						{
-							piranha_throw(value_error,"unable to find a limit for the power series expansion of a series whose norm "
+							PIRANHA_THROW(value_error,"unable to find a limit for the power series expansion of a series whose norm "
 								"is zero");
 						}
 
@@ -140,7 +140,7 @@ namespace truncators {
 
 						if (m_truncation_level == 0) 
 						{
-							piranha_throw(value_error,"cannot establish series ordering, norm truncator is not active");
+							PIRANHA_THROW(value_error,"cannot establish series ordering, norm truncator is not active");
 						}
 
 						const norm_comparison<ArgsTuple2> cmp(argsTuple);
@@ -155,7 +155,7 @@ namespace truncators {
 					{
 						if (isEffective()) 
 						{
-							piranha_assert(m_terms1.size() >= 1 && m_terms2.size() >= 1);
+							PIRANHA_ASSERT(m_terms1.size() >= 1 && m_terms2.size() >= 1);
 							const norm_comparison<ArgsTuple> cmp(m_argsTuple);
 							std::sort(m_terms1.begin(), m_terms1.end(), cmp);
 							std::sort(m_terms2.begin(), m_terms2.end(), cmp);
@@ -181,7 +181,7 @@ namespace truncators {
 							while (limit1 < norm1) 
 							{
 								const term_type1 **tmp = (m_t1) ? m_t1 - 1 : &(*(m_terms1.end() - 1));
-								delta1 += (*tmp)->m_cf.norm(m_argsTuple) * (*tmp)->m_key.norm(m_argsTuple);
+								delta1 += (*tmp)->cf.norm(m_argsTuple) * (*tmp)->key.norm(m_argsTuple);
 								// If, by going to the next term, we exceed the delta1, leave m_t1 where it is and break out.
 								if (delta1 >= limit1) 
 								{
@@ -199,7 +199,7 @@ namespace truncators {
 							while (limit2 < norm2) 
 							{
 								const term_type2 **tmp = (m_t2) ? m_t2 - 1 : &(*(m_terms2.end() - 1));
-								delta2 += (*tmp)->m_cf.norm(m_argsTuple) * (*tmp)->m_key.norm(m_argsTuple);
+								delta2 += (*tmp)->cf.norm(m_argsTuple) * (*tmp)->key.norm(m_argsTuple);
 								// If, by going to the next term, we exceed the delta2, leave m_t2 where it is and break out.
 								if (delta2 >= limit2) 
 								{
@@ -225,7 +225,7 @@ namespace truncators {
 						const std::size_t end = v.size();
 						for (std::size_t i = 0; i < end; ++i) 
 						{
-							retval += v[i]->m_cf.norm(m_argsTuple) * v[i]->m_key.norm(m_argsTuple);
+							retval += v[i]->cf.norm(m_argsTuple) * v[i]->key.norm(m_argsTuple);
 						}
 						return retval;
 					}
@@ -242,7 +242,7 @@ namespace truncators {
 			{
 				if (x <= 0) 
 				{
-					piranha_throw(value_error,"please insert a positive number");
+					PIRANHA_THROW(value_error,"please insert a positive number");
 				}
 				m_truncation_level = x;
 			}

@@ -34,7 +34,7 @@
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_multiplier.h"
 #include "../coded_hash_table.h"
-#include "../config.h" // For p_static_check.
+#include "../config.h" // For PIRANHA_STATIC_CHECK.
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../memory.h"
@@ -47,7 +47,7 @@ namespace piranha
 	template <int EchelonLevel>
 	struct poisson_series_multiplier_ops_selector
 	{
-		p_static_check(EchelonLevel == 0,"");
+		PIRANHA_STATIC_CHECK(EchelonLevel == 0,"");
 		typedef boost::tuple<boost::false_type> type;
 	};
 
@@ -112,12 +112,12 @@ namespace piranha
 						std::size_t i;
 						for (i = 0; i < this->m_terms1.size(); ++i)
 						{
-							m_flavours1[i] = this->m_terms1[i]->m_key.get_flavour();
+							m_flavours1[i] = this->m_terms1[i]->key.getFlavour();
 						}
 
 						for (i = 0; i < this->m_terms2.size(); ++i)
 						{
-							m_flavours2[i] = this->m_terms2[i]->m_key.get_flavour();
+							m_flavours2[i] = this->m_terms2[i]->key.getFlavour();
 						}
 					}
 
@@ -201,7 +201,7 @@ namespace piranha
 						// one for cosines, one for sines.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
 						// coded_ancestor::m_h_min = 0, coded_ancestor::m_h_max = 2 --> n of codes = 3.
-						piranha_assert(boost::numeric::width(this->m_fast_h) + 1 >= 0);
+						PIRANHA_ASSERT(boost::numeric::width(this->m_fast_h) + 1 >= 0);
 						const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);
 						try {
 							vc_cos.resize(n_codes);
@@ -221,7 +221,7 @@ namespace piranha
 						// the indices from the analysis of the coded series will prevent out-of-boundaries
 						// reads/writes.
 						const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
-						piranha_assert(size1 && size2);
+						PIRANHA_ASSERT(size1 && size2);
 						const ArgsTupleType &argsTuple = this->m_argsTuple;
 						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - this->m_fast_h.lower(), &vc_sin[0] - this->m_fast_h.lower());
 						// Find out a suitable block size.
@@ -241,13 +241,13 @@ namespace piranha
 
 						for (max_fast_int i = this->m_fast_h.lower(); i <= i_f; ++i)
 						{
-							vc_res_cos[i].divide_by(2,argsTuple);
+							vc_res_cos[i].divideBy(2,argsTuple);
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
 							if (!vc_res_cos[i].is_ignorable(argsTuple)) 
 							{
 								this->decode(vc_res_cos[i], i, tmp_term);
-								tmp_term.m_key.set_flavour(true);
+								tmp_term.key.setFlavour(true);
 								// Canonicalise in-place, so that we don't need to make further copies in the
 								// main insertion function.
 								if (!tmp_term.is_canonical(argsTuple)) 
@@ -260,11 +260,11 @@ namespace piranha
 
 						for (max_fast_int i = this->m_fast_h.lower(); i <= i_f; ++i) 
 						{
-							vc_res_sin[i].divide_by(2,argsTuple);
+							vc_res_sin[i].divideBy(2,argsTuple);
 							if (!vc_res_sin[i].is_ignorable(argsTuple)) 
 							{
 								this->decode(vc_res_sin[i], i, tmp_term);
-								tmp_term.m_key.set_flavour(false);
+								tmp_term.key.setFlavour(false);
 								if (!tmp_term.is_canonical(argsTuple)) 
 								{
 									tmp_term.canonicalise(argsTuple);
@@ -322,8 +322,8 @@ namespace piranha
 							tmp_term2.first  = tmp_term1.first;
 							tmp_term2.second = m_ck1[i] + m_ck2a[j];
 							
-							piranha_assert(tmp_term1.second >= 0);
-							piranha_assert(tmp_term2.second >= 0);
+							PIRANHA_ASSERT(tmp_term1.second >= 0);
+							PIRANHA_ASSERT(tmp_term2.second >= 0);
 
 							// Now fix flavours and coefficient signs.
 							if (m_f1[i] == m_f2[j]) 
@@ -431,9 +431,9 @@ namespace piranha
 							const c_iterator c_it_f = cms_cos.end();
 							for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it) 
 							{
-								(c_it->first).divide_by(2, argsTuple);
+								(c_it->first).divideBy(2, argsTuple);
 								this->decode(c_it->first, c_it->second + 2 * this->m_fast_h.lower(), tmp_term);
-								tmp_term.m_key.set_flavour(true);
+								tmp_term.key.setFlavour(true);
 								if (!tmp_term.is_canonical(argsTuple)) 
 								{
 									tmp_term.canonicalise(argsTuple);
@@ -445,9 +445,9 @@ namespace piranha
 							const c_iterator c_it_f = cms_sin.end();
 							for (c_iterator c_it = cms_sin.begin(); c_it != c_it_f; ++c_it) 
 							{
-								c_it->first.divide_by(2,argsTuple);
+								c_it->first.divideBy(2,argsTuple);
 								this->decode(c_it->first,c_it->second + 2 * this->m_fast_h.lower(),tmp_term);
-								tmp_term.m_key.set_flavour(false);
+								tmp_term.key.setFlavour(false);
 								if (!tmp_term.is_canonical(argsTuple)) 
 								{
 									tmp_term.canonicalise(argsTuple);

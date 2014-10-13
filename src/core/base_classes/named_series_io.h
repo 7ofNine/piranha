@@ -116,7 +116,7 @@ namespace piranha
 		inf.open(fn.c_str(), std::ios::in | std::ios::binary);
 		if (inf.fail()) 
         {
-			piranha_throw(std::runtime_error,"unable to open file");
+			PIRANHA_THROW(std::runtime_error,"unable to open file");
 		}
 
 		// Clear the stack of unknown data.
@@ -227,9 +227,9 @@ namespace piranha
 
 			try {
 				term_type term(temp, argumentsTuple);
-				if (!term.m_cf.is_insertable(argumentsTuple) || !term.m_key.is_insertable(argumentsTuple)) 
+				if (!term.cf.is_insertable(argumentsTuple) || !term.key.is_insertable(argumentsTuple)) 
                 {
-					piranha_throw(value_error,"term not insertable in series");
+					PIRANHA_THROW(value_error,"term not insertable in series");
 				}
 
 				derived_cast->insert(term, derived_const_cast->argumentsTuple);
@@ -264,7 +264,7 @@ namespace piranha
 	template <int N>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::construct_from_psym(const Psym &p)
 	{
-		piranha_assert(derived_const_cast->empty());
+		PIRANHA_ASSERT(derived_const_cast->empty());
 		append_arg<N>(p);
 		derived_cast->base_construct_from_psym(p, N, argumentsTuple);
 	}
@@ -286,10 +286,10 @@ namespace piranha
 		const const_iterator it_f = derived_const_cast->end();
 		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
         {
-			if (!it->m_cf.is_insertable(argsTuple) || !it->m_key.is_insertable(argsTuple) ||
-				it->m_cf.needs_padding(argsTuple) || it->m_key.needs_padding(argsTuple))
+			if (!it->cf.is_insertable(argsTuple) || !it->key.is_insertable(argsTuple) ||
+				it->cf.needs_padding(argsTuple) || it->key.needs_padding(argsTuple))
 			{
-				piranha_throw(value_error,"incompatible arguments tuple in set_arguments()");
+				PIRANHA_THROW(value_error,"incompatible arguments tuple in set_arguments()");
 			}
 		}
 
@@ -345,7 +345,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline NamedSeries<__PIRANHA_NAMED_SERIES_TP>::~NamedSeries()
 	{
-		p_static_check(boost::tuples::length<arguments_description>::value == Derived::echelon_level + 1, "");
+		PIRANHA_STATIC_CHECK(boost::tuples::length<arguments_description>::value == Derived::echelon_level + 1, "");
 	}
 
 

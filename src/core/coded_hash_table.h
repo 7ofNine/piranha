@@ -62,7 +62,7 @@ class coded_hash_table
 			public:
 				/// Bucket size type.
 				typedef boost::uint8_t size_type;
-				p_static_check(N > 0 && N <= boost::integer_traits<size_type>::const_max, "Invalid bucket size.");
+				PIRANHA_STATIC_CHECK(N > 0 && N <= boost::integer_traits<size_type>::const_max, "Invalid bucket size.");
 				/// Default constructor.
 				/**
 				 * Will initialise the code of each coefficient to -1.
@@ -144,10 +144,10 @@ class coded_hash_table
 			private:
 				value_type &dereference() const
 				{
-					piranha_assert(m_ht);
-					piranha_assert(m_vector_index < m_ht->m_container.size());
-					piranha_assert(m_bucket_index < bucket_size);
-					piranha_assert(m_ht->m_container[m_vector_index].t[m_bucket_index].second >= 0);
+					PIRANHA_ASSERT(m_ht);
+					PIRANHA_ASSERT(m_vector_index < m_ht->m_container.size());
+					PIRANHA_ASSERT(m_bucket_index < bucket_size);
+					PIRANHA_ASSERT(m_ht->m_container[m_vector_index].t[m_bucket_index].second >= 0);
 					return m_ht->m_container[m_vector_index].t[m_bucket_index];
 				}
 				bool equal(const iterator &it2) const
@@ -203,7 +203,7 @@ class coded_hash_table
 				<< sizes[m_size_policy][m_size_index] << '\n');
 			__PDEBUG(std::cout << "On destruction, the load factor was: "
 				<< double(m_length) / (sizes[m_size_policy][m_size_index] * bucket_size) << '\n');
-			piranha_assert(sizes[m_size_policy][m_size_index] == m_container.size());
+			PIRANHA_ASSERT(sizes[m_size_policy][m_size_index] == m_container.size());
 		}
 		/// Return an iterator to the first element of the table.
 		/**
@@ -237,7 +237,7 @@ class coded_hash_table
 		{
 			const size_type vector_size = m_container.size(),
 				vector_pos = get_position(boost::hash<key_type>()(key),vector_size,m_size_policy);
-			piranha_assert(vector_pos < vector_size);
+			PIRANHA_ASSERT(vector_pos < vector_size);
 			const bucket_type &bucket = m_container[vector_pos];
 			// Now examine all elements in the bucket.
 			for (bucket_size_type i = 0; i < bucket_size; ++i) {
@@ -322,7 +322,7 @@ class coded_hash_table
 				case prime:
 					return (hash % size);
 				default:
-					piranha_assert(false);
+					PIRANHA_ASSERT(false);
 					return 0;
 			}
 		}
@@ -346,11 +346,11 @@ class coded_hash_table
 				return false;
 			}
 			const bucket_size_type bucket_index = it.m_bucket_index;
-			piranha_assert(bucket_index < bucket_size);
-			piranha_assert(vector_index < vector_size);
+			PIRANHA_ASSERT(bucket_index < bucket_size);
+			PIRANHA_ASSERT(vector_index < vector_size);
 			bucket_type &bucket = m_container[vector_index];
 			// Make sure the slot is not already taken.
-			piranha_assert(bucket.t[bucket_index].second < 0);
+			PIRANHA_ASSERT(bucket.t[bucket_index].second < 0);
 			bucket.t[bucket_index] = v;
 			++m_length;
 			return true;
@@ -360,7 +360,7 @@ class coded_hash_table
 		{
 			const size_type vector_size = m_container.size(),
 				vector_pos = get_position(boost::hash<key_type>()(v.second),vector_size,m_size_policy);
-			piranha_assert(vector_pos < vector_size);
+			PIRANHA_ASSERT(vector_pos < vector_size);
 			bucket_type &bucket = m_container[vector_pos];
 			// Now check for an available slot in the bucket.
 			for (bucket_size_type i = 0; i < bucket_size; ++i) {
@@ -428,7 +428,7 @@ class coded_hash_table
 					++new_ht.m_size_index;
 					if (new_ht.m_size_index == sizes_size) {
 						// We ran out of possible sizes.
-						piranha_throw(std::overflow_error,"hash table size overflow");
+						PIRANHA_THROW(std::overflow_error,"hash table size overflow");
 					}
 					new_ht.m_length = 0;
 					new_ht.m_container.clear();

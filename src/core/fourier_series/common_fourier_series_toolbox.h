@@ -63,7 +63,7 @@ namespace piranha
 				std::complex<Derived> retval;
 				if (derived_const_cast->is_single_cf()) {
 					retval.insert(complex_term_type(derived_const_cast->begin()->
-						m_cf.ei(argsTuple), key_type()),
+						cf.ei(argsTuple), key_type()),
 						argsTuple);
 				} else {
 					// Cache and sort the terms according to the criterion defined in the truncator.
@@ -79,7 +79,7 @@ namespace piranha
 					const_iterator it = cache.begin();
 					const const_iterator it_f = cache.end();
 					for (; it != it_f; ++it) {
-						if ((*it)->m_key.is_unity()) {
+						if ((*it)->key.is_unity()) {
 							break;
 						}
 					}
@@ -88,7 +88,7 @@ namespace piranha
 					if (it != it_f) {
 						// Take care of the constant element.
 						std::complex<Derived> tmp;
-						tmp.insert(complex_term_type((*it)->m_cf.ei(argsTuple),key_type()),argsTuple);
+						tmp.insert(complex_term_type((*it)->cf.ei(argsTuple),key_type()),argsTuple);
 						retval.base_mult_by(tmp,argsTuple);
 					}
 				}

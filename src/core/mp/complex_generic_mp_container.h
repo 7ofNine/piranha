@@ -239,7 +239,7 @@ namespace piranha
 			 */
 			double to_double() const
 			{
-				piranha_throw(type_error,"cannot convert complex to real floating point");
+				PIRANHA_THROW(type_error,"cannot convert complex to real floating point");
 				return 0.;
 			}
 
@@ -250,7 +250,7 @@ namespace piranha
 			 */
 			int to_int() const
 			{
-				piranha_throw(type_error,"cannot convert complex to real int");
+				PIRANHA_THROW(type_error,"cannot convert complex to real int");
 				return 0;
 			}
 
@@ -432,7 +432,7 @@ namespace piranha
 			{
 				// NOTE: rewrite this in terms of multadd, when implemented.
 				if (other.real() == 0 && other.imag() == 0) {
-					piranha_throw(zero_division_error,"cannot divide by zero");
+					PIRANHA_THROW(zero_division_error,"cannot divide by zero");
 				}
 				// This is the divisor, i.e. the square of absolute value of other.
 				T div(other.real());
@@ -475,7 +475,7 @@ namespace piranha
 				// least two characters.
 				if (split_v.size() != 2 || split_v[0].size() < 2 || split_v[1].size() < 2 ||
 					split_v[0][0] != '(' || split_v[1][split_v[1].size() - 1] != ')') {
-					piranha_throw(value_error,"invalid string input");
+					PIRANHA_THROW(value_error,"invalid string input");
 				}
 				// Finally, we try to build the two components from the split vector,
 				// discarding the positions in which there are the brackets.

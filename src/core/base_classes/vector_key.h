@@ -51,7 +51,7 @@ namespace piranha
 	template <class T, int Position, class Derived>
 	class VectorKey
 	{
-			p_static_check(Position >= 0, "Wrong position.");
+			PIRANHA_STATIC_CHECK(Position >= 0, "Wrong position.");
 
 			typedef std::vector<T, counting_allocator<T, std::allocator<T> > > container_type;
 
@@ -103,7 +103,7 @@ namespace piranha
 				// Construct only if the positions match.
 				if (n == Position) 
 				{
-					piranha_assert(argsTuple.template get<Position>().size() == 1 && argsTuple.template get<Position>()[0] == p);
+					PIRANHA_ASSERT(argsTuple.template get<Position>().size() == 1 && argsTuple.template get<Position>()[0] == p);
 					m_container.push_back(value_type(1));
 				}
 			}
@@ -146,7 +146,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void pad_right(const ArgsTuple &argsTuple)
 			{
-				piranha_assert(argsTuple.template get<Position>().size() >= m_container.size());
+				PIRANHA_ASSERT(argsTuple.template get<Position>().size() >= m_container.size());
 
 				m_container.resize(boost::numeric_cast<size_type>(argsTuple.template get<Position>().size()));
 			}
@@ -159,12 +159,12 @@ namespace piranha
 			template <class Layout, class ArgsTuple>
 			void apply_layout(const Layout &l, const ArgsTuple &)
 			{
-				p_static_check((boost::is_same<std::vector<std::pair<bool, std::size_t> >, typename boost::tuples::element<Position, Layout>::type>::value), "Wrong layout type.");
+				PIRANHA_STATIC_CHECK((boost::is_same<std::vector<std::pair<bool, std::size_t> >, typename boost::tuples::element<Position, Layout>::type>::value), "Wrong layout type.");
 				// TODO: add check about tuples length.
 				const size_type l_size = boost::numeric_cast<size_type>(l.template get<Position>().size());
 
 				// The layout must have at least all arguments in this.
-				piranha_assert(l_size >= m_container.size());
+				PIRANHA_ASSERT(l_size >= m_container.size());
 				
                 container_type new_container(l_size);
 
@@ -172,7 +172,7 @@ namespace piranha
 				{
 					if (l.template get<Position>()[i].first) 
 					{
-						piranha_assert(l.template get<Position>()[i].second < m_container.size());
+						PIRANHA_ASSERT(l.template get<Position>()[i].second < m_container.size());
 						new_container[i] = m_container[boost::numeric_cast<size_type>(l.template get<Position>()[i].second)];
 					}
 				}
@@ -188,7 +188,7 @@ namespace piranha
 				// TODO: add checks on TrimFlags type.
 				const size_type size = m_container.size();
 				
-                piranha_assert(tf.template get<Position>().size() == size);
+                PIRANHA_ASSERT(tf.template get<Position>().size() == size);
 
 				for (size_type i = 0; i < size; ++i) 
 				{
@@ -209,7 +209,7 @@ namespace piranha
 				Derived retval;
 				const size_type size = m_container.size();
 
-				piranha_assert(tf.template get<position>().size() == size);
+				PIRANHA_ASSERT(tf.template get<position>().size() == size);
 
 				// Make space, so we can avoid extra allocations in the cycle.
 				retval.m_container.reserve(size);
@@ -241,7 +241,7 @@ namespace piranha
 			/// Array-like operator[], const version.
 			const value_type &operator[](const size_type &n) const
 			{
-				piranha_assert(n < m_container.size());
+				PIRANHA_ASSERT(n < m_container.size());
 				return m_container[n];
 			}
 
@@ -249,7 +249,7 @@ namespace piranha
 			/// Array-like operator[], mutable version.
 			value_type &operator[](const size_type &n)
 			{
-				piranha_assert(n < m_container.size());
+				PIRANHA_ASSERT(n < m_container.size());
 
 				return m_container[n];
 			}
@@ -302,7 +302,7 @@ namespace piranha
 			bool revlex_comparison(const VectorKey &v2) const
 			{
 				const size_type size = this->size();
-				piranha_assert(size == v2.size());
+				PIRANHA_ASSERT(size == v2.size());
 				// Shortcut in case there are no elements to compare.
 				if (!size)
 				{
@@ -329,7 +329,7 @@ namespace piranha
 			bool lex_comparison(const VectorKey &v2) const
 			{
 				const size_type size = this->size();
-				piranha_assert(size == v2.size());
+				PIRANHA_ASSERT(size == v2.size());
 				if (!size) 
 				{
 					return false;

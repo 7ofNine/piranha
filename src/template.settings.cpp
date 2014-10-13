@@ -46,13 +46,13 @@ namespace piranha
 	{
 		// Some static checks.
 		// This check is here because in integer_typedefs we select integers based on the number of bits.
-		p_static_check(CHAR_BIT == 8, "Invalid size of char.");
+		PIRANHA_STATIC_CHECK(CHAR_BIT == 8, "Invalid size of char.");
 		// This is because somewhere we use chars as bools.
-		p_static_check(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
+		PIRANHA_STATIC_CHECK(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
 		// TODO: where is this used? Find out and wipe it.
-		p_static_check(sizeof(std::size_t) == sizeof(void *), "std::size_t and void * are not the same size.");
-		p_static_check(__PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
-		p_static_check(settings::cache_size > 0 && lg<settings::cache_size>::value > 1, "Invalid value for cache size.");
+		PIRANHA_STATIC_CHECK(sizeof(std::size_t) == sizeof(void *), "std::size_t and void * are not the same size.");
+		PIRANHA_STATIC_CHECK(__PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
+		PIRANHA_STATIC_CHECK(settings::cache_size > 0 && lg<settings::cache_size>::value > 1, "Invalid value for cache size.");
 		// Startup report.
 		std::cout << "Piranha version: " << "@PIRANHA_VERSION_STRING@" << '\n';
 		std::cout << "Piranha GIT revision: " << "@PIRANHA_GIT_REVISION@" << '\n';
@@ -76,7 +76,7 @@ namespace piranha
 	void settings::set_max_pretty_print_size(int n)
 	{
 		if (n < 10) {
-			piranha_throw(value_error,"invalid max size for pretty printing, "
+			PIRANHA_THROW(value_error,"invalid max size for pretty printing, "
 				"please insert an integer greater than 10");
 		}
 		m_max_pretty_print_size = boost::numeric_cast<std::size_t>(n);
@@ -85,7 +85,7 @@ namespace piranha
 	void settings::set_nthread(const int &n)
 	{
 		if (n <= 0) {
-			piranha_throw(value_error,"invalid number of threads, "
+			PIRANHA_THROW(value_error,"invalid number of threads, "
 				"please insert an integer greater than 0");
 		}
 		m_nthread = boost::numeric_cast<unsigned>(n);

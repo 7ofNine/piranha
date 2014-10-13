@@ -71,7 +71,7 @@ struct threaded_blocked_multiplier
 				  <<std::flush;
 #endif
 		// Sanity checks.
-		piranha_assert(thread_n > 0 && thread_id < thread_n && (barrier || thread_n == 1));
+		PIRANHA_ASSERT(thread_n > 0 && thread_id < thread_n && (barrier || thread_n == 1));
 
 		// Numerical limits check. We need an extra block size buffer at the end to make sure we are able to
 		// represent all indices and sizes.
@@ -79,7 +79,7 @@ struct threaded_blocked_multiplier
 		if (nominal_block_size > boost::integer_traits<std::size_t>::const_max || size1 >= boost::integer_traits<std::size_t>::const_max - nominal_block_size ||
 			size2 >= boost::integer_traits<std::size_t>::const_max - nominal_block_size)
 		{
-			piranha_throw(std::overflow_error,"numerical overflow in threaded block multiplication");
+			PIRANHA_THROW(std::overflow_error,"numerical overflow in threaded block multiplication");
 		}
 	}
 
@@ -234,7 +234,7 @@ struct polynomial_vector_functor:
 	// one block-by-block multiplication.
 	std::pair<block_interval, block_interval> blocks_to_intervals(const block_type &b1, const block_type &b2) const
 	{
-		piranha_assert(b1.first <= b1.second && b2.first <= b2.second);
+		PIRANHA_ASSERT(b1.first <= b1.second && b2.first <= b2.second);
 		// If at least one of the blocks is empty, then we won't be writing into any interval of indices.
 		if (b1.first == b1.second || b2.first == b2.second) {
 			return std::make_pair(block_interval::empty(),block_interval::empty());
@@ -322,7 +322,7 @@ struct polynomial_hash_functor:
 	{
 		// Assert on the convertibility to max_fast_int. We should be sure because of the logic in coded_hash_table,
 		// but just in case...
-		piranha_assert(boost::numeric_cast<max_fast_int>(m_cms->get_memory_position(n)) >= 0);
+		PIRANHA_ASSERT(boost::numeric_cast<max_fast_int>(m_cms->get_memory_position(n)) >= 0);
 		return m_cms->get_memory_position(n);
 	}
 
@@ -331,7 +331,7 @@ struct polynomial_hash_functor:
 	// one block-by-block multiplication.
 	std::pair<block_interval,block_interval> blocks_to_intervals(const block_type &b1, const block_type &b2) const
 	{
-		piranha_assert(b1.first <= b1.second && b2.first <= b2.second);
+		PIRANHA_ASSERT(b1.first <= b1.second && b2.first <= b2.second);
 		// If at least one of the blocks is empty, then we won't be writing into any interval of indices.
 		if (b1.first == b1.second || b2.first == b2.second)
 		{
@@ -341,11 +341,11 @@ struct polynomial_hash_functor:
 		block_interval tmp(get_mem_pos(this->m_ck1[b1.first])      + get_mem_pos(this->m_ck2[b2.first]),
 			               get_mem_pos(this->m_ck1[b1.second - 1]) + get_mem_pos(this->m_ck2[b2.second - 1]));
 		const max_fast_int ht_size = boost::numeric_cast<max_fast_int>(m_cms->get_vector_size());
-		piranha_assert(ht_size > 0 && tmp.lower() >= 0 && tmp.upper() >= 0);
+		PIRANHA_ASSERT(ht_size > 0 && tmp.lower() >= 0 && tmp.upper() >= 0);
 
 		if (tmp.lower() >= ht_size || tmp.upper() < ht_size)
 		{
-			piranha_assert(tmp.upper() / 2 < ht_size);
+			PIRANHA_ASSERT(tmp.upper() / 2 < ht_size);
 			return std::make_pair(block_interval(tmp.lower() % ht_size,tmp.upper() % ht_size),block_interval::empty());
 		} else
 		{
@@ -399,7 +399,7 @@ struct polynomial_multiplier
 				std::vector<cf_type1, std_counting_allocator<cf_type1> > vc;
 				// Try to allocate the space for vector coded multiplication.
 				// The +1 is needed because we need the number of possible codes between min and max.
-				piranha_assert(boost::numeric::width(this->m_fast_h) + 1 >= 0);
+				PIRANHA_ASSERT(boost::numeric::width(this->m_fast_h) + 1 >= 0);
 				const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);
 				try {
 					vc.resize(n_codes);
@@ -423,7 +423,7 @@ struct polynomial_multiplier
 				const std::size_t size1 = this->m_terms1.size();
 				const std::size_t size2 = this->m_terms2.size();
  std::cout << "sizes: " << size1 << ',' << size2 << '\n';
-				piranha_assert(size1 && size2);
+				PIRANHA_ASSERT(size1 && size2);
 				const ArgsTupleType &argsTuple = this->m_argsTuple;
 				cf_type1 *vc_res =  &vc[0] - this->m_fast_h.lower();
 
@@ -498,7 +498,7 @@ struct polynomial_multiplier
 					std::max<double>(this->m_density1,this->m_density2) * n_codes);
 				const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
 
-				piranha_assert(size1 && size2);
+				PIRANHA_ASSERT(size1 && size2);
 
 				const ArgsTupleType &argsTuple = this->m_argsTuple;
 				csht cms(size_hint);

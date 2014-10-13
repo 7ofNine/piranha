@@ -42,7 +42,7 @@ namespace piranha
 	 */
 	template <int N>
 	struct lg {
-		p_static_check(N > 0 && (N % 2) == 0, "N is not a power of 2.");
+		PIRANHA_STATIC_CHECK(N > 0 && (N % 2) == 0, "N is not a power of 2.");
 		/// Value of the base-2 logarithm of N.
 		static const std::size_t value = lg < (N >> 1) >::value + 1;
 	};
@@ -55,7 +55,7 @@ namespace piranha
 	// Integer base-2 logarithm. Like lg, but won't error out if N is not a power of 2.
 	template <int N>
 	struct ilg {
-		p_static_check(N > 0, "N must be positive.");
+		PIRANHA_STATIC_CHECK(N > 0, "N must be positive.");
 		static const std::size_t value = ilg < (N >> 1) >::value + 1;
 	};
 
@@ -81,9 +81,9 @@ namespace piranha
 	// (Newton's method).
 	template <long int N>
 	struct isqrt {
-		p_static_check(N > 0, "Invalid value for isqrt.");
+		PIRANHA_STATIC_CHECK(N > 0, "Invalid value for isqrt.");
 		static const long int value_ = isqrt_impl<N,N,false>::value;
-		p_static_check(value_ >= 0, "Invalid result for isqrt.");
+		PIRANHA_STATIC_CHECK(value_ >= 0, "Invalid result for isqrt.");
 		static const std::size_t value = static_cast<std::size_t>(value_);
 	};
 
@@ -116,7 +116,7 @@ namespace piranha
 	static inline void factorial_check(const T &x)
 	{
 		if (x < 0) {
-			piranha_throw(value_error,
+			PIRANHA_THROW(value_error,
 				"please use a non-negative integer as argument for factorials");
 		}
 	}
@@ -237,7 +237,7 @@ namespace piranha
 		if (k < 0 || k > n) {
 			return 0.;
 		}
-		piranha_assert(n >= 0);
+		PIRANHA_ASSERT(n >= 0);
 		return boost::math::binomial_coefficient<double>(
 			static_cast<unsigned>(n),static_cast<unsigned>(k)) * multiplier;
 	}
@@ -304,7 +304,7 @@ namespace piranha
 	inline std::complex<T> besselJ(const int &order, const std::complex<T> &arg)
 	{
 		if (arg.imag() != 0) {
-			piranha_throw(value_error,"only complex values with null imaginary part can be used as arguments "
+			PIRANHA_THROW(value_error,"only complex values with null imaginary part can be used as arguments "
 				"for besselJ");
 		}
 		return std::complex<T>(besselJ(order, arg.real()));
@@ -315,7 +315,7 @@ namespace piranha
 	inline std::complex<T> dbesselJ(const int &order, const std::complex<T> &arg)
 	{
 		if (arg.imag() != 0) {
-			piranha_throw(value_error,"only complex values with null imaginary part can be used as arguments "
+			PIRANHA_THROW(value_error,"only complex values with null imaginary part can be used as arguments "
 				"for dbesselJ");
 		}
 		return std::complex<T>(dbesselJ(order, arg.real()));
@@ -370,7 +370,7 @@ namespace piranha
 		if (m > n) {
 			return retval;
 		}
-		piranha_assert(n >= m && n >= 0 && m >= 0);
+		PIRANHA_ASSERT(n >= m && n >= 0 && m >= 0);
 		std::complex<double> factor(std::polar(1.,-gamma*m));
 		factor *= einpi2(-m);
 		factor *= factorial(n+m);
@@ -407,10 +407,10 @@ namespace piranha
 	inline double root(const int &n, const double &x)
 	{
 		if (n <= 0) {
-			piranha_throw(value_error,"root order must be strictly positive");
+			PIRANHA_THROW(value_error,"root order must be strictly positive");
 		}
 		if (x < 0 && n > 1) {
-			piranha_throw(value_error,"cannot calculate the root of a negative real number");
+			PIRANHA_THROW(value_error,"cannot calculate the root of a negative real number");
 		}
 		return std::pow(x, 1. / (double)n);
 	}
@@ -422,7 +422,7 @@ namespace piranha
 	inline std::complex<double> root(const int &n, const std::complex<double> &c)
 	{
 		if (n <= 0) {
-			piranha_throw(value_error,"root order must be strictly positive");
+			PIRANHA_THROW(value_error,"root order must be strictly positive");
 		}
 		return std::pow(c, 1. / (double)n);
 	}

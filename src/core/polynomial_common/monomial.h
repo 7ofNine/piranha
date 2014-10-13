@@ -53,13 +53,13 @@ namespace piranha
 			static void multiply(const Term1 &m1, const Term2 &m2, multiplication_result &res, const ArgsTuple &argsTuple) 
             {
 				// Perform the multiplication of exponents.
-				m1.m_key.multiply(m2.m_key, res.template get<0>().m_key);
+				m1.key.multiply(m2.key, res.template get<0>().key);
 				// Handle coefficient multiplication.
 				// TODO: maybe provide the semantics to coefficients for something like this:
-				// cf1.multiply_by_cf(cf2,res.template get<0>().m_cf,argsTuple),
+				// cf1.multiply_by_cf(cf2,res.template get<0>().cf,argsTuple),
 				// so that we can avoid a copy.
-				res.template get<0>().m_cf = m1.m_cf;
-				res.template get<0>().m_cf.mult_by(m2.m_cf, argsTuple);
+				res.template get<0>().cf = m1.cf;
+				res.template get<0>().cf.mult_by(m2.cf, argsTuple);
 			}
 	};
 }

@@ -164,7 +164,7 @@ namespace piranha
 			template <class Series, class ArgsTuple>
 			void split(std::vector<std::vector<Series> > &, const int &, const ArgsTuple &) const
 			{
-				piranha_assert(false);
+				PIRANHA_ASSERT(false);
 			}
 			
 			/// Number of atoms. Returns 1.
@@ -234,7 +234,7 @@ namespace piranha
 			}
 
 			template <class U, class ArgsTuple>
-			Derived &divide_by(const U &x, const ArgsTuple &) 
+			Derived &divideBy(const U &x, const ArgsTuple &) 
 			{
 				return numerical_container_divide_selector<U>::run(*derived_cast,x);
 			}

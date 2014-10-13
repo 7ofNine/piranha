@@ -28,7 +28,7 @@
 #include "../config.h"
 #include "../exceptions.h"
 
-#define derived_const_cast static_cast<Derived const *>(this)
+#define DerivedConstCast static_cast<Derived const *>(this)
 #define derived_cast       static_cast<Derived *>(this)
 
 namespace piranha
@@ -40,45 +40,46 @@ namespace piranha
 	template <int N, class Derived>
 	class BaseFourierSeries
 	{
-			p_static_check(N >= 0, "Invalid arguments position in base Fourier series toolbox.");
+			PIRANHA_STATIC_CHECK(N >= 0, "Invalid arguments position in base Fourier series toolbox.");
 
 		//protected:
 		public:
 
 			// Integrate supposing that the symbol is present in the fourier series..
 			template <typename PosTuple, typename ArgsTuple>
-			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
+			Derived baseIntegrate(const PosTuple &posTuple, const ArgsTuple &argsTuple) const
 			{
-				p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
+				PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in Fourier series integration.");
 
-				typedef typename Derived::const_iterator const_iterator;
+				typedef typename Derived::const_iterator ConstIterator;
 				// Make sure that the position tuple contains just one symbol in position N and that
 				// the symbol is actually present.
-				piranha_assert(pos_tuple.template get<N>().size() == 1);
-				piranha_assert(pos_tuple.template get<N>()[0].first);
+				PIRANHA_ASSERT(posTuple.template get<N>().size() == 1);
+				PIRANHA_ASSERT(posTuple.template get<N>()[0].first);
 				Derived retval;
-				const std::size_t pos = pos_tuple.template get<N>()[0].second;
-				const const_iterator it_f = derived_const_cast->end();
-				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
+				const std::size_t    pos  = posTuple.template get<N>()[0].second;
+				const ConstIterator  itf  = DerivedConstCast->end();
+
+				for (ConstIterator it = DerivedConstCast->begin(); it != itf; ++it) 
                 {
-					if (it->m_key[pos] == 0) 
+					if (it->key[pos] == 0) 
                     {
-						piranha_throw(value_error,"cannot procede with integration, one of the terms of the "
+						PIRANHA_THROW(value_error,"cannot procede with integration, one of the terms of the "
 							" Fourier series does not contain the symbol in its trigonometric arguments.");
 					}
 
 					typename Derived::term_type tmp(*it);
-					if (it->m_key.get_flavour()) 
+					if (it->key.getFlavour()) 
                     {
-						tmp.m_cf.divide_by(  it->m_key[pos], argsTuple);
+						tmp.cf.divideBy(  it->key[pos], argsTuple);
 
 					} else 
                     {
-						tmp.m_cf.divide_by(- it->m_key[pos], argsTuple);
+						tmp.cf.divideBy( -it->key[pos], argsTuple);
 					}
 
-					tmp.m_key.set_flavour(!tmp.m_key.get_flavour());
+					tmp.key.setFlavour(!tmp.key.getFlavour());
 					retval.insert(tmp, argsTuple);
 				}
 
@@ -87,7 +88,7 @@ namespace piranha
 	};
 }
 
-#undef derived_const_cast
+#undef DerivedConstCast
 #undef derived_cast
 
 #endif

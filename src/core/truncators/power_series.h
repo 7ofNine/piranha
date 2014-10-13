@@ -100,7 +100,7 @@ namespace truncators
 							msg += std::string(ve.what()) + "\n";
 						}
 
-						piranha_throw(value_error,msg);
+						PIRANHA_THROW(value_error,msg);
 					}
 
 
@@ -124,7 +124,7 @@ namespace truncators
 									msg += std::string(ve.what()) + "\n";
 						}
 
-						piranha_throw(value_error,msg);
+						PIRANHA_THROW(value_error,msg);
 					}
 
 
@@ -143,10 +143,10 @@ namespace truncators
 						
                             case normTruncator:  return NormAncestor::skip(x1,x2);
 							
-                            case nullTruncator:  piranha_assert(false);
+                            case nullTruncator:  PIRANHA_ASSERT(false);
 						}
 
-						piranha_assert(false);
+						PIRANHA_ASSERT(false);
 						return false;
 					}
 

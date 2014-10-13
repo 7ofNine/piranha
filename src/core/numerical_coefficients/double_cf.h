@@ -142,7 +142,7 @@ namespace piranha
 			}
 			int to_int() const {
 				if (!is_integer(get_value())) {
-					piranha_throw(value_error,"cannot convert double coefficient to integer");
+					PIRANHA_THROW(value_error,"cannot convert double coefficient to integer");
 				}
 				return (int)get_value();
 			}

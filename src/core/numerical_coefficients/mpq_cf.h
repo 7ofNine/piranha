@@ -142,7 +142,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline std::complex<mpq_cf> mpq_cf::ei(const ArgsTuple &) const
 	{
-		piranha_throw(value_error,"rational coefficient is unsuitable for complex exponentiation");
+		PIRANHA_THROW(value_error,"rational coefficient is unsuitable for complex exponentiation");
 	}
 }
 

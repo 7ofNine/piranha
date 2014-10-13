@@ -110,7 +110,7 @@ struct base_coded_functor
 				  << "idx_vector2 size: " << idx_vector2.size() << std::endl
 				  << std::flush;
 #endif
-		piranha_assert(cur_idx1_start < m_tc1.size() && idx_vector1.size() == idx_vector2.size());
+		PIRANHA_ASSERT(cur_idx1_start < m_tc1.size() && idx_vector1.size() == idx_vector2.size());
 		std::size_t upper_bound1 = std::min<std::size_t>(m_tc1.size(),cur_idx1_start + idx_vector1.size() * block_size),
 			upper_bound2 = std::min<std::size_t>(m_tc2.size(),idx_vector2.size() * block_size);
 		do {
@@ -123,7 +123,7 @@ struct base_coded_functor
 			determine_sequence(idx_vector1,cur_idx1_start,upper_bound1);
 			determine_sequence(idx_vector2,0,upper_bound2);
 			// Prepare lower-upper bounds for the next iteration, if any. But we never want to have less than 1 term in the whole sequence.
-			piranha_assert(upper_bound1 > cur_idx1_start);
+			PIRANHA_ASSERT(upper_bound1 > cur_idx1_start);
 			if (idx_vector1.back().second - cur_idx1_start >= 2) 
 			{
 				upper_bound1 = cur_idx1_start + (idx_vector1.back().second - cur_idx1_start) / 2;
@@ -152,7 +152,7 @@ struct base_coded_functor
 	// Write into s a sequence of blocks ranging from index lower_bound to index upper_bound.
 	static void determine_sequence(block_sequence &s, const std::size_t &lower_bound, const std::size_t &upper_bound)
 	{
-		piranha_assert(upper_bound > lower_bound && s.size() > 0);
+		PIRANHA_ASSERT(upper_bound > lower_bound && s.size() > 0);
 		const std::size_t n_blocks = boost::numeric_cast<std::size_t>(s.size()), n_terms = upper_bound - lower_bound;
 		const std::size_t block_size = (n_blocks > n_terms) ? 1 : n_terms / n_blocks;
 		std::size_t i = 0;
@@ -172,7 +172,7 @@ struct base_coded_functor
 #ifdef _DEBUG
 		std::cout << "base_coded_functor::adjust_block_boundaries: ck size = " << ck.size() << std::endl << std::flush;
 #endif
-		piranha_assert(s.size() > 0);
+		PIRANHA_ASSERT(s.size() > 0);
 		for (block_sequence::size_type i = 0; i < s.size() - 1; ++i) 
 		{
 			// Shrink non-empty blocks whose upper value's memory position is shared with the next block.
@@ -199,10 +199,10 @@ struct base_coded_functor
 		const std::size_t &block_size, const block_sequence &orig2, std::size_t &wrap_count) const
 	{
 		__PDEBUG(std::cout << "coded_multiplier::block2_advance()" << std::endl << std::flush);
-		piranha_assert(idx_vector1.size() == idx_vector2.size() && idx_vector1.size() > 0);
+		PIRANHA_ASSERT(idx_vector1.size() == idx_vector2.size() && idx_vector1.size() > 0);
 		if (wrap_count)
 		{
-			piranha_assert(wrap_count < idx_vector2.size());
+			PIRANHA_ASSERT(wrap_count < idx_vector2.size());
 			if (wrap_count == idx_vector2.size() - 1)
 			{
 				// This means we are at the end.
@@ -245,13 +245,13 @@ struct base_coded_functor
 				// macro block 2.
 				while (sequences_overlap(idx_vector1, idx_vector2))
 				{
-					piranha_assert(idx_vector2.back().second >= idx_vector2.back().first);
+					PIRANHA_ASSERT(idx_vector2.back().second >= idx_vector2.back().first);
 					idx_vector2.back().second = idx_vector2.back().first + (idx_vector2.back().second - idx_vector2.back().first) / 2;
 				}
 			}
 		}
 		// Make sure we have no overlaps.
-		piranha_assert(!sequences_overlap(idx_vector1,idx_vector2));
+		PIRANHA_ASSERT(!sequences_overlap(idx_vector1,idx_vector2));
 // std::cout << "after advance\n";
 // for (std::size_t i = 0; i < idx_vector1.size(); ++i) {
 // 	std::cout << idx_vector1[i].first << ',' << idx_vector1[i].second << '\n';
@@ -272,7 +272,7 @@ struct base_coded_functor
 
 	bool sequences_overlap(const block_sequence &s1, const block_sequence &s2) const
 	{
-		piranha_assert(s1.size() == s2.size() && s1.size() > 0);
+		PIRANHA_ASSERT(s1.size() == s2.size() && s1.size() > 0);
 		typedef std::vector<block_interval>::size_type size_type;
 		std::vector<block_interval> vi;
 		for (size_type i = 0; i < s1.size(); ++i) 
@@ -295,7 +295,7 @@ struct base_coded_functor
 		}
 		// Sort according to lower bound of the interval.
 		std::sort(vi.begin(),vi.end(),interval_sorter);
-		piranha_assert(vi.size() > 0);
+		PIRANHA_ASSERT(vi.size() > 0);
 		// Check that all intervals are disjoint.
 		for (std::vector<block_interval>::size_type i = 0; i < vi.size() - 1; ++i) 
 		{
@@ -341,8 +341,8 @@ struct base_coded_functor
 	class coded_multiplier
 	{
 			// Some static checks.
-			p_static_check(Series1::echelon_level == Series2::echelon_level,"");
-			p_static_check(boost::tuples::length<OpTuple>::value == Series1::echelon_level + 1,"");
+			PIRANHA_STATIC_CHECK(Series1::echelon_level == Series2::echelon_level,"");
+			PIRANHA_STATIC_CHECK(boost::tuples::length<OpTuple>::value == Series1::echelon_level + 1,"");
 			// Main typedefs, for internal use.
 			// min/max type for input series.
 			typedef typename cm_tuple<Series1>::type_minmax minmax_type;
@@ -359,8 +359,8 @@ struct base_coded_functor
 			typedef typename cm_tuple<Series1>::type_decoding_tuple decoding_tuple_type;
 			// These static checks makes sure that the two series have compatible types in the echelon
 			// hierarchy, apart from the numerical coefficients.
-			p_static_check((boost::is_same<minmax_type,typename cm_tuple<Series2>::type_minmax>::value),"");
-			p_static_check((boost::is_same<value_handler_type,typename cm_tuple<Series2>::type_value_handler>::value),"");
+			PIRANHA_STATIC_CHECK((boost::is_same<minmax_type,typename cm_tuple<Series2>::type_minmax>::value),"");
+			PIRANHA_STATIC_CHECK((boost::is_same<value_handler_type,typename cm_tuple<Series2>::type_value_handler>::value),"");
 			
 			// Generalised reverse lexicographic comparison.
 			class key_revlex_comparison
@@ -450,7 +450,7 @@ struct base_coded_functor
 				if (!m_gr_is_viable)
 				{
 					if (algo == settings::vector_coded || algo == settings::hash_coded) {
-						piranha_throw(value_error,"coded multiplication requested, but coded representation is infeasible");
+						PIRANHA_THROW(value_error,"coded multiplication requested, but coded representation is infeasible");
 					}
 					derived_cast->perform_plain_multiplication();
 					trace_mult_type(plain);
@@ -501,7 +501,7 @@ struct base_coded_functor
 				{
 					if (algo == settings::vector_coded) 
 					{
-						piranha_throw(value_error,"vector coded multiplication requested, but vector coded representation is infeasible");
+						PIRANHA_THROW(value_error,"vector coded multiplication requested, but vector coded representation is infeasible");
 					}
 					shift_codes();
 					derived_cast->perform_hash_coded_multiplication(cf1_cache,cf2_cache,derived_cast->m_terms1,derived_cast->m_terms2,trunc);
@@ -520,7 +520,7 @@ struct base_coded_functor
 			void determine_viability()
 			{
 				// Make sure that the series have at least one term.
-				piranha_assert(derived_const_cast->m_terms1.size() > 0 &&
+				PIRANHA_ASSERT(derived_const_cast->m_terms1.size() > 0 &&
 					derived_const_cast->m_terms2.size() > 0);
 				// Declare and init the min/max types for the two series.
 				minmax_type t1, t2;
@@ -547,7 +547,7 @@ struct base_coded_functor
 				// Now compute the global representation in multiprecision.
 				cm_global_minmax<OpTuple>::run(t1,vh1,t2,vh2,m_mp_gr);
 				// Assign the global value handler tuple.
-				piranha_assert(vh1 == vh2);
+				PIRANHA_ASSERT(vh1 == vh2);
 				m_vh = vh1;
 				// Compute the multiprecision coding tuple.
 				compute_mp_coding_tuple(m_mp_ct,m_mp_gr);
@@ -578,7 +578,7 @@ struct base_coded_functor
 			/// Code terms.
 			void code_terms()
 			{
-				piranha_assert(m_gr_is_viable);
+				PIRANHA_ASSERT(m_gr_is_viable);
 				// Downcast multiprecision to fast representation.
 				cm_mp_tuple_downcast(m_mp_gr,m_fast_gr);
 				cm_mp_tuple_downcast(m_mp_ct,m_fast_ct);
@@ -644,7 +644,7 @@ struct base_coded_functor
 				static const double limit = 1E-4;
 				// We don't want this to be called if we haven't established the suitability
 				// of the coded representation first.
-				piranha_assert(m_gr_is_viable);
+				PIRANHA_ASSERT(m_gr_is_viable);
 				const double max_density = std::max<double>(m_density1,m_density2);
 				return (max_density < limit);
 			}
@@ -656,24 +656,24 @@ struct base_coded_functor
 			 */
 			void shift_codes()
 			{
-				piranha_assert(m_gr_is_viable);
+				PIRANHA_ASSERT(m_gr_is_viable);
 				typedef std::vector<max_fast_int>::size_type size_type;
 				const size_type size1 = m_ckeys1.size(), size2a = m_ckeys2a.size(), size2b = m_ckeys2b.size();
 				const max_fast_int chi = m_fast_h.lower();
 				for (size_type i = 0; i < size1; ++i) 
 				{
 					m_ckeys1[i] -= chi;
-					piranha_assert(m_ckeys1[i] >= 0);
+					PIRANHA_ASSERT(m_ckeys1[i] >= 0);
 				}
 				for (size_type i = 0; i < size2a; ++i) 
 				{
 					m_ckeys2a[i] -= chi;
-					piranha_assert(m_ckeys2a[i] >= 0);
+					PIRANHA_ASSERT(m_ckeys2a[i] >= 0);
 				}
 				for (size_type i = 0; i < size2b; ++i) 
 				{
 					m_ckeys2b[i] -= chi;
-					piranha_assert(m_ckeys2b[i] >= 0);
+					PIRANHA_ASSERT(m_ckeys2b[i] >= 0);
 				}
 			}
 

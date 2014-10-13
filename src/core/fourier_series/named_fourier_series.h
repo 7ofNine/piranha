@@ -47,13 +47,13 @@ namespace piranha
 				Derived retval;
 				if (positionTuple.get_head()[0].first)
                 {
-					retval = derivedConstCast->base_integrate(positionTuple, derivedConstCast->arguments());
+					retval = derivedConstCast->baseIntegrate(positionTuple, derivedConstCast->arguments());
 					retval.setArguments(derivedConstCast->arguments());
 					retval.trim();
 
 				} else
                 {
-					piranha_throw(value_error,"cannot integrate fourier series if integration variable is not present among the series' arguments");
+					PIRANHA_THROW(value_error,"cannot integrate fourier series if integration variable is not present among the series' arguments");
 				}
 				return retval;
 			}

@@ -53,7 +53,7 @@ namespace piranha
 					template <class Series, class ArgsTuple2>
 					static size_t powerSeriesIterations(const Series &, const int &, const int &, const ArgsTuple2 &)
 					{
-						piranha_throw(value_error,"null truncator cannot provide number of iterations for power series");
+						PIRANHA_THROW(value_error,"null truncator cannot provide number of iterations for power series");
 					}
 
 
@@ -66,7 +66,7 @@ namespace piranha
 			template <class Series, class ArgsTuple2>
 			static std::vector<typename Series::term_type const *> getSortedPointerVector(const Series &, const ArgsTuple2 &)
 			{
-				piranha_throw(value_error,"null truncator cannot order series");
+				PIRANHA_THROW(value_error,"null truncator cannot order series");
 			}
 	};
 }

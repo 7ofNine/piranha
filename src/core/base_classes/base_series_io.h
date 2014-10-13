@@ -185,7 +185,7 @@ namespace piranha
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_construct_from_psym(const Psym &p, const int &n,
 			const ArgsTuple &argsTuple)
 	{
-		piranha_assert(derived_cast->empty());
+		PIRANHA_ASSERT(derived_cast->empty());
 		insert(term_type(typename term_type::cf_type(p, n, argsTuple), typename term_type::key_type(p, n, argsTuple)), argsTuple);
 	}
 
@@ -252,7 +252,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline BaseSeries<__PIRANHA_BASE_SERIES_TP>::~BaseSeries()
 	{
-		p_static_check((boost::is_base_of<base_series_tag,Derived>::value), "Final series class must derive from BaseSeries class.");
+		PIRANHA_STATIC_CHECK((boost::is_base_of<base_series_tag,Derived>::value), "Final series class must derive from BaseSeries class.");
 	}
 }
 

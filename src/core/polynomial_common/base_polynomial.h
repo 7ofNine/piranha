@@ -42,7 +42,7 @@ namespace piranha
 	template <int N, class Derived>
 	class BasePolynomial
 	{
-			p_static_check(N >= 0, "Invalid arguments position in base polynomial toolbox.");
+			PIRANHA_STATIC_CHECK(N >= 0, "Invalid arguments position in base polynomial toolbox.");
 		//protected:
 		public:
 
@@ -50,15 +50,15 @@ namespace piranha
 			template <typename PosTuple, typename ArgsTuple>
 			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
-				p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
+				PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in polynomial integration.");
 			
 				typedef typename Derived::const_iterator const_iterator;
 				typedef typename Derived::term_type::key_type::degree_type degree_type;
 				// Make sure that the position tuple contains just one symbol in position N and that
 				// the symbol is actually present.
-				piranha_assert(pos_tuple.template get<N>().size() == 1);
-				piranha_assert(pos_tuple.template get<N>()[0].first);
+				PIRANHA_ASSERT(pos_tuple.template get<N>().size() == 1);
+				PIRANHA_ASSERT(pos_tuple.template get<N>()[0].first);
 				Derived retval;
 				const std::size_t pos = pos_tuple.template get<N>()[0].second;
 				const const_iterator it_f = derived_const_cast->end();
@@ -66,17 +66,17 @@ namespace piranha
 
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
 				{
-					if (it->m_key[pos] == -1) 
+					if (it->key[pos] == -1) 
 					{
-						piranha_throw(value_error,"exponent is -1 in integrand polynomial, cannot proceed");
+						PIRANHA_THROW(value_error,"exponent is -1 in integrand polynomial, cannot proceed");
 					}
 
-					std::copy(it->m_key.begin(),it->m_key.end(),tmp_expos.begin());
+					std::copy(it->key.begin(),it->key.end(),tmp_expos.begin());
 					tmp_expos[pos] += 1;
 					typename Derived::term_type tmp(*it);
-					tmp.m_key.resize(boost::numeric_cast<typename Derived::term_type::key_type::size_type>(tmp_expos.size()));
-					std::copy(tmp_expos.begin(),tmp_expos.end(),tmp.m_key.begin());
-					tmp.m_cf.divide_by(it->m_key[pos] + 1,argsTuple);
+					tmp.key.resize(boost::numeric_cast<typename Derived::term_type::key_type::size_type>(tmp_expos.size()));
+					std::copy(tmp_expos.begin(),tmp_expos.end(),tmp.key.begin());
+					tmp.cf.divideBy(it->key[pos] + 1,argsTuple);
 					retval.insert(tmp,argsTuple);
 				}
 

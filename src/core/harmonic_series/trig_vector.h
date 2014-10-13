@@ -99,14 +99,14 @@ namespace piranha
 							case zero:
 								if (n != 0) 
 								{
-									piranha_throw(value_error,std::string("the substitution cache was unable to "
+									PIRANHA_THROW(value_error,std::string("the substitution cache was unable to "
 										"compute the complex exponential of the series used for substitution. "
 										"The reported error was:\n") + m_errmsg);
 								}
 							case one:
 								if (n < 0) 
 								{
-									piranha_throw(value_error,std::string("the substitution cache was unable to "
+									PIRANHA_THROW(value_error,std::string("the substitution cache was unable to "
 										"compute the inverse complex exponential of the series used for substitution. "
 										"The reported error was:\n") + m_errmsg);
 								}
@@ -171,7 +171,7 @@ namespace piranha
 
 			/// Copy ctor from different position.
 			template <int Position2>
-			TrigVector(const TrigVector<T, Position2> &t2): ancestor(), flavour(t2.get_flavour())
+			TrigVector(const TrigVector<T, Position2> &t2): ancestor(), flavour(t2.getFlavour())
 			{
 				this->resize(t2.size());
 				std::copy(t2.begin(), t2.end() ,this->begin());
@@ -205,7 +205,7 @@ namespace piranha
 
 				} else if (*sd.back().c_str() != 'c') 
 				{
-					piranha_throw(value_error,"unknown flavour");
+					PIRANHA_THROW(value_error,"unknown flavour");
 				}
 			}
 
@@ -242,13 +242,13 @@ namespace piranha
 				
                 // Assert widths, *this should always come from a regular Poisson series, and its width should hence be
 				// already adjusted my merge_args in multiplication routines.
-				piranha_assert(max_w >= min_w);
+				PIRANHA_ASSERT(max_w >= min_w);
 
 				// Adjust the width of retvals, if needed.
 				ret1.resize(max_w);
 				ret2.resize(max_w);
-				piranha_assert(ret1.size() == max_w);
-				piranha_assert(ret2.size() == max_w);
+				PIRANHA_ASSERT(ret1.size() == max_w);
+				PIRANHA_ASSERT(ret2.size() == max_w);
 				size_type i;
 				// TODO: improve speed here.
 				for (i = 0; i < min_w; ++i) 
@@ -265,14 +265,14 @@ namespace piranha
 
 
 			/// Get flavour.
-			bool get_flavour() const
+			bool getFlavour() const
 			{
 				return flavour;
 			}
 
 
 			/// Set flavour.
-			void set_flavour(bool f)
+			void setFlavour(bool f)
 			{
 				flavour = f;
 			}
@@ -282,8 +282,9 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_plain(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(argsTuple.template get<ancestor::position>().size() == this->size());
+				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() == this->size());
 				(void)argsTuple;
+
 				this->print_elements(outStream);
 				// Print the separator before flavour only if we actually printed something above.
 				if (this->size() != 0) 
@@ -305,7 +306,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_pretty(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(argsTuple.template get<ancestor::position>().size() == this->size());
+				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() == this->size());
 
 				if (flavour) 
 				{
@@ -351,7 +352,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_tex(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(argsTuple.template get<ancestor::position>().size() == this->size());
+				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() == this->size());
 				if (flavour) 
 				{
 					outStream << "\\cos\\left(";
@@ -402,7 +403,7 @@ namespace piranha
 			/**
 			 * The total harmonic degree is defined as the summation of the values of the trigonometric multipliers.
 			 */
-			h_degree_type h_degree() const
+			h_degree_type harmonicDegree() const
 			{
 				return std::accumulate(this->begin(), this->end(), h_degree_type(0));
 			}
@@ -434,11 +435,11 @@ namespace piranha
 
 			/// Minimum total harmonic degree.
 			/**
-			 * Provided for use within the harmonic series toolbox, and defined to be equivalent to h_degree().
+			 * Provided for use within the harmonic series toolbox, and defined to be equivalent to harmonicDegree().
 			 */
-			h_degree_type h_order() const
+			h_degree_type harmonicOrder() const
 			{
-				return h_degree();
+				return harmonicDegree();
 			}
 
 
@@ -460,7 +461,7 @@ namespace piranha
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(argsTuple.template get<ancestor::position>().size() >= this->size());
+				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() >= this->size());
 				(void)argsTuple;
 				return 1.;
 			}
@@ -476,7 +477,7 @@ namespace piranha
 			double eval(const double &t, const ArgsTuple &argsTuple) const
 			{
 				const size_type w = this->size();
-				piranha_assert(w <= argsTuple.template get<ancestor::position>().size());
+				PIRANHA_ASSERT(w <= argsTuple.template get<ancestor::position>().size());
 
 				double retval = 0.;
 				for (size_type i = 0; i < w; ++i) 
@@ -585,14 +586,14 @@ namespace piranha
 				// Do something only if the argument of the partial derivation is present in the trigonometric vector.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be
 				// multiplied by the coefficient in the partial derivation of the whole term.
-				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				PIRANHA_ASSERT(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (pos_tuple.template get<ancestor::position>()[0].first) 
 				{
 					TrigVector copy(*this);
 					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<ancestor::position>()[0].second);
 					// Change the flavour of the resulting key.
 					copy.flavour = !flavour;
-					piranha_assert(pos < this->size());
+					PIRANHA_ASSERT(pos < this->size());
 					retval = Series::base_series_from_key(copy,argsTuple);
 					if (flavour) 
 					{
@@ -630,7 +631,7 @@ namespace piranha
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very TrigVector.
 				// NOTE: for now we can substitute one symbol at a time.
-				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				PIRANHA_ASSERT(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) 
 				{
 					retval = RetSeries::base_series_from_key(*this, argsTuple);
@@ -638,7 +639,7 @@ namespace piranha
 				{
 					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<ancestor::position>()[0].second);
 					const value_type &power = (*this)[pos];
-					piranha_assert(pos < this->size());
+					PIRANHA_ASSERT(pos < this->size());
 					TrigVector tmp_ta(*this);
 					// Let's turn off the multiplier associated to the symbol we are substituting.
 					tmp_ta[pos] = 0;
@@ -646,13 +647,13 @@ namespace piranha
 					// whose key is _not_ a TrigVector, in principle, so we cannot build a term consisting
 					// of a TrigVector and unity coefficient and simply insert it.
 					// Build the orig_cos series.
-					tmp_ta.set_flavour(true);
+					tmp_ta.setFlavour(true);
 					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,argsTuple);
 					// Build the orig_sin series.
-					tmp_ta.set_flavour(false);
+					tmp_ta.setFlavour(false);
 					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,argsTuple);
-					piranha_assert(retval.empty());
-					if (this->get_flavour()) 
+					PIRANHA_ASSERT(retval.empty());
+					if (this->getFlavour()) 
 					{
 						retval.base_add(orig_cos, argsTuple);
 						retval.base_mult_by(
@@ -686,7 +687,7 @@ namespace piranha
 				typedef typename RetSeries::term_type ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
 				RetSeries retval;
-				piranha_assert(pos_tuple.template get<ancestor::position>().size() == 1);
+				PIRANHA_ASSERT(pos_tuple.template get<ancestor::position>().size() == 1);
 				if (!pos_tuple.template get<ancestor::position>()[0].first) 
 				{
 					retval = RetSeries::base_series_from_key(*this, argsTuple);
@@ -694,14 +695,14 @@ namespace piranha
 				{
 					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<ancestor::position>()[0].second);
 					const value_type &power = (*this)[pos];
-					piranha_assert(pos < this->size());
+					PIRANHA_ASSERT(pos < this->size());
 					TrigVector tmp_ta(*this);
 					tmp_ta[pos] = 0;
-					tmp_ta.set_flavour(true);
+					tmp_ta.setFlavour(true);
 					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,argsTuple);
-					tmp_ta.set_flavour(false);
+					tmp_ta.setFlavour(false);
 					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,argsTuple);
-					piranha_assert(retval.empty());
+					PIRANHA_ASSERT(retval.empty());
 					if (flavour) 
 					{
 						retval.base_add(orig_cos, argsTuple);
@@ -738,7 +739,7 @@ namespace piranha
 					if (int_zero && !flavour) 
 					{
 						// 0**-y.
-						piranha_throw(zero_division_error,"cannot divide by zero");
+						PIRANHA_THROW(zero_division_error,"cannot divide by zero");
 					} else if (int_zero && flavour) 
 					{
 						// 1**-y == 1. Don't do anything because retval is already initialized properly.
@@ -746,7 +747,7 @@ namespace piranha
 					} else 
 					{
 						// x**-y -> no go.
-						piranha_throw(value_error,"non-unity trigonometric vector is not suitable for negative exponentiation");
+						PIRANHA_THROW(value_error,"non-unity trigonometric vector is not suitable for negative exponentiation");
 					}
 				} else if (y == 0) 
 				{
@@ -765,7 +766,7 @@ namespace piranha
 					} else 
 					{
 						// x**y --> no go.
-						piranha_throw(value_error,"non-unity trigonometric vector is not suitable for positive exponentiation");
+						PIRANHA_THROW(value_error,"non-unity trigonometric vector is not suitable for positive exponentiation");
 					}
 				}
 				return retval;

@@ -27,16 +27,16 @@ namespace piranha
 	template <class ArgsTuple>
 	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::is_insertable(const ArgsTuple &argsTuple) const
 	{
-		return (derived_const_cast->empty() || (derived_const_cast->begin()->m_cf.is_insertable(argsTuple) &&
-			derived_const_cast->begin()->m_key.is_insertable(argsTuple)));
+		return (derived_const_cast->empty() || (derived_const_cast->begin()->cf.is_insertable(argsTuple) &&
+			derived_const_cast->begin()->key.is_insertable(argsTuple)));
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::needs_padding(const ArgsTuple &argsTuple) const
 	{
-		return (!derived_const_cast->empty() && (derived_const_cast->begin()->m_cf.needs_padding(argsTuple) ||
-			derived_const_cast->begin()->m_key.needs_padding(argsTuple)));
+		return (!derived_const_cast->empty() && (derived_const_cast->begin()->cf.needs_padding(argsTuple) ||
+			derived_const_cast->begin()->key.needs_padding(argsTuple)));
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>

@@ -42,8 +42,8 @@ namespace piranha
 		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
         {
 			term_type term(*it);
-			term.m_cf.pad_right(argsTuple);
-			term.m_key.pad_right(argsTuple);
+			term.cf.pad_right(argsTuple);
+			term.key.pad_right(argsTuple);
 			retval.insert(term, argsTuple);
 		}
 

@@ -69,7 +69,7 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived rational_power(const mp_rational &q, const ArgsTuple &argsTuple) const
 			{
-				piranha_assert(q != 0 && q != 1);
+				PIRANHA_ASSERT(q != 0 && q != 1);
 				return generic_binomial_power(
 					derived_const_cast->template get_sorted_series<Derived>(argsTuple), q, argsTuple);
 			}
@@ -83,7 +83,7 @@ namespace piranha
 				typedef typename Derived::term_type term_type;
 				// Here we know that the cases of empty series and natural power have already
 				// been taken care of in BaseSeries::base_pow.
-				piranha_assert(v.size() >= 1);
+				PIRANHA_ASSERT(v.size() >= 1);
 
 				term_type A(*v[0]);
 				// This is X, i.e., the original series without the leading term, which will then be divided by A.
@@ -95,7 +95,7 @@ namespace piranha
 				}
 
 				// Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
-				term_type tmp_term(A.m_cf.pow(-1,argsTuple), A.m_key.pow(-1,argsTuple));
+				term_type tmp_term(A.cf.pow(-1,argsTuple), A.key.pow(-1,argsTuple));
 				Derived Ainv;
 				Ainv.insert(tmp_term, argsTuple);
 				// Now let's compute X/A.
@@ -106,7 +106,7 @@ namespace piranha
 					n = XoverA.psi_(0, 1, argsTuple);
 				} catch (const value_error &ve) 
                 {
-					piranha_throw(value_error,std::string("series is unsuitable for exponentiation through binomial expansion."
+					PIRANHA_THROW(value_error,std::string("series is unsuitable for exponentiation through binomial expansion."
 						"\nThe reported error is: ")
 						+ ve.what());
 				}
@@ -121,15 +121,15 @@ namespace piranha
 			{
 				typedef typename Derived::term_type term_type;
 
-				p_static_check((boost::is_same<Term, typename Derived::term_type>::value),
+				PIRANHA_STATIC_CHECK((boost::is_same<Term, typename Derived::term_type>::value),
 					"Term type mismatch in binomial expansion.");
 
 				// Start the binomial expansion.
 				term_type tmp_term;
 				// Calculate A**y. See if we can raise to real power the coefficient and the key.
 				// Exceptions will be thrown in case of problems.
-				tmp_term.m_cf  = A.m_cf.pow(y, argsTuple);
-				tmp_term.m_key = A.m_key.pow(y, argsTuple);
+				tmp_term.cf  = A.cf.pow(y, argsTuple);
+				tmp_term.key = A.key.pow(y, argsTuple);
 				Derived Apowy;
 				Apowy.insert(tmp_term, argsTuple);
 				// Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised

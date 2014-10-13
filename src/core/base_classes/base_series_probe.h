@@ -40,7 +40,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::is_single_cf() const
 	{
-		return (length() == 1 && begin()->m_key.is_unity());
+		return (length() == 1 && begin()->key.is_unity());
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
@@ -50,7 +50,7 @@ namespace piranha
 		const const_iterator it_f = end();
 		double retval = 0;
 		for (const_iterator it = begin(); it != it_f; ++it) {
-			retval += it->m_cf.norm(argsTuple) * it->m_key.norm(argsTuple);
+			retval += it->cf.norm(argsTuple) * it->key.norm(argsTuple);
 		}
 		return retval;
 	}
@@ -63,8 +63,8 @@ namespace piranha
 		const const_iterator it_f = end();
 		eval_type retval(0);
 		for (const_iterator it = begin(); it != it_f; ++it) {
-			eval_type tmp(it->m_cf.eval(t, argsTuple));
-			tmp *= it->m_key.eval(t, argsTuple);
+			eval_type tmp(it->cf.eval(t, argsTuple));
+			tmp *= it->key.eval(t, argsTuple);
 			retval += tmp;
 		}
 		return retval;
@@ -97,7 +97,7 @@ namespace piranha
 		size_type retval = 0;
 		const const_iterator it_f = end();
 		for (const_iterator it = begin(); it != it_f; ++it) {
-			retval += it->m_cf.atoms() + it->m_key.atoms();
+			retval += it->cf.atoms() + it->key.atoms();
 		}
 		return retval;
 	}
@@ -122,7 +122,7 @@ namespace piranha
 		const const_iterator it_f = end(), it_f_other = other.end();
 		for (const_iterator it = begin(); it != it_f; ++it) {
 			const_iterator it_other(other.find_term(*it));
-			if (it_other == it_f_other || !(it_other->m_cf == it->m_cf)) {
+			if (it_other == it_f_other || !(it_other->cf == it->cf)) {
 				return false;
 			}
 		}
@@ -171,7 +171,7 @@ namespace piranha
 		if (!is_single_cf()) {
 			return false;
 		}
-		return (begin()->m_cf == x);
+		return (begin()->cf == x);
 	}
 
 	/// Base numerical equality test.

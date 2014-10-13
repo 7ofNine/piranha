@@ -57,18 +57,18 @@ namespace piranha
 		base_series_arithmetics():m_argsTuple(0) {}
 		T inv(const T &orig) const
 		{
-			piranha_assert(m_argsTuple);
+			PIRANHA_ASSERT(m_argsTuple);
 			return orig.base_pow(-1,*m_argsTuple);
 		}
 		void multiply(T &orig, const T &other) const
 		{
-			piranha_assert(m_argsTuple);
+			PIRANHA_ASSERT(m_argsTuple);
 			orig.base_mult_by(other,*m_argsTuple);
 		}
 		template <class U>
 		T pow(const T &orig, const U &y) const
 		{
-			piranha_assert(m_argsTuple);
+			PIRANHA_ASSERT(m_argsTuple);
 			return orig.base_pow(y,*m_argsTuple);
 		}
 		mutable ArgsTuple const *m_argsTuple;

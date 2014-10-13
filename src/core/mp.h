@@ -149,7 +149,7 @@ namespace piranha
 	inline mp_rational besselJ(const int &order, const mp_rational &arg)
 	{
 		if (arg != 0) {
-				piranha_throw(value_error,"cannot compute Bessel function of non-zero rational");
+				PIRANHA_THROW(value_error,"cannot compute Bessel function of non-zero rational");
 		}
 		return (order == 0) ? mp_rational(1) : mp_rational(0);
 	}
@@ -305,7 +305,7 @@ namespace piranha
 	inline mp_integer besselJ(const int &order, const mp_integer &arg)
 	{
 		if (arg != 0) {
-				piranha_throw(value_error,"cannot compute Bessel function of non-zero integer");
+				PIRANHA_THROW(value_error,"cannot compute Bessel function of non-zero integer");
 		}
 		return (order == 0) ? mp_integer(1) : mp_integer(0);
 	}

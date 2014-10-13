@@ -87,18 +87,18 @@ namespace piranha
 	class series_flattener
 	{
 		public:
-			p_static_check(N > 0,"");
+			PIRANHA_STATIC_CHECK(N > 0,"");
 			template <class CfSeries, class Term, class ArgsTuple>
 			static void run(CfSeries &cf_series, Term &term, std::vector<Term> &out, const ArgsTuple &argsTuple)
 			{
 				// For each coefficient series (which is residing inside the insertion term), we create a copy of it,
 				// then we insert one by one its original terms and, step by step, we go deeper into the recursion.
-				piranha_assert(!cf_series.empty());
+				PIRANHA_ASSERT(!cf_series.empty());
 				const CfSeries tmp(cf_series);
 				for (typename CfSeries::const_iterator it = tmp.begin(); it != tmp.end(); ++it) {
 					cf_series.clear_terms();
 					cf_series.insert(*it,argsTuple);
-					series_flattener<N - 1>::run(cf_series.begin()->m_cf,term,out,argsTuple);
+					series_flattener<N - 1>::run(cf_series.begin()->cf,term,out,argsTuple);
 				}
 			}
 	};

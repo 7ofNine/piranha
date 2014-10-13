@@ -51,7 +51,7 @@ namespace piranha
 			template <class U, class Allocator2>
 			friend class counting_allocator;
 			typedef typename Allocator::template rebind<T>::other alloc;
-			p_static_check((boost::is_same<T,typename alloc::value_type>::value), "Type mismatch in counting allocator.");
+			PIRANHA_STATIC_CHECK((boost::is_same<T,typename alloc::value_type>::value), "Type mismatch in counting allocator.");
 		public:
 			typedef typename alloc::size_type size_type;
 			typedef typename alloc::difference_type difference_type;
@@ -84,7 +84,7 @@ namespace piranha
 				// Formulate in this way in order to avoid bogus values when doing l - add
 				// (which is unsigned arithmetic).
 				if (unlikely(add > l || cur > l - add)) {
-					piranha_throw(memory_error,"memory limit reached");
+					PIRANHA_THROW(memory_error,"memory limit reached");
 				}
 				pointer retval = m_alloc.allocate(n,hint);
 				m_counter += add;
@@ -155,7 +155,7 @@ namespace piranha
 	template <class T, int Alignment>
 	class align_mallocator {
 
-			p_static_check(Alignment >= 0 && Alignment < 256,"Invalid alignment value requested.");
+			PIRANHA_STATIC_CHECK(Alignment >= 0 && Alignment < 256,"Invalid alignment value requested.");
 
 		public:
 

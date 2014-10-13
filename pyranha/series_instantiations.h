@@ -408,12 +408,12 @@ namespace pyranha
 	template <class T>
 	inline void harmonic_series_instantiation(boost::python::class_<T> &inst)
 	{
-		inst.def("h_degree", &T::h_degree, "(Partial) harmonic degree.");
-		inst.def("h_degree", &T::partial_h_degree);
-		inst.def("h_degree", &p_h_degree_str<T>);
-		inst.def("h_order", &T::h_order, "(Partial) harmonic order.");
-		inst.def("h_order", &T::partial_h_order);
-		inst.def("h_order", &p_h_order_str<T>);
+		inst.def("harmonicDegree", &T::harmonicDegree, "(Partial) harmonic degree.");
+		inst.def("harmonicDegree", &T::partial_h_degree);
+		inst.def("harmonicDegree", &p_h_degree_str<T>);
+		inst.def("harmonicOrder", &T::harmonicOrder, "(Partial) harmonic order.");
+		inst.def("harmonicOrder", &T::partial_h_order);
+		inst.def("harmonicOrder", &p_h_order_str<T>);
 		inst.def("is_sine", &T::is_sine, "Return true if series is made only of sine terms.");
 		inst.def("is_cosine", &T::is_cosine, "Return true if series is made only of cosine terms.");
 	}

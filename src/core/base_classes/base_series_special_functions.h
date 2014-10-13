@@ -88,11 +88,11 @@ namespace piranha
 
 					if (!min_int) 
 					{
-						piranha_throw(value_error,"could not establish a value for the series limit in hyperF: "
+						PIRANHA_THROW(value_error,"could not establish a value for the series limit in hyperF: "
 							"no explicit limit was provided, the truncator failed to establish a limit and "
 							"no negative integer numbers were found in a_list");
 					}
-					piranha_assert(*min_int < 0);
+					PIRANHA_ASSERT(*min_int < 0);
 					iter_ = -(((*min_int) - 1).to_int());
 				}
 
@@ -132,7 +132,7 @@ namespace piranha
 			{
 				if (n < 0) 
 				{
-					piranha_throw(value_error,"please enter a non-negative order of differentiation");
+					PIRANHA_THROW(value_error,"please enter a non-negative order of differentiation");
 				}
 
 				// If one of the elements in b_list is a non-positive integer, a division by zero will occur.
@@ -176,7 +176,7 @@ namespace piranha
 				if (derived_const_cast->is_single_cf()) 
 				{
 					typedef typename Derived::term_type term_type;
-					retval.insert(term_type(derived_const_cast->begin()->m_cf.besselJ(order_, argsTuple),
+					retval.insert(term_type(derived_const_cast->begin()->cf.besselJ(order_, argsTuple),
 						typename term_type::key_type()), argsTuple);
 					return retval;
 				}
@@ -219,7 +219,7 @@ namespace piranha
 					limit_ = derived_const_cast->psi_(order - 1, 2, argsTuple);
 				} catch (const value_error &ve) 
 				{
-					piranha_throw(value_error,std::string("series is unsuitable as argument of the derivative of "
+					PIRANHA_THROW(value_error,std::string("series is unsuitable as argument of the derivative of "
 						"Bessel function of the first kind.\nThe reported error is: ")
 						+ ve.what());
 				}
@@ -260,7 +260,7 @@ namespace piranha
 				const int order = (order_ >= 0) ? order_ : -order_;
 				if (order < m) 
 				{
-					piranha_throw(zero_division_error,"absolute value of order must not be smaller than m");
+					PIRANHA_THROW(zero_division_error,"absolute value of order must not be smaller than m");
 				}
 
 				Derived retval;
@@ -290,7 +290,7 @@ namespace piranha
 				{
 					if (b_list[i] <= 0 && b_list[i].get_den() == 1) 
 					{
-						piranha_throw(zero_division_error, "b_list in hyperF contains a non-positive integer");
+						PIRANHA_THROW(zero_division_error, "b_list in hyperF contains a non-positive integer");
 					}
 				}
 			}

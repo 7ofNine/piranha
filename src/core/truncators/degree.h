@@ -107,8 +107,8 @@ namespace truncators {
                             :m_t1(t1), m_t2(t2), m_argsTuple(argsTuple)
 					{
 						// Some static checks.
-						p_static_check(Series1::expo_args_position == Series2::expo_args_position, "");
-						p_static_check(Series1::expo_term_position == Series2::expo_term_position, "");
+						PIRANHA_STATIC_CHECK(Series1::expo_args_position == Series2::expo_args_position, "");
+						PIRANHA_STATIC_CHECK(Series1::expo_term_position == Series2::expo_term_position, "");
 
 						// Convert psyms vector into position tuple only if we are truncating to partial degree.
 						if (truncationMode == TruncationPartialDeg) 
@@ -130,7 +130,7 @@ namespace truncators {
 
 							case TruncationPartialDeg:	   return ((*t1)->template get<expo_term_pos>().partial_order(m_pos_tuple) + (*t2)->template get<expo_term_pos>().partial_order(m_pos_tuple) >= degreeLimit);
 
-							case TruncationInactive: piranha_assert(false); // We should never get there.
+							case TruncationInactive: PIRANHA_ASSERT(false); // We should never get there.
 				 	    }
 						return false;
 					}
@@ -144,18 +144,18 @@ namespace truncators {
 					{
 						if (stepSize < 1) 
 						{
-							piranha_throw(value_error,"please use a step size of at least 1");
+							PIRANHA_THROW(value_error,"please use a step size of at least 1");
 						}
 
 						if (truncationMode == TruncationInactive) 
 						{
-							piranha_throw(value_error,"cannot calculate the limit of a power series expansion "
+							PIRANHA_THROW(value_error,"cannot calculate the limit of a power series expansion "
 								"if no degree limit has been set");
 						}
 
 						if (s.empty()) 
 						{
-							piranha_throw(value_error,"cannot calculate the limit of the power series expansion of "
+							PIRANHA_THROW(value_error,"cannot calculate the limit of the power series expansion of "
 								"an empty power series");
 						}
 
@@ -170,17 +170,17 @@ namespace truncators {
 							case TruncationPartialDeg: order = s.base_partial_order(psyms2pos(psyms, argsTuple));
 								        break;
 
-							case TruncationInactive: piranha_assert(false);
+							case TruncationInactive: PIRANHA_ASSERT(false);
 						}
 
 						if (order <= 0) 
 						{
-							piranha_throw(value_error, "cannot calculate the limit of a power series expansion if the (partial) minimum degree of the series is negative or zero");
+							PIRANHA_THROW(value_error, "cannot calculate the limit of a power series expansion if the (partial) minimum degree of the series is negative or zero");
 						}
 
 						if (degreeLimit < 0) 
 						{
-							piranha_throw(value_error, "cannot calculate the limit of a power series expansion if the minimum degree limit is negative");
+							PIRANHA_THROW(value_error, "cannot calculate the limit of a power series expansion if the minimum degree limit is negative");
 						}
 
 
@@ -236,12 +236,12 @@ namespace truncators {
 
 								            } else
 								            {
-									            piranha_throw(value_error,"cannot establish series ordering, partial degree truncator is not effective on this series");
+									            PIRANHA_THROW(value_error,"cannot establish series ordering, partial degree truncator is not effective on this series");
 								            }
 								        }
                                         break;
 
-							case TruncationInactive: piranha_throw(value_error,"cannot establish series ordering, degree truncator is not active");
+							case TruncationInactive: PIRANHA_THROW(value_error,"cannot establish series ordering, degree truncator is not active");
 						}
 
 						return retval;
@@ -263,7 +263,7 @@ namespace truncators {
 								
 						}
 
-						piranha_assert(false);
+						PIRANHA_ASSERT(false);
 						return false;
 					}
 

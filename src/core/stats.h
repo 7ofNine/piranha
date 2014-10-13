@@ -46,7 +46,7 @@ class __PIRANHA_VISIBLE stats
 			const std::map<std::string,std::string>::const_iterator it = m_container.find(key);
 			if (it == m_container.end()) 
 			{
-				piranha_throw(value_error,"stats field not found");
+				PIRANHA_THROW(value_error,"stats field not found");
 			}
 			return it->second;
 		}

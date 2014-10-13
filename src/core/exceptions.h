@@ -29,10 +29,10 @@
 
 #include "config.h" // For "unlikely()".
 
-#define piranha_throw(ex,s) P_EX_THROW(ex,s)
+#define PIRANHA_THROW(ex,s) P_EX_THROW(ex,s)
 
 #if defined _PIRANHA_ENABLE_ASSERTS
-#define piranha_assert(result) \
+#define PIRANHA_ASSERT(result) \
 	if (unlikely(!(result))) \
 	{ \
 		std::ostringstream tmp;\
@@ -40,10 +40,10 @@
 		tmp << "Assertion failures should not happen and denote a bug.\n"; \
 		tmp << "Please help us correct the problem by sending a bug report to piranha-psm@googlegroups.com\n"; \
 		tmp << "providing as many details as possible. Thanks!\n"; \
-		piranha_throw(assertion_error,"assertion error"); \
+		PIRANHA_THROW(assertion_error,"assertion error"); \
 	}
 #else
-#define piranha_assert(__arg)
+#define PIRANHA_ASSERT(__arg)
 #endif // _PIRANHA_ENABLE_ASSERTS
 
 #endif

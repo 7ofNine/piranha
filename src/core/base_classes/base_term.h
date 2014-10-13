@@ -47,12 +47,12 @@ namespace piranha
 
 			static type &run(Term &t) 
             {
-				return t.m_cf;
+				return t.cf;
 			}
 
 			static const type &run(const Term &t) 
             {
-				return t.m_cf;
+				return t.cf;
 			}
 	};
 
@@ -65,12 +65,12 @@ namespace piranha
 
 			static type &run(Term &t) 
             {
-				return t.m_key;
+				return t.key;
 			}
 
 			static const type &run(const Term &t) 
             {
-				return t.m_key;
+				return t.key;
 			}
 	};
 
@@ -131,20 +131,20 @@ namespace piranha
 			/**
 			 * Default-initializes coefficient and key.
 			 */
-			BaseTerm(): m_cf(), m_key() {}
+			BaseTerm(): cf(), key() {}
 			
 			// Ctor from string.
 			// str is of type  "cf|key" for separator = "|"
 			//What is ArgsTuple??
 			template <class ArgsTuple>
-			BaseTerm(const std::string &str, const ArgsTuple &argsTuple): m_cf(), m_key() 
+			BaseTerm(const std::string &str, const ArgsTuple &argsTuple): cf(), key() 
             {
 				std::vector<std::string> vs;
 				boost::split(vs, str, boost::is_any_of(std::string(1, separator)));
 				// should have precisely two components,
 				if (vs.size() != 2) 
 				{
-					piranha_throw(value_error, std::string("unable to build term from input '") + str + "'");
+					PIRANHA_THROW(value_error, std::string("unable to build term from input '") + str + "'");
 				} else 
 				{
 					boost::trim(vs[0]); // coefficient
@@ -152,11 +152,11 @@ namespace piranha
 					// Try to build only if the strings actually contain something.
 					if (!vs[0].empty()) 
                     {
-						m_cf = cf_type(vs[0], argsTuple);
+						cf = cf_type(vs[0], argsTuple);
 					}
 					if (!vs[1].empty()) 
                     {
-						m_key = key_type(vs[1], argsTuple);
+						key = key_type(vs[1], argsTuple);
 					}
 				}
 			}
@@ -169,11 +169,11 @@ namespace piranha
 			//                            for key(Derived2::key_type, ArgsTuple) 
 			template <class Derived2, class ArgsTuple>
 			BaseTerm(const Derived2 &t, const ArgsTuple &argsTuple)
-			        : m_cf(t.m_cf, argsTuple), m_key(t.m_key) {}
+			        : cf(t.cf, argsTuple), key(t.key) {}
 			
 
 			/// Ctor from coefficient - key pair.
-			BaseTerm(const cf_type &cf, const key_type &key): m_cf(cf), m_key(key) {}
+			BaseTerm(const cf_type &cf, const key_type &key): cf(cf), key(key) {}
 
 			template <int N>
 			typename BaseTermGetHelper<N, BaseTerm>::type &get() 
@@ -191,8 +191,8 @@ namespace piranha
 
 			void swap(BaseTerm &other) 
 			{
-				m_cf.swap(other.m_cf);
-				m_key.swap(other.m_key);
+				cf.swap(other.cf);
+				key.swap(other.key);
 			}
 
 			// I/O.
@@ -200,30 +200,30 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_plain(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
-				m_cf.print_plain(outStream, argsTuple); //print coefficient
+				cf.print_plain(outStream, argsTuple); //print coefficient
 				outStream << separator;
-				m_key.print_plain(outStream, argsTuple); // print key
+				key.print_plain(outStream, argsTuple); // print key
 			}
 			
 			/// Print in pretty format.
 			template <class ArgsTuple>
 			void print_pretty(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
-				if (m_key.is_unity()) 
+				if (key.is_unity()) 
 				{
-					m_cf.print_pretty(outStream, argsTuple);
-				} else if (m_cf == 1) 
+					cf.print_pretty(outStream, argsTuple);
+				} else if (cf == 1) 
 				{
-					m_key.print_pretty(outStream, argsTuple);
-				} else if (m_cf == -1) 
+					key.print_pretty(outStream, argsTuple);
+				} else if (cf == -1) 
 				{
 					outStream << '-';
-					m_key.print_pretty(outStream, argsTuple);
+					key.print_pretty(outStream, argsTuple);
 				} else 
 				{
-					m_cf.print_pretty(outStream, argsTuple);
+					cf.print_pretty(outStream, argsTuple);
 					outStream << '*';
-					m_key.print_pretty(outStream, argsTuple);
+					key.print_pretty(outStream, argsTuple);
 				}
 			}
 
@@ -231,23 +231,23 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_tex(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
-				if (m_key.is_unity()) 
+				if (key.is_unity()) 
 				{
-					m_cf.print_tex(outStream, argsTuple);
+					cf.print_tex(outStream, argsTuple);
 
-				} else if (m_cf == 1) 
+				} else if (cf == 1) 
 				{
-					m_key.print_tex(outStream, argsTuple);
+					key.print_tex(outStream, argsTuple);
 
-				} else if (m_cf == -1) 
+				} else if (cf == -1) 
 				{
 					outStream << '-';
-					m_key.print_tex(outStream, argsTuple);
+					key.print_tex(outStream, argsTuple);
 
 				} else 
 				{
-					m_cf.print_tex(outStream, argsTuple);
-					m_key.print_tex(outStream, argsTuple);
+					cf.print_tex(outStream, argsTuple);
+					key.print_tex(outStream, argsTuple);
 				}
 			}
 
@@ -257,7 +257,7 @@ namespace piranha
 			 */
 			bool operator==(const BaseTerm &t) const 
 			{
-				return (m_key == t.m_key);
+				return (key == t.key);
 			}
 
 			/// Check if the term is canonical.
@@ -285,15 +285,15 @@ namespace piranha
 			{
 				std::size_t operator()(const BaseTerm &t) const 
 				{
-					return t.m_key.hash_value();
+					return t.key.hash_value();
 				}
 			};
 
 			// Data members.
 			/// Coefficient.
-			mutable cf_type		m_cf;
+			mutable cf_type		cf;
 			/// Key.
-			key_type		    m_key;
+			key_type		    key;
 			/// Rebound allocator for term type.
 			static allocator_type	allocator;
 			/// Separator between coefficient and key in I/O.
@@ -315,7 +315,7 @@ namespace piranha
 	template <__PIRANHA_BASE_TERM_TP_DECL>
 	inline std::size_t hash_value(const BaseTerm<__PIRANHA_BASE_TERM_TP> &t)
 	{
-		return t.m_key.hash_value();
+		return t.key.hash_value();
 	}
 
 #define PIRANHA_TERM_CTORS(term_name) \

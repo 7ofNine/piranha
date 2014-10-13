@@ -55,10 +55,10 @@
 
 // C++0x support.
 #ifdef _PIRANHA_CPP0X
-#define p_static_check(expr,descr) static_assert(expr,descr)
+#define PIRANHA_STATIC_CHECK(expr,descr) static_assert(expr,descr)
 #else
 #include <boost/static_assert.hpp>
-#define p_static_check(expr,descr) BOOST_STATIC_ASSERT(expr)
+#define PIRANHA_STATIC_CHECK(expr,descr) BOOST_STATIC_ASSERT(expr)
 #endif
 
 #define __PIRANHA_MAX_ECHELON_LEVEL (4)

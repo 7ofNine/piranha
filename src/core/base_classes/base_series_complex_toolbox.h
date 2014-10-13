@@ -71,16 +71,16 @@ namespace piranha
 				const real_iterator old_i_it_f = old_i.end();
 				for (real_iterator i_it = old_i.begin(); i_it != old_i_it_f; ++i_it) 
 				{
-					tmp.m_key = i_it->m_key;
-					tmp.m_cf.set_imag(i_it->m_cf, argsTuple);
+					tmp.key = i_it->key;
+					tmp.cf.set_imag(i_it->cf, argsTuple);
 					derived_cast->template insert<true, false>(tmp, argsTuple);
 				}
 				// Now add the new imaginary part.
 				const real_iterator i_it_f = i.end();
 				for (real_iterator i_it = i.begin(); i_it != i_it_f; ++i_it) 
 				{
-					tmp.m_key = i_it->m_key;
-					tmp.m_cf.set_imag(i_it->m_cf, argsTuple);
+					tmp.key = i_it->key;
+					tmp.cf.set_imag(i_it->cf, argsTuple);
 					derived_cast->insert(tmp, argsTuple);
 				}
 			}
@@ -131,7 +131,7 @@ namespace piranha
 			void base_construct_from_real(const RealDerived &r, const ArgsTuple &argsTuple) 
 			{
 				// Make sure we are being called from an empty series.
-				piranha_assert(derived_const_cast->empty());
+				PIRANHA_ASSERT(derived_const_cast->empty());
 				derived_cast->insert_range(r.begin(),r.end(),argsTuple);
 			}
 
@@ -142,7 +142,7 @@ namespace piranha
 				typedef typename RealDerived::const_iterator real_iterator;
 				typedef typename Derived::term_type complex_term_type;
 				// Make sure we are being called from an empty series.
-				piranha_assert(derived_const_cast->empty());
+				PIRANHA_ASSERT(derived_const_cast->empty());
 				// Let's build the real part first.
 				base_construct_from_real(r, argsTuple);
 				// Now let's proceed to the imaginary part.
@@ -150,8 +150,8 @@ namespace piranha
 				complex_term_type tmp;
 				for (real_iterator i_it = i.begin(); i_it != i_it_f; ++i_it) 
 				{
-					tmp.m_key = i_it->m_key;
-					tmp.m_cf.set_imag(i_it->m_cf, argsTuple);
+					tmp.key = i_it->key;
+					tmp.cf.set_imag(i_it->cf, argsTuple);
 					derived_cast->insert(tmp, argsTuple);
 				}
 			}
@@ -179,7 +179,7 @@ namespace piranha
 				const complex_iterator c_it_f = derived_const_cast->end();
 				for (complex_iterator c_it = derived_const_cast->begin(); c_it != c_it_f; ++c_it) 
 				{
-					typename RealDerived::term_type tmp(get_cf_comp<N>(c_it->m_cf, argsTuple), c_it->m_key);
+					typename RealDerived::term_type tmp(get_cf_comp<N>(c_it->cf, argsTuple), c_it->key);
 					retval.insert(tmp, argsTuple);
 				}
 				return retval;

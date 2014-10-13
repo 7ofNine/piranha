@@ -92,7 +92,7 @@ namespace piranha
 	{ \
 		normal_check(other); \
 		if (other == 0) { \
-			piranha_throw(zero_division_error,"cannot divide by zero"); \
+			PIRANHA_THROW(zero_division_error,"cannot divide by zero"); \
 		} \
 		m_value /= other __VA_ARGS__; \
 		return *this; \
@@ -232,12 +232,12 @@ namespace piranha
 			int to_int() const
 			{
 				if (m_value.get_den() != 1) {
-					piranha_throw(value_error,"cannot convert rational to int if denominator is non-unitary");
+					PIRANHA_THROW(value_error,"cannot convert rational to int if denominator is non-unitary");
 				}
 				// NOTE: here we test for fits into signed integer, but the return value below will be long signed
 				// integer because that's what offered by the API. It will be safely downcast to int on exit.
 				if (!m_value.get_num().fits_sint_p()) {
-					piranha_throw(std::overflow_error,"numerator is too large while converting rational to int");
+					PIRANHA_THROW(std::overflow_error,"numerator is too large while converting rational to int");
 				}
 				return m_value.get_num().get_si();
 			}
@@ -323,11 +323,11 @@ namespace piranha
 			mp_rational root(const int &n_) const
 			{
 				if (m_value < 0 && n_ != 1 && n_ != -1) {
-					piranha_throw(value_error,"cannot calculate root of negative rational number");
+					PIRANHA_THROW(value_error,"cannot calculate root of negative rational number");
 				}
 				mp_rational retval;
 				if (n_ == 0) {
-					piranha_throw(zero_division_error,"cannot calculate zero-th root of rational number");
+					PIRANHA_THROW(zero_division_error,"cannot calculate zero-th root of rational number");
 				} else if (n_ == 1) {
 					retval = *this;
 					return retval;
@@ -338,14 +338,14 @@ namespace piranha
 				const std::size_t n = (n_ > 0) ? n_ : -n_;
 				if (!mpz_root(mpq_numref(retval.m_value.get_mpq_t()),mpq_numref(m_value.get_mpq_t()),n) ||
 					!mpz_root(mpq_denref(retval.m_value.get_mpq_t()),mpq_denref(m_value.get_mpq_t()),n)) {
-					piranha_throw(value_error,"rational number is not an exact nth root");
+					PIRANHA_THROW(value_error,"rational number is not an exact nth root");
 				}
 				// Better to canonicalise, for peace of mind.
 				retval.m_value.canonicalize();
 				if (n_ < 0) {
 					// Let's guard against division by zero below.
 					if (retval == 0) {
-						piranha_throw(zero_division_error,"cannot calculate negative root of zero");
+						PIRANHA_THROW(zero_division_error,"cannot calculate negative root of zero");
 					}
 					mpq_inv(retval.m_value.get_mpq_t(), mpq_class(retval.m_value).get_mpq_t());
 				}
@@ -370,7 +370,7 @@ namespace piranha
 			{
 				// Guard against division by zero.
 				if (d == 0) {
-					piranha_throw(zero_division_error,"cannot create rational with zero as denominator");
+					PIRANHA_THROW(zero_division_error,"cannot create rational with zero as denominator");
 				}
 				mpq_class tmp(n,d);
 				mpq_canonicalize(tmp.get_mpq_t());
@@ -395,7 +395,7 @@ namespace piranha
 						try {
 							m_value = mpq_class(split_v[0]);
 						} catch (const std::invalid_argument &) {
-							piranha_throw(value_error,"invalid string input");
+							PIRANHA_THROW(value_error,"invalid string input");
 						}
 						break;
 					case 2:
@@ -405,10 +405,10 @@ namespace piranha
 							num = mpz_class(split_v[0]);
 							den = mpz_class(split_v[1]);
 						} catch (const std::invalid_argument &) {
-							piranha_throw(value_error,"invalid string input");
+							PIRANHA_THROW(value_error,"invalid string input");
 						}
 						if (den == 0) {
-							piranha_throw(zero_division_error,"cannot create rational with zero as denominator");
+							PIRANHA_THROW(zero_division_error,"cannot create rational with zero as denominator");
 						}
 						mpq_class tmp_q(num,den);
 						mpq_canonicalize(tmp_q.get_mpq_t());
@@ -416,13 +416,13 @@ namespace piranha
 						}
 						break;
 					default:
-						piranha_throw(value_error,"invalid string input");
+						PIRANHA_THROW(value_error,"invalid string input");
 				}
 			}
 			mp_rational pow_int(const int &n) const {
 				mp_rational retval;
 				if (m_value == 0 && n < 0) {
-					piranha_throw(zero_division_error,"cannot raise zero to negative power");
+					PIRANHA_THROW(zero_division_error,"cannot raise zero to negative power");
 				}
 				if (n < 0) {
 					mpz_pow_ui(mpq_denref(retval.m_value.get_mpq_t()), mpq_numref(m_value.get_mpq_t()), (unsigned long)(-n));
@@ -440,11 +440,11 @@ namespace piranha
 				// If negative, only 1^-something is reasonable.
 				if (y < 0) {
 					if (m_value == 0) {
-						piranha_throw(zero_division_error,"cannot raise zero to negative power");
+						PIRANHA_THROW(zero_division_error,"cannot raise zero to negative power");
 					} else if (m_value == 1) {
 						retval.m_value = 1;
 					} else {
-						piranha_throw(value_error,"cannot raise rational number different from unity to "
+						PIRANHA_THROW(value_error,"cannot raise rational number different from unity to "
 							"negative real power");
 					}
 				} else if (y == 0) {
@@ -457,7 +457,7 @@ namespace piranha
 					} else if (m_value == 1) {
 						retval.m_value = 1;
 					} else {
-						piranha_throw(value_error,"cannot raise rational number different from unity to "
+						PIRANHA_THROW(value_error,"cannot raise rational number different from unity to "
 							"positive real power");
 					}
 				}
@@ -522,7 +522,7 @@ namespace piranha
 				try {
 					m_value = mpz_class(str);
 				} catch (const std::invalid_argument &) {
-					piranha_throw(value_error,"invalid string input");
+					PIRANHA_THROW(value_error,"invalid string input");
 				}
 			}
 			/// Constructor from C string.
@@ -596,7 +596,7 @@ namespace piranha
 			int to_int() const
 			{
 				if (!m_value.fits_sint_p()) {
-					piranha_throw(std::overflow_error,"multiprecision integer too big to be converted to int");
+					PIRANHA_THROW(std::overflow_error,"multiprecision integer too big to be converted to int");
 				}
 				return m_value.get_si();
 			}
@@ -669,7 +669,7 @@ namespace piranha
 			mp_integer factorial() const
 			{
 				if ((*this) < 0) {
-					piranha_throw(value_error,"cannot calculate factorial of negative integer");
+					PIRANHA_THROW(value_error,"cannot calculate factorial of negative integer");
 				}
 				mp_integer retval;
 				mpz_fac_ui(retval.m_value.get_mpz_t(),(unsigned long)to_int());
@@ -727,20 +727,20 @@ namespace piranha
 			mp_integer root(const int &n_) const
 			{
 				if (m_value < 0) {
-					piranha_throw(value_error,"cannot calculate nth-root of negative integer number");
+					PIRANHA_THROW(value_error,"cannot calculate nth-root of negative integer number");
 				}
 				mp_integer retval;
 				if (n_ == 0) {
-					piranha_throw(zero_division_error,"cannot calculate zero-th root");
+					PIRANHA_THROW(zero_division_error,"cannot calculate zero-th root");
 				} else if (n_ == 1) {
 					retval = *this;
 					return retval;
 				} else if (n_ < 0) {
-					piranha_throw(value_error,"integer numbers different from unity cannot be arguments of negative root");
+					PIRANHA_THROW(value_error,"integer numbers different from unity cannot be arguments of negative root");
 				}
 				const std::size_t n = static_cast<std::size_t>(n_);
 				if (!mpz_root(retval.m_value.get_mpz_t(),m_value.get_mpz_t(),n)) {
-					piranha_throw(value_error,"integer coefficient is not an exact nth root");
+					PIRANHA_THROW(value_error,"integer coefficient is not an exact nth root");
 				}
 				return retval;
 			}
@@ -751,11 +751,11 @@ namespace piranha
 				// If negative, only 1^-something is reasonable.
 				if (n < 0) {
 					if (m_value == 0) {
-						piranha_throw(zero_division_error,"cannot divide by zero");
+						PIRANHA_THROW(zero_division_error,"cannot divide by zero");
 					} else if (m_value == 1) {
 						retval.m_value = 1;
 					} else {
-						piranha_throw(value_error,"cannot raise integer number different from unity to "
+						PIRANHA_THROW(value_error,"cannot raise integer number different from unity to "
 							"negative integer power");
 					}
 				} else {
@@ -769,11 +769,11 @@ namespace piranha
 				// If negative, only 1^-something is reasonable.
 				if (y < 0) {
 					if (m_value == 0) {
-						piranha_throw(zero_division_error,"cannot divide by zero");
+						PIRANHA_THROW(zero_division_error,"cannot divide by zero");
 					} else if (m_value == 1) {
 						retval.m_value = 1;
 					} else {
-						piranha_throw(value_error,"cannot raise integer number different from unity to negative real power");
+						PIRANHA_THROW(value_error,"cannot raise integer number different from unity to negative real power");
 					}
 					// If y == 0, then x**0 == 1 for every x.
 				} else if (y == 0) {
@@ -785,7 +785,7 @@ namespace piranha
 					} else if (m_value == 1) {
 						retval.m_value = 1;
 					} else {
-						piranha_throw(value_error,"cannot raise integer number different from unity to positive real power");
+						PIRANHA_THROW(value_error,"cannot raise integer number different from unity to positive real power");
 					}
 				}
 				return retval;
@@ -1014,7 +1014,7 @@ namespace std
 			complex root(const int &n) const
 			{
 				if (!n) {
-					piranha_throw(zero_division_error,"cannot calculate zero-th root of complex rational number");
+					PIRANHA_THROW(zero_division_error,"cannot calculate zero-th root of complex rational number");
 				}
 				return pow(1. / double(n));
 			}
@@ -1025,7 +1025,7 @@ namespace std
 				// For negative powers, we must guard against division by zero.
 				if (n < 0) {
 					if ((*this) == 0) {
-						piranha_throw(zero_division_error,"cannot raise zero to negative power");
+						PIRANHA_THROW(zero_division_error,"cannot raise zero to negative power");
 					} else {
 						// If source is non-zero, we can invert it and the calculate the power simply by multiplying.
 						retval = invert();
@@ -1049,11 +1049,11 @@ namespace std
 				complex retval;
 				if (y < 0) {
 					if ((*this) == 0) {
-						piranha_throw(zero_division_error,"cannot raise zero to negative power");
+						PIRANHA_THROW(zero_division_error,"cannot raise zero to negative power");
 					} else if ((*this) == 1) {
 						retval = 1;
 					} else {
-						piranha_throw(value_error,"cannot raise complex rational "
+						PIRANHA_THROW(value_error,"cannot raise complex rational "
 							"different from unity to negative real power");
 					}
 				} else if (y == 0) {
@@ -1066,7 +1066,7 @@ namespace std
 					} else if ((*this) == 1) {
 						retval = 1;
 					} else {
-						piranha_throw(value_error,"cannot raise complex rational "
+						PIRANHA_THROW(value_error,"cannot raise complex rational "
 							"different from unity to positive real power");
 					}
 				}
@@ -1234,7 +1234,7 @@ namespace std
 			complex root(const int &n) const
 			{
 				if (!n) {
-					piranha_throw(zero_division_error,"cannot calculate zero-th root of complex integer number");
+					PIRANHA_THROW(zero_division_error,"cannot calculate zero-th root of complex integer number");
 				}
 				return pow(1. / double(n));
 			}
@@ -1245,11 +1245,11 @@ namespace std
 				// For negative powers, we must guard against division by zero.
 				if (n < 0) {
 					if ((*this) == 0) {
-						piranha_throw(zero_division_error,"cannot divide by zero");
+						PIRANHA_THROW(zero_division_error,"cannot divide by zero");
 					} else if ((*this) == 1) {
 						retval = 1;
 					} else {
-						piranha_throw(value_error,"cannot raise complex integer number different from unity to "
+						PIRANHA_THROW(value_error,"cannot raise complex integer number different from unity to "
 							"negative integer power");
 					}
 				} else {
@@ -1266,11 +1266,11 @@ namespace std
 				complex retval;
 				if (y < 0) {
 					if ((*this) == 0) {
-						piranha_throw(zero_division_error,"cannot divide by zero");
+						PIRANHA_THROW(zero_division_error,"cannot divide by zero");
 					} else if ((*this) == 1) {
 						retval = 1;
 					} else {
-						piranha_throw(value_error,"cannot raise complex integer number different from unity to "
+						PIRANHA_THROW(value_error,"cannot raise complex integer number different from unity to "
 							"negative real power");
 					}
 				} else if (y == 0) {
@@ -1283,7 +1283,7 @@ namespace std
 					} else if ((*this) == 1) {
 						retval = 1;
 					} else {
-						piranha_throw(value_error,"cannot raise complex integer different from unity to "
+						PIRANHA_THROW(value_error,"cannot raise complex integer different from unity to "
 							"positive real power");
 					}
 				}

@@ -85,7 +85,7 @@ namespace piranha
 				m_debug = flag;
 #else
 				(void)flag;
-				piranha_throw(not_implemented_error,"debug support was not compiled in");
+				PIRANHA_THROW(not_implemented_error,"debug support was not compiled in");
 #endif
 			}
 
@@ -94,7 +94,7 @@ namespace piranha
 			static const std::string &get_version();
 			/// Cache size in kilobytes.
 			static const std::size_t cache_size;// = _PIRANHA_CACHE_SIZE;
-//			p_static_check(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
+//			PIRANHA_STATIC_CHECK(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
 			static bool blocker;
 			static std::size_t get_max_pretty_print_size();
 			static void set_max_pretty_print_size(int);
@@ -110,7 +110,7 @@ namespace piranha
 			static void set_multiplication_algorithm(multiplication_algorithm mult_algo)
 			{
 				if (mult_algo < 0 || mult_algo > 3) {
-					piranha_throw(value_error,"invalid multiplication algorithm");
+					PIRANHA_THROW(value_error,"invalid multiplication algorithm");
 				}
 				m_mult_algo = mult_algo;
 			}

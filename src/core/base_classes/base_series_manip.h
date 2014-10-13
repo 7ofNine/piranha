@@ -83,16 +83,16 @@ namespace piranha
 	{
 		term_converter<Term2, term_type> converted_term(term_, argsTuple);
 		// Make sure the appropriate routines for the management of arguments have been called.
-		piranha_assert(converted_term.result.m_cf.is_insertable(argsTuple) &&
-			converted_term.result.m_key.is_insertable(argsTuple));
+		PIRANHA_ASSERT(converted_term.result.cf.is_insertable(argsTuple) &&
+			converted_term.result.key.is_insertable(argsTuple));
 		term_type *new_term(0);
-		if (unlikely(converted_term.result.m_cf.needs_padding(argsTuple) ||
-			converted_term.result.m_key.needs_padding(argsTuple))) 
+		if (unlikely(converted_term.result.cf.needs_padding(argsTuple) ||
+			converted_term.result.key.needs_padding(argsTuple))) 
 		{
 			new_term = term_type::allocator.allocate(1);
 			term_type::allocator.construct(new_term, converted_term.result);
-			new_term->m_cf.pad_right(argsTuple);
-			new_term->m_key.pad_right(argsTuple);
+			new_term->cf.pad_right(argsTuple);
+			new_term->key.pad_right(argsTuple);
 		}
 
 		if (CanonicalCheck) 
@@ -159,12 +159,12 @@ namespace piranha
 	{
 		// TODO: think about moving this check higher in the stack of functions, we probably don't want to reach
 		// _this_ point before checking for ignorability.
-		if (term.m_cf.is_ignorable(argsTuple) || term.m_key.is_ignorable(argsTuple)) 
+		if (term.cf.is_ignorable(argsTuple) || term.key.is_ignorable(argsTuple)) 
 		{
 			return;
 		}
-		piranha_assert(term.m_cf.is_insertable(argsTuple) && term.m_key.is_insertable(argsTuple) &&
-			!term.m_cf.needs_padding(argsTuple) && !term.m_key.needs_padding(argsTuple) && term.is_canonical(argsTuple));
+		PIRANHA_ASSERT(term.cf.is_insertable(argsTuple) && term.key.is_insertable(argsTuple) &&
+			!term.cf.needs_padding(argsTuple) && !term.key.needs_padding(argsTuple) && term.is_canonical(argsTuple));
 		const_iterator it(find_term(term));
 		if (it == end()) 
 		{
@@ -176,13 +176,13 @@ namespace piranha
 			// Add or subtract according to request.
 			if (Sign) 
 			{
-				it->m_cf.add(term.m_cf, argsTuple);
+				it->cf.add(term.cf, argsTuple);
 			} else 
 			{
-				it->m_cf.subtract(term.m_cf, argsTuple);
+				it->cf.subtract(term.cf, argsTuple);
 			}
 			// Check if the new coefficient can be ignored.
-			if (it->m_cf.is_ignorable(argsTuple)) 
+			if (it->cf.is_ignorable(argsTuple)) 
 			{
 				erase_term(it);
 			}
@@ -197,10 +197,10 @@ namespace piranha
 			const ArgsTuple &argsTuple)
 	{
 		std::pair<const_iterator, bool> res(m_container.insert(term));
-		piranha_assert(res.second);
+		PIRANHA_ASSERT(res.second);
 		if (!Sign) 
 		{
-			res.first->m_cf.invert_sign(argsTuple);
+			res.first->cf.invert_sign(argsTuple);
 		}
 	}
 
@@ -219,7 +219,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_swap(Derived &ps2)
 	{
-		piranha_assert(derived_cast != &ps2);
+		PIRANHA_ASSERT(derived_cast != &ps2);
 		m_container.swap(ps2.m_container);
 	}
 
@@ -233,8 +233,8 @@ namespace piranha
 		for (const_iterator it = begin(); it != it_f; ++it) 
 		{
 			term_type term(*it);
-			term.m_cf.apply_layout(l, argsTuple);
-			term.m_key.apply_layout(l, argsTuple);
+			term.cf.apply_layout(l, argsTuple);
+			term.key.apply_layout(l, argsTuple);
 			retval.insert(term, argsTuple);
 		}
 	}
@@ -247,8 +247,8 @@ namespace piranha
 		const const_iterator it_f = end();
 		for (const_iterator it = begin(); it != it_f; ++it) 
 		{
-			it->m_cf.trim_test(tf);
-			it->m_key.trim_test(tf);
+			it->cf.trim_test(tf);
+			it->key.trim_test(tf);
 		}
 	}
 
@@ -261,8 +261,8 @@ namespace piranha
 		for (const_iterator it = begin(); it != it_f; ++it) 
 		{
 			retval.insert(
-				term_type(typename term_type::cf_type(it->m_cf.trim(tf, argsTuple)),
-					typename term_type::key_type(it->m_key.trim(tf, argsTuple))),
+				term_type(typename term_type::cf_type(it->cf.trim(tf, argsTuple)),
+					typename term_type::key_type(it->key.trim(tf, argsTuple))),
 				argsTuple
 			);
 		}
@@ -273,15 +273,15 @@ namespace piranha
 	template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
 	inline RetSeries BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
 	{
-		p_static_check((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value), "Positional and arguments' tuples' lengths do not match.");
+		PIRANHA_STATIC_CHECK((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value), "Positional and arguments' tuples' lengths do not match.");
 
 		RetSeries retval;
 		const const_iterator it_f = end();
 		for (const_iterator it = begin(); it != it_f; ++it) 
 		{
-			RetSeries tmp = SubFunctor::template run<RetSeries>(it->m_cf, pos_tuple, sub_caches,argsTuple);
+			RetSeries tmp = SubFunctor::template run<RetSeries>(it->cf, pos_tuple, sub_caches,argsTuple);
 			// NOTICE: series multadd here?
-			tmp.base_mult_by(SubFunctor::template run<RetSeries>(it->m_key, pos_tuple, sub_caches, argsTuple), argsTuple);
+			tmp.base_mult_by(SubFunctor::template run<RetSeries>(it->key, pos_tuple, sub_caches, argsTuple), argsTuple);
 			retval.base_add(tmp,argsTuple);
 		}
 
@@ -303,8 +303,8 @@ namespace piranha
 	template <class Series, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_split(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &argsTuple) const
 	{
-		piranha_assert(retval.empty());
-		piranha_assert(n >= 0 && n < boost::tuples::length<ArgsTuple>::value);
+		PIRANHA_ASSERT(retval.empty());
+		PIRANHA_ASSERT(n >= 0 && n < boost::tuples::length<ArgsTuple>::value);
 
 		if (n == 0) 
 		{
@@ -319,9 +319,9 @@ namespace piranha
 		{
 			if (!is_single_cf()) 
 			{
-				piranha_throw(value_error,"cannot split up to the specified level: series is non-degenerate");
+				PIRANHA_THROW(value_error,"cannot split up to the specified level: series is non-degenerate");
 			}
-			begin()->m_cf.split(retval, n - 1, argsTuple);
+			begin()->cf.split(retval, n - 1, argsTuple);
 		}
 	}
 
@@ -333,8 +333,8 @@ namespace piranha
 	{
 		for (Iterator it = start; it != end; ++it) 
 		{
-			Series tmp_cf(Series::base_series_from_cf(from_iterator<Iterator>::get(it)->m_cf, argsTuple));
-			Series tmp_key(Series::base_series_from_key(from_iterator<Iterator>::get(it)->m_key, argsTuple));
+			Series tmp_cf(Series::base_series_from_cf(from_iterator<Iterator>::get(it)->cf, argsTuple));
+			Series tmp_key(Series::base_series_from_key(from_iterator<Iterator>::get(it)->key, argsTuple));
 			std::vector<Series> tmp;
 			tmp.reserve(2);
 			tmp.push_back(tmp_cf);
@@ -361,7 +361,7 @@ namespace piranha
 			// Create the term that will be inserted at the end of the recursion.
 			term = *it;
 			// Start the recursion.
-			series_flattener<echelon_level>::run(term.m_cf, term, retval, argsTuple);
+			series_flattener<echelon_level>::run(term.cf, term, retval, argsTuple);
 		}
 		return retval;
 	}

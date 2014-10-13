@@ -191,7 +191,7 @@ namespace piranha
 	template <class Series>
 	struct final_cf
 	{
-		p_static_check((boost::is_base_of<base_series_tag,Series>::value),"Cannot determine final coefficient of a non-series type.");
+		PIRANHA_STATIC_CHECK((boost::is_base_of<base_series_tag,Series>::value),"Cannot determine final coefficient of a non-series type.");
 		typedef typename final_cf_impl<typename Series::term_type::cf_type>::type type;
 	};
 }

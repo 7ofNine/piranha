@@ -91,7 +91,7 @@ namespace piranha
 					template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 					template sub_cache_selector<SubSeries,boost::tuples::null_type,ArgsTupleType>
 					::type,ArgsTupleType>::type sub_caches_type;
-				p_static_check(boost::tuples::length<sub_caches_type>::value ==
+				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value ==
 					boost::tuples::length<pos_tuple_type>::value,
 					"Size mismatch for position and cache tuples in Poisson series substitution.");
 				const Psym p(name);
@@ -132,7 +132,7 @@ namespace piranha
 					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
 					template ei_sub_cache_selector<SubSeries,boost::tuples::null_type,ArgsTupleType>
 					::type,ArgsTupleType>::type sub_caches_type;
-				p_static_check(boost::tuples::length<sub_caches_type>::value ==
+				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value ==
 					boost::tuples::length<pos_tuple_type>::value,
 					"Size mismatch for position and cache tuples in Poisson series ei substitution.");
 				const Psym p(name);
@@ -163,11 +163,11 @@ namespace piranha
 				retval.setArguments(argsTuple);
 				const const_iterator it_f = derived_const_cast->end();
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
-					if (!it->m_cf.is_single_cf()) {
-						piranha_throw(value_error,"polynomial coefficient cannot be converted to numerical coefficient");
+					if (!it->cf.is_single_cf()) {
+						PIRANHA_THROW(value_error,"polynomial coefficient cannot be converted to numerical coefficient");
 					}
-					retval.insert(fourier_term(typename fourier_term::cf_type(it->m_cf.begin()->m_cf),
-						typename fourier_term::key_type(it->m_key)),argsTuple);
+					retval.insert(fourier_term(typename fourier_term::cf_type(it->cf.begin()->cf),
+						typename fourier_term::key_type(it->key)),argsTuple);
 				}
 				return retval;
 			}
@@ -209,7 +209,7 @@ namespace piranha
 			template <typename PosTuple, typename ArgsTuple>
 			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
-				p_static_check(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
+				PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in Poisson series integration.");
 
 				typedef typename Derived::const_iterator                     const_iterator;
@@ -218,39 +218,39 @@ namespace piranha
 
 				// Make sure that the position tuple contains just one symbol in each element of the tuple,
 				// and that the symbol is present in the series.
-				piranha_assert(pos_tuple.template get<0>().size() == 1 && pos_tuple.template get<1>().size() == 1);
-				piranha_assert(pos_tuple.template get<0>()[0].first || pos_tuple.template get<1>()[0].first);
+				PIRANHA_ASSERT(pos_tuple.template get<0>().size() == 1 && pos_tuple.template get<1>().size() == 1);
+				PIRANHA_ASSERT(pos_tuple.template get<0>()[0].first || pos_tuple.template get<1>()[0].first);
 				
                 Derived retval;
 				const const_iterator it_f = derived_const_cast->end();
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
                 {
-					if (pos_tuple.template get<1>()[0].first && it->m_key[pos_tuple.template get<1>()[0].second] != 0) 
+					if (pos_tuple.template get<1>()[0].first && it->key[pos_tuple.template get<1>()[0].second] != 0) 
                     {
 						// Integrand argument appears as trigonometric argument: try to integrate recursively by parts.
 						typedef typename Derived::term_type::cf_type::degree_type degree_type;
-						const degree_type degree(it->m_cf.partial_degree(pos_tuple));
+						const degree_type degree(it->cf.partial_degree(pos_tuple));
 						if (degree < 0 || !is_integer(degree)) 
                         {
-							piranha_throw(value_error,"cannot integrate Poisson series term if the polynomial degree of the integrand argument "
+							PIRANHA_THROW(value_error,"cannot integrate Poisson series term if the polynomial degree of the integrand argument "
 								"is negative or not an integer");
 						}
 
-						const h_degree_type trig_mult(it->m_key[pos_tuple.template get<1>()[0].second]);
+						const h_degree_type trig_mult(it->key[pos_tuple.template get<1>()[0].second]);
 						typename Derived::term_type tmp(*it);
-						typename Derived::term_type::cf_type tmp_cf(it->m_cf);
+						typename Derived::term_type::cf_type tmp_cf(it->cf);
 
-						tmp_cf.divide_by(trig_mult, argsTuple);
+						tmp_cf.divideBy(trig_mult, argsTuple);
 						
                         for (mp_integer i(0); i < degree + 1; i += 1) 
                         {
 							// Flip the flavour of the trigonometric part.
-							tmp.m_key.set_flavour(!tmp.m_key.get_flavour());
+							tmp.key.setFlavour(!tmp.key.getFlavour());
 							const mp_integer rem(i % 4);
 							int mult;
 							if (rem == 0) 
                             {
-								if (it->m_key.get_flavour()) 
+								if (it->key.getFlavour()) 
                                 {
 									mult = 1;
 								} else 
@@ -262,7 +262,7 @@ namespace piranha
 								mult = -1;
 							} else if (rem == 2) 
                             {
-								if (it->m_key.get_flavour()) 
+								if (it->key.getFlavour()) 
                                 {
 									mult = -1;
 								} else 
@@ -271,23 +271,23 @@ namespace piranha
 								}
 							} else 
                             {
-								piranha_assert(rem == 3);
+								PIRANHA_ASSERT(rem == 3);
 								mult = 1;
 							}
 
-							tmp.m_cf = tmp_cf;
-							tmp.m_cf.mult_by(mult * cs_phase(i),argsTuple);
+							tmp.cf = tmp_cf;
+							tmp.cf.mult_by(mult * cs_phase(i),argsTuple);
 
 							retval.insert(tmp,argsTuple);
 							
                             // Prepare tmp's cf for next step.
 							tmp_cf = tmp_cf.template partial<typename Derived::term_type::cf_type>(pos_tuple, argsTuple);
-							tmp_cf.divide_by(trig_mult, argsTuple);
+							tmp_cf.divideBy(trig_mult, argsTuple);
 						}
 					} else 
                     {
 						typename Derived::term_type tmp(*it);
-						tmp.m_cf = tmp.m_cf.integrate(pos_tuple, argsTuple);
+						tmp.cf = tmp.cf.integrate(pos_tuple, argsTuple);
 
 						retval.insert(tmp, argsTuple);
 					}
@@ -326,7 +326,7 @@ namespace piranha
 				const_iterator it_avoid = cache.end();
 				for (const_iterator it = cache.begin(); it != cache.end(); ++it) 
                 {
-					if ((*it)->m_key.is_unity()) 
+					if ((*it)->key.is_unity()) 
                     {
 						it_avoid = it;
 						break;
@@ -342,19 +342,19 @@ namespace piranha
 					// Split the polynomial coefficient in two parts: exactly treatable and not.
 					typename term_type::cf_type exact;
                     typename term_type::cf_type residual;
-					for (typename term_type::cf_type::const_iterator it = (*it_avoid)->m_cf.begin(); it != (*it_avoid)->m_cf.end(); ++it) 
+					for (typename term_type::cf_type::const_iterator it = (*it_avoid)->cf.begin(); it != (*it_avoid)->cf.end(); ++it) 
                     {
 						// Exact part has the following requisites: exactly one "active" variable with unitary exponent and a coefficient
 						// that is convertible to the type representing the harmonic degree.
 						typename term_type::cf_type::term_type::key_type::size_type n_active = 0;
 						bool has_unitary = false;
-						for (typename term_type::cf_type::term_type::key_type::size_type i = 0; i < it->m_key.size(); ++i) 
+						for (typename term_type::cf_type::term_type::key_type::size_type i = 0; i < it->key.size(); ++i) 
                         {
-							if (it->m_key[i] == 1) 
+							if (it->key[i] == 1) 
                             {
 								has_unitary = true;
 							}
-							if (it->m_key[i] != 0) 
+							if (it->key[i] != 0) 
                             {
 								++n_active;
 							}
@@ -365,7 +365,7 @@ namespace piranha
                         {
 							// Try to convert the coefficient.
 							try {
-								boost::lexical_cast<typename term_type::key_type::h_degree_type>(it->m_cf.get_value());
+								boost::lexical_cast<typename term_type::key_type::h_degree_type>(it->cf.get_value());
 							} catch (const boost::bad_lexical_cast &) {
 								is_exact = false;
 							}
@@ -386,14 +386,14 @@ namespace piranha
 						std::complex<Derived> tmp_series;
 						// Prepare the terms to be inserted.
 						complex_term_type tmp_term1;
-						tmp_term1.m_cf = complex_cf_type(std::complex<double>(1, 0), argsTuple);
-						tmp_term1.m_key.resize(boost::numeric_cast<typename complex_term_type::key_type::size_type>(argsTuple.template get<1>().size()));
-						tmp_term1.m_key.set_flavour(true);
+						tmp_term1.cf = complex_cf_type(std::complex<double>(1, 0), argsTuple);
+						tmp_term1.key.resize(boost::numeric_cast<typename complex_term_type::key_type::size_type>(argsTuple.template get<1>().size()));
+						tmp_term1.key.setFlavour(true);
 					
                         complex_term_type tmp_term2;
-						tmp_term2.m_cf = complex_cf_type(std::complex<double>(0, 1), argsTuple);
-						tmp_term2.m_key.resize(boost::numeric_cast<typename complex_term_type::key_type::size_type>(argsTuple.template get<1>().size()));
-						tmp_term2.m_key.set_flavour(false);
+						tmp_term2.cf = complex_cf_type(std::complex<double>(0, 1), argsTuple);
+						tmp_term2.key.resize(boost::numeric_cast<typename complex_term_type::key_type::size_type>(argsTuple.template get<1>().size()));
+						tmp_term2.key.setFlavour(false);
 
 						// Copy over the exact part from polynomial into trigonometric.
 						for (typename term_type::cf_type::const_iterator it = exact.begin(); it != exact.end(); ++it)
@@ -401,12 +401,12 @@ namespace piranha
 							// NOTE: we use just 1 size type here, but we should be covered by prior arguments merging.
 							typedef typename complex_term_type::key_type::size_type size_type;
 							const size_type pos_poly = boost::numeric_cast<size_type>(
-								std::distance(it->m_key.begin(),
-								std::find_if(it->m_key.begin(),it->m_key.end(),boost::lambda::_1 == 1)
+								std::distance(it->key.begin(),
+								std::find_if(it->key.begin(),it->key.end(),boost::lambda::_1 == 1)
 								)
 							);
 
-							piranha_assert(pos_poly < argsTuple.template get<0>().size());
+							PIRANHA_ASSERT(pos_poly < argsTuple.template get<0>().size());
 
 							const size_type pos_trig = boost::numeric_cast<size_type>(
 								std::distance(
@@ -418,10 +418,10 @@ namespace piranha
 								)
 							);
 
-							piranha_assert(pos_trig < argsTuple.template get<1>().size());
+							PIRANHA_ASSERT(pos_trig < argsTuple.template get<1>().size());
 
-							tmp_term1.m_key[pos_trig] = boost::lexical_cast<typename complex_term_type::key_type::value_type>(it->m_cf.get_value());
-							tmp_term2.m_key[pos_trig] = boost::lexical_cast<typename complex_term_type::key_type::value_type>(it->m_cf.get_value());
+							tmp_term1.key[pos_trig] = boost::lexical_cast<typename complex_term_type::key_type::value_type>(it->cf.get_value());
+							tmp_term2.key[pos_trig] = boost::lexical_cast<typename complex_term_type::key_type::value_type>(it->cf.get_value());
 						}
 
 						tmp_series.insert(tmp_term1, argsTuple);
@@ -433,8 +433,8 @@ namespace piranha
 					if (residual.length()) 
                     {
 						term_type tmp;
-						tmp.m_cf       = residual;
-						tmp.m_key      = (*it_avoid)->m_key;
+						tmp.cf       = residual;
+						tmp.key      = (*it_avoid)->key;
 						term_type *ptr = &tmp;
 
 						retval.base_mult_by(derived_const_cast->jacang_term(&ptr, argsTuple), argsTuple);

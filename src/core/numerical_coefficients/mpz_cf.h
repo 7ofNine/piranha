@@ -76,7 +76,7 @@ namespace piranha
 			{
 				if (get_value() != 0) 
                 {
-					piranha_throw(value_error,"cannot compute Bessel function of non-zero integer coefficient");
+					PIRANHA_THROW(value_error,"cannot compute Bessel function of non-zero integer coefficient");
 				}
 
 				return (n == 0) ? mpz_cf(1,argsTuple) : mpz_cf(0,argsTuple);

@@ -40,7 +40,7 @@ namespace piranha
 	template <int TrigPos, class Derived>
 	class jacobi_anger
 	{
-			p_static_check(TrigPos >= 0, "Wrong trigonometric position in Jacobi-Anger toolbox.");
+			PIRANHA_STATIC_CHECK(TrigPos >= 0, "Wrong trigonometric position in Jacobi-Anger toolbox.");
 		public:
 
 			template <class Term, class ArgsTuple>
@@ -49,7 +49,7 @@ namespace piranha
 				std::complex<Derived> &retval, const ArgsTuple &argsTuple)
 			{
 				typedef typename std::vector<Term const *>::const_iterator const_iterator;
-				piranha_assert(retval.empty());
+				PIRANHA_ASSERT(retval.empty());
 				retval.base_add(1, argsTuple);
 				if (v.empty()) 
 				{
@@ -79,13 +79,13 @@ namespace piranha
 				{
 					std::complex<Derived> tmp;
 					complex_term_type tmp_term;
-					tmp_term.m_cf.set_real((*it)->m_cf, argsTuple);
+					tmp_term.cf.set_real((*it)->cf, argsTuple);
 					tmp.insert(tmp_term, argsTuple);
 					try {
 						n_ = tmp.psi_(0,1,argsTuple);
 					} catch (const value_error &ve) 
 					{
-						piranha_throw(value_error,std::string("unable to determine the limit of the Jacobi-Anger development. "
+						PIRANHA_THROW(value_error,std::string("unable to determine the limit of the Jacobi-Anger development. "
 							"The reported error was:\n")+ve.what());
 					}
 				}
@@ -93,7 +93,7 @@ namespace piranha
 				std::complex<Derived> retval;
 				{
 					complex_term_type tmp_term;
-					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(0, argsTuple), argsTuple);
+					tmp_term.cf.set_real((*it)->cf.besselJ(0, argsTuple), argsTuple);
 					retval.insert(tmp_term, argsTuple);
 				}
 				const std::size_t w = argsTuple.template get<TrigPos>().size();
@@ -102,27 +102,27 @@ namespace piranha
 				for (int i = 1; i < n; ++i) 
 				{
 					complex_term_type tmp_term;
-					tmp_term.m_cf.set_real((*it)->m_cf.besselJ(i, argsTuple), argsTuple);
-					std::copy((*it)->m_key.begin(),(*it)->m_key.end(),tmp_trig_mults.begin());
+					tmp_term.cf.set_real((*it)->cf.besselJ(i, argsTuple), argsTuple);
+					std::copy((*it)->key.begin(),(*it)->key.end(),tmp_trig_mults.begin());
 					for (std::size_t j = 0; j < w; ++j) 
 					{
 						tmp_trig_mults[j] *= i;
 					}
 
-					tmp_term.m_key.resize(boost::numeric_cast<typename std::complex<Derived>::term_type::key_type::size_type>(tmp_trig_mults.size()));
-					std::copy(tmp_trig_mults.begin(),tmp_trig_mults.end(),tmp_term.m_key.begin());
-					if ((*it)->m_key.get_flavour())
+					tmp_term.key.resize(boost::numeric_cast<typename std::complex<Derived>::term_type::key_type::size_type>(tmp_trig_mults.size()));
+					std::copy(tmp_trig_mults.begin(),tmp_trig_mults.end(),tmp_term.key.begin());
+					if ((*it)->key.getFlavour())
 					{
-						tmp_term.m_cf.mult_by(cos_multiplier, argsTuple);
+						tmp_term.cf.mult_by(cos_multiplier, argsTuple);
 					} else 
 					{
 						if (i % 2 == 0) 
 						{
-							tmp_term.m_cf.mult_by(2, argsTuple);
+							tmp_term.cf.mult_by(2, argsTuple);
 						} else 
 						{
-							tmp_term.m_cf.mult_by(std::complex<double>(0, 2), argsTuple);
-							tmp_term.m_key.set_flavour(false);
+							tmp_term.cf.mult_by(std::complex<double>(0, 2), argsTuple);
+							tmp_term.key.setFlavour(false);
 						}
 					}
 

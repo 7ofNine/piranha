@@ -68,7 +68,7 @@ namespace piranha
 		static ExpoVector run(const ExpoVector &ev, const double &)
 		{
 			if (!ev.is_unity()) {
-				piranha_throw(value_error,"cannot raise non-unity exponent vector to real power");
+				PIRANHA_THROW(value_error,"cannot raise non-unity exponent vector to real power");
 			}
 			return ev;
 		}
@@ -100,7 +100,7 @@ namespace piranha
 				mp_rational tmp(q);
 				tmp *= ev[i];
 				if (tmp.get_den() != 1) {
-					piranha_throw(value_error,"exponent is not suitable for the calculation of rational power");
+					PIRANHA_THROW(value_error,"exponent is not suitable for the calculation of rational power");
 				}
 				retval[i] = boost::numeric_cast<value_type>(tmp.to_int());
 			}

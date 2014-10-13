@@ -129,7 +129,7 @@ namespace piranha
 	{
 		if (!check_eval_dict(d, argumentsTuple)) 
 		{
-			piranha_throw(value_error,"evaluation dictionary does not contain entries for all the symbols of the series");
+			PIRANHA_THROW(value_error,"evaluation dictionary does not contain entries for all the symbols of the series");
 		}
 
 		// Vector of original time evaluation vectors, paired with the corresponding symbol.

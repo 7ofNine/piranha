@@ -57,7 +57,7 @@ namespace piranha
 			typedef typename Series1::term_type term_type1;
 			// Alias for term type of second input series.
 			typedef typename Series2::term_type term_type2;
-			p_static_check((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
+			PIRANHA_STATIC_CHECK((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
 				"Key type mismatch in base multiplier.");
 			/// Compute block size for multiplication.
 			/**
@@ -70,7 +70,7 @@ namespace piranha
 			{
 				// NOTE: this function is used typically considering only the output storage requirements, since storage of input series
 				//       will be a small fraction of storage for the output series.
-				p_static_check(N > 0,"");
+				PIRANHA_STATIC_CHECK(N > 0,"");
 				const std::size_t shift = boost::numeric_cast<std::size_t>(
 					std::log(std::max<double>(16.,std::sqrt(static_cast<double>((settings::cache_size * 1024) / N)))) / std::log(2.) - 1
 				);
@@ -81,7 +81,7 @@ namespace piranha
 			template <class Functor>
 			static void blocked_multiplication(const std::size_t &block_size, const std::size_t &size1, const std::size_t &size2, Functor &m)
 			{
-				piranha_assert(block_size > 0);
+				PIRANHA_ASSERT(block_size > 0);
 				const std::size_t nblocks1 = size1 / block_size, nblocks2 = size2 / block_size;
 				for (std::size_t n1 = 0; n1 < nblocks1; ++n1) {
 					const std::size_t i_start = n1 * block_size, i_end = i_start + block_size;
@@ -131,7 +131,7 @@ namespace piranha
 			template <class Container1, class Container2>
 			void cache_terms_pointers(const Container1 &c1, const Container2 &c2)
 			{
-				piranha_assert(m_terms1.empty() && m_terms2.empty());
+				PIRANHA_ASSERT(m_terms1.empty() && m_terms2.empty());
 				std::transform(c1.begin(),c1.end(),
 					std::insert_iterator<std::vector<typename Series1::term_type const *> >(m_terms1,m_terms1.begin()),
 					&(boost::lambda::_1));
@@ -145,7 +145,7 @@ namespace piranha
 			BaseSeriesMultiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):
 				m_s1(s1), m_s2(s2), m_argsTuple(argsTuple), m_retval(retval)
 			{
-				piranha_assert(s1.length() > 0 && s2.length() > 0);
+				PIRANHA_ASSERT(s1.length() > 0 && s2.length() > 0);
 			}
 
 
@@ -212,7 +212,7 @@ namespace piranha
 					typedef typename term_type1::multiplication_result mult_res;
 					mult_res res;
 					const std::size_t size1 = m_terms1.size(), size2 = m_mult.m_terms2.size();
-					piranha_assert(size1 && size2);
+					PIRANHA_ASSERT(size1 && size2);
 					const term_type1 **t1 = &m_terms1[0];
 					const term_type2 **t2 = &m_mult.m_terms2[0];
 					plain_functor<GenericTruncator> pf(res,t1,t2,trunc,m_retval,m_mult.m_argsTuple);

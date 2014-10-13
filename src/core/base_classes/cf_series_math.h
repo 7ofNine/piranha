@@ -36,7 +36,7 @@ namespace piranha
 		const const_iterator it_f = derived_const_cast->end();
 		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
 			term_type term(*it);
-			term.m_cf.invert_sign(argsTuple);
+			term.cf.invert_sign(argsTuple);
 			// No need to check, we are merging terms from this series.
 			retval.template insert<false, true>(term, argsTuple);
 		}
@@ -66,7 +66,7 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divide_by(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divideBy(const T &x, const ArgsTuple &argsTuple)
 	{
 		return derived_cast->base_divide_by(x, argsTuple);
 	}

@@ -76,7 +76,7 @@ namespace piranha
 			{
 				if (iter_limit < 0)
                 {
-					piranha_throw(value_error,"iteration limit in hyperF must be non-negative");
+					PIRANHA_THROW(value_error,"iteration limit in hyperF must be non-negative");
 				}
 
 				Derived retval(derived_const_cast->base_hyperF(a_list, b_list, iter_limit, derived_const_cast->arguments()));
@@ -98,7 +98,7 @@ namespace piranha
 			Derived dhyperF(const int &n, const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit) const
 			{
 				if (iter_limit < 0) {
-					piranha_throw(value_error,"iteration limit in dhyperF must be non-negative");
+					PIRANHA_THROW(value_error,"iteration limit in dhyperF must be non-negative");
 				}
 				Derived retval(derived_const_cast->base_dhyperF(n, a_list, b_list, iter_limit, derived_const_cast->arguments()));
 				retval.setArguments(derived_const_cast->arguments());
@@ -145,7 +145,7 @@ namespace piranha
 			Derived legendrePn(const int &n) const
 			{
 				if (n < 0) {
-					piranha_throw(value_error,"please select a non-negative order");
+					PIRANHA_THROW(value_error,"please select a non-negative order");
 				}
 				return legendrePnm(n, 0);
 			}
@@ -201,7 +201,7 @@ namespace piranha
 					return retval;
 				}
 
-				piranha_assert(n >= m && n >= 0 && m >= 0);
+				PIRANHA_ASSERT(n >= m && n >= 0 && m >= 0);
 
 				// Let's prepare the quantities needed for the calculations.
 				const std::complex<Derived>

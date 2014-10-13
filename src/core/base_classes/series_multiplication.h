@@ -50,7 +50,7 @@ namespace piranha
 			std::vector<typename Series::term_type const *> get_sorted_series(const ArgsTuple &argsTuple) const
 			{
 				static const bool check = boost::is_same<Series, Derived>::value;
-				p_static_check(check, "");
+				PIRANHA_STATIC_CHECK(check, "");
 
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
 					Truncator>::truncator_type::template getSortedPointerVector<Series, ArgsTuple>(*derived_const_cast, argsTuple);
@@ -85,12 +85,12 @@ namespace piranha
 				// Optimize the cases of single coefficient series.
 				if (s2.is_single_cf() && algo == settings::automatic)
 				{
-					derived_cast->base_mult_by(s2.begin()->m_cf, argsTuple);
+					derived_cast->base_mult_by(s2.begin()->cf, argsTuple);
 				} else if (derived_const_cast->is_single_cf() && algo == settings::automatic)
 				{
 					Derived tmp;
 					tmp.insert_range(s2.begin(),s2.end(),argsTuple);
-					tmp.base_mult_by(derived_const_cast->begin()->m_cf, argsTuple);
+					tmp.base_mult_by(derived_const_cast->begin()->cf, argsTuple);
 					derived_cast->base_swap(tmp);
 				} else
 				{
