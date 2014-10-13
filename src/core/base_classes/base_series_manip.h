@@ -333,8 +333,8 @@ namespace piranha
 	{
 		for (Iterator it = start; it != end; ++it) 
 		{
-			Series tmp_cf(Series::base_series_from_cf(from_iterator<Iterator>::get(it)->cf, argsTuple));
-			Series tmp_key(Series::base_series_from_key(from_iterator<Iterator>::get(it)->key, argsTuple));
+			Series tmp_cf(Series::base_series_from_cf(FromIterator<Iterator>::get(it)->cf, argsTuple));
+			Series tmp_key(Series::base_series_from_key(FromIterator<Iterator>::get(it)->key, argsTuple));
 			std::vector<Series> tmp;
 			tmp.reserve(2);
 			tmp.push_back(tmp_cf);
@@ -361,7 +361,7 @@ namespace piranha
 			// Create the term that will be inserted at the end of the recursion.
 			term = *it;
 			// Start the recursion.
-			series_flattener<echelon_level>::run(term.cf, term, retval, argsTuple);
+			SeriesFlattener<echelon_level>::run(term.cf, term, retval, argsTuple);
 		}
 		return retval;
 	}

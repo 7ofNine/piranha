@@ -46,10 +46,10 @@ namespace piranha
 	 * allocations are taking place it is not guaranteed that in each moment the count reflects exactly the number of allocated bytes.
 	 */
 	template <class T, class Allocator>
-	class counting_allocator: public base_counting_allocator
+	class CountingAllocator: public base_counting_allocator
 	{
 			template <class U, class Allocator2>
-			friend class counting_allocator;
+			friend class CountingAllocator;
 			typedef typename Allocator::template rebind<T>::other alloc;
 			PIRANHA_STATIC_CHECK((boost::is_same<T,typename alloc::value_type>::value), "Type mismatch in counting allocator.");
 		public:
@@ -62,12 +62,12 @@ namespace piranha
 			typedef typename alloc::value_type value_type;
 			template <class U>
 			struct rebind {
-				typedef counting_allocator<U,Allocator> other;
+				typedef CountingAllocator<U,Allocator> other;
 			};
-			counting_allocator():m_alloc() {}
-			counting_allocator(const counting_allocator &a):m_alloc(a.m_alloc) {}
+			CountingAllocator():m_alloc() {}
+			CountingAllocator(const CountingAllocator &a):m_alloc(a.m_alloc) {}
 			template <class U>
-			counting_allocator(const counting_allocator<U,Allocator> &a):m_alloc(a.m_alloc) {}
+			CountingAllocator(const CountingAllocator<U,Allocator> &a):m_alloc(a.m_alloc) {}
 			pointer address(reference x)
 			{
 				return m_alloc.address(x);
@@ -107,11 +107,11 @@ namespace piranha
 			{
 				m_alloc.destroy(p);
 			}
-			bool operator==(const counting_allocator &c) const
+			bool operator==(const CountingAllocator &c) const
 			{
 				return (m_alloc == c.m_alloc);
 			}
-			bool operator!=(const counting_allocator &c) const
+			bool operator!=(const CountingAllocator &c) const
 			{
 				return (m_alloc != c.m_alloc);
 			}
@@ -120,7 +120,7 @@ namespace piranha
 	};
 
 	template <class T>
-	class std_counting_allocator: public counting_allocator<T,std::allocator<char> > {};
+	class std_counting_allocator: public CountingAllocator<T,std::allocator<char> > {};
 
 	// The following allocator was slightly adapted from the XVID project. Original copyright notice follows.
 	/*****************************************************************************

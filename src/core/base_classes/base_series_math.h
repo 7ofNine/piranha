@@ -134,11 +134,10 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class Number, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::merge_with_number(const Number &n,
-		const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::merge_with_number(const Number &n, const ArgsTuple &argsTuple)
 	{
-		typename Derived::term_type term(typename Derived::term_type::cf_type(n, argsTuple),
-			typename Derived::term_type::key_type());
+		typename Derived::term_type term(typename Derived::term_type::cf_type(n, argsTuple), typename Derived::term_type::key_type());
+
 		insert<true, Sign>(term, argsTuple);
 		return *derived_cast;
 	}
@@ -148,7 +147,7 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_add(const T &x, const ArgsTuple &argsTuple)
 	{
-		return base_series_add_selector<T>::run(*derived_cast,x,argsTuple);
+		return BaseSeriesAddSelector<T>::run(*derived_cast, x, argsTuple);
 	}
 
 
@@ -156,7 +155,7 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_subtract(const T &x, const ArgsTuple &argsTuple)
 	{
-		return base_series_subtract_selector<T>::run(*derived_cast,x,argsTuple);
+		return BaseSeriesSubtractSelector<T>::run(*derived_cast, x, argsTuple);
 	}
 
 	// This helper is needed because the standard complex<> class is missing comparison
@@ -217,7 +216,7 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_mult_by(const T &x, const ArgsTuple &argsTuple)
 	{
-		return base_series_multiply_selector<Derived, T>::run(*derived_cast, x, argsTuple);
+		return BaseSeriesMultiplySelector<Derived, T>::run(*derived_cast, x, argsTuple);
 	}
 
 
@@ -242,7 +241,7 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_divide_by(const T &x, const ArgsTuple &argsTuple)
 	{
-		PIRANHA_STATIC_CHECK((!boost::is_base_of<base_series_tag,T>::value),"Cannot divide by another series.");
+		PIRANHA_STATIC_CHECK((!boost::is_base_of<BaseSeriesTag,T>::value),"Cannot divide by another series.");
 
 		return divide_coefficients_by(x, argsTuple);
 	}

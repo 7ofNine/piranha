@@ -53,7 +53,7 @@ namespace piranha
 	{
 			PIRANHA_STATIC_CHECK(Position >= 0, "Wrong position.");
 
-			typedef std::vector<T, counting_allocator<T, std::allocator<T> > > container_type;
+			typedef std::vector<T, CountingAllocator<T, std::allocator<T> > > container_type;
 
 		public:
 

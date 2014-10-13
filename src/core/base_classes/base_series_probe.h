@@ -184,7 +184,7 @@ namespace piranha
 	template <class T>
 	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_equal_to(const T &x) const
 	{
-		return base_series_equal_to_selector<T>::run(*derived_const_cast, x);
+		return BaseSeriesEqualToSelector<T>::run(*derived_const_cast, x);
 	}
 }
 

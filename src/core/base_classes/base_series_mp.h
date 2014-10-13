@@ -35,21 +35,21 @@ namespace piranha
 {
 	// Implementation of factory methods from coefficients and keys.
 	template <class RequestedKey, class SeriesKey>
-	struct series_from_key_impl
+	struct SeriesFromKeyImpl
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const RequestedKey &key, const ArgsTuple &argsTuple)
 		{
 			typedef typename Series::term_type::cf_type cf_series_type;
 			cf_series_type cf_series;
-			series_from_key_impl<RequestedKey,typename cf_series_type::term_type::key_type>::run(
+			SeriesFromKeyImpl<RequestedKey,typename cf_series_type::term_type::key_type>::run(
 				cf_series,key,argsTuple);
 			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),argsTuple);
 		}
 	};
 
 	template <class Key>
-	struct series_from_key_impl<Key,Key>
+	struct SeriesFromKeyImpl<Key,Key>
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const Key &key, const ArgsTuple &argsTuple)
@@ -59,21 +59,21 @@ namespace piranha
 	};
 
 	template <class RequestedCf, class SeriesCf>
-	struct series_from_cf_impl
+	struct SeriesFromCfImpl
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const RequestedCf &cf, const ArgsTuple &argsTuple)
 		{
 			typedef typename Series::term_type::cf_type cf_series_type;
 			cf_series_type cf_series;
-			series_from_cf_impl<RequestedCf,typename cf_series_type::term_type::cf_type>::run(
+			SeriesFromCfImpl<RequestedCf,typename cf_series_type::term_type::cf_type>::run(
 				cf_series,cf,argsTuple);
 			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),argsTuple);
 		}
 	};
 
 	template <class Cf>
-	struct series_from_cf_impl<Cf, Cf>
+	struct SeriesFromCfImpl<Cf, Cf>
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const Cf &cf, const ArgsTuple &argsTuple)
@@ -84,7 +84,7 @@ namespace piranha
 
 	// This functor will disentangle and build the flattened terms iterating recursively through the echelon levels.
 	template <int N>
-	class series_flattener
+	class SeriesFlattener
 	{
 		public:
 			PIRANHA_STATIC_CHECK(N > 0,"");
@@ -98,13 +98,13 @@ namespace piranha
 				for (typename CfSeries::const_iterator it = tmp.begin(); it != tmp.end(); ++it) {
 					cf_series.clear_terms();
 					cf_series.insert(*it,argsTuple);
-					series_flattener<N - 1>::run(cf_series.begin()->cf,term,out,argsTuple);
+					SeriesFlattener<N - 1>::run(cf_series.begin()->cf,term,out,argsTuple);
 				}
 			}
 	};
 
 	template <>
-	class series_flattener<0>
+	class SeriesFlattener<0>
 	{
 		public:
 			template <class Cf, class Term, class ArgsTuple>
@@ -118,7 +118,7 @@ namespace piranha
 	// to call to implement arithmetic operations - based on the type of argument.
 
 	template <class T, class Enable = void>
-	struct base_series_add_selector
+	struct BaseSeriesAddSelector
 	{
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
@@ -128,7 +128,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct base_series_add_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	struct BaseSeriesAddSelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
 	{
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
@@ -138,7 +138,7 @@ namespace piranha
 	};
 
 	template <class T, class Enable = void>
-	struct base_series_subtract_selector
+	struct BaseSeriesSubtractSelector
 	{
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
@@ -148,7 +148,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct base_series_subtract_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	struct BaseSeriesSubtractSelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
 	{
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
@@ -158,7 +158,7 @@ namespace piranha
 	};
 
 	template <class Derived, class T, class Enable = void>
-	struct base_series_multiply_selector
+	struct BaseSeriesMultiplySelector
 	{
 		template <class ArgsTuple>
 		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
@@ -168,7 +168,7 @@ namespace piranha
 	};
 
 	template <class Derived, class T>
-	struct base_series_multiply_selector<Derived,T,typename boost::enable_if_c<boost::is_base_of<base_series_tag,T>::value &&
+	struct BaseSeriesMultiplySelector<Derived,T,typename boost::enable_if_c<boost::is_base_of<BaseSeriesTag,T>::value &&
 		(boost::is_same<Derived,T>::value || boost::is_same<Derived,std::complex<T> >::value)>::type>
 	{
 		template <class ArgsTuple>
@@ -180,7 +180,7 @@ namespace piranha
 	};
 
 	template <class T, class Enable = void>
-	struct base_series_equal_to_selector
+	struct BaseSeriesEqualToSelector
 	{
 		template <class Derived>
 		static bool run(const Derived &series, const T &x)
@@ -190,7 +190,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct base_series_equal_to_selector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	struct BaseSeriesEqualToSelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
 	{
 		template <class Derived>
 		static bool run(const Derived &series, const T &other)

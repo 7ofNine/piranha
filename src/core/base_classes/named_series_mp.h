@@ -39,7 +39,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct NamedSeriesAddSelector<T, typename boost::enable_if<boost::is_base_of<base_series_tag, T> >::type>
+	struct NamedSeriesAddSelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
 		template <class Derived>
 		static Derived & run(Derived & series, const T & other)
@@ -61,7 +61,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct NamedSeriesSubtractSelector<T,typename boost::enable_if<boost::is_base_of<base_series_tag,T> >::type>
+	struct NamedSeriesSubtractSelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
 	{
 		template <class Derived>
 		static Derived &run(Derived &series, const T &other)
@@ -85,7 +85,7 @@ namespace piranha
 	 
 	//multiply with another series
 	template <class T>
-	struct NamedSeriesMultiplySelector<T, typename boost::enable_if<boost::is_base_of<base_series_tag, T> >::type>
+	struct NamedSeriesMultiplySelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
 		template <class Derived>
 		static Derived & run(Derived & series, const T & other)
@@ -105,7 +105,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct NamedSeriesEqualitySelector<T,typename boost::enable_if<boost::is_base_of<base_series_tag, T> >::type>
+	struct NamedSeriesEqualitySelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
 		template <class Derived>
 		static bool run(const Derived &series, const T &other)

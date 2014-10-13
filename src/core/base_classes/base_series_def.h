@@ -56,7 +56,7 @@ namespace piranha
 	};
 
 	template <class FinalCf>
-	struct EchelonLevelImpl<FinalCf, typename boost::enable_if_c<!boost::is_base_of<base_series_tag,FinalCf>::value>::type>
+	struct EchelonLevelImpl<FinalCf, typename boost::enable_if_c<!boost::is_base_of<BaseSeriesTag, FinalCf>::value>::type>
 	{
 		static const int value = 0;
 	};
@@ -65,13 +65,13 @@ namespace piranha
 	template <class Term>
 	struct SeriesContainer
 	{
-		typedef boost::unordered_set<Term, boost::hash<Term>, std::equal_to<Term>, counting_allocator<Term, std::allocator<Term> > > type;
+		typedef boost::unordered_set<Term, boost::hash<Term>, std::equal_to<Term>, CountingAllocator<Term, std::allocator<Term> > > type;
 	};
 
 	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
 	// of series as returned by get_sorted_series (i.e., pointers to pointers of terms).
 	template <class Iterator, class Enable = void>
-	struct from_iterator
+	struct FromIterator
 	{
 		static const typename Iterator::value_type *get(const Iterator &it)
 		{
@@ -80,7 +80,7 @@ namespace piranha
 	};
 
 	template <class Iterator>
-	struct from_iterator<Iterator, typename boost::enable_if<boost::is_pointer<typename Iterator::value_type> >::type>
+	struct FromIterator<Iterator, typename boost::enable_if<boost::is_pointer<typename Iterator::value_type> >::type>
 	{
 		static typename Iterator::value_type get(const Iterator &it)
 		{
@@ -101,29 +101,29 @@ namespace piranha
 	 * @author Francesco Biscani (bluescarni@gmail.com)
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	class BaseSeries: base_series_tag
+	class BaseSeries: BaseSeriesTag
 	{
 			// Befriend meta-programming classes.
 			template <class, class>
-			friend struct series_from_cf_impl;
+			friend struct SeriesFromCfImpl;
 
 			template <class, class>
-			friend struct series_from_key_impl;
+			friend struct SeriesFromKeyImpl;
 
 			template <int>
-			friend class series_flattener;
+			friend class SeriesFlattener;
 
 			template <class, class>
-			friend struct base_series_add_selector;
+			friend struct BaseSeriesAddSelector;
 
 			template <class, class>
-			friend struct base_series_subtract_selector;
+			friend struct BaseSeriesSubtractSelector;
 
 			template <class, class, class>
-			friend struct base_series_multiply_selector;
+			friend struct BaseSeriesMultiplySelector;
 
 			template <class, class>
-			friend struct base_series_equal_to_selector;
+			friend struct BaseSeriesEqualToSelector;
 
 		public:
 

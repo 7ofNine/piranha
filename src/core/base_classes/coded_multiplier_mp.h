@@ -51,7 +51,7 @@ namespace piranha {
 	};
 
 	template <class CfSeries>
-	struct final_cf_getter_impl<CfSeries,typename boost::enable_if<boost::is_base_of<base_series_tag,CfSeries> >::type>
+	struct final_cf_getter_impl<CfSeries,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,CfSeries> >::type>
 	{
 		static const typename final_cf<CfSeries>::type &run(const CfSeries &cf_series)
 		{
@@ -80,7 +80,7 @@ namespace piranha {
 	};
 
 	template <class Term>
-	struct key_revlex_comparison_impl<Term,typename boost::enable_if<boost::is_base_of<base_series_tag,typename Term::cf_type> >::type>
+	struct key_revlex_comparison_impl<Term,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,typename Term::cf_type> >::type>
 	{
 		static bool run(const Term *t1, const Term *t2)
 		{
@@ -660,7 +660,7 @@ namespace piranha {
 		static void run(const FinalCf &final_cf, const DecodingTuple &dt, const MinMaxTuple &gr, Cf &cf,
 			const VhTuple &vh_tuple, const max_fast_int &code, const ArgsTuple &argsTuple)
 		{
-			PIRANHA_STATIC_CHECK((boost::is_base_of<base_series_tag,Cf>::value),"");
+			PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag,Cf>::value),"");
 			typedef typename Cf::term_type term_type;
 			typedef typename term_type::key_type::size_type size_type;
 			PIRANHA_ASSERT(dt.get_head().size() == argsTuple.template get<term_type::key_type::position>().size());

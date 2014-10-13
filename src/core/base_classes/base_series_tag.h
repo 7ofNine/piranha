@@ -24,7 +24,7 @@
 namespace piranha
 {
 	// Tag for base series class, for use in is_base_of.
-	class base_series_tag {};
+	class BaseSeriesTag {};
 
 }
 

@@ -89,7 +89,7 @@ namespace piranha
 		for (Iterator it = start; it != end; ++it) 
         {
 			std::ostringstream tmp_stream;
-			from_iterator<Iterator>::get(it)->print_pretty(tmp_stream,argsTuple);
+			FromIterator<Iterator>::get(it)->print_pretty(tmp_stream,argsTuple);
 			std::string tmp(tmp_stream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
 			if (it != start && !tmp.empty() && tmp[0] != '-') 
@@ -143,7 +143,7 @@ namespace piranha
 		for (Iterator it = start; it != end; ++it) 
         {
 			std::ostringstream tmp_stream;
-			from_iterator<Iterator>::get(it)->print_tex(tmp_stream,argsTuple);
+			FromIterator<Iterator>::get(it)->print_tex(tmp_stream,argsTuple);
 			std::string tmp(tmp_stream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
 			if (it != start && !tmp.empty() && tmp[0] != '-') 
@@ -225,7 +225,7 @@ namespace piranha
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_key(const Key &key, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
-		series_from_key_impl<Key, typename term_type::key_type>::run(retval, key, argsTuple);
+		SeriesFromKeyImpl<Key, typename term_type::key_type>::run(retval, key, argsTuple);
 		return retval;
 	}
 
@@ -240,7 +240,7 @@ namespace piranha
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_cf(const Cf &cf, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
-		series_from_cf_impl<Cf, typename term_type::cf_type>::run(retval, cf, argsTuple);
+		SeriesFromCfImpl<Cf, typename term_type::cf_type>::run(retval, cf, argsTuple);
 		return retval;
 	}
 
@@ -252,7 +252,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline BaseSeries<__PIRANHA_BASE_SERIES_TP>::~BaseSeries()
 	{
-		PIRANHA_STATIC_CHECK((boost::is_base_of<base_series_tag,Derived>::value), "Final series class must derive from BaseSeries class.");
+		PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag,Derived>::value), "Final series class must derive from BaseSeries class.");
 	}
 }
 
