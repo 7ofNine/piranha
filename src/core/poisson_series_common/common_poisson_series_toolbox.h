@@ -189,7 +189,7 @@ namespace piranha
 					this_copy.merge_args(Derived(p));
 					const pos_tuple_type new_pos_tuple = psyms2pos(VectorPsym(1,p),this_copy.arguments());
 
-					retval = this_copy.base_integrate(new_pos_tuple,this_copy.arguments());
+					retval = this_copy.baseIntegrate(new_pos_tuple,this_copy.arguments());
 					retval.setArguments(this_copy.arguments());
 					retval.trim();
 				} else 
@@ -207,7 +207,7 @@ namespace piranha
 		//protected:
 			// Integrate supposing that the symbol is present in the Poisson series.
 			template <typename PosTuple, typename ArgsTuple>
-			Derived base_integrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
+			Derived baseIntegrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
 				PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in Poisson series integration.");
