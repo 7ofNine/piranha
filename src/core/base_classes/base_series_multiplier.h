@@ -54,9 +54,9 @@ namespace piranha
 			friend class base_insert_multiplication_result;
 		protected:
 			// Alias for term type of first input series and return value series.
-			typedef typename Series1::term_type term_type1;
+			typedef typename Series1::TermType term_type1;
 			// Alias for term type of second input series.
-			typedef typename Series2::term_type term_type2;
+			typedef typename Series2::TermType term_type2;
 			PIRANHA_STATIC_CHECK((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
 				"Key type mismatch in base multiplier.");
 			/// Compute block size for multiplication.
@@ -132,12 +132,10 @@ namespace piranha
 			void cache_terms_pointers(const Container1 &c1, const Container2 &c2)
 			{
 				PIRANHA_ASSERT(m_terms1.empty() && m_terms2.empty());
-				std::transform(c1.begin(),c1.end(),
-					std::insert_iterator<std::vector<typename Series1::term_type const *> >(m_terms1,m_terms1.begin()),
-					&(boost::lambda::_1));
-				std::transform(c2.begin(),c2.end(),
-					std::insert_iterator<std::vector<typename Series2::term_type const *> >(m_terms2,m_terms2.begin()),
-					&(boost::lambda::_1));
+				std::transform(c1.begin(), c1.end(),
+					           std::insert_iterator<std::vector<typename Series1::TermType const *> >(m_terms1, m_terms1.begin()), &(boost::lambda::_1));
+				std::transform(c2.begin(), c2.end(),
+					           std::insert_iterator<std::vector<typename Series2::TermType const *> >(m_terms2,m_terms2.begin()), &(boost::lambda::_1));
 			}
 
 		public:

@@ -52,8 +52,8 @@ namespace piranha
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct sub_cache_selector {
-				typedef typename Derived::term_type::cf_type::
-					template sub_cache_selector<SubSeries, typename Derived::term_type::key_type::
+				typedef typename Derived::TermType::cf_type::
+					template sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
 					template sub_cache_selector<SubSeries, SubCachesCons, ArgsTuple>::type, ArgsTuple>::type type;
 			};
 

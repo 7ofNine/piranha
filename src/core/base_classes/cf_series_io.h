@@ -37,7 +37,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::construct_from_string(const std::string &str_, const ArgsTuple &argsTuple)
 	{
-		typedef typename Derived::term_type term_type;
+		typedef typename Derived::TermType term_type;
 		const char separator = Derived::separator;
 		std::string str(str_);
 		// Remove extra spaces.

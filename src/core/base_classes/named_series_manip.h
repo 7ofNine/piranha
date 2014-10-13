@@ -427,8 +427,8 @@ namespace piranha
 	template <class SubSeries>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::sub(const std::string &name, const SubSeries &s) const
 	{
-		typedef typename Derived::term_type::cf_type::
-			template sub_cache_selector<SubSeries, typename Derived::term_type::key_type::
+		typedef typename Derived::TermType::cf_type::
+			template sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
 			template sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 			::type, ArgsTupleType>::type    sub_caches_type;
 
@@ -447,7 +447,7 @@ namespace piranha
 		// Init sub caches using s_copy and this_copy.m_arguments.
 		init_sub_caches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.argumentsTuple);
 
-		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p), this_copy.argumentsTuple);
+		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1, p), this_copy.argumentsTuple);
 
 		Derived retval(this_copy.template base_sub<Derived, typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.argumentsTuple));
 
@@ -473,9 +473,11 @@ namespace piranha
 		{
 			retval[i][0].argumentsTuple = argumentsTuple;
 			retval[i][0].trim();
+
 			retval[i][1].argumentsTuple = argumentsTuple;
 			retval[i][1].trim();
 		}
+
 		return retval;
 	}
 
@@ -494,10 +496,10 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::vector<Derived> NamedSeries<__PIRANHA_NAMED_SERIES_TP>::flatten() const
 	{
-		const std::vector<typename Derived::term_type> tmp(derivedConstCast->flatten_terms(argumentsTuple));
+		const std::vector<typename Derived::TermType> tmp(derivedConstCast->flatten_terms(argumentsTuple));
 		std::vector<Derived> retval;
-		const typename std::vector<typename Derived::term_type>::const_iterator itf(tmp.end());
-		for  (typename std::vector<typename Derived::term_type>::const_iterator it = tmp.begin(); it != itf; ++it) 
+		const typename std::vector<typename Derived::TermType>::const_iterator itf(tmp.end());
+		for  (typename std::vector<typename Derived::TermType>::const_iterator it = tmp.begin(); it != itf; ++it) 
 		{
 			Derived tmpSeries;
 			tmpSeries.insert(*it, argumentsTuple);

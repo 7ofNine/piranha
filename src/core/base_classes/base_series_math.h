@@ -136,7 +136,7 @@ namespace piranha
 	template <bool Sign, class Number, class ArgsTuple>
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::merge_with_number(const Number &n, const ArgsTuple &argsTuple)
 	{
-		typename Derived::term_type term(typename Derived::term_type::cf_type(n, argsTuple), typename Derived::term_type::key_type());
+		typename Derived::TermType term(typename Derived::TermType::cf_type(n, argsTuple), typename Derived::TermType::key_type());
 
 		insert<true, Sign>(term, argsTuple);
 		return *derived_cast;
@@ -255,8 +255,10 @@ namespace piranha
 			"Size mismatch between args tuple and pos tuple in partial derivative.");
 		PIRANHA_ASSERT(out.empty());
 
-		term_type tmp_term1, tmp_term2;
+		TermType tmp_term1;
+        TermType tmp_term2;
 		const const_iterator it_f = in.end();
+
 		for (const_iterator it = in.begin(); it != it_f; ++it) 
 		{
 			Series tmp1(it->cf.template partial<Series>(pos_tuple, argsTuple));
@@ -330,7 +332,7 @@ namespace piranha
 		// If the series is a single cf, let's try to forward the pow call to the only coefficient.
 		if (is_single_cf()) 
 		{
-			retval.insert(term_type(begin()->cf.pow(y,argsTuple),typename term_type::key_type()),argsTuple);
+			retval.insert(TermType(begin()->cf.pow(y, argsTuple), typename TermType::key_type()), argsTuple);
 			return true;
 		}
 		if (length() == 1) 
@@ -340,7 +342,7 @@ namespace piranha
 			// catch it and try to go to the next step.
 			try {
 				const const_iterator it = begin();
-				retval.insert(term_type(it->cf.pow(y, argsTuple), it->key.pow(y, argsTuple)), argsTuple);
+				retval.insert(TermType(it->cf.pow(y, argsTuple), it->key.pow(y, argsTuple)), argsTuple);
 				return true;
 
 			} catch (...) {}

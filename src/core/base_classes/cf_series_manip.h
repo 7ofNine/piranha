@@ -29,7 +29,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::pad_right(const ArgsTuple &argsTuple)
 	{
-		typedef typename Derived::term_type term_type;
+		typedef typename Derived::TermType term_type;
 		typedef typename Derived::const_iterator const_iterator;
 		
 		if (derived_const_cast->empty()) 

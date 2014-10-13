@@ -31,10 +31,11 @@ namespace piranha
 	{
 		// TODO: improve performance on this.
 		typedef typename Derived::const_iterator const_iterator;
-		typedef typename Derived::term_type term_type;
+		typedef typename Derived::TermType term_type;
 		Derived retval;
 		const const_iterator it_f = derived_const_cast->end();
-		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
+		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it)
+        {
 			term_type term(*it);
 			term.cf.invert_sign(argsTuple);
 			// No need to check, we are merging terms from this series.
@@ -43,12 +44,14 @@ namespace piranha
 		derived_cast->base_swap(retval);
 	}
 
+
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
 	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::add(const T &x, const ArgsTuple &argsTuple)
 	{
 		return derived_cast->base_add(x, argsTuple);
 	}
+
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
@@ -57,12 +60,14 @@ namespace piranha
 		return derived_cast->base_subtract(x, argsTuple);
 	}
 
+
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
 	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::mult_by(const T &x, const ArgsTuple &argsTuple)
 	{
 		return derived_cast->base_mult_by(x, argsTuple);
 	}
+
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>

@@ -72,8 +72,8 @@ struct base_coded_functor
 {
 	typedef typename final_cf<Series1>::type cf_type1;
 	typedef typename final_cf<Series2>::type cf_type2;
-	typedef typename Series1::term_type term_type1;
-	typedef typename Series2::term_type term_type2;
+	typedef typename Series1::TermType term_type1;
+	typedef typename Series2::TermType term_type2;
 
 	template <class Functor>
 	struct indirect_sorter
@@ -422,8 +422,8 @@ struct base_coded_functor
 			void perform_multiplication()
 			{
 				const settings::multiplication_algorithm algo = settings::get_multiplication_algorithm();
-				std::vector<typename Series1::term_type> f_terms1;
-				std::vector<typename Series2::term_type> f_terms2;
+				std::vector<typename Series1::TermType> f_terms1;
+				std::vector<typename Series2::TermType> f_terms2;
 				// If echelon level is more than zero we need to flatten out the series.
 				if (Series1::echelon_level)
 				{
@@ -527,7 +527,7 @@ struct base_coded_functor
 				cm_init_vector_tuple<Series1>(t1,derived_const_cast->m_argsTuple);
 				cm_init_vector_tuple<Series2>(t2,derived_const_cast->m_argsTuple);
 				// Init and test the first series' tuple.
-				typedef typename std::vector<typename Series1::term_type const *>::size_type size_type1;
+				typedef typename std::vector<typename Series1::TermType const *>::size_type size_type1;
 				const size_type1 size1 = derived_const_cast->m_terms1.size();
 				// Value handler tuples.
 				value_handler_type vh1, vh2;
@@ -537,15 +537,17 @@ struct base_coded_functor
 					cm_minmax<minmax_type>::run_test(*derived_const_cast->m_terms1[i],t1,vh1);
 				}
 				// Init and test the second series' tuple.
-				typedef typename std::vector<typename Series2::term_type const *>::size_type size_type2;
+				typedef typename std::vector<typename Series2::TermType const *>::size_type size_type2;
 				const size_type2 size2 = derived_const_cast->m_terms2.size();
 				cm_minmax<minmax_type>::run_init(*derived_const_cast->m_terms2[0],t2,vh2);
+
 				for (size_type2 i = 1; i < size2; ++i) 
 				{
-					cm_minmax<minmax_type>::run_test(*derived_const_cast->m_terms2[i],t2,vh2);
+					cm_minmax<minmax_type>::run_test(*derived_const_cast->m_terms2[i], t2, vh2);
 				}
+
 				// Now compute the global representation in multiprecision.
-				cm_global_minmax<OpTuple>::run(t1,vh1,t2,vh2,m_mp_gr);
+				cm_global_minmax<OpTuple>::run(t1, vh1, t2, vh2, m_mp_gr);
 				// Assign the global value handler tuple.
 				PIRANHA_ASSERT(vh1 == vh2);
 				m_vh = vh1;
@@ -627,7 +629,7 @@ struct base_coded_functor
 			 * Decode given code into return value term, using final_cf as the coefficient at the end of the echelon recursion.
 			 */
 			template <class FinalCf>
-			void decode(const FinalCf &final_cf, const max_fast_int &code, typename Series1::term_type &term) const
+			void decode(const FinalCf &final_cf, const max_fast_int &code, typename Series1::TermType &term) const
 			{
 				cm_decode(final_cf, m_dt, m_fast_gr, term, m_vh, code, m_fast_h.lower(), derived_const_cast->m_argsTuple);
 			}

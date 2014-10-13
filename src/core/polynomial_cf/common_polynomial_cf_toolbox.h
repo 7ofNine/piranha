@@ -39,23 +39,23 @@ namespace piranha
 		public:
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct ei_sub_cache_selector {
-				typedef typename Derived::term_type::cf_type::
-					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
-					template ei_sub_cache_selector<SubSeries,SubCachesCons,ArgsTuple>::type,ArgsTuple>::type type;
+				typedef typename Derived::TermType::cf_type::
+					template ei_sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
+					template ei_sub_cache_selector<SubSeries, SubCachesCons, ArgsTuple>::type, ArgsTuple>::type type;
 			};
+
 
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &argsTuple) const
 			{
-				return derived_const_cast->template base_sub<RetSeries,ei_sub_functor>(
-					p,s,argsTuple
-				);
+				return derived_const_cast->template base_sub<RetSeries, ei_sub_functor>(p, s, argsTuple);
 			}
+
 
 			template <class PosTuple, class ArgsTuple>
 			Derived integrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
-				return derived_const_cast->baseIntegrate(pos_tuple,argsTuple);
+				return derived_const_cast->baseIntegrate(pos_tuple, argsTuple);
 			}
 	};
 }

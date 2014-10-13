@@ -47,7 +47,7 @@ namespace piranha
 
 
 			template <class Series, class ArgsTuple>
-			std::vector<typename Series::term_type const *> get_sorted_series(const ArgsTuple &argsTuple) const
+			std::vector<typename Series::TermType const *> get_sorted_series(const ArgsTuple &argsTuple) const
 			{
 				static const bool check = boost::is_same<Series, Derived>::value;
 				PIRANHA_STATIC_CHECK(check, "");
@@ -64,7 +64,7 @@ namespace piranha
 			void multiply_by_series(const Derived2 &s2, const ArgsTuple &argsTuple)
 			{
 				typedef typename Derived::const_iterator const_iterator;
-				typedef typename Derived::term_type term_type;
+				typedef typename Derived::TermType term_type;
 				__PDEBUG(std::cout << "Input lengths for series multiplication: " << derived_const_cast->length() << ','
 					<< s2.length() << '\n');
 				// Don't do anything if this is empty.

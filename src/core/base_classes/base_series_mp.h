@@ -40,13 +40,14 @@ namespace piranha
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const RequestedKey &key, const ArgsTuple &argsTuple)
 		{
-			typedef typename Series::term_type::cf_type cf_series_type;
+			typedef typename Series::TermType::cf_type cf_series_type;
 			cf_series_type cf_series;
-			SeriesFromKeyImpl<RequestedKey,typename cf_series_type::term_type::key_type>::run(
-				cf_series,key,argsTuple);
-			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),argsTuple);
+			SeriesFromKeyImpl<RequestedKey,typename cf_series_type::TermType::key_type>::run(cf_series, key, argsTuple);
+
+			retval.insert(typename Series::TermType(cf_series, typename Series::TermType::key_type()), argsTuple);
 		}
 	};
+
 
 	template <class Key>
 	struct SeriesFromKeyImpl<Key,Key>
@@ -54,9 +55,10 @@ namespace piranha
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const Key &key, const ArgsTuple &argsTuple)
 		{
-			retval.insert(typename Series::term_type(typename Series::term_type::cf_type(1,argsTuple),key),argsTuple);
+			retval.insert(typename Series::TermType(typename Series::TermType::cf_type(1, argsTuple), key), argsTuple);
 		}
 	};
+
 
 	template <class RequestedCf, class SeriesCf>
 	struct SeriesFromCfImpl
@@ -64,13 +66,14 @@ namespace piranha
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const RequestedCf &cf, const ArgsTuple &argsTuple)
 		{
-			typedef typename Series::term_type::cf_type cf_series_type;
+			typedef typename Series::TermType::cf_type cf_series_type;
 			cf_series_type cf_series;
-			SeriesFromCfImpl<RequestedCf,typename cf_series_type::term_type::cf_type>::run(
-				cf_series,cf,argsTuple);
-			retval.insert(typename Series::term_type(cf_series,typename Series::term_type::key_type()),argsTuple);
+			SeriesFromCfImpl<RequestedCf, typename cf_series_type::TermType::cf_type>::run(cf_series, cf,argsTuple);
+
+			retval.insert(typename Series::TermType(cf_series, typename Series::TermType::key_type()), argsTuple);
 		}
 	};
+
 
 	template <class Cf>
 	struct SeriesFromCfImpl<Cf, Cf>
@@ -78,9 +81,10 @@ namespace piranha
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const Cf &cf, const ArgsTuple &argsTuple)
 		{
-			retval.insert(typename Series::term_type(cf,typename Series::term_type::key_type()),argsTuple);
+			retval.insert(typename Series::TermType(cf, typename Series::TermType::key_type()), argsTuple);
 		}
 	};
+
 
 	// This functor will disentangle and build the flattened terms iterating recursively through the echelon levels.
 	template <int N>
@@ -95,13 +99,16 @@ namespace piranha
 				// then we insert one by one its original terms and, step by step, we go deeper into the recursion.
 				PIRANHA_ASSERT(!cf_series.empty());
 				const CfSeries tmp(cf_series);
-				for (typename CfSeries::const_iterator it = tmp.begin(); it != tmp.end(); ++it) {
+
+				for (typename CfSeries::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
+                {
 					cf_series.clear_terms();
-					cf_series.insert(*it,argsTuple);
-					SeriesFlattener<N - 1>::run(cf_series.begin()->cf,term,out,argsTuple);
+					cf_series.insert(*it, argsTuple);
+					SeriesFlattener<N - 1>::run(cf_series.begin()->cf, term, out, argsTuple);
 				}
 			}
 	};
+
 
 	template <>
 	class SeriesFlattener<0>
@@ -113,6 +120,7 @@ namespace piranha
 				out.push_back(term);
 			}
 	};
+
 
 	// These structs are used to select at compile time which low-level methods in BaseSeries
 	// to call to implement arithmetic operations - based on the type of argument.
@@ -127,8 +135,9 @@ namespace piranha
 		}
 	};
 
+
 	template <class T>
-	struct BaseSeriesAddSelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
+	struct BaseSeriesAddSelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
@@ -136,6 +145,7 @@ namespace piranha
 			return series.template merge_terms<true>(other, argsTuple);
 		}
 	};
+
 
 	template <class T, class Enable = void>
 	struct BaseSeriesSubtractSelector
@@ -147,8 +157,9 @@ namespace piranha
 		}
 	};
 
+
 	template <class T>
-	struct BaseSeriesSubtractSelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
+	struct BaseSeriesSubtractSelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
@@ -156,6 +167,7 @@ namespace piranha
 			return series.template merge_terms<false>(other, argsTuple);
 		}
 	};
+
 
 	template <class Derived, class T, class Enable = void>
 	struct BaseSeriesMultiplySelector
@@ -167,9 +179,10 @@ namespace piranha
 		}
 	};
 
+
 	template <class Derived, class T>
-	struct BaseSeriesMultiplySelector<Derived,T,typename boost::enable_if_c<boost::is_base_of<BaseSeriesTag,T>::value &&
-		(boost::is_same<Derived,T>::value || boost::is_same<Derived,std::complex<T> >::value)>::type>
+	struct BaseSeriesMultiplySelector<Derived, T, typename boost::enable_if_c<boost::is_base_of<BaseSeriesTag, T>::value &&
+		(boost::is_same<Derived, T>::value || boost::is_same<Derived, std::complex<T> >::value)>::type>
 	{
 		template <class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
@@ -178,6 +191,7 @@ namespace piranha
 			return series;
 		}
 	};
+
 
 	template <class T, class Enable = void>
 	struct BaseSeriesEqualToSelector
@@ -189,8 +203,9 @@ namespace piranha
 		}
 	};
 
+
 	template <class T>
-	struct BaseSeriesEqualToSelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
+	struct BaseSeriesEqualToSelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
 		template <class Derived>
 		static bool run(const Derived &series, const T &other)

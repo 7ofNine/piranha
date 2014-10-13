@@ -77,10 +77,9 @@ namespace piranha
 		private:
 
 			template <class Term, class Number, class ArgsTuple>
-			static Derived generic_binomial_power(const std::vector<Term const *> &v,
-				const Number &y, const ArgsTuple &argsTuple)
+			static Derived generic_binomial_power(const std::vector<Term const *> &v, const Number &y, const ArgsTuple &argsTuple)
 			{
-				typedef typename Derived::term_type term_type;
+				typedef typename Derived::TermType term_type;
 				// Here we know that the cases of empty series and natural power have already
 				// been taken care of in BaseSeries::base_pow.
 				PIRANHA_ASSERT(v.size() >= 1);
@@ -95,7 +94,7 @@ namespace piranha
 				}
 
 				// Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
-				term_type tmp_term(A.cf.pow(-1,argsTuple), A.key.pow(-1,argsTuple));
+				term_type tmp_term(A.cf.pow(-1, argsTuple), A.key.pow(-1, argsTuple));
 				Derived Ainv;
 				Ainv.insert(tmp_term, argsTuple);
 				// Now let's compute X/A.
@@ -119,10 +118,10 @@ namespace piranha
 			static Derived binomial_expansion(const Term &A, const Derived &XoverA,
 				const Number &y, const std::size_t &n, const ArgsTuple &argsTuple)
 			{
-				typedef typename Derived::term_type term_type;
+				typedef typename Derived::TermType term_type;
 
-				PIRANHA_STATIC_CHECK((boost::is_same<Term, typename Derived::term_type>::value),
-					"Term type mismatch in binomial expansion.");
+				PIRANHA_STATIC_CHECK((boost::is_same<Term, typename Derived::TermType>::value),
+					                 "Term type mismatch in binomial expansion.");
 
 				// Start the binomial expansion.
 				term_type tmp_term;

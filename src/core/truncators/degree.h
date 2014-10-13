@@ -99,8 +99,8 @@ namespace truncators {
 					static const int expo_args_pos = Series1::expo_args_position;
 
 				public:
-					typedef typename Series1::term_type TermType1;
-					typedef typename Series2::term_type TermType2;
+					typedef typename Series1::TermType TermType1;
+					typedef typename Series2::TermType TermType2;
 					typedef GetType type;
 
 					GetType(std::vector<TermType1 const *> &t1, std::vector<TermType2 const *> &t2, const ArgsTuple &argsTuple, bool initialise = true)
@@ -216,10 +216,10 @@ namespace truncators {
 
 
 					template <class Series, class ArgsTuple2>
-					static std::vector<typename Series::term_type const *> getSortedPointerVector(const Series &s, const ArgsTuple2 &argsTuple)
+					static std::vector<typename Series::TermType const *> getSortedPointerVector(const Series &s, const ArgsTuple2 &argsTuple)
 					{
-						std::vector<typename Series::term_type const *> retval;
-						std::transform(s.begin(), s.end(), std::insert_iterator<std::vector<typename Series::term_type const *> >(retval, retval.begin()),	&boost::lambda::_1);
+						std::vector<typename Series::TermType const *> retval;
+						std::transform(s.begin(), s.end(), std::insert_iterator<std::vector<typename Series::TermType const *> >(retval, retval.begin()),	&boost::lambda::_1);
 
 						switch (truncationMode)
                         {

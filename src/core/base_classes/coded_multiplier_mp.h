@@ -56,18 +56,20 @@ namespace piranha {
 		static const typename final_cf<CfSeries>::type &run(const CfSeries &cf_series)
 		{
 			PIRANHA_ASSERT(cf_series.length() == 1);
-			return final_cf_getter_impl<typename CfSeries::term_type::cf_type>::run(cf_series.begin()->cf);
+			return final_cf_getter_impl<typename CfSeries::TermType::cf_type>::run(cf_series.begin()->cf);
 		}
 	};
+
 
 	template <class Series>
 	struct final_cf_getter
 	{
-		const typename final_cf<Series>::type &operator()(const typename Series::term_type *term) const
+		const typename final_cf<Series>::type &operator()(const typename Series::TermType *term) const
 		{
-			return final_cf_getter_impl<typename Series::term_type::cf_type>::run(term->cf);
+			return final_cf_getter_impl<typename Series::TermType::cf_type>::run(term->cf);
 		}
 	};
+
 
 	// Generalised reverse lexicographic ordering implementation.
 	template <class Term, class Enable = void>
@@ -79,19 +81,25 @@ namespace piranha {
 		}
 	};
 
+
 	template <class Term>
 	struct key_revlex_comparison_impl<Term,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,typename Term::cf_type> >::type>
 	{
 		static bool run(const Term *t1, const Term *t2)
 		{
-			if (t1->key.elements_equal_to(t2->key)) {
+			if (t1->key.elements_equal_to(t2->key))
+            {
 				PIRANHA_ASSERT(t1->cf.length() == 1 && t2->cf.length() == 1);
-				return key_revlex_comparison_impl<typename Term::cf_type::term_type>::run(&(*t1->cf.begin()),&(*t2->cf.begin()));
-			} else {
+
+				return key_revlex_comparison_impl<typename Term::cf_type::TermType>::run(&(*t1->cf.begin()), &(*t2->cf.begin()));
+
+			} else
+            {
 				return t1->key.revlex_comparison(t2->key);
 			}
 		}
 	};
+
 
 	// Default value handler class. Suitable for use with POD integral types.
 	template <class T>
@@ -103,14 +111,19 @@ namespace piranha {
 		template <class Key>
 		void assign(std::vector<boost::numeric::interval<T> > &minmax, const Key &key)
 		{
-			PIRANHA_STATIC_CHECK((boost::is_same<T,typename Key::value_type>::value),"");
+			PIRANHA_STATIC_CHECK((boost::is_same<T, typename Key::value_type>::value), "");
+
 			typedef typename Key::size_type size_type;
 			const size_type size = key.size();
-			PIRANHA_ASSERT(size <= minmax.size());
+			
+            PIRANHA_ASSERT(size <= minmax.size());
+
 			for (size_type i = 0; i < size; ++i) {
 				minmax[i] = key[i];
 			}
 		}
+
+
 		// Test the values in array key and, if they sit outside the corresponding minmax intervals,
 		// update the intervals to include them.
 		template <class Key>
@@ -128,6 +141,8 @@ namespace piranha {
 				}
 			}
 		}
+
+
 		// Harmonization of two vh won't do anything by default.
 		static void harmonize(cm_value_handler &, std::vector<boost::numeric::interval<T> > &,
 			cm_value_handler &, std::vector<boost::numeric::interval<T> > &) {}
@@ -137,6 +152,8 @@ namespace piranha {
 		{
 			return boost::numeric_cast<max_fast_int>(x);
 		}
+
+
 		// Post-decode hook.
 		// NOTE: here we use implicit conversion because we know from the global representation analysis
 		// that we won't have out-of-range conversions.
@@ -144,6 +161,8 @@ namespace piranha {
 		{
 			value = decoded;
 		}
+
+
 		// Comparison operator is always true by default.
 		bool operator==(const cm_value_handler &) const
 		{
@@ -164,8 +183,11 @@ namespace piranha {
 			PIRANHA_STATIC_CHECK((boost::is_same<mp_rational,typename Key::value_type>::value),"");
 			typedef typename Key::size_type size_type;
 			const size_type size = key.size();
-			PIRANHA_ASSERT(size <= minmax.size());
-			for (size_type i = 0; i < size; ++i) {
+			
+            PIRANHA_ASSERT(size <= minmax.size());
+			
+            for (size_type i = 0; i < size; ++i)
+            {
 				compute_new_lcd_and_update(minmax,key[i].get_den());
 				// Assign current value.
 				minmax[i] = key[i];
@@ -259,27 +281,27 @@ namespace piranha {
 	struct cm_tuple_impl {
 		PIRANHA_STATIC_CHECK(N > 0,"");
 		// minmax type, to be used for limits of input series.
-		typedef typename Series::term_type::key_type::value_type value_type;
+		typedef typename Series::TermType::key_type::value_type value_type;
 		typedef boost::tuples::cons<std::vector<boost::numeric::interval<value_type> >,
-			typename cm_tuple_impl<typename Series::term_type::cf_type,N - 1>::type_minmax> type_minmax;
+			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_minmax> type_minmax;
 		// mp_integer minmax type, to be used when calculating global limits.
 		typedef boost::tuples::cons<std::vector<boost::numeric::interval<mp_integer> >,
-			typename cm_tuple_impl<typename Series::term_type::cf_type,N - 1>::type_mp_minmax> type_mp_minmax;
+			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_mp_minmax> type_mp_minmax;
 		// max_fast_int minmax type.
 		typedef boost::tuples::cons<std::vector<boost::numeric::interval<max_fast_int> >,
-			typename cm_tuple_impl<typename Series::term_type::cf_type,N - 1>::type_max_fast_int_minmax> type_max_fast_int_minmax;
+			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_max_fast_int_minmax> type_max_fast_int_minmax;
 		// value_handler tuple.
 		typedef boost::tuples::cons<cm_value_handler<value_type>,
-			typename cm_tuple_impl<typename Series::term_type::cf_type,N - 1>::type_value_handler> type_value_handler;
+			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_value_handler> type_value_handler;
 		// Multi-precision coding tuple.
 		typedef boost::tuples::cons<std::vector<mp_integer>,
-			typename cm_tuple_impl<typename Series::term_type::cf_type,N - 1>::type_mp_coding_tuple> type_mp_coding_tuple;
+			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_mp_coding_tuple> type_mp_coding_tuple;
 		// Coding tuple.
 		typedef boost::tuples::cons<std::vector<max_fast_int>,
-			typename cm_tuple_impl<typename Series::term_type::cf_type,N - 1>::type_coding_tuple> type_coding_tuple;
+			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_coding_tuple> type_coding_tuple;
 		// Decoding tuple: vectors of pairs of max_fast_ints, num and den resp. of the decoding formula.
 		typedef boost::tuples::cons<std::vector<std::pair<max_fast_int,max_fast_int> >,
-			typename cm_tuple_impl<typename Series::term_type::cf_type,N - 1>::type_decoding_tuple> type_decoding_tuple;
+			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_decoding_tuple> type_decoding_tuple;
 	};
 
 	template <class Series>
@@ -295,13 +317,13 @@ namespace piranha {
 
 	template <class Series>
 	struct cm_tuple {
-		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_minmax type_minmax;
-		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_mp_minmax type_mp_minmax;
-		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_max_fast_int_minmax type_max_fast_int_minmax;
-		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_value_handler type_value_handler;
-		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_mp_coding_tuple type_mp_coding_tuple;
-		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_coding_tuple type_coding_tuple;
-		typedef typename cm_tuple_impl<Series,Series::echelon_level + 1>::type_decoding_tuple type_decoding_tuple;
+		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_minmax type_minmax;
+		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_mp_minmax type_mp_minmax;
+		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_max_fast_int_minmax type_max_fast_int_minmax;
+		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_value_handler type_value_handler;
+		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_mp_coding_tuple type_mp_coding_tuple;
+		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_coding_tuple type_coding_tuple;
+		typedef typename cm_tuple_impl<Series, Series::echelon_level + 1>::type_decoding_tuple type_decoding_tuple;
 	};
 
 	template <class Series, class Tuple>
@@ -310,8 +332,8 @@ namespace piranha {
 		static void run(const ArgsTuple &argsTuple, Tuple &t)
 		{
 			typedef typename Tuple::head_type::size_type size_type;
-			t.get_head().resize(boost::numeric_cast<size_type>(argsTuple.template get<Series::term_type::key_type::position>().size()));
-			cm_init_vector_tuples_impl<typename Series::term_type::cf_type,typename Tuple::tail_type>::run(argsTuple,t.get_tail());
+			t.get_head().resize(boost::numeric_cast<size_type>(argsTuple.template get<Series::TermType::key_type::position>().size()));
+			cm_init_vector_tuples_impl<typename Series::TermType::cf_type,typename Tuple::tail_type>::run(argsTuple,t.get_tail());
 		}
 	};
 
@@ -326,31 +348,35 @@ namespace piranha {
 	template <class Series, class Tuple, class ArgsTuple>
 	inline void cm_init_vector_tuple(Tuple &t, const ArgsTuple &argsTuple)
 	{
-		PIRANHA_STATIC_CHECK(boost::tuples::length<Tuple>::value == Series::echelon_level + 1,"");
-		cm_init_vector_tuples_impl<Series,Tuple>::run(argsTuple,t);
+		PIRANHA_STATIC_CHECK(boost::tuples::length<Tuple>::value == Series::echelon_level + 1, "");
+
+		cm_init_vector_tuples_impl<Series, Tuple>::run(argsTuple, t);
 	}
+
 
 	template <class MinMaxTuple>
 	struct cm_minmax2 {
 		template <class Series, class ValueHandlerTuple>
 		static void run_init(const Series &s, MinMaxTuple &minmax_tuple, ValueHandlerTuple &vh_tuple)
 		{
-			PIRANHA_STATIC_CHECK(boost::tuples::length<MinMaxTuple>::value == boost::tuples::length<ValueHandlerTuple>::value,"");
+			PIRANHA_STATIC_CHECK(boost::tuples::length<MinMaxTuple>::value == boost::tuples::length<ValueHandlerTuple>::value, "");
 			PIRANHA_ASSERT(s.length() == 1);
 			// NOTE: here key size could be less than the size of the vector in this tuple position,
 			// hence the importance of having the vector default-initialised to zero. This happens because
 			// we allow multiplication by series with fewer arguments.
-			vh_tuple.get_head().assign(minmax_tuple.get_head(),s.begin()->key);
-			cm_minmax2<typename MinMaxTuple::tail_type>::run_init(s.begin()->cf,minmax_tuple.get_tail(),vh_tuple.get_tail());
+			vh_tuple.get_head().assign(minmax_tuple.get_head(), s.begin()->key);
+			cm_minmax2<typename MinMaxTuple::tail_type>::run_init(s.begin()->cf, minmax_tuple.get_tail(), vh_tuple.get_tail());
 		}
+
 		template <class Series, class ValueHandlerTuple>
 		static void run_test(const Series &s, MinMaxTuple &minmax_tuple, ValueHandlerTuple &vh_tuple)
 		{
 			PIRANHA_ASSERT(s.length() == 1);
-			vh_tuple.get_head().test(minmax_tuple.get_head(),s.begin()->key);
+			vh_tuple.get_head().test(minmax_tuple.get_head(), s.begin()->key);
 			cm_minmax2<typename MinMaxTuple::tail_type>::run_test(s.begin()->cf,minmax_tuple.get_tail(),vh_tuple.get_tail());
 		}
 	};
+
 
 	template <>
 	struct cm_minmax2<boost::tuples::null_type> {
@@ -367,10 +393,11 @@ namespace piranha {
 		template <class Term, class ValueHandlerTuple>
 		static void run_init(const Term &term, MinMaxTuple &minmax_tuple, ValueHandlerTuple &vh_tuple)
 		{
-			PIRANHA_STATIC_CHECK(boost::tuples::length<MinMaxTuple>::value == boost::tuples::length<ValueHandlerTuple>::value,"");
-			vh_tuple.get_head().assign(minmax_tuple.get_head(),term.key);
-			cm_minmax2<typename MinMaxTuple::tail_type>::run_init(term.cf,minmax_tuple.get_tail(),vh_tuple.get_tail());
+			PIRANHA_STATIC_CHECK(boost::tuples::length<MinMaxTuple>::value == boost::tuples::length<ValueHandlerTuple>::value, "");
+			vh_tuple.get_head().assign(minmax_tuple.get_head(), term.key);
+			cm_minmax2<typename MinMaxTuple::tail_type>::run_init(term.cf, minmax_tuple.get_tail(), vh_tuple.get_tail());
 		}
+
 		// Test minmax tuple with term's array representation, and, if needed, update min and max to include it.
 		template <class Term, class ValueHandlerTuple>
 		static void run_test(const Term &term, MinMaxTuple &minmax_tuple, ValueHandlerTuple &vh_tuple)
@@ -379,6 +406,7 @@ namespace piranha {
 			cm_minmax2<typename MinMaxTuple::tail_type>::run_test(term.cf,minmax_tuple.get_tail(),vh_tuple.get_tail());
 		}
 	};
+
 
 	// Calculate the minmax values of the global representation, using multiprecision integers.
 	template <class OpTuple>
@@ -563,16 +591,22 @@ namespace piranha {
 		{
 			PIRANHA_STATIC_CHECK((boost::is_same<typename CodingTuple::head_type::value_type,max_fast_int>::value),"");
 			PIRANHA_ASSERT(cf.length() == 1);
-			typedef typename Cf::term_type::key_type::size_type size_type;
+
+			typedef typename Cf::TermType::key_type::size_type size_type;
 			const size_type size = cf.begin()->key.size();
 			PIRANHA_ASSERT(size <= ct.get_head().size());
 			max_fast_int tmp = 0;
-			for (size_type i = 0; i < size; ++i) {
+			
+            for (size_type i = 0; i < size; ++i)
+            {
 				tmp = ct.get_head()[i] * vh_tuple.get_head().to_max_fast_int(cf.begin()->key[i]);
 				retval1 += tmp;
-				if (!OpTuple::head_type::value) {
+
+				if (!OpTuple::head_type::value)
+                {
 					retval2 -= tmp;
-				} else if (SubRequested) {
+				} else if (SubRequested)
+                {
 					retval2 += tmp;
 				}
 			}
@@ -580,11 +614,13 @@ namespace piranha {
 		}
 	};
 
+
 	template <bool SubRequested>
 	struct cm_code_impl2<boost::tuples::null_type,SubRequested> {
 		template <class Cf>
 		static void run(const boost::tuples::null_type &, const Cf &, const boost::tuples::null_type &, const max_fast_int &, const max_fast_int &) {}
 	};
+
 
 	template <class OpTuple>
 	struct cm_code_impl1 {
@@ -593,11 +629,13 @@ namespace piranha {
 		{
 			PIRANHA_STATIC_CHECK((boost::is_same<typename CodingTuple::head_type::value_type,max_fast_int>::value),"");
 			PIRANHA_ASSERT(term.key.size() <= ct.get_head().size());
+
 			static const bool sub_requested = op_has_sub<OpTuple>::value;
 			typedef typename Term::key_type::size_type size_type;
 			max_fast_int tmp = 0;
 			// NOTE: again the assumption that the sizes of vector and key are compatible. Need to sort this out...
-			for (size_type i = 0; i < term.key.size(); ++i) {
+			for (size_type i = 0; i < term.key.size(); ++i)
+            {
 				tmp = ct.get_head()[i] * vh_tuple.get_head().to_max_fast_int(term.key[i]);
 				retval1 += tmp;
 				if (!OpTuple::head_type::value) {
@@ -661,19 +699,24 @@ namespace piranha {
 			const VhTuple &vh_tuple, const max_fast_int &code, const ArgsTuple &argsTuple)
 		{
 			PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag,Cf>::value),"");
-			typedef typename Cf::term_type term_type;
+			typedef typename Cf::TermType term_type;
 			typedef typename term_type::key_type::size_type size_type;
-			PIRANHA_ASSERT(dt.get_head().size() == argsTuple.template get<term_type::key_type::position>().size());
+			
+            PIRANHA_ASSERT(dt.get_head().size() == argsTuple.template get<term_type::key_type::position>().size());
 			PIRANHA_ASSERT(dt.get_head().size() == gr.get_head().size());
+
 			const size_type size = dt.get_head().size();
 			// This term is going to be inserted into the coefficient series.
 			term_type term;
 			term.key.resize(size);
-			for (size_type i = 0; i < size; ++i) {
+			
+            for (size_type i = 0; i < size; ++i)
+            {
 				const max_fast_int tmp = (code % dt.get_head()[i].first) / dt.get_head()[i].second +
 					gr.get_head()[i].lower();
 				vh_tuple.get_head().post_decode(term.key[i],tmp);
 			}
+
 			// Next recursion will operate on the term-to-be-inserted's coefficient.
 			cm_decode_impl2<typename DecodingTuple::tail_type>::run(final_cf,dt.get_tail(),gr.get_tail(),term.cf,vh_tuple.get_tail(),code,argsTuple);
 			// Before insering, let's make sure to clear up the contents of the coefficient series.

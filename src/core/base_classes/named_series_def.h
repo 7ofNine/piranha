@@ -93,7 +93,7 @@ namespace piranha
 
 		public:
 
-			typedef boost::transform_iterator<s_iterator_generator, typename SeriesContainer<Term>::type::const_iterator> SeriesIterator;
+			typedef boost::transform_iterator<s_iterator_generator, typename SeriesContainer<Term>::Type::const_iterator> SeriesIterator;
 			SeriesIterator s_begin() const;
 			SeriesIterator s_end() const;
 			std::complex<Derived> complex() const;

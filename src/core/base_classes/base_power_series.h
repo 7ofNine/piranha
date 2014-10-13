@@ -84,6 +84,7 @@ namespace piranha
 				const PosTuple &m_p;
 			};
 
+
 		public:
 
 			static const int expo_args_position = ExpoArgsPosition;
@@ -97,11 +98,8 @@ namespace piranha
                 {
 					return Degree(0);
 				}
-				const typename Derived::const_iterator result(std::max_element(
-							derived_const_cast->begin(),
-							derived_const_cast->end(),
-							degree_binary_predicate<typename Derived::term_type>()
-						));
+				const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(),
+							                                  degree_binary_predicate<typename Derived::TermType>() ));
 
 				return result->template get<ExpoTermPosition>().degree();
 			}
@@ -117,11 +115,8 @@ namespace piranha
                 {
 					return Degree(0);
 				}
-				const typename Derived::const_iterator result(std::min_element(
-							derived_const_cast->begin(),
-							derived_const_cast->end(),
-							order_binary_predicate<typename Derived::term_type>()
-						));
+				const typename Derived::const_iterator result(std::min_element(derived_const_cast->begin(), derived_const_cast->end(),
+							                                                   order_binary_predicate<typename Derived::TermType>() ));
 				return result->template get<ExpoTermPosition>().order();
 			}
 
@@ -134,11 +129,9 @@ namespace piranha
                 {
 					return Degree(0);
 				}
-				const typename Derived::const_iterator result(std::max_element(
-							derived_const_cast->begin(),
-							derived_const_cast->end(),
-							partial_degree_binary_predicate<typename Derived::term_type, PosTuple>(pos_tuple)
-						));
+				const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(),
+							                                  partial_degree_binary_predicate<typename Derived::TermType, PosTuple>(pos_tuple) ));
+
 				return result->template get<ExpoTermPosition>().partial_degree(pos_tuple);
 			}
 
@@ -151,11 +144,9 @@ namespace piranha
                 {
 					return Degree(0);
 				}
-				const typename Derived::const_iterator result(std::min_element(
-							derived_const_cast->begin(),
-							derived_const_cast->end(),
-							partial_order_binary_predicate<typename Derived::term_type, PosTuple>(pos_tuple)
-						));
+				const typename Derived::const_iterator result(std::min_element(derived_const_cast->begin(), derived_const_cast->end(),
+							                                  partial_order_binary_predicate<typename Derived::TermType, PosTuple>(pos_tuple) ));
+
 				return result->template get<ExpoTermPosition>().partial_order(pos_tuple);
 			}
 	};

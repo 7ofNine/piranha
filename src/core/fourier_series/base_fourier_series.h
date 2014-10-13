@@ -69,7 +69,7 @@ namespace piranha
 							" Fourier series does not contain the symbol in its trigonometric arguments.");
 					}
 
-					typename Derived::term_type tmp(*it);
+					typename Derived::TermType tmp(*it);
 					if (it->key.getFlavour()) 
                     {
 						tmp.cf.divideBy(  it->key[pos], argsTuple);

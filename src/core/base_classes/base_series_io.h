@@ -56,7 +56,7 @@ namespace piranha
 	template <class Number, class ArgsTuple>
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_number(const Number &x, const ArgsTuple &argsTuple)
 	{
-		return base_series_from_cf(typename term_type::cf_type(x, argsTuple), argsTuple);
+		return base_series_from_cf(typename TermType::cf_type(x, argsTuple), argsTuple);
 	}
 
 
@@ -124,11 +124,11 @@ namespace piranha
 		} else 
         {
 			try {
-				const std::vector<typename Derived::term_type const *> s(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
-				generic_print_terms_pretty(stream,s.begin(),s.end(),argsTuple);
+				const std::vector<typename Derived::TermType const *> s(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
+				generic_print_terms_pretty(stream, s.begin(), s.end(), argsTuple);
 
 			} catch (const value_error &) {
-				generic_print_terms_pretty(stream,begin(),end(),argsTuple);
+				generic_print_terms_pretty(stream, begin(), end(), argsTuple);
 			}
 		}
 	}
@@ -169,11 +169,12 @@ namespace piranha
 		} else 
         {
 			try {
-				const std::vector<typename Derived::term_type const *> s(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
-				generic_print_terms_tex(stream,s.begin(),s.end(),argsTuple);
+				const std::vector<typename Derived::TermType const *> s(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
+				generic_print_terms_tex(stream, s.begin(), s.end(), argsTuple);
 
-			} catch (const value_error &) {
-				generic_print_terms_tex(stream,begin(),end(),argsTuple);
+			} catch (const value_error &)
+            {
+				generic_print_terms_tex(stream, begin(), end(), argsTuple);
 			}
 		}
 	}
@@ -186,7 +187,7 @@ namespace piranha
 			const ArgsTuple &argsTuple)
 	{
 		PIRANHA_ASSERT(derived_cast->empty());
-		insert(term_type(typename term_type::cf_type(p, n, argsTuple), typename term_type::key_type(p, n, argsTuple)), argsTuple);
+		insert(TermType(typename TermType::cf_type(p, n, argsTuple), typename TermType::key_type(p, n, argsTuple)), argsTuple);
 	}
 
 
@@ -225,7 +226,7 @@ namespace piranha
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_key(const Key &key, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
-		SeriesFromKeyImpl<Key, typename term_type::key_type>::run(retval, key, argsTuple);
+		SeriesFromKeyImpl<Key, typename TermType::key_type>::run(retval, key, argsTuple);
 		return retval;
 	}
 
@@ -240,7 +241,7 @@ namespace piranha
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_cf(const Cf &cf, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
-		SeriesFromCfImpl<Cf, typename term_type::cf_type>::run(retval, cf, argsTuple);
+		SeriesFromCfImpl<Cf, typename TermType::cf_type>::run(retval, cf, argsTuple);
 		return retval;
 	}
 

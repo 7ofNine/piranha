@@ -189,15 +189,15 @@ struct polynomial_vector_functor:
 {
 	typedef typename final_cf<Series1>::type cf_type1;
 	typedef typename final_cf<Series2>::type cf_type2;
-	typedef typename Series1::term_type term_type1;
-	typedef typename Series2::term_type term_type2;
-	typedef base_coded_functor<Series1,Series2,ArgsTuple,GenericTruncator,polynomial_vector_functor<Series1,Series2,ArgsTuple,GenericTruncator> > ancestor;
+	typedef typename Series1::TermType term_type1;
+	typedef typename Series2::TermType term_type2;
+	typedef base_coded_functor<Series1, Series2, ArgsTuple, GenericTruncator, polynomial_vector_functor<Series1, Series2, ArgsTuple, GenericTruncator> > ancestor;
 
 	polynomial_vector_functor(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
 		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
 		std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2,
 		const GenericTruncator &trunc, cf_type1 *vc_res, const ArgsTuple &argsTuple):
-		ancestor(tc1,tc2,ck1,ck2,t1,t2,trunc,argsTuple),m_vc_res(vc_res)
+		ancestor(tc1, tc2, ck1, ck2, t1, t2, trunc, argsTuple), m_vc_res(vc_res)
 	{}
 
 
@@ -279,8 +279,8 @@ struct polynomial_hash_functor:
 {
 	typedef typename final_cf<Series1>::type cf_type1;
 	typedef typename final_cf<Series2>::type cf_type2;
-	typedef typename Series1::term_type term_type1;
-	typedef typename Series2::term_type term_type2;
+	typedef typename Series1::TermType term_type1;
+	typedef typename Series2::TermType term_type2;
 	typedef std::pair<cf_type1,max_fast_int> cterm_type;
 	typedef base_coded_functor<Series1,Series2,ArgsTuple,GenericTruncator,polynomial_hash_functor<Series1,Series2,ArgsTuple,GenericTruncator> > ancestor;
 	typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht_type;
@@ -289,7 +289,7 @@ struct polynomial_hash_functor:
 		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
 		std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
 		const GenericTruncator &trunc, csht_type *cms, const ArgsTuple &argsTuple):
-		ancestor(tc1,tc2,ck1,ck2,t1,t2,trunc,argsTuple),m_cterm(cterm),m_cms(cms)/*,m_overflow_terms()*/
+		ancestor(tc1, tc2, ck1, ck2, t1, t2, trunc, argsTuple), m_cterm(cterm), m_cms(cms)/*,m_overflow_terms()*/
 	{}
 
 
@@ -300,10 +300,12 @@ struct polynomial_hash_functor:
 		{
 			return false;
 		}
+
 		m_cterm.second  = this->m_ck1[i];
 		m_cterm.second += this->m_ck2[j];
 		std::pair<bool,c_iterator> res = m_cms->find(m_cterm.second);
-		if (res.first)
+		
+        if (res.first)
 		{
 			res.second->first.addmul(this->m_tc1[i],this->m_tc2[j],this->m_argsTuple);
 		} else
@@ -314,6 +316,7 @@ struct polynomial_hash_functor:
 			m_cterm.first.mult_by(this->m_tc2[j],this->m_argsTuple);
 			m_cms->insert_new(m_cterm,res.second);
 		}
+
 		return true;
 	}
 

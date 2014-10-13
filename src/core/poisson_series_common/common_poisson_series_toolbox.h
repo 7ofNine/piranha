@@ -87,13 +87,13 @@ namespace piranha
 			{
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
 				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
-				typedef typename Derived::term_type::cf_type::
-					template sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
-					template sub_cache_selector<SubSeries,boost::tuples::null_type,ArgsTupleType>
-					::type,ArgsTupleType>::type sub_caches_type;
-				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value ==
-					boost::tuples::length<pos_tuple_type>::value,
-					"Size mismatch for position and cache tuples in Poisson series substitution.");
+				typedef typename Derived::TermType::cf_type::
+					template sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
+					template sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
+					::type, ArgsTupleType>::type sub_caches_type;
+
+				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
+					                 "Size mismatch for position and cache tuples in Poisson series substitution.");
 				const Psym p(name);
 				Derived this_copy(*derived_const_cast);
 				SubSeries s_copy(series), tmp;
@@ -112,8 +112,7 @@ namespace piranha
 				s_copy.merge_args(this_copy);
 				// Init sub caches using s and this_copy.m_arguments.
 				sub_caches_type sub_caches;
-				init_sub_caches<sub_caches_type,SubSeries,ArgsTupleType>::run(sub_caches,s_copy,
-					&this_copy.arguments());
+				init_sub_caches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.arguments());
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1,p), this_copy.arguments());
 				Derived retval(this_copy.template base_sub<Derived,typename Derived::sub_functor>(pos_tuple,
 					sub_caches, this_copy.arguments()));
@@ -128,27 +127,28 @@ namespace piranha
 			{
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
 				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelon_level + 1>::type pos_tuple_type;
-				typedef typename Derived::term_type::cf_type::
-					template ei_sub_cache_selector<SubSeries,typename Derived::term_type::key_type::
-					template ei_sub_cache_selector<SubSeries,boost::tuples::null_type,ArgsTupleType>
+				typedef typename Derived::TermType::cf_type::
+					template ei_sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
+					template ei_sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 					::type,ArgsTupleType>::type sub_caches_type;
-				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value ==
-					boost::tuples::length<pos_tuple_type>::value,
-					"Size mismatch for position and cache tuples in Poisson series ei substitution.");
+
+				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
+					                 "Size mismatch for position and cache tuples in Poisson series ei substitution.");
 				const Psym p(name);
 				Derived this_copy(*derived_const_cast);
 				SubSeries s_copy(series);
 				this_copy.merge_args(s_copy);
 				s_copy.merge_args(this_copy);
 				sub_caches_type sub_caches;
-				init_sub_caches<sub_caches_type,SubSeries,ArgsTupleType>::run(sub_caches,s_copy,
-					&this_copy.arguments());
+				init_sub_caches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.arguments());
+
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1,p), this_copy.arguments());
-				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple,
-					sub_caches, this_copy.arguments()));
+
+				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple, sub_caches, this_copy.arguments()));
 				retval.setArguments(this_copy.arguments());
 				retval.trim();
-				return retval;
+				
+                return retval;
 			}
 
 
@@ -157,18 +157,22 @@ namespace piranha
 			FourierSeries to_fs() const
 			{
 				typedef typename Derived::const_iterator const_iterator;
-				typedef typename FourierSeries::term_type fourier_term;
+				typedef typename FourierSeries::TermType fourier_term;
 				typename Ntuple<VectorPsym,1>::type argsTuple(derived_const_cast->arguments().template get<1>());
 				FourierSeries retval;
 				retval.setArguments(argsTuple);
 				const const_iterator it_f = derived_const_cast->end();
-				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) {
-					if (!it->cf.is_single_cf()) {
+
+				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it)
+                {
+					if (!it->cf.is_single_cf())
+                    {
 						PIRANHA_THROW(value_error,"polynomial coefficient cannot be converted to numerical coefficient");
 					}
-					retval.insert(fourier_term(typename fourier_term::cf_type(it->cf.begin()->cf),
-						typename fourier_term::key_type(it->key)),argsTuple);
+
+					retval.insert(fourier_term(typename fourier_term::cf_type(it->cf.begin()->cf), typename fourier_term::key_type(it->key)), argsTuple);
 				}
+
 				return retval;
 			}
 
@@ -177,7 +181,7 @@ namespace piranha
 			{
 				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, 2>::type pos_tuple_type;
 				const Psym p(name);
-				const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p),derived_const_cast->arguments());
+				const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p), derived_const_cast->arguments());
 				Derived retval;
 
 				if (pos_tuple.template get<0>()[0].first || pos_tuple.template get<1>()[0].first) 
@@ -189,7 +193,7 @@ namespace piranha
 					this_copy.merge_args(Derived(p));
 					const pos_tuple_type new_pos_tuple = psyms2pos(VectorPsym(1,p),this_copy.arguments());
 
-					retval = this_copy.baseIntegrate(new_pos_tuple,this_copy.arguments());
+					retval = this_copy.baseIntegrate(new_pos_tuple, this_copy.arguments());
 					retval.setArguments(this_copy.arguments());
 					retval.trim();
 				} else 
@@ -213,8 +217,8 @@ namespace piranha
 					"Size mismatch between args tuple and pos tuple in Poisson series integration.");
 
 				typedef typename Derived::const_iterator                     const_iterator;
-				typedef typename Derived::term_type::cf_type::degree_type    degree_type;
-				typedef typename Derived::term_type::key_type::HarmonicDegreeType HarmonicDegreeType;
+				typedef typename Derived::TermType::cf_type::degree_type    degree_type;
+				typedef typename Derived::TermType::key_type::HarmonicDegreeType HarmonicDegreeType;
 
 				// Make sure that the position tuple contains just one symbol in each element of the tuple,
 				// and that the symbol is present in the series.
@@ -228,7 +232,7 @@ namespace piranha
 					if (pos_tuple.template get<1>()[0].first && it->key[pos_tuple.template get<1>()[0].second] != 0) 
                     {
 						// Integrand argument appears as trigonometric argument: try to integrate recursively by parts.
-						typedef typename Derived::term_type::cf_type::degree_type degree_type;
+						typedef typename Derived::TermType::cf_type::degree_type degree_type;
 						const degree_type degree(it->cf.partial_degree(pos_tuple));
 						if (degree < 0 || !is_integer(degree)) 
                         {
@@ -237,8 +241,8 @@ namespace piranha
 						}
 
 						const HarmonicDegreeType trig_mult(it->key[pos_tuple.template get<1>()[0].second]);
-						typename Derived::term_type tmp(*it);
-						typename Derived::term_type::cf_type tmp_cf(it->cf);
+						typename Derived::TermType tmp(*it);
+						typename Derived::TermType::cf_type tmp_cf(it->cf);
 
 						tmp_cf.divideBy(trig_mult, argsTuple);
 						
@@ -281,12 +285,12 @@ namespace piranha
 							retval.insert(tmp,argsTuple);
 							
                             // Prepare tmp's cf for next step.
-							tmp_cf = tmp_cf.template partial<typename Derived::term_type::cf_type>(pos_tuple, argsTuple);
+							tmp_cf = tmp_cf.template partial<typename Derived::TermType::cf_type>(pos_tuple, argsTuple);
 							tmp_cf.divideBy(trig_mult, argsTuple);
 						}
 					} else 
                     {
-						typename Derived::term_type tmp(*it);
+						typename Derived::TermType tmp(*it);
 						tmp.cf = tmp.cf.integrate(pos_tuple, argsTuple);
 
 						retval.insert(tmp, argsTuple);
@@ -303,11 +307,11 @@ namespace piranha
 			template <class ArgsTuple>
 			std::complex<Derived> base_ei(const ArgsTuple &argsTuple) const
 			{
-				typedef typename std::complex<Derived>::term_type               complex_term_type;
-				typedef typename Derived::term_type                             term_type;
-				typedef typename term_type::cf_type::term_type::cf_type         poly_cf_type;
-				typedef typename std::complex<Derived>::term_type::cf_type      complex_cf_type;
-				typedef typename std::vector<term_type const *>::const_iterator const_iterator;
+				typedef typename std::complex<Derived>::TermType                 complex_term_type;
+				typedef typename Derived::TermType                               term_type;
+				typedef typename term_type::cf_type::TermType::cf_type           poly_cf_type;
+				typedef typename std::complex<Derived>::TermType::cf_type        complex_cf_type;
+				typedef typename std::vector<term_type const *>::const_iterator  const_iterator;
 
 				// Cache and sort the terms according to the criterion defined in the truncator.
 				std::vector<term_type const *> cache;
@@ -346,9 +350,9 @@ namespace piranha
                     {
 						// Exact part has the following requisites: exactly one "active" variable with unitary exponent and a coefficient
 						// that is convertible to the type representing the harmonic degree.
-						typename term_type::cf_type::term_type::key_type::size_type n_active = 0;
+						typename term_type::cf_type::TermType::key_type::size_type n_active = 0;
 						bool has_unitary = false;
-						for (typename term_type::cf_type::term_type::key_type::size_type i = 0; i < it->key.size(); ++i) 
+						for (typename term_type::cf_type::TermType::key_type::size_type i = 0; i < it->key.size(); ++i) 
                         {
 							if (it->key[i] == 1) 
                             {

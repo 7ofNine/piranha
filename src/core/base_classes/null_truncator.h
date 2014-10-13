@@ -35,8 +35,8 @@ namespace piranha
 			class get_type
 			{
 				public:
-					typedef typename Series1::term_type term_type1;
-					typedef typename Series2::term_type term_type2;
+					typedef typename Series1::TermType term_type1;
+					typedef typename Series2::TermType term_type2;
 					typedef get_type type;
 
 					get_type(std::vector<term_type1 const *> &, std::vector<term_type2 const *> &, const ArgsTuple &) {}
@@ -64,7 +64,7 @@ namespace piranha
 			};
 
 			template <class Series, class ArgsTuple2>
-			static std::vector<typename Series::term_type const *> getSortedPointerVector(const Series &, const ArgsTuple2 &)
+			static std::vector<typename Series::TermType const *> getSortedPointerVector(const Series &, const ArgsTuple2 &)
 			{
 				PIRANHA_THROW(value_error,"null truncator cannot order series");
 			}

@@ -52,7 +52,7 @@ namespace piranha
 	template <class CfSeries, class Enable = void>
 	struct EchelonLevelImpl
 	{
-		static const int value = EchelonLevelImpl<typename CfSeries::term_type::cf_type>::value + 1;
+		static const int value = EchelonLevelImpl<typename CfSeries::TermType::cf_type>::value + 1;
 	};
 
 	template <class FinalCf>
@@ -65,7 +65,7 @@ namespace piranha
 	template <class Term>
 	struct SeriesContainer
 	{
-		typedef boost::unordered_set<Term, boost::hash<Term>, std::equal_to<Term>, CountingAllocator<Term, std::allocator<Term> > > type;
+		typedef boost::unordered_set<Term, boost::hash<Term>, std::equal_to<Term>, CountingAllocator<Term, std::allocator<Term> > > Type;
 	};
 
 	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
@@ -128,17 +128,17 @@ namespace piranha
 		public:
 
 			/// Alias for term type.
-			typedef Term term_type;
+			typedef Term TermType;
 
 			/// Term container.
 			/**
 			 * The underlying term container is a plain boost::unordered set. Term types must specialise the boost::hash class, which
 			 * will be used to provide the hash values for terms.
 			 */
-			typedef typename SeriesContainer<term_type>::type container_type;
+			typedef typename SeriesContainer<TermType>::Type container_type;
 
 			/// Echelon level.
-			static const int echelon_level = EchelonLevelImpl<typename term_type::cf_type>::value;
+			static const int echelon_level = EchelonLevelImpl<typename TermType::cf_type>::value;
 
 			/// Type resulting from series evaluation.
 			/**
@@ -205,7 +205,7 @@ namespace piranha
 			void base_split(std::vector<std::vector<Series> > &, const int &n, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			std::vector<term_type> flatten_terms(const ArgsTuple &) const;
+			std::vector<TermType> flatten_terms(const ArgsTuple &) const;
 
 			template <class Layout, class ArgsTuple>
 			void apply_layout_to_terms(const Layout &, Derived &, const ArgsTuple &) const;
@@ -222,7 +222,7 @@ namespace piranha
 
 			/** @name Terms accessors. */
 			//@{
-            const_iterator find_term(const term_type &) const; // definition: base_series_manip.h
+            const_iterator find_term(const TermType &) const; // definition: base_series_manip.h
 			const_iterator begin() const;
 			const_iterator end() const;
 			//@}
@@ -342,10 +342,10 @@ namespace piranha
 			void generic_base_split(std::vector<std::vector<Series> > &, const Iterator &, const Iterator &, const ArgsTuple &) const;
 
 			template <bool, class ArgsTuple>
-			void ll_insert(const term_type &, const ArgsTuple &);
+			void ll_insert(const TermType &, const ArgsTuple &);
 
 			template <bool, class ArgsTuple>
-			void term_insert_new(const term_type &, const ArgsTuple &);
+			void term_insert_new(const TermType &, const ArgsTuple &);
 
 			template <class Number, class ArgsTuple>
 			bool common_pow_handler(const Number &, Derived &retval, const ArgsTuple &) const;

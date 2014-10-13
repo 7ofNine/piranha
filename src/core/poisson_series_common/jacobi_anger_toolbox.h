@@ -70,7 +70,7 @@ namespace piranha
 			template <class Iterator, class ArgsTuple>
 			static std::complex<Derived> jacang_term(Iterator it, const ArgsTuple &argsTuple)
 			{
-				typedef typename std::complex<Derived>::term_type complex_term_type;
+				typedef typename std::complex<Derived>::TermType complex_term_type;
 				// Let's determine the limit of the Jacobi-Anger development from the truncator of the series.
 				// The Jacobi-Anger development is a development into Bessel functions of the first kind starting
 				// from zero and increasing in unity steps, hence the psi function can be used
@@ -97,7 +97,7 @@ namespace piranha
 					retval.insert(tmp_term, argsTuple);
 				}
 				const std::size_t w = argsTuple.template get<TrigPos>().size();
-				std::vector<typename std::complex<Derived>::term_type::key_type::value_type> tmp_trig_mults(w);
+				std::vector<typename std::complex<Derived>::TermType::key_type::value_type> tmp_trig_mults(w);
 				std::complex<double> cos_multiplier(0, 2);
 				for (int i = 1; i < n; ++i) 
 				{
@@ -109,7 +109,7 @@ namespace piranha
 						tmp_trig_mults[j] *= i;
 					}
 
-					tmp_term.key.resize(boost::numeric_cast<typename std::complex<Derived>::term_type::key_type::size_type>(tmp_trig_mults.size()));
+					tmp_term.key.resize(boost::numeric_cast<typename std::complex<Derived>::TermType::key_type::size_type>(tmp_trig_mults.size()));
 					std::copy(tmp_trig_mults.begin(),tmp_trig_mults.end(),tmp_term.key.begin());
 					if ((*it)->key.getFlavour())
 					{

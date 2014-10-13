@@ -50,8 +50,8 @@ namespace truncators
 				public:
 
 					typedef get_type type;
-					typedef typename Series1::term_type TermType1;
-					typedef typename Series2::term_type TermType2;
+					typedef typename Series1::TermType TermType1;
+					typedef typename Series2::TermType TermType2;
 
 					get_type(std::vector<TermType1 const *> &terms1, std::vector<TermType2 const *> &terms2, const ArgsTuple &argsTuple):
 						DegreeAncestor(terms1, terms2, argsTuple, false), NormAncestor(terms1, terms2, argsTuple, false), activeTruncator(degTruncator)
@@ -105,7 +105,7 @@ namespace truncators
 
 
 					template <class Series, class ArgsTuple2>
-					static std::vector<typename Series::term_type const *> getSortedPointerVector(const Series &s, const ArgsTuple2 &argsTuple)
+					static std::vector<typename Series::TermType const *> getSortedPointerVector(const Series &s, const ArgsTuple2 &argsTuple)
 					{
 						std::string msg("The power series truncator was not able to establish a series ordering. The reported errors were:\n");
 						try {

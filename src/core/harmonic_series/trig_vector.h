@@ -625,7 +625,7 @@ namespace piranha
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
 			{
-				typedef typename RetSeries::term_type ret_term_type;
+				typedef typename RetSeries::TermType ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
 				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
@@ -684,47 +684,47 @@ namespace piranha
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries ei_sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
 			{
-				typedef typename RetSeries::term_type ret_term_type;
+				typedef typename RetSeries::TermType ret_term_type;
 				typedef typename ret_term_type::cf_type ret_cf_type;
 				RetSeries retval;
-				PIRANHA_ASSERT(pos_tuple.template get<ancestor::position>().size() == 1);
+				
+                PIRANHA_ASSERT(pos_tuple.template get<ancestor::position>().size() == 1);
+
 				if (!pos_tuple.template get<ancestor::position>()[0].first) 
 				{
 					retval = RetSeries::base_series_from_key(*this, argsTuple);
+
 				} else 
 				{
 					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<ancestor::position>()[0].second);
 					const value_type &power = (*this)[pos];
+
 					PIRANHA_ASSERT(pos < this->size());
-					TrigVector tmp_ta(*this);
+					
+                    TrigVector tmp_ta(*this);
 					tmp_ta[pos] = 0;
 					tmp_ta.setFlavour(true);
 					RetSeries orig_cos = RetSeries::base_series_from_key(tmp_ta,argsTuple);
 					tmp_ta.setFlavour(false);
 					RetSeries orig_sin = RetSeries::base_series_from_key(tmp_ta,argsTuple);
+
 					PIRANHA_ASSERT(retval.empty());
-					if (flavour) 
+					
+                    if (flavour) 
 					{
 						retval.base_add(orig_cos, argsTuple);
-						retval.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_real(argsTuple),
-						argsTuple);
-						orig_sin.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_imag(argsTuple),
-						argsTuple);
+						retval.base_mult_by(sub_caches.template get<ancestor::position>()[power].base_real(argsTuple), argsTuple);
+						orig_sin.base_mult_by(sub_caches.template get<ancestor::position>()[power].base_imag(argsTuple), argsTuple);
 						retval.base_subtract(orig_sin, argsTuple);
 					} else 
 					{
 						retval.base_add(orig_sin, argsTuple);
-						retval.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_real(argsTuple),
-						argsTuple);
-						orig_cos.base_mult_by(
-							sub_caches.template get<ancestor::position>()[power].base_imag(argsTuple),
-						argsTuple);
+						retval.base_mult_by(sub_caches.template get<ancestor::position>()[power].base_real(argsTuple), argsTuple);
+						orig_cos.base_mult_by(sub_caches.template get<ancestor::position>()[power].base_imag(argsTuple), argsTuple);
 						retval.base_add(orig_cos, argsTuple);
 					}
 				}
+
 				return retval;
 			}
 
@@ -739,7 +739,7 @@ namespace piranha
 					if (int_zero && !flavour) 
 					{
 						// 0**-y.
-						PIRANHA_THROW(zero_division_error,"cannot divide by zero");
+						PIRANHA_THROW(zero_division_error, "cannot divide by zero");
 					} else if (int_zero && flavour) 
 					{
 						// 1**-y == 1. Don't do anything because retval is already initialized properly.

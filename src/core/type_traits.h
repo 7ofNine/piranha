@@ -95,9 +95,9 @@ namespace piranha
 	 * Will be true if coefficient and key are ring exact.
 	 */
 	template <class T>
-	struct is_ring_exact<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
+	struct is_ring_exact<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
-		static const bool value = is_ring_exact<typename T::term_type::cf_type>::value && is_ring_exact<typename T::term_type::key_type>::value;
+		static const bool value = is_ring_exact<typename T::TermType::cf_type>::value && is_ring_exact<typename T::TermType::key_type>::value;
 	};
 
 	/// Default type trait for trigonometric classes.
@@ -114,7 +114,7 @@ namespace piranha
 	 * if T is not a series type (in that case, the series type trait specialisation will be used).
 	 */
 	template <class T>
-	struct is_trig_exact<T,typename boost::enable_if_c<boost::is_complex<T>::value && !boost::is_base_of<BaseSeriesTag,T>::value>::type>:
+	struct is_trig_exact<T, typename boost::enable_if_c<boost::is_complex<T>::value && !boost::is_base_of<BaseSeriesTag, T>::value>::type>:
 		is_trig_exact<typename T::value_type>
 	{};
 
@@ -123,9 +123,9 @@ namespace piranha
 	 * Will be true if either coefficient or key are trig exact.
 	 */
 	template <class T>
-	struct is_trig_exact<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
+	struct is_trig_exact<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
-		static const bool value = is_trig_exact<typename T::term_type::cf_type>::value || is_trig_exact<typename T::term_type::key_type>::value;
+		static const bool value = is_trig_exact<typename T::TermType::cf_type>::value || is_trig_exact<typename T::TermType::key_type>::value;
 	};
 
 	/// Default type trait for classes dividable by int.
@@ -142,7 +142,7 @@ namespace piranha
 	 * if T is not a series type (in that case, the series type trait specialisation will be used).
 	 */
 	template <class T>
-	struct is_divint_exact<T,typename boost::enable_if_c<boost::is_complex<T>::value && !boost::is_base_of<BaseSeriesTag,T>::value>::type>:
+	struct is_divint_exact<T,typename boost::enable_if_c<boost::is_complex<T>::value && !boost::is_base_of<BaseSeriesTag, T>::value>::type>:
 		is_divint_exact<typename T::value_type>
 	{};
 
@@ -151,9 +151,9 @@ namespace piranha
 	 * Will be true if either coefficient or key are divint exact.
 	 */
 	template <class T>
-	struct is_divint_exact<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
+	struct is_divint_exact<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
-		static const bool value = is_divint_exact<typename T::term_type::cf_type>::value || is_divint_exact<typename T::term_type::key_type>::value;
+		static const bool value = is_divint_exact<typename T::TermType::cf_type>::value || is_divint_exact<typename T::TermType::key_type>::value;
 	};
 
 	/// Default type trait for classes which can represent rational exponents.
@@ -169,13 +169,13 @@ namespace piranha
 	 * Will be true if series has a degree_type typedef which is rational.
 	 */
 	template <class T>
-	struct is_rational_exponent<T,typename boost::enable_if_c<boost::is_base_of<BaseSeriesTag,T>::value && boost::is_same<typename T::degree_type,mp_rational>::value>::type>:
+	struct is_rational_exponent<T,typename boost::enable_if_c<boost::is_base_of<BaseSeriesTag, T>::value && boost::is_same<typename T::degree_type, mp_rational>::value>::type>:
 	boost::true_type {};
 
 	template <class CfSeries, class Enable = void>
 	struct final_cf_impl
 	{
-		typedef typename final_cf_impl<typename CfSeries::term_type::cf_type>::type type;
+		typedef typename final_cf_impl<typename CfSeries::TermType::cf_type>::type type;
 	};
 
 	template <class Cf>
@@ -192,7 +192,8 @@ namespace piranha
 	struct final_cf
 	{
 		PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag,Series>::value),"Cannot determine final coefficient of a non-series type.");
-		typedef typename final_cf_impl<typename Series::term_type::cf_type>::type type;
+
+		typedef typename final_cf_impl<typename Series::TermType::cf_type>::type type;
 	};
 }
 

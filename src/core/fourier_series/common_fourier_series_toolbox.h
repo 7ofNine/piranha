@@ -56,16 +56,17 @@ namespace piranha
 			template <class ArgsTuple>
 			std::complex<Derived> base_ei(const ArgsTuple &argsTuple) const
 			{
-				typedef typename std::complex<Derived>::term_type complex_term_type;
+				typedef typename std::complex<Derived>::TermType complex_term_type;
 				typedef typename complex_term_type::key_type key_type;
-				typedef typename Derived::term_type term_type;
+				typedef typename Derived::TermType term_type;
 				typedef typename std::vector<term_type const *>::const_iterator const_iterator;
 				std::complex<Derived> retval;
-				if (derived_const_cast->is_single_cf()) {
-					retval.insert(complex_term_type(derived_const_cast->begin()->
-						cf.ei(argsTuple), key_type()),
-						argsTuple);
-				} else {
+
+				if (derived_const_cast->is_single_cf())
+                {
+					retval.insert(complex_term_type(derived_const_cast->begin()->cf.ei(argsTuple), key_type()), argsTuple);
+				} else
+                {
 					// Cache and sort the terms according to the criterion defined in the truncator.
 					std::vector<term_type const *> cache(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
 					// Reverse the series, we want to start multiplication from the least significant terms.
@@ -78,20 +79,24 @@ namespace piranha
 					// about convergence.
 					const_iterator it = cache.begin();
 					const const_iterator it_f = cache.end();
-					for (; it != it_f; ++it) {
-						if ((*it)->key.is_unity()) {
+					for (; it != it_f; ++it)
+                    {
+						if ((*it)->key.is_unity())
+                        {
 							break;
 						}
 					}
 					// Expand using Jacobi-Anger's identity.
 					derived_const_cast->jacang(cache, it, retval, argsTuple);
-					if (it != it_f) {
+					if (it != it_f)
+                    {
 						// Take care of the constant element.
 						std::complex<Derived> tmp;
 						tmp.insert(complex_term_type((*it)->cf.ei(argsTuple),key_type()),argsTuple);
 						retval.base_mult_by(tmp,argsTuple);
 					}
 				}
+
 				return retval;
 			}
 	};

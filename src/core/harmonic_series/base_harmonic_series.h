@@ -103,7 +103,7 @@ namespace piranha
 				}
 
 				const typename Derived::const_iterator result(std::max_element(DerivedConstCast->begin(), DerivedConstCast->end(),
-																               HarmonicDegreeBinaryPredicate<typename Derived::term_type>() ));
+																               HarmonicDegreeBinaryPredicate<typename Derived::TermType>() ));
 
 				return result->template get<HarmonicTermPosition>().harmonicDegree();
 			}
@@ -121,7 +121,7 @@ namespace piranha
 				}
 
 				const typename Derived::const_iterator result(std::min_element(DerivedConstCast->begin(), DerivedConstCast->end(),
-							                                                   HarmonicOrderBinaryPredicate<typename Derived::term_type>() ));
+							                                                   HarmonicOrderBinaryPredicate<typename Derived::TermType>() ));
 
 				return result->template get<HarmonicTermPosition>().harmonicOrder();
 			}
@@ -186,7 +186,7 @@ namespace piranha
 					return HarmonicDegree(0);
 				}
 				const typename Derived::const_iterator result(std::max_element(DerivedConstCast->begin(), DerivedConstCast->end(),
-							                                                   PartialHarmonicDegreeBinaryPredicate<typename Derived::term_type, PosTuple>(posTuple) ));
+							                                                   PartialHarmonicDegreeBinaryPredicate<typename Derived::TermType, PosTuple>(posTuple) ));
 				
 				return result->template get<HarmonicTermPosition>().partialHarmonicDegree(posTuple);
 			}
@@ -202,7 +202,7 @@ namespace piranha
 				}
 
 				const typename Derived::const_iterator result(std::min_element(DerivedConstCast->begin(), DerivedConstCast->end(),
-							                                                   PartialHarmonicOrderBinaryPredicate<typename Derived::term_type, PosTuple>(posTuple) ));
+							                                                   PartialHarmonicOrderBinaryPredicate<typename Derived::TermType, PosTuple>(posTuple) ));
 				
 				return result->template get<HarmonicTermPosition>().partialHarmonicOrder(posTuple);
 			}

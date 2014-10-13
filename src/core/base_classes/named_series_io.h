@@ -213,7 +213,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::read_terms(std::ifstream &inf)
 	{
-		typedef typename Derived::term_type term_type;
+		typedef typename Derived::TermType term_type;
 		std::string temp;
 		while (!inf.eof())
         {
