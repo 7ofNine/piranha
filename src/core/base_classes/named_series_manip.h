@@ -389,7 +389,7 @@ namespace piranha
 		typedef typename Ntuple<std::vector<char>, Derived::echelonLevel + 1>::type trim_flags_type;
 		trim_flags_type trim_flags;
 		trim_flags_init<trim_flags_type, ArgsTupleType>::run(trim_flags, argumentsTuple);
-		derivedConstCast->trim_test_terms(trim_flags);
+		derivedConstCast->trimTestTerms(trim_flags);
 
 		if (trim_flags_proceed(trim_flags)) 
 		{
@@ -397,7 +397,7 @@ namespace piranha
 			trim_arguments<trim_flags_type, ArgsTupleType>::run(trim_flags, argumentsTuple);
 			// Let's proceed to the terms now.
 			Derived tmp;
-			derivedCast->trim_terms(trim_flags, tmp, argumentsTuple);
+			derivedCast->trimTerms(trim_flags, tmp, argumentsTuple);
 			derivedCast->baseSwap(tmp);
 		}
 	}
@@ -449,7 +449,7 @@ namespace piranha
 
 		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1, p), this_copy.argumentsTuple);
 
-		Derived retval(this_copy.template base_sub<Derived, typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.argumentsTuple));
+		Derived retval(this_copy.template baseSub<Derived, typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.argumentsTuple));
 
 		retval.argumentsTuple = this_copy.argumentsTuple;
 		retval.trim();

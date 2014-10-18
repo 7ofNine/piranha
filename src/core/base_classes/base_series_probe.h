@@ -138,7 +138,7 @@ namespace piranha
 		
         for (const_iterator it = begin(); it != itf; ++it)
         {
-			const_iterator itOther(other.find_term(*it));
+			const_iterator itOther(other.findTerm(*it));
 			if (itOther == itfOther || !(itOther->cf == it->cf))
             {
 				return false;

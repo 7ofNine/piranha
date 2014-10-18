@@ -147,7 +147,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::const_iterator
-	BaseSeries<__PIRANHA_BASE_SERIES_TP>::find_term(const TermType &t) const
+	BaseSeries<__PIRANHA_BASE_SERIES_TP>::findTerm(const TermType &t) const
 	{
 		return m_container.find(t);
 	}
@@ -166,7 +166,7 @@ namespace piranha
 		PIRANHA_ASSERT(term.cf.is_insertable(argsTuple) && term.key.is_insertable(argsTuple) &&
 			!term.cf.needs_padding(argsTuple) && !term.key.needs_padding(argsTuple) && term.is_canonical(argsTuple));
 
-		const_iterator it(find_term(term));
+		const_iterator it(findTerm(term));
 		if (it == end()) 
 		{
 			// The term is NOT a duplicate, insert in the set.
@@ -242,7 +242,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class TrimFlags>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trim_test_terms(TrimFlags &tf) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trimTestTerms(TrimFlags &tf) const
 	{
 		const const_iterator itf = end();
 		for (const_iterator it = begin(); it != itf; ++it) 
@@ -255,7 +255,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class TrimFlags, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trim_terms(const TrimFlags &tf, Derived &retval, const ArgsTuple &argsTuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trimTerms(const TrimFlags &tf, Derived &retval, const ArgsTuple &argsTuple) const
 	{
 		const const_iterator itf = end();
 		for (const_iterator it = begin(); it != itf; ++it) 
@@ -267,7 +267,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
-	inline RetSeries BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
+	inline RetSeries BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
 	{
 		PIRANHA_STATIC_CHECK((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value), "Positional and arguments' tuples' lengths do not match.");
 

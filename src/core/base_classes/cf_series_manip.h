@@ -72,7 +72,7 @@ namespace piranha
 	template <class TrimFlags>
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::trim_test(TrimFlags &tf) const
 	{
-		derived_const_cast->trim_test_terms(tf);
+		derived_const_cast->trimTestTerms(tf);
 	}
 
 
@@ -81,7 +81,7 @@ namespace piranha
 	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::trim(const TrimFlags &tf, const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
-		derived_const_cast->trim_terms(tf, retval, argsTuple);
+		derived_const_cast->trimTerms(tf, retval, argsTuple);
 		return retval;
 	}
 
@@ -91,7 +91,7 @@ namespace piranha
 	inline RetSeries cf_series<__PIRANHA_CF_SERIES_TP>::sub(const PosTuple &p,
 		SubCaches &s, const ArgsTuple &a) const
 	{
-		return derived_const_cast->template base_sub<RetSeries,typename Derived::sub_functor>(p, s, a);
+		return derived_const_cast->template baseSub<RetSeries,typename Derived::sub_functor>(p, s, a);
 	}
 
 

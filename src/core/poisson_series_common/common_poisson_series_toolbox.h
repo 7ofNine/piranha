@@ -115,7 +115,7 @@ namespace piranha
 				init_sub_caches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.arguments());
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1, p), this_copy.arguments());
 
-				Derived retval(this_copy.template base_sub<Derived, typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.arguments()));
+				Derived retval(this_copy.template baseSub<Derived, typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.arguments()));
 				retval.setArguments(this_copy.arguments());
 				retval.trim();
 
@@ -145,7 +145,7 @@ namespace piranha
 
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1,p), this_copy.arguments());
 
-				Derived retval(this_copy.template base_sub<Derived,ei_sub_functor>(pos_tuple, sub_caches, this_copy.arguments()));
+				Derived retval(this_copy.template baseSub<Derived,ei_sub_functor>(pos_tuple, sub_caches, this_copy.arguments()));
 				retval.setArguments(this_copy.arguments());
 				retval.trim();
 				

@@ -215,18 +215,18 @@ namespace piranha
 			void applyLayoutToTerms(const Layout &, Derived &, const ArgsTuple &) const;
 
 			template <class TrimFlags>
-			void trim_test_terms(TrimFlags &) const;
+			void trimTestTerms(TrimFlags &) const;
 
 			template <class TrimFlags, class ArgsTuple>
-			void trim_terms(const TrimFlags &, Derived &, const ArgsTuple &) const;
+			void trimTerms(const TrimFlags &, Derived &, const ArgsTuple &) const;
 
 			template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries base_sub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
+			RetSeries baseSub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
             //@}
 
 			/** @name Terms accessors. */
 			//@{
-            const_iterator find_term(const TermType &) const; // definition: base_series_manip.h
+            const_iterator findTerm(const TermType &) const; // definition: base_series_manip.h
 			const_iterator begin() const;
 			const_iterator end() const;
 			//@}
