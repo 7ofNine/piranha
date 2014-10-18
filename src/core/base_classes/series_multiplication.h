@@ -76,7 +76,7 @@ namespace piranha
 				// If the other series is empty, clear the container and return.
 				if (s2.empty())
 				{
-					derived_cast->clear_terms();
+					derived_cast->clearTerms();
 					return;
 				}
 
@@ -89,16 +89,16 @@ namespace piranha
 				} else if (derived_const_cast->isSingleCf() && algo == settings::automatic)
 				{
 					Derived tmp;
-					tmp.insert_range(s2.begin(),s2.end(),argsTuple);
+					tmp.insertRange(s2.begin(),s2.end(),argsTuple);
 					tmp.base_mult_by(derived_const_cast->begin()->cf, argsTuple);
-					derived_cast->base_swap(tmp);
+					derived_cast->baseSwap(tmp);
 				} else
 				{
 					Derived retval;
 					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator>
 						                          m(*derived_const_cast, s2, retval, argsTuple);
 					m.perform_multiplication();
-					derived_cast->base_swap(retval);
+					derived_cast->baseSwap(retval);
 				}
 			}
 	};

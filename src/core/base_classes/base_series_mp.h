@@ -102,7 +102,7 @@ namespace piranha
 
 				for (typename CfSeries::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
                 {
-					cf_series.clear_terms();
+					cf_series.clearTerms();
 					cf_series.insert(*it, argsTuple);
 					SeriesFlattener<N - 1>::run(cf_series.begin()->cf, term, out, argsTuple);
 				}

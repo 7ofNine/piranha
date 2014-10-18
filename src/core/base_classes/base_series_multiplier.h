@@ -258,7 +258,7 @@ namespace piranha
 					tg.join_all();
 					// Take the retvals and insert them into final retval.
 					for (std::size_t i = 0; i < n; ++i) {
-						m_retval.insert_range(retvals[i].begin(),retvals[i].end(),m_argsTuple);
+						m_retval.insertRange(retvals[i].begin(),retvals[i].end(),m_argsTuple);
 					}
 				}
 			}

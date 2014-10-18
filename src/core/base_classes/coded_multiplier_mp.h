@@ -722,7 +722,7 @@ namespace piranha {
 			// Next recursion will operate on the term-to-be-inserted's coefficient.
 			cm_decode_impl2<typename DecodingTuple::tail_type>::run(final_cf,dt.get_tail(),gr.get_tail(),term.cf,vh_tuple.get_tail(),code,argsTuple);
 			// Before insering, let's make sure to clear up the contents of the coefficient series.
-			cf.clear_terms();
+			cf.clearTerms();
 			// Insert the result.
 			cf.insert(term,argsTuple);
 		}

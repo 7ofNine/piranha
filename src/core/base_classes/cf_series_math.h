@@ -41,7 +41,7 @@ namespace piranha
 			// No need to check, we are merging terms from this series.
 			retval.template insert<false, true>(term, argsTuple);
 		}
-		derived_cast->base_swap(retval);
+		derived_cast->baseSwap(retval);
 	}
 
 

@@ -125,7 +125,7 @@ namespace piranha
 				new_series.insert(*it, argsTuple);
 			}
 
-			base_swap(new_series);
+			baseSwap(new_series);
 		}
 	}
 
@@ -206,7 +206,7 @@ namespace piranha
 	{
 		if (multdiv_coefficients_helper<Number>::check_zero(x)) 
 		{
-			clear_terms();
+			clearTerms();
 		} else if (multdiv_coefficients_helper<Number>::check_non_unitary(x)) 
 		{
 			mult_div_coefficients_by<0>(x,argsTuple);
@@ -296,7 +296,7 @@ namespace piranha
 		{
 			Derived tmp;
 			base_partial(retval, tmp, pos_tuple, argsTuple);
-			tmp.base_swap(retval);
+			tmp.baseSwap(retval);
 		}
 
 		return retval;
@@ -376,7 +376,7 @@ namespace piranha
 				if (n >= 0) 
 				{
 					Derived tmp(derived_const_cast->natural_power((std::size_t)n, argsTuple));
-					retval.base_swap(tmp);
+					retval.baseSwap(tmp);
 
 				} else 
 				{
@@ -386,22 +386,22 @@ namespace piranha
 						// if available. Otherwise just use negative_integer_power.
 						try {
 							Derived tmp(derived_const_cast->base_inv(argsTuple));
-							retval.base_swap(tmp);
+							retval.baseSwap(tmp);
 
 						} catch (const not_implemented_error &) {
 							Derived tmp(derived_const_cast->negative_integer_power(n, argsTuple));
-							retval.base_swap(tmp);
+							retval.baseSwap(tmp);
 						}
 					} else 
 					{
 						Derived tmp(derived_const_cast->negative_integer_power(n, argsTuple));
-						retval.base_swap(tmp);
+						retval.baseSwap(tmp);
 					}
 				}
 			} else 
 			{
 				Derived tmp(derived_const_cast->real_power(y, argsTuple));
-				retval.base_swap(tmp);
+				retval.baseSwap(tmp);
 			}
 		}
 
@@ -424,28 +424,28 @@ namespace piranha
 				if (n >= 0) 
 				{
 					Derived tmp(derived_const_cast->natural_power((std::size_t)n, argsTuple));
-					retval.base_swap(tmp);
+					retval.baseSwap(tmp);
 				} else 
 				{
 					if (n == -1) 
 					{
 						try {
 							Derived tmp(derived_const_cast->base_inv(argsTuple));
-							retval.base_swap(tmp);
+							retval.baseSwap(tmp);
 						} catch (const not_implemented_error &) {
 							Derived tmp(derived_const_cast->negative_integer_power(n, argsTuple));
-							retval.base_swap(tmp);
+							retval.baseSwap(tmp);
 						}
 					} else 
 					{
 						Derived tmp(derived_const_cast->negative_integer_power(n, argsTuple));
-						retval.base_swap(tmp);
+						retval.baseSwap(tmp);
 					}
 				}
 			} else 
 			{
 				Derived tmp(derived_const_cast->rational_power(q, argsTuple));
-				retval.base_swap(tmp);
+				retval.baseSwap(tmp);
 			}
 		}
 		return retval;

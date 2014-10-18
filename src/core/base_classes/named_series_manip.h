@@ -66,7 +66,7 @@ namespace piranha
 		if (derivedCast != &ps2)
         {
 			named_series_swap<ArgsTupleType>::run(argumentsTuple, ps2.argumentsTuple);
-			derivedCast->base_swap(ps2);
+			derivedCast->baseSwap(ps2);
 		}
 	}
 
@@ -398,7 +398,7 @@ namespace piranha
 			// Let's proceed to the terms now.
 			Derived tmp;
 			derivedCast->trim_terms(trim_flags, tmp, argumentsTuple);
-			derivedCast->base_swap(tmp);
+			derivedCast->baseSwap(tmp);
 		}
 	}
 

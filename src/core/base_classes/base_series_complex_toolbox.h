@@ -135,7 +135,7 @@ namespace piranha
 			{
 				// Make sure we are being called from an empty series.
 				PIRANHA_ASSERT(derived_const_cast->empty());
-				derived_cast->insert_range(r.begin(),r.end(),argsTuple);
+				derived_cast->insertRange(r.begin(),r.end(),argsTuple);
 			}
 
 

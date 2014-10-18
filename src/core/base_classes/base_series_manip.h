@@ -135,7 +135,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::insert_range(const Iterator &begin,
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::insertRange(const Iterator &begin,
 		const Iterator &end, const ArgsTuple &argsTuple)
 	{
 		for (Iterator it = begin; it != end; ++it) 
@@ -185,7 +185,7 @@ namespace piranha
 			// Check if the new coefficient can be ignored.
 			if (it->cf.is_ignorable(argsTuple)) 
 			{
-				erase_term(it);
+				eraseTerm(it);
 			}
 		}
 	}
@@ -206,7 +206,7 @@ namespace piranha
 
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::erase_term(const const_iterator &it)
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::eraseTerm(const const_iterator &it)
 	{
 		m_container.erase(it);
 	}
@@ -217,7 +217,7 @@ namespace piranha
 	 * All terms get swapped.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_swap(Derived &ps2)
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSwap(Derived &ps2)
 	{
 		PIRANHA_ASSERT(derived_cast != &ps2);
 		m_container.swap(ps2.m_container);
@@ -289,7 +289,7 @@ namespace piranha
     // empties the container of the BaseSeries object i.e. the container and the series is empty. is that a good idea????
     //it raises the question of 'what is an empty series?'
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::clear_terms()
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::clearTerms()
 	{
 		m_container.clear();
 	}

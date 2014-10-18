@@ -164,7 +164,7 @@ namespace piranha
 			//@{
 			size_type length()       const;
 			bool      empty()        const;
-			bool      isSingleCf() const;
+			bool      isSingleCf()   const;
 			size_type atoms()        const;
 			//@}
 
@@ -190,9 +190,9 @@ namespace piranha
 
 			/** @name Series manipulation. */
 			//@{
-			void erase_term(const const_iterator &);
+			void eraseTerm(const const_iterator &);
 
-			void clear_terms();
+			void clearTerms();
 
 			template <bool, bool, class Term2, class ArgsTuple>
 			void insert(const Term2 &, const ArgsTuple &);
@@ -201,9 +201,9 @@ namespace piranha
 			void insert(const Term2 &, const ArgsTuple &);
 
 			template <class Iterator, class ArgsTuple>
-			void insert_range(const Iterator &, const Iterator &, const ArgsTuple &);
+			void insertRange(const Iterator &, const Iterator &, const ArgsTuple &);
 
-			void base_swap(Derived &);
+			void baseSwap(Derived &);
 
 			template <class Series, class ArgsTuple>
 			void base_split(std::vector<std::vector<Series> > &, const int &n, const ArgsTuple &) const;
