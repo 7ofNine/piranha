@@ -277,7 +277,7 @@ namespace piranha
 		{
 			RetSeries tmp = SubFunctor::template run<RetSeries>(it->cf, pos_tuple, sub_caches,argsTuple);
 			// NOTICE: series multadd here?
-			tmp.base_mult_by(SubFunctor::template run<RetSeries>(it->key, pos_tuple, sub_caches, argsTuple), argsTuple);
+			tmp.baseMultBy(SubFunctor::template run<RetSeries>(it->key, pos_tuple, sub_caches, argsTuple), argsTuple);
 
 			retval.baseAdd(tmp,argsTuple);
 		}

@@ -63,7 +63,7 @@ namespace piranha
 		void multiply(T &orig, const T &other) const
 		{
 			PIRANHA_ASSERT(m_argsTuple);
-			orig.base_mult_by(other,*m_argsTuple);
+			orig.baseMultBy(other,*m_argsTuple);
 		}
 		template <class U>
 		T pow(const T &orig, const U &y) const

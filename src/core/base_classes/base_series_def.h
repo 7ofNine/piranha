@@ -249,10 +249,10 @@ namespace piranha
 			Derived &baseAdd(const T &, const ArgsTuple &);
 
 			template <class T, class ArgsTuple>
-			Derived &base_subtract(const T &, const ArgsTuple &);
+			Derived &baseSubtract(const T &, const ArgsTuple &);
 
 			template <class T, class ArgsTuple>
-			Derived &base_mult_by(const T &, const ArgsTuple &);
+			Derived &baseMultBy(const T &, const ArgsTuple &);
 
 			template <class T, class ArgsTuple>
 			Derived &base_divide_by(const T &, const ArgsTuple &);

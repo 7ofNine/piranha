@@ -55,7 +55,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void base_set_real(const RealDerived &r, const ArgsTuple &argsTuple) 
 			{
-				derived_cast->base_subtract(base_real(argsTuple), argsTuple);
+				derived_cast->baseSubtract(base_real(argsTuple), argsTuple);
 				derived_cast->baseAdd(r, argsTuple);
 			}
 
@@ -93,8 +93,8 @@ namespace piranha
 			RealDerived base_abs2(const ArgsTuple &argsTuple) const
 			{
 				RealDerived retval = base_real(argsTuple), tmp = base_imag(argsTuple);
-				retval.base_mult_by(retval,argsTuple);
-				tmp.base_mult_by(tmp,argsTuple);
+				retval.baseMultBy(retval,argsTuple);
+				tmp.baseMultBy(tmp,argsTuple);
 				retval.baseAdd(tmp,argsTuple);
 				return retval;
 			}
@@ -113,7 +113,7 @@ namespace piranha
 				Derived retval;
 				retval.baseAdd(base_real(argsTuple),argsTuple);
 				RealDerived tmp = base_imag(argsTuple);
-				tmp.base_mult_by(-1, argsTuple);
+				tmp.baseMultBy(-1, argsTuple);
 				retval.base_set_imag(tmp, argsTuple);
 				return retval;
 			}
@@ -125,7 +125,7 @@ namespace piranha
 			Derived base_inv(const ArgsTuple &argsTuple) const 
 			{
 				Derived retval = base_conjugate(argsTuple);
-				retval.base_mult_by(base_abs2(argsTuple).base_pow(-1,argsTuple),argsTuple);
+				retval.baseMultBy(base_abs2(argsTuple).base_pow(-1,argsTuple),argsTuple);
 				return retval;
 			}
 

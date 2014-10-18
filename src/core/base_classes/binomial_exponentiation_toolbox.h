@@ -98,7 +98,7 @@ namespace piranha
 				Derived Ainv;
 				Ainv.insert(tmp_term, argsTuple);
 				// Now let's compute X/A.
-				XoverA.base_mult_by(Ainv, argsTuple);
+				XoverA.baseMultBy(Ainv, argsTuple);
 				// Get the expansion limit from the truncator.
 				std::size_t n;
 				try {
@@ -139,13 +139,13 @@ namespace piranha
 				retval.baseAdd(tmp, argsTuple);
 				for (std::size_t i = 1; i < n; ++i) 
                 {
-					tmp.base_mult_by(y - (double)i + 1, argsTuple);
+					tmp.baseMultBy(y - (double)i + 1, argsTuple);
 					tmp.base_divide_by(boost::numeric_cast<int>(i), argsTuple);
-					tmp.base_mult_by(XoverA, argsTuple);
+					tmp.baseMultBy(XoverA, argsTuple);
 					retval.baseAdd(tmp, argsTuple);
 				}
 				// Finally, multiply the result of the summation by A**y.
-				retval.base_mult_by(Apowy, argsTuple);
+				retval.baseMultBy(Apowy, argsTuple);
 				return retval;
 			}
 	};

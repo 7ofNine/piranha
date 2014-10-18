@@ -57,7 +57,7 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::subtract(const T &x, const ArgsTuple &argsTuple)
 	{
-		return derived_cast->base_subtract(x, argsTuple);
+		return derived_cast->baseSubtract(x, argsTuple);
 	}
 
 
@@ -65,7 +65,7 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::mult_by(const T &x, const ArgsTuple &argsTuple)
 	{
-		return derived_cast->base_mult_by(x, argsTuple);
+		return derived_cast->baseMultBy(x, argsTuple);
 	}
 
 

@@ -93,7 +93,7 @@ namespace piranha
 						// Take care of the constant element.
 						std::complex<Derived> tmp;
 						tmp.insert(complex_term_type((*it)->cf.ei(argsTuple),key_type()),argsTuple);
-						retval.base_mult_by(tmp,argsTuple);
+						retval.baseMultBy(tmp,argsTuple);
 					}
 				}
 

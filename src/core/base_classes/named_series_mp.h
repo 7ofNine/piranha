@@ -56,7 +56,7 @@ namespace piranha
 		template <class Derived>
 		static Derived & run(Derived &series, const T &x)
 		{
-			return series.base_subtract(x, series.argumentsTuple);
+			return series.baseSubtract(x, series.argumentsTuple);
 		}
 	};
 

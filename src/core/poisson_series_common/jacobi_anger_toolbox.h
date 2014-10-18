@@ -61,7 +61,7 @@ namespace piranha
 					// Skip the iterator we want to avoid.
 					if (it != it_avoid) 
 					{
-						retval.base_mult_by(jacang_term(it, argsTuple), argsTuple);
+						retval.baseMultBy(jacang_term(it, argsTuple), argsTuple);
 					}
 				}
 			}

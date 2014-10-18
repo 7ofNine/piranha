@@ -431,7 +431,7 @@ namespace piranha
 
 						tmp_series.insert(tmp_term1, argsTuple);
 						tmp_series.insert(tmp_term2, argsTuple);
-						retval.base_mult_by(tmp_series, argsTuple);
+						retval.baseMultBy(tmp_series, argsTuple);
 					}
 
 					// Finally, the residual.
@@ -442,7 +442,7 @@ namespace piranha
 						tmp.key      = (*it_avoid)->key;
 						term_type *ptr = &tmp;
 
-						retval.base_mult_by(derived_const_cast->jacang_term(&ptr, argsTuple), argsTuple);
+						retval.baseMultBy(derived_const_cast->jacang_term(&ptr, argsTuple), argsTuple);
 					}
 				}
 

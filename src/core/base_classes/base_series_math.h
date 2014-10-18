@@ -156,7 +156,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_subtract(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSubtract(const T &x, const ArgsTuple &argsTuple)
 	{
 		return BaseSeriesSubtractSelector<T>::run(*derived_cast, x, argsTuple);
 	}
@@ -217,7 +217,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_mult_by(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseMultBy(const T &x, const ArgsTuple &argsTuple)
 	{
 		return BaseSeriesMultiplySelector<Derived, T>::run(*derived_cast, x, argsTuple);
 	}
@@ -266,11 +266,11 @@ namespace piranha
 		{
 			Series tmp1(it->cf.template partial<Series>(pos_tuple, argsTuple));
 
-			tmp1.base_mult_by(Series::baseSeriesFromKey(it->key, argsTuple), argsTuple);
+			tmp1.baseMultBy(Series::baseSeriesFromKey(it->key, argsTuple), argsTuple);
 
 			Series tmp2(it->key.template partial<Series>(pos_tuple, argsTuple));
 
-			tmp2.base_mult_by(Series::baseSeriesFromCf(it->cf, argsTuple), argsTuple);
+			tmp2.baseMultBy(Series::baseSeriesFromCf(it->cf, argsTuple), argsTuple);
 
 			out.baseAdd(tmp1, argsTuple);
 			out.baseAdd(tmp2, argsTuple);
@@ -499,20 +499,20 @@ namespace piranha
 		}
 		case 2: {
 			retval = *derived_const_cast;
-			retval.base_mult_by(*derived_const_cast, argsTuple);
+			retval.baseMultBy(*derived_const_cast, argsTuple);
 			break;
 		}
 		case 3: {
 			retval = *derived_const_cast;
-			retval.base_mult_by(*derived_const_cast, argsTuple);
-			retval.base_mult_by(*derived_const_cast, argsTuple);
+			retval.baseMultBy(*derived_const_cast, argsTuple);
+			retval.baseMultBy(*derived_const_cast, argsTuple);
 			break;
 		}
 		case 4: {
 			retval = *derived_const_cast;
-			retval.base_mult_by(*derived_const_cast, argsTuple);
-			retval.base_mult_by(*derived_const_cast, argsTuple);
-			retval.base_mult_by(*derived_const_cast, argsTuple);
+			retval.baseMultBy(*derived_const_cast, argsTuple);
+			retval.baseMultBy(*derived_const_cast, argsTuple);
+			retval.baseMultBy(*derived_const_cast, argsTuple);
 			break;
 		}
 		default: {
@@ -523,12 +523,12 @@ namespace piranha
 			std::size_t i = n;
 			while (i) {
 				if (i & 1) {
-					retval.base_mult_by(tmp, argsTuple);
+					retval.baseMultBy(tmp, argsTuple);
 					--i;
 				}
 				i /= 2;
 				if (i != 0) {
-					tmp.base_mult_by(tmp, argsTuple);
+					tmp.baseMultBy(tmp, argsTuple);
 				}
 			}
 			}

@@ -110,7 +110,7 @@ namespace piranha
 				{
 					for (std::size_t j = 0; j < a_size; ++j) 
 					{
-						tmp.base_mult_by(a_list[j] + (int)(i - 1), argsTuple);
+						tmp.baseMultBy(a_list[j] + (int)(i - 1), argsTuple);
 					}
 
 					for (std::size_t j = 0; j < b_size; ++j) 
@@ -119,7 +119,7 @@ namespace piranha
 					}
 
 					tmp.base_divide_by(boost::numeric_cast<int>(i), argsTuple);
-					tmp.base_mult_by(*derived_const_cast,argsTuple);
+					tmp.baseMultBy(*derived_const_cast,argsTuple);
 					retval.baseAdd(tmp,argsTuple);
 				}
 
@@ -162,7 +162,7 @@ namespace piranha
 				}
 
 				Derived retval(base_hyperF(new_a, new_b, iter_limit, argsTuple));
-				retval.base_mult_by(factor, argsTuple);
+				retval.baseMultBy(factor, argsTuple);
 				return retval;
 			}
 
@@ -186,13 +186,13 @@ namespace piranha
 				// Calculate this/2.
 				Derived x_2(*derived_const_cast);
 				x_2.base_divide_by(2, argsTuple);
-				retval = Derived(x_2).base_mult_by(-1, argsTuple).base_mult_by(x_2, argsTuple)
+				retval = Derived(x_2).baseMultBy(-1, argsTuple).baseMultBy(x_2, argsTuple)
 					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, argsTuple);
-				retval.base_mult_by(x_2.base_pow(order, argsTuple), argsTuple);
+				retval.baseMultBy(x_2.base_pow(order, argsTuple), argsTuple);
 				retval.base_divide_by(mp_integer(order).factorial(), argsTuple);
 				if (order_ < 0) 
 				{
-					retval.base_mult_by(cs_phase(order_), argsTuple);
+					retval.baseMultBy(cs_phase(order_), argsTuple);
 				}
 				return retval;
 			}
@@ -209,7 +209,7 @@ namespace piranha
 				{
 					// Exploit the fact that for order == 0, derivative is -J_1.
 					retval = base_besselJ(1, argsTuple);
-					retval.base_mult_by(-1, argsTuple);
+					retval.baseMultBy(-1, argsTuple);
 					return retval;
 				}
 
@@ -234,18 +234,18 @@ namespace piranha
 				retval.base_divide_by(2, argsTuple);
 				// This will be used later.
 				Derived square_x2(retval);
-				square_x2.base_mult_by(square_x2, argsTuple);
+				square_x2.baseMultBy(square_x2, argsTuple);
 				retval = retval.base_pow(order - 1, argsTuple);
 				retval.base_divide_by(mp_integer(order).factorial(), argsTuple);
-				retval.base_mult_by(order, argsTuple);
+				retval.baseMultBy(order, argsTuple);
 				retval.base_divide_by(2, argsTuple);
 				// Now let's proceed to the bulk of the power series expansion.
 				Derived tmp(retval);
 				for (int i = 1; i < (int)limit; ++i) 
 				{
-					tmp.base_mult_by((-1) * (mp_integer(order) + 2 * mp_integer(i)), argsTuple);
+					tmp.baseMultBy((-1) * (mp_integer(order) + 2 * mp_integer(i)), argsTuple);
 					tmp.base_divide_by((mp_integer(i) * (mp_integer(i) + order)) * (mp_integer(order) + 2 * (mp_integer(i) - 1)), argsTuple);
-					tmp.base_mult_by(square_x2, argsTuple);
+					tmp.baseMultBy(square_x2, argsTuple);
 					retval.baseAdd(tmp, argsTuple);
 				}
 				return retval;
@@ -268,14 +268,14 @@ namespace piranha
 				Derived x_2(*derived_const_cast);
 				x_2.base_divide_by(2, argsTuple);
 
-				retval = Derived(x_2).base_mult_by(-1, argsTuple).base_mult_by(x_2, argsTuple)
+				retval = Derived(x_2).baseMultBy(-1, argsTuple).baseMultBy(x_2, argsTuple)
 					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, argsTuple);
-				retval.base_mult_by(derived_const_cast->base_pow(order - m, argsTuple), argsTuple);
+				retval.baseMultBy(derived_const_cast->base_pow(order - m, argsTuple), argsTuple);
 				retval.base_divide_by(mp_integer(order).factorial() * mp_integer(2).pow(order), argsTuple);
 
 				if (order_ < 0) 
 				{
-					retval.base_mult_by(cs_phase(order_), argsTuple);
+					retval.baseMultBy(cs_phase(order_), argsTuple);
 				}
 
 				return retval;

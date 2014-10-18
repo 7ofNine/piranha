@@ -363,7 +363,7 @@ namespace piranha
 					// NOTE: move semantics here?
 					copy[pos] -= 1;
 					retval = Series::baseSeriesFromKey(copy,argsTuple);
-					retval.base_mult_by((*this)[pos],argsTuple);
+					retval.baseMultBy((*this)[pos],argsTuple);
 				}
 				return retval;
 			}
@@ -413,7 +413,7 @@ namespace piranha
 					PIRANHA_ASSERT(retval.empty());
 					// NOTICE: series multadd here?
 					retval.baseAdd(orig, argsTuple);
-					retval.base_mult_by(sub_caches.template get<ancestor::position>()[(*this)[pos]], argsTuple);
+					retval.baseMultBy(sub_caches.template get<ancestor::position>()[(*this)[pos]], argsTuple);
 				}
 				return retval;
 			}

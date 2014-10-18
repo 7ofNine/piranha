@@ -85,12 +85,12 @@ namespace piranha
 				// Optimize the cases of single coefficient series.
 				if (s2.isSingleCf() && algo == settings::automatic)
 				{
-					derived_cast->base_mult_by(s2.begin()->cf, argsTuple);
+					derived_cast->baseMultBy(s2.begin()->cf, argsTuple);
 				} else if (derived_const_cast->isSingleCf() && algo == settings::automatic)
 				{
 					Derived tmp;
 					tmp.insertRange(s2.begin(),s2.end(),argsTuple);
-					tmp.base_mult_by(derived_const_cast->begin()->cf, argsTuple);
+					tmp.baseMultBy(derived_const_cast->begin()->cf, argsTuple);
 					derived_cast->baseSwap(tmp);
 				} else
 				{
