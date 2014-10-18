@@ -62,7 +62,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::print_terms_plain(std::ostream &stream, const ArgsTuple &argsTuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::printTermsPlain(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
 		const const_iterator itf = end();
 		const_iterator it = begin();
@@ -116,7 +116,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::print_terms_pretty(std::ostream &stream, const ArgsTuple &argsTuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::printTermsPretty(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
 		if (empty()) 
         {
@@ -161,7 +161,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::print_terms_tex(std::ostream &stream, const ArgsTuple &argsTuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::printTermsTEX(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
 		if (empty()) 
         {

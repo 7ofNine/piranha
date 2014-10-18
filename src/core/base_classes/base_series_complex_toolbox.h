@@ -103,7 +103,7 @@ namespace piranha
 			template <class ArgsTuple>
 			RealDerived base_abs(const ArgsTuple &argsTuple) const
 			{
-				return base_abs2(argsTuple).base_root(2,argsTuple);
+				return base_abs2(argsTuple).baseRoot(2,argsTuple);
 			}
 
 

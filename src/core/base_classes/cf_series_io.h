@@ -60,7 +60,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::print_plain(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
-		derived_const_cast->print_terms_plain(stream, argsTuple);
+		derived_const_cast->printTermsPlain(stream, argsTuple);
 	}
 
 	/// Print in pretty mode.
@@ -72,7 +72,7 @@ namespace piranha
         {
 			stream << '(';
 		}
-		derived_const_cast->print_terms_pretty(stream, argsTuple);
+		derived_const_cast->printTermsPretty(stream, argsTuple);
 		
         if (derived_const_cast->length() > 1) 
         {
@@ -90,7 +90,7 @@ namespace piranha
 			stream << "\\left(";
 		}
 
-		derived_const_cast->print_terms_tex(stream, argsTuple);
+		derived_const_cast->printTermsTEX(stream, argsTuple);
 		
         if (derived_const_cast->length() > 1) 
         {

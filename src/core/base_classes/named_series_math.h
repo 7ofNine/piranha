@@ -160,7 +160,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::root(const int &n) const
 	{
-		Derived retval(derived_const_cast->base_root(n, argumentsTuple));
+		Derived retval(derived_const_cast->baseRoot(n, argumentsTuple));
 		retval.argumentsTuple = argumentsTuple;
 		retval.trim();
 		return retval;
@@ -174,7 +174,7 @@ namespace piranha
 		typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::type pos_tuple_type;
 		const Psym p(name);
 		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p), argumentsTuple);
-		Derived retval(derived_const_cast->base_partial(n, pos_tuple, argumentsTuple));
+		Derived retval(derived_const_cast->basePartial(n, pos_tuple, argumentsTuple));
 		retval.argumentsTuple = argumentsTuple;
 		retval.trim();
 		return retval;

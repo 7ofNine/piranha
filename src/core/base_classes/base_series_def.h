@@ -279,28 +279,28 @@ namespace piranha
 			Derived rationalPower(const mp_rational &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			Derived base_root(const int &, const ArgsTuple &) const;
+			Derived baseRoot(const int &, const ArgsTuple &) const;
 
 			template <class Series, class PosTuple, class ArgsTuple>
-			static void base_partial(const Derived &, Series &, const PosTuple &, const ArgsTuple &);
+			static void basePartial(const Derived &, Series &, const PosTuple &, const ArgsTuple &);
 
 			template <class PosTuple, class ArgsTuple>
-			Derived base_partial(int, const PosTuple &, const ArgsTuple &) const;
+			Derived basePartial(int, const PosTuple &, const ArgsTuple &) const;
 
 			template <class PosTuple, class ArgsTuple>
-			Derived base_partial(const PosTuple &, const ArgsTuple &) const;
+			Derived basePartial(const PosTuple &, const ArgsTuple &) const;
 			//@}
 
 			/** @name Base output streaming methods. */
 			//@{
 			template <class ArgsTuple>
-			void print_terms_plain(std::ostream &, const ArgsTuple &) const;
+			void printTermsPlain(std::ostream &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			void print_terms_tex(std::ostream &, const ArgsTuple &) const;
+			void printTermsTEX(std::ostream &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			void print_terms_pretty(std::ostream &, const ArgsTuple &) const;
+			void printTermsPretty(std::ostream &, const ArgsTuple &) const;
             //@}
 
 			// Standard substitution functor. Will call sub() on coefficients and keys.

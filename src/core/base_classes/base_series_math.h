@@ -252,7 +252,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Series, class PosTuple, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_partial(const Derived &in, Series &out, const PosTuple &pos_tuple, const ArgsTuple &argsTuple)
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(const Derived &in, Series &out, const PosTuple &pos_tuple, const ArgsTuple &argsTuple)
 	{
 		PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 			                 "Size mismatch between args tuple and pos tuple in partial derivative.");
@@ -284,7 +284,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_partial(int n, const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(int n, const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 	{
 		if (n < 0) 
 		{
@@ -295,7 +295,7 @@ namespace piranha
 		for (; n > 0; --n) 
 		{
 			Derived tmp;
-			base_partial(retval, tmp, pos_tuple, argsTuple);
+			basePartial(retval, tmp, pos_tuple, argsTuple);
 			tmp.baseSwap(retval);
 		}
 
@@ -305,9 +305,9 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_partial(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 	{
-		return base_partial(1, pos_tuple, argsTuple);
+		return basePartial(1, pos_tuple, argsTuple);
 	}
 
 
@@ -542,7 +542,7 @@ namespace piranha
 	/// Nth root.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_root(const int &n,
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseRoot(const int &n,
 			const ArgsTuple &argsTuple) const
 	{
 		return basePow(mp_rational(1, n), argsTuple);

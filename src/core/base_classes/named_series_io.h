@@ -77,7 +77,7 @@ namespace piranha
 	{
 		named_series_print_plain<arguments_description>(stream, argumentsTuple);
 		stream << "[terms]" << std::endl;
-		derived_const_cast->print_terms_plain(stream, argumentsTuple);
+		derived_const_cast->printTermsPlain(stream, argumentsTuple);
 	}
 
 
@@ -85,7 +85,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::print_pretty(std::ostream &stream) const
 	{
-		derived_const_cast->print_terms_pretty(stream, argumentsTuple);
+		derived_const_cast->printTermsPretty(stream, argumentsTuple);
 	}
 
 
@@ -93,7 +93,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::print_tex(std::ostream &stream) const
 	{
-		derived_const_cast->print_terms_tex(stream, argumentsTuple);
+		derived_const_cast->printTermsTEX(stream, argumentsTuple);
 	}
 
 
