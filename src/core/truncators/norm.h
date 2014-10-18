@@ -109,7 +109,7 @@ namespace truncators {
 								"cannot calculate limit of power series expansion");
 						}
 
-						const double norm = x.base_norm(argsTuple);
+						const double norm = x.baseNorm(argsTuple);
 						PIRANHA_ASSERT(norm >= 0);
 						if (norm >= 1) 
 						{

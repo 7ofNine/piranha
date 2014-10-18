@@ -87,7 +87,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline double NamedSeries<__PIRANHA_NAMED_SERIES_TP>::norm() const
 	{
-		return derived_const_cast->base_norm(argumentsTuple);
+		return derived_const_cast->baseNorm(argumentsTuple);
 	}
 
 
@@ -95,7 +95,7 @@ namespace piranha
 	inline typename TermEvalTypeDeterminer<Term>::type
 	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::eval(const double &t) const
 	{
-		return derived_const_cast->base_eval(t, argumentsTuple);
+		return derived_const_cast->baseEval(t, argumentsTuple);
 	}
 
 	// TMP function for checking that evaluation dictionary has all the elements needed.
@@ -195,12 +195,12 @@ namespace piranha
 		// comparison function.
 		if (argumentsTuple == other.arguments()) 
         {
-			return derived_const_cast->base_equal_to(other);
+			return derived_const_cast->baseEqualTo(other);
 		}
 
 		// If we have same sizes of arguments tuples but they are not identical, then we may have to do
 		// an arguments merge an see if the arguments are permutated or they are really different.
-		// NOTE: this check is repeated in base_equal_to, but doing it here could save a lot of work below.
+		// NOTE: this check is repeated in baseEqualTo, but doing it here could save a lot of work below.
 		if (derived_const_cast->length() != other.length())
         {
 			return false;
@@ -232,7 +232,7 @@ namespace piranha
 		derived_const_cast->applyLayoutToTerms(l, tmp, tmp.argumentsTuple);
 		
         // Now we can perform the comparison between tmp and other.
-		return tmp.base_equal_to(other);
+		return tmp.baseEqualTo(other);
 	}
 
 

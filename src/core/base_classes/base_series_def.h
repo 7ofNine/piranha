@@ -234,19 +234,19 @@ namespace piranha
 			/** @name Base comparison methods. */
 			//@{
 			template <class T>
-			bool base_equal_to(const T &) const;
+			bool baseEqualTo(const T &) const;
 
 			//@}
 			/** @name Base maths. */
 			//@{
 			template <class ArgsTuple>
-			double base_norm(const ArgsTuple &) const;
+			double baseNorm(const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			EvalType base_eval(const double &, const ArgsTuple &) const;
+			EvalType baseEval(const double &, const ArgsTuple &) const;
 
 			template <class T, class ArgsTuple>
-			Derived &base_add(const T &, const ArgsTuple &);
+			Derived &baseAdd(const T &, const ArgsTuple &);
 
 			template <class T, class ArgsTuple>
 			Derived &base_subtract(const T &, const ArgsTuple &);

@@ -49,7 +49,7 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::add(const T &x, const ArgsTuple &argsTuple)
 	{
-		return derived_cast->base_add(x, argsTuple);
+		return derived_cast->baseAdd(x, argsTuple);
 	}
 
 

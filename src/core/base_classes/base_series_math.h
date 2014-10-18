@@ -148,7 +148,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_add(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseAdd(const T &x, const ArgsTuple &argsTuple)
 	{
 		return BaseSeriesAddSelector<T>::run(*derived_cast, x, argsTuple);
 	}
@@ -272,8 +272,8 @@ namespace piranha
 
 			tmp2.base_mult_by(Series::baseSeriesFromCf(it->cf, argsTuple), argsTuple);
 
-			out.base_add(tmp1, argsTuple);
-			out.base_add(tmp2, argsTuple);
+			out.baseAdd(tmp1, argsTuple);
+			out.baseAdd(tmp2, argsTuple);
 		}
 	}
 
@@ -326,7 +326,7 @@ namespace piranha
 			} else if (y == 0) 
 			{
 				// 0**0 == 1.
-				retval.base_add(1, argsTuple);
+				retval.baseAdd(1, argsTuple);
 				return true;
 
 			} else 
@@ -490,7 +490,7 @@ namespace piranha
 		Derived retval;
 		switch (n) {
 		case 0: {
-			retval.base_add(1, argsTuple);
+			retval.baseAdd(1, argsTuple);
 			break;
 		}
 		case 1: {
@@ -516,7 +516,7 @@ namespace piranha
 			break;
 		}
 		default: {
-			retval.base_add(1, argsTuple);
+			retval.baseAdd(1, argsTuple);
 			// Use scoping here to have tmp destroyed when it is not needed anymore.
 			{
 			Derived tmp(*derived_const_cast);

@@ -279,7 +279,7 @@ namespace piranha
 			// NOTICE: series multadd here?
 			tmp.base_mult_by(SubFunctor::template run<RetSeries>(it->key, pos_tuple, sub_caches, argsTuple), argsTuple);
 
-			retval.base_add(tmp,argsTuple);
+			retval.baseAdd(tmp,argsTuple);
 		}
 
 		return retval;

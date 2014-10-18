@@ -76,7 +76,7 @@ namespace piranha
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
 						this->m_arith_functor.m_argsTuple = argsTuple;
-						this->m_container[T(0)] = std::complex<SubSeries>().base_add(1, *argsTuple);
+						this->m_container[T(0)] = std::complex<SubSeries>().baseAdd(1, *argsTuple);
 						try {
 							std::complex<SubSeries> tmp1(s.base_ei(*argsTuple));
 							this->m_container[T(1)] = tmp1;
@@ -138,7 +138,7 @@ namespace piranha
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
 						this->m_arith_functor.m_argsTuple = argsTuple;
-						this->m_container[T(0)] = SubSeries().base_add(1, *argsTuple);
+						this->m_container[T(0)] = SubSeries().baseAdd(1, *argsTuple);
 						this->m_container[T(1)] = s;
 						this->m_container[T(-1)] = s.base_conjugate(*argsTuple);
 					}
@@ -655,7 +655,7 @@ namespace piranha
 					PIRANHA_ASSERT(retval.empty());
 					if (this->getFlavour()) 
 					{
-						retval.base_add(orig_cos, argsTuple);
+						retval.baseAdd(orig_cos, argsTuple);
 						retval.base_mult_by(
 							sub_caches.template get<ancestor::position>()[power].base_real(argsTuple),
 						argsTuple);
@@ -665,7 +665,7 @@ namespace piranha
 						retval.base_subtract(orig_sin, argsTuple);
 					} else 
 					{
-						retval.base_add(orig_sin, argsTuple);
+						retval.baseAdd(orig_sin, argsTuple);
 						retval.base_mult_by(
 							sub_caches.template get<ancestor::position>()[power].base_real(argsTuple),
 						argsTuple);
@@ -674,7 +674,7 @@ namespace piranha
 						argsTuple);
 						// NOTE: series multadd here (and multiply by -1 to do subtraction too)?
 						// Below too...
-						retval.base_add(orig_cos, argsTuple);
+						retval.baseAdd(orig_cos, argsTuple);
 					}
 				}
 				return retval;
@@ -712,16 +712,16 @@ namespace piranha
 					
                     if (flavour) 
 					{
-						retval.base_add(orig_cos, argsTuple);
+						retval.baseAdd(orig_cos, argsTuple);
 						retval.base_mult_by(sub_caches.template get<ancestor::position>()[power].base_real(argsTuple), argsTuple);
 						orig_sin.base_mult_by(sub_caches.template get<ancestor::position>()[power].base_imag(argsTuple), argsTuple);
 						retval.base_subtract(orig_sin, argsTuple);
 					} else 
 					{
-						retval.base_add(orig_sin, argsTuple);
+						retval.baseAdd(orig_sin, argsTuple);
 						retval.base_mult_by(sub_caches.template get<ancestor::position>()[power].base_real(argsTuple), argsTuple);
 						orig_cos.base_mult_by(sub_caches.template get<ancestor::position>()[power].base_imag(argsTuple), argsTuple);
-						retval.base_add(orig_cos, argsTuple);
+						retval.baseAdd(orig_cos, argsTuple);
 					}
 				}
 

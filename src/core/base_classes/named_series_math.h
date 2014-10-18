@@ -52,7 +52,7 @@ namespace piranha
 			merge_args(s2);
 			if (Sign) 
 			{
-				derived_cast->base_add(s2, argumentsTuple);
+				derived_cast->baseAdd(s2, argumentsTuple);
 
 			} else 
 			{

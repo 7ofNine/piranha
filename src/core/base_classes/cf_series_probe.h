@@ -50,7 +50,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline double cf_series<__PIRANHA_CF_SERIES_TP>::norm(const ArgsTuple &argsTuple) const
 	{
-		return (derived_const_cast->base_norm(argsTuple));
+		return (derived_const_cast->baseNorm(argsTuple));
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
@@ -58,14 +58,14 @@ namespace piranha
 	inline typename TermEvalTypeDeterminer<Term>::type
 		cf_series<__PIRANHA_CF_SERIES_TP>::eval(const double &t, const ArgsTuple &argsTuple) const
 	{
-		return (derived_const_cast->base_eval(t,argsTuple));
+		return (derived_const_cast->baseEval(t,argsTuple));
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class T>
 	inline bool cf_series<__PIRANHA_CF_SERIES_TP>::operator==(const T &x) const
 	{
-		return derived_const_cast->base_equal_to(x);
+		return derived_const_cast->baseEqualTo(x);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>

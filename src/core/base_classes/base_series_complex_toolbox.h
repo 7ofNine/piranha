@@ -56,7 +56,7 @@ namespace piranha
 			void base_set_real(const RealDerived &r, const ArgsTuple &argsTuple) 
 			{
 				derived_cast->base_subtract(base_real(argsTuple), argsTuple);
-				derived_cast->base_add(r, argsTuple);
+				derived_cast->baseAdd(r, argsTuple);
 			}
 
 
@@ -95,7 +95,7 @@ namespace piranha
 				RealDerived retval = base_real(argsTuple), tmp = base_imag(argsTuple);
 				retval.base_mult_by(retval,argsTuple);
 				tmp.base_mult_by(tmp,argsTuple);
-				retval.base_add(tmp,argsTuple);
+				retval.baseAdd(tmp,argsTuple);
 				return retval;
 			}
 
@@ -111,7 +111,7 @@ namespace piranha
 			Derived base_conjugate(const ArgsTuple &argsTuple) const 
 			{
 				Derived retval;
-				retval.base_add(base_real(argsTuple),argsTuple);
+				retval.baseAdd(base_real(argsTuple),argsTuple);
 				RealDerived tmp = base_imag(argsTuple);
 				tmp.base_mult_by(-1, argsTuple);
 				retval.base_set_imag(tmp, argsTuple);

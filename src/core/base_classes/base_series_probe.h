@@ -45,7 +45,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline double BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_norm(const ArgsTuple &argsTuple) const
+	inline double BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseNorm(const ArgsTuple &argsTuple) const
 	{
 		const const_iterator itf = end();
 		double retval = 0;
@@ -61,7 +61,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::EvalType
-		BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_eval(const double &t, const ArgsTuple &argsTuple) const
+		BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseEval(const double &t, const ArgsTuple &argsTuple) const
 	{
 		const const_iterator itf = end();
 		EvalType retval(0);
@@ -209,7 +209,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T>
-	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_equal_to(const T &x) const
+	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseEqualTo(const T &x) const
 	{
 		return BaseSeriesEqualToSelector<T>::run(*derived_const_cast, x);
 	}

@@ -52,7 +52,7 @@ namespace piranha
 				// HyperF of a null series will always be equal to 1.
 				if (derived_const_cast->empty()) 
 				{
-					retval.base_add(1,argsTuple);
+					retval.baseAdd(1,argsTuple);
 					return retval;
 				}
 				// If one of the elements in a_list is zero, hyperF will always be 1.
@@ -60,7 +60,7 @@ namespace piranha
 				{
 					if (a_list[i] == 0) 
 					{
-						retval.base_add(1,argsTuple);
+						retval.baseAdd(1,argsTuple);
 						return retval;
 					}
 				}
@@ -103,9 +103,9 @@ namespace piranha
 					return retval;
 				}
 
-				retval.base_add(1,argsTuple);
+				retval.baseAdd(1,argsTuple);
 				Derived tmp;
-				tmp.base_add(1,argsTuple);
+				tmp.baseAdd(1,argsTuple);
 				for (std::size_t i = 1; i < iter; ++i) 
 				{
 					for (std::size_t j = 0; j < a_size; ++j) 
@@ -120,7 +120,7 @@ namespace piranha
 
 					tmp.base_divide_by(boost::numeric_cast<int>(i), argsTuple);
 					tmp.base_mult_by(*derived_const_cast,argsTuple);
-					retval.base_add(tmp,argsTuple);
+					retval.baseAdd(tmp,argsTuple);
 				}
 
 				return retval;
@@ -246,7 +246,7 @@ namespace piranha
 					tmp.base_mult_by((-1) * (mp_integer(order) + 2 * mp_integer(i)), argsTuple);
 					tmp.base_divide_by((mp_integer(i) * (mp_integer(i) + order)) * (mp_integer(order) + 2 * (mp_integer(i) - 1)), argsTuple);
 					tmp.base_mult_by(square_x2, argsTuple);
-					retval.base_add(tmp, argsTuple);
+					retval.baseAdd(tmp, argsTuple);
 				}
 				return retval;
 			}

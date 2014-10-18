@@ -135,14 +135,14 @@ namespace piranha
 				// binomial coefficient incrementally at every step. We start with 1.
 				Derived retval;
 				Derived tmp;
-				tmp.base_add(1, argsTuple);
-				retval.base_add(tmp, argsTuple);
+				tmp.baseAdd(1, argsTuple);
+				retval.baseAdd(tmp, argsTuple);
 				for (std::size_t i = 1; i < n; ++i) 
                 {
 					tmp.base_mult_by(y - (double)i + 1, argsTuple);
 					tmp.base_divide_by(boost::numeric_cast<int>(i), argsTuple);
 					tmp.base_mult_by(XoverA, argsTuple);
-					retval.base_add(tmp, argsTuple);
+					retval.baseAdd(tmp, argsTuple);
 				}
 				// Finally, multiply the result of the summation by A**y.
 				retval.base_mult_by(Apowy, argsTuple);

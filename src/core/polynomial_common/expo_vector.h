@@ -70,7 +70,7 @@ namespace piranha
 						this->m_arith_functor.m_argsTuple = argsTuple;
 						// NOTE: move semantics here.
 						SubSeries tmp;
-						tmp.base_add(1,*argsTuple);
+						tmp.baseAdd(1,*argsTuple);
 						this->m_container[T(0)] = tmp;
 						this->m_container[T(1)] = s;
 					}
@@ -412,7 +412,7 @@ namespace piranha
 					RetSeries orig(RetSeries::baseSeriesFromKey(tmp_ea, argsTuple));
 					PIRANHA_ASSERT(retval.empty());
 					// NOTICE: series multadd here?
-					retval.base_add(orig, argsTuple);
+					retval.baseAdd(orig, argsTuple);
 					retval.base_mult_by(sub_caches.template get<ancestor::position>()[(*this)[pos]], argsTuple);
 				}
 				return retval;

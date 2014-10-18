@@ -34,7 +34,7 @@ namespace piranha
 		template <class Derived>
 		static Derived & run(Derived &series, const T &x)
 		{
-			return series.base_add(x, series.argumentsTuple);
+			return series.baseAdd(x, series.argumentsTuple);
 		}
 	};
 
@@ -100,7 +100,7 @@ namespace piranha
 		template <class Derived>
 		static bool run(const Derived & series, const T & x)
 		{
-			return series.base_equal_to(x);
+			return series.baseEqualTo(x);
 		}
 	};
 

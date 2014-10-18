@@ -50,7 +50,7 @@ namespace piranha
 			{
 				typedef typename std::vector<Term const *>::const_iterator const_iterator;
 				PIRANHA_ASSERT(retval.empty());
-				retval.base_add(1, argsTuple);
+				retval.baseAdd(1, argsTuple);
 				if (v.empty()) 
 				{
 					return;
