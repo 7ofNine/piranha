@@ -173,7 +173,7 @@ namespace piranha
 			{
 				Derived retval;
 				// Dispatch besselJ to coefficient if series consists of a single coefficient.
-				if (derived_const_cast->is_single_cf()) 
+				if (derived_const_cast->isSingleCf()) 
 				{
 					typedef typename Derived::TermType term_type;
 					retval.insert(term_type(derived_const_cast->begin()->cf.besselJ(order_, argsTuple),

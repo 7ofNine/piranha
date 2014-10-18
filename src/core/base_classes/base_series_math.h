@@ -337,7 +337,7 @@ namespace piranha
 		}
 
 		// If the series is a single cf, let's try to forward the pow call to the only coefficient.
-		if (is_single_cf()) 
+		if (isSingleCf()) 
 		{
 			retval.insert(TermType(begin()->cf.pow(y, argsTuple), typename TermType::key_type()), argsTuple);
 			return true;

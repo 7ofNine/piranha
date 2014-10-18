@@ -266,7 +266,7 @@ namespace piranha
 	{
 		PIRANHA_ASSERT(derived_const_cast->empty());
 		append_arg<N>(p);
-		derived_cast->base_construct_from_psym(p, N, argumentsTuple);
+		derived_cast->baseConstructFromPsym(p, N, argumentsTuple);
 	}
 
 

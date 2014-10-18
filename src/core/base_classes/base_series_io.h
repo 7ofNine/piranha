@@ -54,7 +54,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_series_from_number(const Number &x, const ArgsTuple &argsTuple)
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSeriesFromNumber(const Number &x, const ArgsTuple &argsTuple)
 	{
 		return baseSeriesFromCf(typename TermType::cf_type(x, argsTuple), argsTuple);
 	}
@@ -183,7 +183,7 @@ namespace piranha
 	/// Constructor from Psym and from position in the arguments set.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_construct_from_psym(const Psym &p, const int &n,
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseConstructFromPsym(const Psym &p, const int &n,
 			const ArgsTuple &argsTuple)
 	{
 		PIRANHA_ASSERT(derived_cast->empty());

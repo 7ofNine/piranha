@@ -105,7 +105,7 @@ namespace piranha
 
 #define COMPLEX_NAMED_SERIES_CTORS(real_series) \
 	explicit complex(const complex<double> &cx) { \
-		*this = base_series_from_number(cx,this->arguments()); \
+		*this = baseSeriesFromNumber(cx,this->arguments()); \
 		this->trim(); \
 	} \
 	explicit complex(const real_series &r) { \

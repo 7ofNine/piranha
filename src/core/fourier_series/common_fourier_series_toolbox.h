@@ -62,7 +62,7 @@ namespace piranha
 				typedef typename std::vector<term_type const *>::const_iterator const_iterator;
 				std::complex<Derived> retval;
 
-				if (derived_const_cast->is_single_cf())
+				if (derived_const_cast->isSingleCf())
                 {
 					retval.insert(complex_term_type(derived_const_cast->begin()->cf.ei(argsTuple), key_type()), argsTuple);
 				} else

@@ -166,7 +166,7 @@ namespace piranha
 
 				for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it)
                 {
-					if (!it->cf.is_single_cf())
+					if (!it->cf.isSingleCf())
                     {
 						PIRANHA_THROW(value_error,"polynomial coefficient cannot be converted to numerical coefficient");
 					}

@@ -316,7 +316,7 @@ namespace piranha
 
 		} else 
 		{
-			if (!is_single_cf()) 
+			if (!isSingleCf()) 
 			{
 				PIRANHA_THROW(value_error,"cannot split up to the specified level: series is non-degenerate");
 			}

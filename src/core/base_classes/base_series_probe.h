@@ -38,7 +38,7 @@ namespace piranha
 	 * @return true if series has length one and the key of the only term is equivalent to unity, false otherwise.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::is_single_cf() const
+	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::isSingleCf() const
 	{
 		return (length() == 1 && begin()->key.is_unity());
 	}
@@ -192,7 +192,7 @@ namespace piranha
 			return empty();
 		}
 
-		if (!is_single_cf())
+		if (!isSingleCf())
         {
 			return false;
 		}

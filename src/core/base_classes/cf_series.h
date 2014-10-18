@@ -150,24 +150,24 @@ namespace piranha
 	template <class ArgsTuple> \
 	explicit series_name(const double &x, const ArgsTuple &a) \
 	{ \
-		*this = base_series_from_number(x, a); \
+		*this = baseSeriesFromNumber(x, a); \
 	} \
 	template <class ArgsTuple> \
 	explicit series_name(const piranha::mp_rational &q, const ArgsTuple &a) \
 	{ \
-		*this = base_series_from_number(q, a); \
+		*this = baseSeriesFromNumber(q, a); \
 	} \
 	template <class ArgsTuple> \
 	explicit series_name(const piranha::mp_integer &z, const ArgsTuple &a) \
 	{ \
-		*this = base_series_from_number(z, a); \
+		*this = baseSeriesFromNumber(z, a); \
 	}
 
 
 #define COMPLEX_CF_SERIES_CTORS(real_series) \
 	template <class ArgsTuple> \
 	explicit complex(const complex<double> &cx, const ArgsTuple &a) { \
-		*this = base_series_from_number(cx, a); \
+		*this = baseSeriesFromNumber(cx, a); \
 	} \
 	template <class ArgsTuple> \
 	explicit complex(const real_series &r, const ArgsTuple &a) { \

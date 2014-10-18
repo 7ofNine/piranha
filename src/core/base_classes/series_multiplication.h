@@ -83,10 +83,10 @@ namespace piranha
 
 				const settings::multiplication_algorithm algo = settings::get_multiplication_algorithm();
 				// Optimize the cases of single coefficient series.
-				if (s2.is_single_cf() && algo == settings::automatic)
+				if (s2.isSingleCf() && algo == settings::automatic)
 				{
 					derived_cast->base_mult_by(s2.begin()->cf, argsTuple);
-				} else if (derived_const_cast->is_single_cf() && algo == settings::automatic)
+				} else if (derived_const_cast->isSingleCf() && algo == settings::automatic)
 				{
 					Derived tmp;
 					tmp.insert_range(s2.begin(),s2.end(),argsTuple);

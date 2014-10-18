@@ -164,7 +164,7 @@ namespace piranha
 			//@{
 			size_type length()       const;
 			bool      empty()        const;
-			bool      is_single_cf() const;
+			bool      isSingleCf() const;
 			size_type atoms()        const;
 			//@}
 
@@ -180,10 +180,10 @@ namespace piranha
 			static Derived baseSeriesFromCf(const Cf &, const ArgsTuple &);
 
 			template <class Number, class ArgsTuple>
-			static Derived base_series_from_number(const Number &, const ArgsTuple &);
+			static Derived baseSeriesFromNumber(const Number &, const ArgsTuple &);
 
 			template <class ArgsTuple>
-			void base_construct_from_psym(const Psym &, const int &, const ArgsTuple &);
+			void baseConstructFromPsym(const Psym &, const int &, const ArgsTuple &);
 
 			~BaseSeries();
 			//@}
