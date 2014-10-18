@@ -206,13 +206,13 @@ namespace piranha
 			void baseSwap(Derived &);
 
 			template <class Series, class ArgsTuple>
-			void base_split(std::vector<std::vector<Series> > &, const int &n, const ArgsTuple &) const;
+			void baseSplit(std::vector<std::vector<Series> > &, const int &n, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			std::vector<TermType> flatten_terms(const ArgsTuple &) const;
+			std::vector<TermType> flattenTerms(const ArgsTuple &) const;
 
 			template <class Layout, class ArgsTuple>
-			void apply_layout_to_terms(const Layout &, Derived &, const ArgsTuple &) const;
+			void applyLayoutToTerms(const Layout &, Derived &, const ArgsTuple &) const;
 
 			template <class TrimFlags>
 			void trim_test_terms(TrimFlags &) const;

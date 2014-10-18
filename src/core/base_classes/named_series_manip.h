@@ -301,7 +301,7 @@ namespace piranha
 		named_series_apply_layout_to_args<ArgsTupleType>::run(retval.argumentsTuple, ps2.arguments(), l);
 		
 		// Apply the layout to all terms of this, which will be inserted into retval.
-		derivedConstCast->apply_layout_to_terms(l, retval, retval.argumentsTuple);
+		derivedConstCast->applyLayoutToTerms(l, retval, retval.argumentsTuple);
 		
 		// Finally, swap the contents of retval with this.
 		swap(retval);
@@ -467,7 +467,7 @@ namespace piranha
 		}
 
 		std::vector<std::vector<Derived> > retval;
-		derivedConstCast->base_split(retval, n, argumentsTuple);
+		derivedConstCast->baseSplit(retval, n, argumentsTuple);
 		const std::size_t size = retval.size();
 		for (std::size_t i = 0; i < size; ++i) 
 		{
@@ -496,7 +496,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::vector<Derived> NamedSeries<__PIRANHA_NAMED_SERIES_TP>::flatten() const
 	{
-		const std::vector<typename Derived::TermType> tmp(derivedConstCast->flatten_terms(argumentsTuple));
+		const std::vector<typename Derived::TermType> tmp(derivedConstCast->flattenTerms(argumentsTuple));
 		std::vector<Derived> retval;
 		const typename std::vector<typename Derived::TermType>::const_iterator itf(tmp.end());
 		for  (typename std::vector<typename Derived::TermType>::const_iterator it = tmp.begin(); it != itf; ++it) 

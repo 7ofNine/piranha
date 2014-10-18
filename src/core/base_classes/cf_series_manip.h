@@ -63,7 +63,7 @@ namespace piranha
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::apply_layout(const Layout &l, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
-		derived_cast->apply_layout_to_terms(l, retval, argsTuple);
+		derived_cast->applyLayoutToTerms(l, retval, argsTuple);
 		derived_cast->baseSwap(retval);
 	}
 
@@ -99,7 +99,7 @@ namespace piranha
 	template <class Series, class ArgsTuple>
 	inline void cf_series<__PIRANHA_CF_SERIES_TP>::split(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &argsTuple) const
 	{
-		derived_const_cast->base_split(retval, n, argsTuple);
+		derived_const_cast->baseSplit(retval, n, argsTuple);
 	}
 }
 

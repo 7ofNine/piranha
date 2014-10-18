@@ -427,8 +427,8 @@ struct base_coded_functor
 				// If echelon level is more than zero we need to flatten out the series.
 				if (Series1::echelonLevel)
 				{
-					f_terms1 = derived_cast->m_s1.flatten_terms(derived_cast->m_argsTuple);
-					f_terms2 = derived_cast->m_s2.flatten_terms(derived_cast->m_argsTuple);
+					f_terms1 = derived_cast->m_s1.flattenTerms(derived_cast->m_argsTuple);
+					f_terms2 = derived_cast->m_s2.flattenTerms(derived_cast->m_argsTuple);
 					derived_cast->cache_terms_pointers(f_terms1,f_terms2);
 				} else
 				{

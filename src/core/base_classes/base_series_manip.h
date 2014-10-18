@@ -227,7 +227,7 @@ namespace piranha
 	/// Apply an arguments layout to all terms and insert them into retval.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Layout, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::apply_layout_to_terms(const Layout &l, Derived &retval, const ArgsTuple &argsTuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::applyLayoutToTerms(const Layout &l, Derived &retval, const ArgsTuple &argsTuple) const
 	{
 		const const_iterator itf = end();
 		for (const_iterator it = begin(); it != itf; ++it) 
@@ -298,7 +298,7 @@ namespace piranha
 	// NOTE: can we use the concepts of next_echelon_type and echelon level here? Maybe we can avoid the runtime assert in numerical_cf?
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Series, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_split(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &argsTuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSplit(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &argsTuple) const
 	{
 		PIRANHA_ASSERT(retval.empty());
 		PIRANHA_ASSERT(n >= 0 && n < boost::tuples::length<ArgsTuple>::value);
@@ -351,7 +351,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline std::vector<typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::TermType>
-		BaseSeries<__PIRANHA_BASE_SERIES_TP>::flatten_terms(const ArgsTuple &argsTuple) const
+		BaseSeries<__PIRANHA_BASE_SERIES_TP>::flattenTerms(const ArgsTuple &argsTuple) const
 	{
 		std::vector<TermType> retval;
 		TermType term;

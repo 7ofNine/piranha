@@ -229,7 +229,7 @@ namespace piranha
 		named_series_apply_layout_to_args<ArgsTupleType>::run(tmp.argumentsTuple, other.arguments(), l);
 		
         // Apply the layout to all terms of this and insert them into tmp.
-		derived_const_cast->apply_layout_to_terms(l, tmp, tmp.argumentsTuple);
+		derived_const_cast->applyLayoutToTerms(l, tmp, tmp.argumentsTuple);
 		
         // Now we can perform the comparison between tmp and other.
 		return tmp.base_equal_to(other);
