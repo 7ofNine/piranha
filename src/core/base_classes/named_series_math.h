@@ -123,7 +123,7 @@ namespace piranha
 	template <class Number>
 	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::divide_number_helper(const Number &x)
 	{
-		derived_cast->base_divide_by(x, argumentsTuple);
+		derived_cast->baseDivideBy(x, argumentsTuple);
 		trim();
 		return *derived_cast;
 	}

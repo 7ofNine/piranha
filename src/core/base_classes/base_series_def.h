@@ -255,10 +255,10 @@ namespace piranha
 			Derived &baseMultBy(const T &, const ArgsTuple &);
 
 			template <class T, class ArgsTuple>
-			Derived &base_divide_by(const T &, const ArgsTuple &);
+			Derived &baseDivideBy(const T &, const ArgsTuple &);
 
 			template <class ArgsTuple>
-			Derived base_inv(const ArgsTuple &) const;
+			Derived baseInvert(const ArgsTuple &) const;
 
 			template <class ArgsTuple>
 			Derived base_pow(const double &, const ArgsTuple &) const;

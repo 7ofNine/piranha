@@ -140,7 +140,7 @@ namespace piranha
 				for (std::size_t i = 1; i < n; ++i) 
                 {
 					tmp.baseMultBy(y - (double)i + 1, argsTuple);
-					tmp.base_divide_by(boost::numeric_cast<int>(i), argsTuple);
+					tmp.baseDivideBy(boost::numeric_cast<int>(i), argsTuple);
 					tmp.baseMultBy(XoverA, argsTuple);
 					retval.baseAdd(tmp, argsTuple);
 				}

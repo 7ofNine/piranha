@@ -73,7 +73,7 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divideBy(const T &x, const ArgsTuple &argsTuple)
 	{
-		return derived_cast->base_divide_by(x, argsTuple);
+		return derived_cast->baseDivideBy(x, argsTuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>

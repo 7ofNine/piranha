@@ -136,7 +136,7 @@ namespace std
 			using COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR::real_power;
 			using COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR::negative_integer_power;
 			using COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR::rational_power;
-			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::base_inv;
+			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::baseInvert;
 			using piranha::common_poisson_series< COMPLEX_POISSON_SERIES>::sub;
 			// Ctors.
 			NAMED_SERIES_BOILERPLATE(complex, 0);

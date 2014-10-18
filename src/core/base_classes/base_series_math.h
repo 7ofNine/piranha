@@ -242,7 +242,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_divide_by(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseDivideBy(const T &x, const ArgsTuple &argsTuple)
 	{
 		PIRANHA_STATIC_CHECK((!boost::is_base_of<BaseSeriesTag,T>::value),"Cannot divide by another series.");
 
@@ -385,7 +385,7 @@ namespace piranha
 						// Take advantage of a re-implementation of inversion in derived class,
 						// if available. Otherwise just use negative_integer_power.
 						try {
-							Derived tmp(derived_const_cast->base_inv(argsTuple));
+							Derived tmp(derived_const_cast->baseInvert(argsTuple));
 							retval.baseSwap(tmp);
 
 						} catch (const not_implemented_error &) {
@@ -430,7 +430,7 @@ namespace piranha
 					if (n == -1) 
 					{
 						try {
-							Derived tmp(derived_const_cast->base_inv(argsTuple));
+							Derived tmp(derived_const_cast->baseInvert(argsTuple));
 							retval.baseSwap(tmp);
 						} catch (const not_implemented_error &) {
 							Derived tmp(derived_const_cast->negative_integer_power(n, argsTuple));
@@ -552,7 +552,7 @@ namespace piranha
 	// Series inversion will use exponentiation to -1 as default.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_inv(const ArgsTuple &) const
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseInvert(const ArgsTuple &) const
 	{
 		PIRANHA_THROW(not_implemented_error,"inversion for this series type has not been implemented");
 	}

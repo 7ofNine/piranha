@@ -111,7 +111,7 @@ namespace std
 			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::real_power;
 			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::negative_integer_power;
 			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::rational_power;
-			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::base_inv;
+			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::baseInvert;
 			CF_SERIES_CTORS(complex);
 			COMPLEX_CF_SERIES_CTORS(POLYNOMIAL_CF);
 			template <class ArgsTuple>
