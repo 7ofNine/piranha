@@ -261,22 +261,22 @@ namespace piranha
 			Derived baseInvert(const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			Derived base_pow(const double &, const ArgsTuple &) const;
+			Derived basePow(const double &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			Derived base_pow(const mp_rational &, const ArgsTuple &) const;
+			Derived basePow(const mp_rational &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			Derived natural_power(const std::size_t &, const ArgsTuple &) const;
+			Derived naturalPower(const std::size_t &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			Derived negative_integer_power(const int &, const ArgsTuple &) const;
+			Derived negativeIntegerPower(const int &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			Derived real_power(const double &, const ArgsTuple &) const;
+			Derived realPower(const double &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			Derived rational_power(const mp_rational &, const ArgsTuple &) const;
+			Derived rationalPower(const mp_rational &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
 			Derived base_root(const int &, const ArgsTuple &) const;

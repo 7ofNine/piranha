@@ -125,7 +125,7 @@ namespace piranha
 			Derived baseInvert(const ArgsTuple &argsTuple) const 
 			{
 				Derived retval = base_conjugate(argsTuple);
-				retval.baseMultBy(base_abs2(argsTuple).base_pow(-1,argsTuple),argsTuple);
+				retval.baseMultBy(base_abs2(argsTuple).basePow(-1,argsTuple),argsTuple);
 				return retval;
 			}
 

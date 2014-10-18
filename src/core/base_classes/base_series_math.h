@@ -362,7 +362,7 @@ namespace piranha
 	// Internally it will check if y is a real or an integer number.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_pow(const double &y,
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePow(const double &y,
 		const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
@@ -375,7 +375,7 @@ namespace piranha
 				// Apparently this will be possible in C++1x with the move constructor.
 				if (n >= 0) 
 				{
-					Derived tmp(derived_const_cast->natural_power((std::size_t)n, argsTuple));
+					Derived tmp(derived_const_cast->naturalPower((std::size_t)n, argsTuple));
 					retval.baseSwap(tmp);
 
 				} else 
@@ -383,24 +383,24 @@ namespace piranha
 					if (n == -1) 
 					{
 						// Take advantage of a re-implementation of inversion in derived class,
-						// if available. Otherwise just use negative_integer_power.
+						// if available. Otherwise just use negativeIntegerPower.
 						try {
 							Derived tmp(derived_const_cast->baseInvert(argsTuple));
 							retval.baseSwap(tmp);
 
 						} catch (const not_implemented_error &) {
-							Derived tmp(derived_const_cast->negative_integer_power(n, argsTuple));
+							Derived tmp(derived_const_cast->negativeIntegerPower(n, argsTuple));
 							retval.baseSwap(tmp);
 						}
 					} else 
 					{
-						Derived tmp(derived_const_cast->negative_integer_power(n, argsTuple));
+						Derived tmp(derived_const_cast->negativeIntegerPower(n, argsTuple));
 						retval.baseSwap(tmp);
 					}
 				}
 			} else 
 			{
-				Derived tmp(derived_const_cast->real_power(y, argsTuple));
+				Derived tmp(derived_const_cast->realPower(y, argsTuple));
 				retval.baseSwap(tmp);
 			}
 		}
@@ -411,7 +411,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_pow(const mp_rational &q,
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePow(const mp_rational &q,
 		const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
@@ -423,7 +423,7 @@ namespace piranha
 				const int n = q.get_num().to_int();
 				if (n >= 0) 
 				{
-					Derived tmp(derived_const_cast->natural_power((std::size_t)n, argsTuple));
+					Derived tmp(derived_const_cast->naturalPower((std::size_t)n, argsTuple));
 					retval.baseSwap(tmp);
 				} else 
 				{
@@ -433,18 +433,18 @@ namespace piranha
 							Derived tmp(derived_const_cast->baseInvert(argsTuple));
 							retval.baseSwap(tmp);
 						} catch (const not_implemented_error &) {
-							Derived tmp(derived_const_cast->negative_integer_power(n, argsTuple));
+							Derived tmp(derived_const_cast->negativeIntegerPower(n, argsTuple));
 							retval.baseSwap(tmp);
 						}
 					} else 
 					{
-						Derived tmp(derived_const_cast->negative_integer_power(n, argsTuple));
+						Derived tmp(derived_const_cast->negativeIntegerPower(n, argsTuple));
 						retval.baseSwap(tmp);
 					}
 				}
 			} else 
 			{
-				Derived tmp(derived_const_cast->rational_power(q, argsTuple));
+				Derived tmp(derived_const_cast->rationalPower(q, argsTuple));
 				retval.baseSwap(tmp);
 			}
 		}
@@ -454,7 +454,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::real_power(const double &, const ArgsTuple &) const
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::realPower(const double &, const ArgsTuple &) const
 	{
 		PIRANHA_THROW(not_implemented_error,"real power for this series type has not been implemented");
 	}
@@ -462,7 +462,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::negative_integer_power(const int &n, const ArgsTuple &) const
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::negativeIntegerPower(const int &n, const ArgsTuple &) const
 	{
 		(void)n;
 		PIRANHA_ASSERT(n < 0);
@@ -472,7 +472,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::rational_power(const mp_rational &, const ArgsTuple &) const
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::rationalPower(const mp_rational &, const ArgsTuple &) const
 	{
 		PIRANHA_THROW(not_implemented_error,"rational power for this series type has not been implemented");
 	}
@@ -484,7 +484,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::natural_power(const std::size_t &n,
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::naturalPower(const std::size_t &n,
 		const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
@@ -545,7 +545,7 @@ namespace piranha
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::base_root(const int &n,
 			const ArgsTuple &argsTuple) const
 	{
-		return base_pow(mp_rational(1, n), argsTuple);
+		return basePow(mp_rational(1, n), argsTuple);
 	}
 
 

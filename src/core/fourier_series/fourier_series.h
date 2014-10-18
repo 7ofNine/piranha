@@ -80,9 +80,9 @@ namespace piranha
 				> > > > > > >
 	{
 		public:
-			using FOURIER_SERIES_BINOMIAL_ANCESTOR::real_power;
-			using FOURIER_SERIES_BINOMIAL_ANCESTOR::negative_integer_power;
-			using FOURIER_SERIES_BINOMIAL_ANCESTOR::rational_power;
+			using FOURIER_SERIES_BINOMIAL_ANCESTOR::realPower;
+			using FOURIER_SERIES_BINOMIAL_ANCESTOR::negativeIntegerPower;
+			using FOURIER_SERIES_BINOMIAL_ANCESTOR::rationalPower;
 			// Boilerplate
 			NAMED_SERIES_BOILERPLATE(fourier_series, 0);
 	};
@@ -130,9 +130,9 @@ namespace std
 				> > > > > > > > > >
 	{
 		public:
-			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::real_power;
-			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::negative_integer_power;
-			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::rational_power;
+			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::realPower;
+			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::negativeIntegerPower;
+			using COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR::rationalPower;
 			using COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX::baseInvert;
 			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(FOURIER_SERIES);

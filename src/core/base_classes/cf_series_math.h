@@ -80,14 +80,14 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::pow(const double &y, const ArgsTuple &argsTuple) const
 	{
-		return derived_const_cast->base_pow(y, argsTuple);
+		return derived_const_cast->basePow(y, argsTuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::pow(const mp_rational &q, const ArgsTuple &argsTuple) const
 	{
-		return derived_const_cast->base_pow(q, argsTuple);
+		return derived_const_cast->basePow(q, argsTuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>

@@ -140,7 +140,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::pow(const double &x) const
 	{
-		Derived retval(derived_const_cast->base_pow(x, argumentsTuple));
+		Derived retval(derived_const_cast->basePow(x, argumentsTuple));
 		retval.argumentsTuple = argumentsTuple;
 		retval.trim();
 		return retval;
@@ -150,7 +150,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::pow(const mp_rational &q) const
 	{
-		Derived retval(derived_const_cast->base_pow(q, argumentsTuple));
+		Derived retval(derived_const_cast->basePow(q, argumentsTuple));
 		retval.argumentsTuple = argumentsTuple;
 		retval.trim();
 		return retval;

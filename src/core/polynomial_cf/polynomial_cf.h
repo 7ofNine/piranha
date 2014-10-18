@@ -66,9 +66,9 @@ namespace piranha
 	{
 		public:
 			// Specify we will use the power functions from the binomial toolbox.
-			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::real_power;
-			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::negative_integer_power;
-			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::rational_power;
+			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::realPower;
+			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::negativeIntegerPower;
+			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::rationalPower;
 
 			CF_SERIES_CTORS(polynomial_cf);
 
@@ -108,9 +108,9 @@ namespace std
 				public piranha::cf_series_special_functions< COMPLEX_POLYNOMIAL_CF>
 	{
 		public:
-			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::real_power;
-			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::negative_integer_power;
-			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::rational_power;
+			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::realPower;
+			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::negativeIntegerPower;
+			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::rationalPower;
 			using COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX::baseInvert;
 			CF_SERIES_CTORS(complex);
 			COMPLEX_CF_SERIES_CTORS(POLYNOMIAL_CF);

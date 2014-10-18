@@ -79,9 +79,9 @@ namespace piranha
 	{
 		public:
 
-			using POLYNOMIAL_BINOMIAL_ANCESTOR::real_power;
-			using POLYNOMIAL_BINOMIAL_ANCESTOR::negative_integer_power;
-			using POLYNOMIAL_BINOMIAL_ANCESTOR::rational_power;
+			using POLYNOMIAL_BINOMIAL_ANCESTOR::realPower;
+			using POLYNOMIAL_BINOMIAL_ANCESTOR::negativeIntegerPower;
+			using POLYNOMIAL_BINOMIAL_ANCESTOR::rationalPower;
 			// Boilerplate.
 			NAMED_SERIES_BOILERPLATE(Polynomial, 0);
 	};
@@ -128,9 +128,9 @@ namespace std
 				> > > > > > > > > >
 	{
 		public:
-			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::real_power;
-			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::negative_integer_power;
-			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::rational_power;
+			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::realPower;
+			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::negativeIntegerPower;
+			using COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR::rationalPower;
 			// Complex overrides.
 			using COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX::baseInvert;
 			// Boilerplate and additional ctors.

@@ -188,7 +188,7 @@ namespace piranha
 				x_2.baseDivideBy(2, argsTuple);
 				retval = Derived(x_2).baseMultBy(-1, argsTuple).baseMultBy(x_2, argsTuple)
 					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, argsTuple);
-				retval.baseMultBy(x_2.base_pow(order, argsTuple), argsTuple);
+				retval.baseMultBy(x_2.basePow(order, argsTuple), argsTuple);
 				retval.baseDivideBy(mp_integer(order).factorial(), argsTuple);
 				if (order_ < 0) 
 				{
@@ -235,7 +235,7 @@ namespace piranha
 				// This will be used later.
 				Derived square_x2(retval);
 				square_x2.baseMultBy(square_x2, argsTuple);
-				retval = retval.base_pow(order - 1, argsTuple);
+				retval = retval.basePow(order - 1, argsTuple);
 				retval.baseDivideBy(mp_integer(order).factorial(), argsTuple);
 				retval.baseMultBy(order, argsTuple);
 				retval.baseDivideBy(2, argsTuple);
@@ -270,7 +270,7 @@ namespace piranha
 
 				retval = Derived(x_2).baseMultBy(-1, argsTuple).baseMultBy(x_2, argsTuple)
 					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, argsTuple);
-				retval.baseMultBy(derived_const_cast->base_pow(order - m, argsTuple), argsTuple);
+				retval.baseMultBy(derived_const_cast->basePow(order - m, argsTuple), argsTuple);
 				retval.baseDivideBy(mp_integer(order).factorial() * mp_integer(2).pow(order), argsTuple);
 
 				if (order_ < 0) 

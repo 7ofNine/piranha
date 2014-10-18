@@ -39,7 +39,7 @@ namespace piranha
 {
 	/// Binomial exponentiation toolbox.
 	/**
-	 * Overrides BaseSeries::real_power, BaseSeries::negative_integer_power, BaseSeries::rational_power
+	 * Overrides BaseSeries::realPower, BaseSeries::negativeIntegerPower, BaseSeries::rationalPower
 	 * and reimplements them using binomial expansion.
 	 */
 	template <class Derived>
@@ -49,7 +49,7 @@ namespace piranha
 
 			/// Real power.
 			template <class ArgsTuple>
-			Derived real_power(const double &y, const ArgsTuple &argsTuple) const
+			Derived realPower(const double &y, const ArgsTuple &argsTuple) const
 			{
 				return generic_binomial_power(
 					derived_const_cast->template get_sorted_series<Derived>(argsTuple),y,argsTuple);
@@ -58,7 +58,7 @@ namespace piranha
 
 			/// Negative integer power.
 			template <class ArgsTuple>
-			Derived negative_integer_power(const int &y, const ArgsTuple &argsTuple) const
+			Derived negativeIntegerPower(const int &y, const ArgsTuple &argsTuple) const
 			{
 				return generic_binomial_power(
 					derived_const_cast->template get_sorted_series<Derived>(argsTuple),y, argsTuple);
@@ -67,7 +67,7 @@ namespace piranha
 
 			/// Rational power.
 			template <class ArgsTuple>
-			Derived rational_power(const mp_rational &q, const ArgsTuple &argsTuple) const
+			Derived rationalPower(const mp_rational &q, const ArgsTuple &argsTuple) const
 			{
 				PIRANHA_ASSERT(q != 0 && q != 1);
 				return generic_binomial_power(
@@ -81,7 +81,7 @@ namespace piranha
 			{
 				typedef typename Derived::TermType term_type;
 				// Here we know that the cases of empty series and natural power have already
-				// been taken care of in BaseSeries::base_pow.
+				// been taken care of in BaseSeries::basePow.
 				PIRANHA_ASSERT(v.size() >= 1);
 
 				term_type A(*v[0]);

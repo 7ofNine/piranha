@@ -58,7 +58,7 @@ namespace piranha
 		T inv(const T &orig) const
 		{
 			PIRANHA_ASSERT(m_argsTuple);
-			return orig.base_pow(-1,*m_argsTuple);
+			return orig.basePow(-1,*m_argsTuple);
 		}
 		void multiply(T &orig, const T &other) const
 		{
@@ -69,7 +69,7 @@ namespace piranha
 		T pow(const T &orig, const U &y) const
 		{
 			PIRANHA_ASSERT(m_argsTuple);
-			return orig.base_pow(y,*m_argsTuple);
+			return orig.basePow(y,*m_argsTuple);
 		}
 		mutable ArgsTuple const *m_argsTuple;
 	};
