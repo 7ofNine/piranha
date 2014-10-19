@@ -183,7 +183,7 @@ namespace piranha
 			static Derived baseSeriesFromNumber(const Number &, const ArgsTuple &);
 
 			template <class ArgsTuple>
-			void baseConstructFromPsym(const Psym &, const int &, const ArgsTuple &);
+			void baseConstructFromPsym(const Psym &, const int, const ArgsTuple &);
 
 			~BaseSeries();
 			//@}
@@ -206,7 +206,7 @@ namespace piranha
 			void baseSwap(Derived &);
 
 			template <class Series, class ArgsTuple>
-			void baseSplit(std::vector<std::vector<Series> > &, const int &n, const ArgsTuple &) const;
+			void baseSplit(std::vector<std::vector<Series> > &, const int n, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
 			std::vector<TermType> flattenTerms(const ArgsTuple &) const;
@@ -267,19 +267,19 @@ namespace piranha
 			Derived basePow(const mp_rational &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			Derived naturalPower(const std::size_t &, const ArgsTuple &) const;
+			Derived naturalPower(const std::size_t, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			Derived negativeIntegerPower(const int &, const ArgsTuple &) const;
+			Derived negativeIntegerPower(const int, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			Derived realPower(const double &, const ArgsTuple &) const;
+			Derived realPower(const double, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
 			Derived rationalPower(const mp_rational &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			Derived baseRoot(const int &, const ArgsTuple &) const;
+			Derived baseRoot(const int, const ArgsTuple &) const;
 
 			template <class Series, class PosTuple, class ArgsTuple>
 			static void basePartial(const Derived &, Series &, const PosTuple &, const ArgsTuple &);
@@ -349,10 +349,10 @@ namespace piranha
 			void llInsert(const TermType &, const ArgsTuple &);
 
 			template <bool, class ArgsTuple>
-			void term_insert_new(const TermType &, const ArgsTuple &);
+			void termInsertNew(const TermType &, const ArgsTuple &);
 
 			template <class Number, class ArgsTuple>
-			bool common_pow_handler(const Number &, Derived &retval, const ArgsTuple &) const;
+			bool commonPowHandler(const Number &, Derived &retval, const ArgsTuple &) const;
 
 		private:
 
@@ -360,21 +360,21 @@ namespace piranha
 	};
 
 #define E0_SERIES_TP_DECL class Cf, class Key, class Multiplier, class Truncator, class Allocator
-#define E0_SERIES_TP Cf,Key,Multiplier,Truncator,Allocator
-#define E0_SERIES_TERM(term_name) term_name<Cf,Key,'|',Allocator>
-#define E0_SERIES(series_name) series_name<E0_SERIES_TP>
-#define E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::BaseSeries<E0_SERIES_TERM(term_name),'\n', \
-	Allocator,E0_SERIES(series_name) >
+#define E0_SERIES_TP Cf, Key ,Multiplier, Truncator, Allocator
+#define E0_SERIES_TERM(TermName) TermName<Cf, Key, '|', Allocator>
+#define E0_SERIES(SeriesName) SeriesName<E0_SERIES_TP>
+#define E0_SERIES_BASE_ANCESTOR(TermName, SeriesName) piranha::BaseSeries<E0_SERIES_TERM(TermName), '\n', \
+	Allocator, E0_SERIES(SeriesName) >
 
 #define E1_SERIES_TP_DECL class Cf, class Key0, class Key1, \
 						  class Mult0, class Mult1, class Trunc0, class Trunc1, class Allocator
 #define E1_SERIES_TP      Cf, Key0, Key1, Mult0, Mult1, Trunc0, Trunc1, Allocator
-#define E1_SERIES_COEFFICIENT(cf_name)     cf_name<Cf, Key0, Mult0, Trunc0, Allocator>
-#define E1_SERIES(series_name)             series_name<E1_SERIES_TP>
-#define E1_SERIES_TERM(term_name, cf_name) term_name< cf_name, Key1, '|', Allocator >
-#define E1_SERIES_BASE_ANCESTOR(term_name, cf_name, series_name) piranha::BaseSeries<term_name< \
-	cf_name, Key1, '|', Allocator>, \
-	'\n', Allocator, series_name >
+#define E1_SERIES_COEFFICIENT(CfName)     CfName<Cf, Key0, Mult0, Trunc0, Allocator>
+#define E1_SERIES(SeriesName)             SeriesName<E1_SERIES_TP>
+#define E1_SERIES_TERM(TermName, CfName) TermName< CfName, Key1, '|', Allocator >
+#define E1_SERIES_BASE_ANCESTOR(TermName, CfName, SeriesName) piranha::BaseSeries<TermName< \
+	CfName, Key1, '|', Allocator>, \
+	'\n', Allocator, SeriesName >
 }
 
 #endif

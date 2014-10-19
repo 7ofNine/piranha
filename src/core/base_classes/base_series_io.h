@@ -183,7 +183,7 @@ namespace piranha
 	/// Constructor from Psym and from position in the arguments set.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseConstructFromPsym(const Psym &p, const int &n,
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseConstructFromPsym(const Psym &p, const int n,
 			const ArgsTuple &argsTuple)
 	{
 		PIRANHA_ASSERT(derived_cast->empty());

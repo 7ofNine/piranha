@@ -170,7 +170,7 @@ namespace piranha
 		if (it == end()) 
 		{
 			// The term is NOT a duplicate, insert in the set.
-			term_insert_new<Sign>(term, argsTuple);
+			termInsertNew<Sign>(term, argsTuple);
 		} else 
 		{
 			// The term is in the set, hence an existing term will be modified.
@@ -194,7 +194,7 @@ namespace piranha
 	// Insert a new term into the series
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::term_insert_new(const TermType &term, const ArgsTuple &argsTuple)
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::termInsertNew(const TermType &term, const ArgsTuple &argsTuple)
 	{
 		std::pair<const_iterator, bool> res(m_container.insert(term));
 		PIRANHA_ASSERT(res.second);
@@ -298,7 +298,7 @@ namespace piranha
 	// NOTE: can we use the concepts of next_echelon_type and echelon level here? Maybe we can avoid the runtime assert in numerical_cf?
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Series, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSplit(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &argsTuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSplit(std::vector<std::vector<Series> > &retval, const int n, const ArgsTuple &argsTuple) const
 	{
 		PIRANHA_ASSERT(retval.empty());
 		PIRANHA_ASSERT(n >= 0 && n < boost::tuples::length<ArgsTuple>::value);
