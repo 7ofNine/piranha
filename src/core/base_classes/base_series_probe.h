@@ -126,7 +126,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T>
-	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::generic_series_comparison(const T &other) const
+	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericSeriesComparison(const T &other) const
 	{
 		if (length() != other.length())
         {
@@ -185,7 +185,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number>
-	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::generic_numerical_comparison(const Number &x) const
+	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericNumericalComparison(const Number &x) const
 	{
 		if (numerical_comparison_zero_check<Number>()(x))
         {
@@ -205,7 +205,7 @@ namespace piranha
 	/**
 	 * @param[in] x argument of comparison.
 	 *
-	 * @return generic_numerical_comparison() on x.
+	 * @return genericNumericalComparison() on x.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T>

@@ -316,37 +316,37 @@ namespace piranha
 		private:
 
 			template <class T, class ArgsTuple>
-			Derived &multiply_coefficients_by(const T &, const ArgsTuple &);
+			Derived &multiplyCoefficientsBy(const T &, const ArgsTuple &);
 
 			template <class T, class ArgsTuple>
-			Derived &divide_coefficients_by(const T &, const ArgsTuple &);
+			Derived &divideCoefficientsBy(const T &, const ArgsTuple &);
 
 			template <int, class T, class ArgsTuple>
-			void mult_div_coefficients_by(const T &, const ArgsTuple &);
+			void multDivCoefficientsBy(const T &, const ArgsTuple &);
 
 			template <bool, class Number, class ArgsTuple>
-			Derived &merge_with_number(const Number &, const ArgsTuple &);
+			Derived &mergeWithNumber(const Number &, const ArgsTuple &);
 
 			template <bool, class Derived2, class ArgsTuple>
-			Derived &merge_terms(const Derived2 &, const ArgsTuple &);
+			Derived &mergeTerms(const Derived2 &, const ArgsTuple &);
 
 			template <class T>
-			bool generic_series_comparison(const T &) const;
+			bool genericSeriesComparison(const T &) const;
 
 			template <class Number>
-			bool generic_numerical_comparison(const Number &) const;
+			bool genericNumericalComparison(const Number &) const;
 
 			template <class Iterator, class ArgsTuple>
-			void generic_print_terms_pretty(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
+			void genericPrintTermsPretty(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
 
 			template <class Iterator, class ArgsTuple>
-			void generic_print_terms_tex(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
+			void genericPrintTermsTEX(std::ostream &, const Iterator &, const Iterator &, const ArgsTuple &) const;
 
 			template <class Iterator, class Series, class ArgsTuple>
-			void generic_base_split(std::vector<std::vector<Series> > &, const Iterator &, const Iterator &, const ArgsTuple &) const;
+			void genericBaseSplit(std::vector<std::vector<Series> > &, const Iterator &, const Iterator &, const ArgsTuple &) const;
 
 			template <bool, class ArgsTuple>
-			void ll_insert(const TermType &, const ArgsTuple &);
+			void llInsert(const TermType &, const ArgsTuple &);
 
 			template <bool, class ArgsTuple>
 			void term_insert_new(const TermType &, const ArgsTuple &);

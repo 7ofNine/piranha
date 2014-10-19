@@ -131,7 +131,7 @@ namespace piranha
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
 		{
-			return series.template merge_with_number<true>(x, argsTuple);
+			return series.template mergeWithNumber<true>(x, argsTuple);
 		}
 	};
 
@@ -142,7 +142,7 @@ namespace piranha
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
 		{
-			return series.template merge_terms<true>(other, argsTuple);
+			return series.template mergeTerms<true>(other, argsTuple);
 		}
 	};
 
@@ -153,7 +153,7 @@ namespace piranha
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
 		{
-			return series.template merge_with_number<false>(x, argsTuple);
+			return series.template mergeWithNumber<false>(x, argsTuple);
 		}
 	};
 
@@ -164,7 +164,7 @@ namespace piranha
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
 		{
-			return series.template merge_terms<false>(other, argsTuple);
+			return series.template mergeTerms<false>(other, argsTuple);
 		}
 	};
 
@@ -175,7 +175,7 @@ namespace piranha
 		template <class ArgsTuple>
 		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
 		{
-			return series.multiply_coefficients_by(x, argsTuple);
+			return series.multiplyCoefficientsBy(x, argsTuple);
 		}
 	};
 
@@ -199,7 +199,7 @@ namespace piranha
 		template <class Derived>
 		static bool run(const Derived &series, const T &x)
 		{
-			return series.generic_numerical_comparison(x);
+			return series.genericNumericalComparison(x);
 		}
 	};
 
@@ -210,7 +210,7 @@ namespace piranha
 		template <class Derived>
 		static bool run(const Derived &series, const T &other)
 		{
-			return series.generic_series_comparison(other);
+			return series.genericSeriesComparison(other);
 		}
 	};
 }

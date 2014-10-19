@@ -75,7 +75,7 @@ namespace piranha
 	 * base_pseries::append_cf_args, base_pseries::append_trig_args, etc. can be used to add the needed arguments
 	 * to the series.
 	 *
-	 * This function performs some checks and then calls ll_insert.
+	 * This function performs some checks and then calls llInsert.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool CanonicalCheck, bool Sign, class Term2, class ArgsTuple>
@@ -115,7 +115,7 @@ namespace piranha
 		{
 			insert_term = &converted_term.result;
 		}
-		ll_insert<Sign>(*insert_term, argsTuple);
+		llInsert<Sign>(*insert_term, argsTuple);
 		
 		if (new_term) 
 		{
@@ -155,7 +155,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::ll_insert(const TermType &term, const ArgsTuple &argsTuple)
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::llInsert(const TermType &term, const ArgsTuple &argsTuple)
 	{
 		// TODO: think about moving this check higher in the stack of functions, we probably don't want to reach
 		// _this_ point before checking for ignorability.
@@ -307,11 +307,11 @@ namespace piranha
 		{
 			try {
 				const std::vector<typename Derived::TermType const *> s(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
-				generic_base_split(retval, s.begin(), s.end(), argsTuple);
+				genericBaseSplit(retval, s.begin(), s.end(), argsTuple);
 
 			} catch (const value_error &) 
 			{
-				generic_base_split(retval, begin(), end(), argsTuple);
+				genericBaseSplit(retval, begin(), end(), argsTuple);
 			}
 
 		} else 
@@ -328,7 +328,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class Series, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::generic_base_split(std::vector<std::vector<Series> > &retval, const Iterator &start,
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericBaseSplit(std::vector<std::vector<Series> > &retval, const Iterator &start,
 																		 const Iterator &end, const ArgsTuple &argsTuple) const
 	{
 		for (Iterator it = start; it != end; ++it) 

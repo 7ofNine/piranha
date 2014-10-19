@@ -81,7 +81,7 @@ namespace piranha
 	// TODO: rework and fix the printing functions.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::generic_print_terms_pretty(std::ostream &stream, const Iterator &start, const Iterator &end,
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericPrintTermsPretty(std::ostream &stream, const Iterator &start, const Iterator &end,
 		const ArgsTuple &argsTuple) const
 	{
 		const std::size_t max_length = settings::get_max_pretty_print_size();
@@ -125,10 +125,10 @@ namespace piranha
         {
 			try {
 				const std::vector<typename Derived::TermType const *> s(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
-				generic_print_terms_pretty(stream, s.begin(), s.end(), argsTuple);
+				genericPrintTermsPretty(stream, s.begin(), s.end(), argsTuple);
 
 			} catch (const value_error &) {
-				generic_print_terms_pretty(stream, begin(), end(), argsTuple);
+				genericPrintTermsPretty(stream, begin(), end(), argsTuple);
 			}
 		}
 	}
@@ -136,7 +136,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::generic_print_terms_tex(std::ostream &stream, const Iterator &start, const Iterator &end,
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericPrintTermsTEX(std::ostream &stream, const Iterator &start, const Iterator &end,
 		const ArgsTuple &argsTuple) const
 	{
 
@@ -170,11 +170,11 @@ namespace piranha
         {
 			try {
 				const std::vector<typename Derived::TermType const *> s(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
-				generic_print_terms_tex(stream, s.begin(), s.end(), argsTuple);
+				genericPrintTermsTEX(stream, s.begin(), s.end(), argsTuple);
 
 			} catch (const value_error &)
             {
-				generic_print_terms_tex(stream, begin(), end(), argsTuple);
+				genericPrintTermsTEX(stream, begin(), end(), argsTuple);
 			}
 		}
 	}

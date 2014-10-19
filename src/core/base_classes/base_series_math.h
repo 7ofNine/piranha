@@ -49,7 +49,7 @@ namespace piranha
 	// Do not use this to merge with self, assertion will fail.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class Derived2, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::merge_terms(const Derived2 &s2, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::mergeTerms(const Derived2 &s2, const ArgsTuple &argsTuple)
 	{
 		typedef typename Derived2::const_iterator const_iterator2;
 		PIRANHA_ASSERT((void *)boost::addressof(*derived_cast) != (void *)boost::addressof(s2));
@@ -89,7 +89,7 @@ namespace piranha
 	// Multiply (N = 0) or divide (N = 1) all the coefficients of the series by a generic quantity x.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <int N, class T, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::mult_div_coefficients_by(const T &x,
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::multDivCoefficientsBy(const T &x,
 			const ArgsTuple &argsTuple)
 	{
 		const const_iterator itf = end();
@@ -137,7 +137,7 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class Number, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::merge_with_number(const Number &n, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::mergeWithNumber(const Number &n, const ArgsTuple &argsTuple)
 	{
 		typename Derived::TermType term(typename Derived::TermType::cf_type(n, argsTuple), typename Derived::TermType::key_type());
 
@@ -201,7 +201,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::multiply_coefficients_by(const Number &x,
+	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::multiplyCoefficientsBy(const Number &x,
 		const ArgsTuple &argsTuple)
 	{
 		if (multdiv_coefficients_helper<Number>::check_zero(x)) 
@@ -209,7 +209,7 @@ namespace piranha
 			clearTerms();
 		} else if (multdiv_coefficients_helper<Number>::check_non_unitary(x)) 
 		{
-			mult_div_coefficients_by<0>(x,argsTuple);
+			multDivCoefficientsBy<0>(x,argsTuple);
 		}
 		return *derived_cast;
 	}
@@ -225,7 +225,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::divide_coefficients_by(const Number &x,
+	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::divideCoefficientsBy(const Number &x,
 		const ArgsTuple &argsTuple)
 	{
 		if (multdiv_coefficients_helper<Number>::check_zero(x)) 
@@ -234,7 +234,7 @@ namespace piranha
 
 		} else if (multdiv_coefficients_helper<Number>::check_non_unitary(x)) 
 		{
-			mult_div_coefficients_by<1>(x, argsTuple);
+			multDivCoefficientsBy<1>(x, argsTuple);
 		}
 		return *derived_cast;
 	}
@@ -246,7 +246,7 @@ namespace piranha
 	{
 		PIRANHA_STATIC_CHECK((!boost::is_base_of<BaseSeriesTag,T>::value),"Cannot divide by another series.");
 
-		return divide_coefficients_by(x, argsTuple);
+		return divideCoefficientsBy(x, argsTuple);
 	}
 
 

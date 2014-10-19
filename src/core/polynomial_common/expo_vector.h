@@ -390,30 +390,35 @@ namespace piranha
 
 
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
+			RetSeries sub(const PosTuple &posTuple, SubCaches &subCaches, const ArgsTuple &argsTuple) const
 			{
 				// TODO: check on PosTuple.
 				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very ExpoVector.
 				// NOTE: for now we can substitute one symbol at a time.
-				PIRANHA_ASSERT(pos_tuple.template get<ancestor::position>().size() == 1);
-				if (!pos_tuple.template get<ancestor::position>()[0].first) 
+				PIRANHA_ASSERT(posTuple.template get<ancestor::position>().size() == 1);
+
+				if (!posTuple.template get<ancestor::position>()[0].first) 
                 {
 					retval = RetSeries::baseSeriesFromKey(*this, argsTuple);
 
 				} else 
                 {
-					const std::size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
+					const std::size_t pos = posTuple.template get<ancestor::position>()[0].second;
+
 					PIRANHA_ASSERT(pos < this->size());
-					ExpoVector tmp_ea(*this);
+					
+                    ExpoVector tmp_ea(*this);
 					// Let's turn off the exponent associated to the symbol we are substituting.
 					tmp_ea[pos] = 0;
 					RetSeries orig(RetSeries::baseSeriesFromKey(tmp_ea, argsTuple));
+
 					PIRANHA_ASSERT(retval.empty());
-					// NOTICE: series multadd here?
+					
+                    // NOTICE: series multadd here?
 					retval.baseAdd(orig, argsTuple);
-					retval.baseMultBy(sub_caches.template get<ancestor::position>()[(*this)[pos]], argsTuple);
+					retval.baseMultBy(subCaches.template get<ancestor::position>()[(*this)[pos]], argsTuple);
 				}
 				return retval;
 			}
