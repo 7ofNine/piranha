@@ -41,9 +41,9 @@ namespace piranha
 		public:
 			Derived integrate(const std::string &name) const
 			{
-				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, 1>::type PositionTupleType;
+				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, 1>::Type PositionTupleType;
 				const Psym p(name);
-				const PositionTupleType positionTuple = psyms2pos(VectorPsym(1,p), derivedConstCast->arguments());
+				const PositionTupleType positionTuple = psyms2pos(VectorPsym(1, p), derivedConstCast->arguments());
 				Derived retval;
 				if (positionTuple.get_head()[0].first)
                 {
@@ -53,7 +53,7 @@ namespace piranha
 
 				} else
                 {
-					PIRANHA_THROW(value_error,"cannot integrate fourier series if integration variable is not present among the series' arguments");
+					PIRANHA_THROW(value_error, "cannot integrate fourier series if integration variable is not present among the series' arguments");
 				}
 				return retval;
 			}

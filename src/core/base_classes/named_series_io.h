@@ -49,8 +49,7 @@ namespace piranha
 
 	// TMP for series printing.
 	template <class ArgsDescr>
-	inline void named_series_print_plain(std::ostream &stream,
-		 const typename Ntuple<VectorPsym, boost::tuples::length<ArgsDescr>::value>::type &argsTuple)
+	inline void named_series_print_plain(std::ostream &stream, const typename NTuple<VectorPsym, boost::tuples::length<ArgsDescr>::value>::Type &argsTuple)
 	{
 		for (std::size_t i = 0; i < argsTuple.get_head().size(); ++i) 
         {
@@ -63,8 +62,7 @@ namespace piranha
 
 
 	template <>
-	inline void named_series_print_plain<boost::tuples::null_type>(std::ostream &,
-			const Ntuple<VectorPsym, boost::tuples::length<boost::tuples::null_type>::value>::type &)
+	inline void named_series_print_plain<boost::tuples::null_type>(std::ostream &, const NTuple<VectorPsym, boost::tuples::length<boost::tuples::null_type>::value>::Type &)
 	{}
 
 

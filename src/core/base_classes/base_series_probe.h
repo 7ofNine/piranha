@@ -84,7 +84,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::size_type BaseSeries<__PIRANHA_BASE_SERIES_TP>::length() const
 	{
-		return m_container.size();
+		return container.size();
 	}
 
 
@@ -95,7 +95,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::empty() const
 	{
-		return m_container.empty();
+		return container.empty();
 	}
 
 

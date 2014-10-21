@@ -81,8 +81,7 @@ namespace piranha
 	// TODO: rework and fix the printing functions.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericPrintTermsPretty(std::ostream &stream, const Iterator &start, const Iterator &end,
-		const ArgsTuple &argsTuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericPrintTermsPretty(std::ostream &stream, const Iterator &start, const Iterator &end, const ArgsTuple &argsTuple) const
 	{
 		const std::size_t max_length = settings::get_max_pretty_print_size();
 		std::size_t count = 0;
@@ -96,6 +95,7 @@ namespace piranha
             {
 				tmp.insert(tmp.begin(),'+');
 			}
+
 			count += tmp.size();
 			if (count > max_length) 
             {
@@ -199,7 +199,7 @@ namespace piranha
 	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::const_iterator
 	BaseSeries<__PIRANHA_BASE_SERIES_TP>::begin() const
 	{
-		return m_container.begin();
+		return container.begin();
 	}
 
 	/// End of the series.
@@ -210,7 +210,7 @@ namespace piranha
 	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::const_iterator
 	BaseSeries<__PIRANHA_BASE_SERIES_TP>::end() const
 	{
-		return m_container.end();
+		return container.end();
 	}
 
 
@@ -253,7 +253,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline BaseSeries<__PIRANHA_BASE_SERIES_TP>::~BaseSeries()
 	{
-		PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag,Derived>::value), "Final series class must derive from BaseSeries class.");
+		PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag, Derived>::value), "Final series class must derive from BaseSeries class.");
 	}
 }
 

@@ -93,7 +93,7 @@ namespace truncators {
 			template <class Series1, class Series2, class ArgsTuple>
 			class GetType
 			{
-					typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::type PosTupleType;
+					typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::Type PosTupleType;
 
 					static const int expo_term_pos = Series1::expo_term_position;
 					static const int expo_args_pos = Series1::expo_args_position;
@@ -223,11 +223,11 @@ namespace truncators {
 
 						switch (truncationMode)
                         {
-							case TruncationDeg:   std::sort(retval.begin(),retval.end(),order_comparison<Series::expo_term_position>());
+							case TruncationDeg:   std::sort(retval.begin(), retval.end(), order_comparison<Series::expo_term_position>());
 								        break;
 
 							case TruncationPartialDeg:	{
-								            typedef typename Ntuple<std::vector<std::pair<bool,std::size_t> >, boost::tuples::length<ArgsTuple2>::value>::type PosTupleType;
+								            typedef typename NTuple<std::vector<std::pair<bool,std::size_t> >, boost::tuples::length<ArgsTuple2>::value>::Type PosTupleType;
 								            PosTupleType const pos_tuple(psyms2pos(psyms, argsTuple));
 
 								            if (pos_tuple.template get<Series::expo_args_position>().size() > 0) 

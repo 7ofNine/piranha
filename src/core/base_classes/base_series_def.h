@@ -356,7 +356,7 @@ namespace piranha
 
 		private:
 
-			ContainerType m_container;
+			ContainerType container;
 	};
 
 #define E0_SERIES_TP_DECL class Cf, class Key, class Multiplier, class Truncator, class Allocator

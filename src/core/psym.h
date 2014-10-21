@@ -315,9 +315,9 @@ namespace piranha
 	// Return value will be a tuple of vectors, each of size v.size(), containing (presence, position) pairs for the corresponding symbols
 	// in v.
 	template <class ArgsTuple>
-	inline typename Ntuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::type  psyms2pos(VectorPsym const &v, ArgsTuple const &argsTuple)
+	inline typename NTuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::Type  psyms2pos(VectorPsym const &v, ArgsTuple const &argsTuple)
 	{
-		typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::type retval_type;
+		typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::Type retval_type;
 
 		// First we want to make sure that the vector of symbols does not contain duplicate elements.
 		std::set<Psym> const uniquesSet(v.begin(), v.end());

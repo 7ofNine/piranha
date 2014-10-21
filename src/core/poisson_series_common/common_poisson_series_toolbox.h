@@ -86,7 +86,7 @@ namespace piranha
 			Derived sub(const std::string &name, const SubSeries &series) const
 			{
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
-				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::type pos_tuple_type;
+				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type pos_tuple_type;
 				typedef typename Derived::TermType::cf_type::
 					template sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
 					template sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
@@ -127,7 +127,7 @@ namespace piranha
 			Derived ei_sub(const std::string &name, const SubSeries &series) const
 			{
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
-				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::type pos_tuple_type;
+				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type pos_tuple_type;
 				typedef typename Derived::TermType::cf_type::
 					template ei_sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
 					template ei_sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
@@ -159,7 +159,7 @@ namespace piranha
 			{
 				typedef typename Derived::const_iterator const_iterator;
 				typedef typename FourierSeries::TermType fourier_term;
-				typename Ntuple<VectorPsym,1>::type argsTuple(derived_const_cast->arguments().template get<1>());
+				typename NTuple<VectorPsym,1>::Type argsTuple(derived_const_cast->arguments().template get<1>());
 				FourierSeries retval;
 				retval.setArguments(argsTuple);
 				const const_iterator it_f = derived_const_cast->end();
@@ -180,7 +180,7 @@ namespace piranha
 
 			Derived integrate(const std::string &name) const
 			{
-				typedef typename Ntuple<std::vector<std::pair<bool, std::size_t> >, 2>::type pos_tuple_type;
+				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, 2>::Type pos_tuple_type;
 				const Psym p(name);
 				const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p), derived_const_cast->arguments());
 				Derived retval;

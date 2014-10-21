@@ -73,7 +73,7 @@ namespace piranha
 
 		public:
 			typedef ArgsDescr arguments_description;
-			typedef typename Ntuple<VectorPsym, boost::tuples::length<arguments_description>::value>::type ArgsTupleType;
+			typedef typename NTuple<VectorPsym, boost::tuples::length<arguments_description>::value>::Type ArgsTupleType;
 
 		private:
 			struct s_iterator_generator

@@ -149,7 +149,7 @@ namespace piranha
 	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::const_iterator
 	BaseSeries<__PIRANHA_BASE_SERIES_TP>::findTerm(const TermType &t) const
 	{
-		return m_container.find(t);
+		return container.find(t);
 	}
 
 
@@ -196,7 +196,7 @@ namespace piranha
 	template <bool Sign, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::termInsertNew(const TermType &term, const ArgsTuple &argsTuple)
 	{
-		std::pair<const_iterator, bool> res(m_container.insert(term));
+		std::pair<const_iterator, bool> res(container.insert(term));
 		PIRANHA_ASSERT(res.second);
 		if (!Sign) 
 		{
@@ -208,7 +208,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::eraseTerm(const const_iterator &it)
 	{
-		m_container.erase(it);
+		container.erase(it);
 	}
 
 
@@ -220,7 +220,7 @@ namespace piranha
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSwap(Derived &ps2)
 	{
 		PIRANHA_ASSERT(derived_cast != &ps2);
-		m_container.swap(ps2.m_container);
+		container.swap(ps2.container);
 	}
 
 
@@ -291,7 +291,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::clearTerms()
 	{
-		m_container.clear();
+		container.clear();
 	}
 
 
