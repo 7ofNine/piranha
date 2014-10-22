@@ -52,7 +52,7 @@ namespace piranha
 	template <class CfSeries, class Enable = void>
 	struct EchelonLevelImpl
 	{
-		static const int value = EchelonLevelImpl<typename CfSeries::TermType::cf_type>::value + 1;
+		static const int value = EchelonLevelImpl<typename CfSeries::TermType::CfType>::value + 1;
 	};
 
 
@@ -142,7 +142,7 @@ namespace piranha
 			typedef typename SeriesContainer<TermType>::Type ContainerType;
 
 			/// Echelon level.
-			static const int echelonLevel = EchelonLevelImpl<typename TermType::cf_type>::value;
+			static const int echelonLevel = EchelonLevelImpl<typename TermType::CfType>::value;
 
 			/// Type resulting from series evaluation.
 			/**

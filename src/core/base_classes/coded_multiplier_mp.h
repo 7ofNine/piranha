@@ -56,7 +56,7 @@ namespace piranha {
 		static const typename final_cf<CfSeries>::type &run(const CfSeries &cf_series)
 		{
 			PIRANHA_ASSERT(cf_series.length() == 1);
-			return final_cf_getter_impl<typename CfSeries::TermType::cf_type>::run(cf_series.begin()->cf);
+			return final_cf_getter_impl<typename CfSeries::TermType::CfType>::run(cf_series.begin()->cf);
 		}
 	};
 
@@ -66,7 +66,7 @@ namespace piranha {
 	{
 		const typename final_cf<Series>::type &operator()(const typename Series::TermType *term) const
 		{
-			return final_cf_getter_impl<typename Series::TermType::cf_type>::run(term->cf);
+			return final_cf_getter_impl<typename Series::TermType::CfType>::run(term->cf);
 		}
 	};
 
@@ -83,7 +83,7 @@ namespace piranha {
 
 
 	template <class Term>
-	struct key_revlex_comparison_impl<Term,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,typename Term::cf_type> >::type>
+	struct key_revlex_comparison_impl<Term,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,typename Term::CfType> >::type>
 	{
 		static bool run(const Term *t1, const Term *t2)
 		{
@@ -91,7 +91,7 @@ namespace piranha {
             {
 				PIRANHA_ASSERT(t1->cf.length() == 1 && t2->cf.length() == 1);
 
-				return key_revlex_comparison_impl<typename Term::cf_type::TermType>::run(&(*t1->cf.begin()), &(*t2->cf.begin()));
+				return key_revlex_comparison_impl<typename Term::CfType::TermType>::run(&(*t1->cf.begin()), &(*t2->cf.begin()));
 
 			} else
             {
@@ -283,25 +283,25 @@ namespace piranha {
 		// minmax type, to be used for limits of input series.
 		typedef typename Series::TermType::key_type::value_type value_type;
 		typedef boost::tuples::cons<std::vector<boost::numeric::interval<value_type> >,
-			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_minmax> type_minmax;
+			typename cm_tuple_impl<typename Series::TermType::CfType, N - 1>::type_minmax> type_minmax;
 		// mp_integer minmax type, to be used when calculating global limits.
 		typedef boost::tuples::cons<std::vector<boost::numeric::interval<mp_integer> >,
-			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_mp_minmax> type_mp_minmax;
+			typename cm_tuple_impl<typename Series::TermType::CfType, N - 1>::type_mp_minmax> type_mp_minmax;
 		// max_fast_int minmax type.
 		typedef boost::tuples::cons<std::vector<boost::numeric::interval<max_fast_int> >,
-			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_max_fast_int_minmax> type_max_fast_int_minmax;
+			typename cm_tuple_impl<typename Series::TermType::CfType, N - 1>::type_max_fast_int_minmax> type_max_fast_int_minmax;
 		// value_handler tuple.
 		typedef boost::tuples::cons<cm_value_handler<value_type>,
-			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_value_handler> type_value_handler;
+			typename cm_tuple_impl<typename Series::TermType::CfType, N - 1>::type_value_handler> type_value_handler;
 		// Multi-precision coding tuple.
 		typedef boost::tuples::cons<std::vector<mp_integer>,
-			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_mp_coding_tuple> type_mp_coding_tuple;
+			typename cm_tuple_impl<typename Series::TermType::CfType, N - 1>::type_mp_coding_tuple> type_mp_coding_tuple;
 		// Coding tuple.
 		typedef boost::tuples::cons<std::vector<max_fast_int>,
-			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_coding_tuple> type_coding_tuple;
+			typename cm_tuple_impl<typename Series::TermType::CfType, N - 1>::type_coding_tuple> type_coding_tuple;
 		// Decoding tuple: vectors of pairs of max_fast_ints, num and den resp. of the decoding formula.
 		typedef boost::tuples::cons<std::vector<std::pair<max_fast_int,max_fast_int> >,
-			typename cm_tuple_impl<typename Series::TermType::cf_type, N - 1>::type_decoding_tuple> type_decoding_tuple;
+			typename cm_tuple_impl<typename Series::TermType::CfType, N - 1>::type_decoding_tuple> type_decoding_tuple;
 	};
 
 	template <class Series>
@@ -333,7 +333,7 @@ namespace piranha {
 		{
 			typedef typename Tuple::head_type::size_type size_type;
 			t.get_head().resize(boost::numeric_cast<size_type>(argsTuple.template get<Series::TermType::key_type::position>().size()));
-			cm_init_vector_tuples_impl<typename Series::TermType::cf_type,typename Tuple::tail_type>::run(argsTuple,t.get_tail());
+			cm_init_vector_tuples_impl<typename Series::TermType::CfType,typename Tuple::tail_type>::run(argsTuple,t.get_tail());
 		}
 	};
 

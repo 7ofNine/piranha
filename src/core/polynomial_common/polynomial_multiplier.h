@@ -381,8 +381,8 @@ struct polynomial_multiplier
 
 			typedef typename ancestor::term_type1 term_type1;
 			typedef typename ancestor::term_type2 term_type2;
-			typedef typename term_type1::cf_type  cf_type1;
-			typedef typename term_type2::cf_type  cf_type2;
+			typedef typename term_type1::CfType  cf_type1;
+			typedef typename term_type2::CfType  cf_type2;
 
 		public:
 

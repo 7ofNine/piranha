@@ -139,7 +139,7 @@ namespace piranha
 	template <bool Sign, class Number, class ArgsTuple>
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::mergeWithNumber(const Number &n, const ArgsTuple &argsTuple)
 	{
-		typename Derived::TermType term(typename Derived::TermType::cf_type(n, argsTuple), typename Derived::TermType::key_type());
+		typename Derived::TermType term(typename Derived::TermType::CfType(n, argsTuple), typename Derived::TermType::key_type());
 
 		insert<true, Sign>(term, argsTuple);
 		return *derived_cast;

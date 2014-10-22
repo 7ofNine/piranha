@@ -260,7 +260,7 @@ namespace piranha
 		const const_iterator itf = end();
 		for (const_iterator it = begin(); it != itf; ++it) 
 		{
-			retval.insert(TermType(typename TermType::cf_type(it->cf.trim(tf, argsTuple)), typename TermType::key_type(it->key.trim(tf, argsTuple))), argsTuple);
+			retval.insert(TermType(typename TermType::CfType(it->cf.trim(tf, argsTuple)), typename TermType::key_type(it->key.trim(tf, argsTuple))), argsTuple);
 		}
 	}
 

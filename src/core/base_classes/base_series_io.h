@@ -44,7 +44,7 @@ namespace piranha
 {
 	/// Construct series from numerical quantity.
 	/**
-	 * Equivalent to creating a series from a coefficient with baseSeriesFromCf() and coefficient type term_type::cf_type, the coefficient being
+	 * Equivalent to creating a series from a coefficient with baseSeriesFromCf() and coefficient type term_type::CfType, the coefficient being
 	 * constructed with the provided number.
 	 *
 	 * @param[in] x number used for series construction.
@@ -56,7 +56,7 @@ namespace piranha
 	template <class Number, class ArgsTuple>
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSeriesFromNumber(const Number &x, const ArgsTuple &argsTuple)
 	{
-		return baseSeriesFromCf(typename TermType::cf_type(x, argsTuple), argsTuple);
+		return baseSeriesFromCf(typename TermType::CfType(x, argsTuple), argsTuple);
 	}
 
 
@@ -187,7 +187,7 @@ namespace piranha
 			const ArgsTuple &argsTuple)
 	{
 		PIRANHA_ASSERT(derived_cast->empty());
-		insert(TermType(typename TermType::cf_type(p, n, argsTuple), typename TermType::key_type(p, n, argsTuple)), argsTuple);
+		insert(TermType(typename TermType::CfType(p, n, argsTuple), typename TermType::key_type(p, n, argsTuple)), argsTuple);
 	}
 
 
@@ -241,7 +241,7 @@ namespace piranha
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSeriesFromCf(const Cf &cf, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
-		SeriesFromCfImpl<Cf, typename TermType::cf_type>::run(retval, cf, argsTuple);
+		SeriesFromCfImpl<Cf, typename TermType::CfType>::run(retval, cf, argsTuple);
 		return retval;
 	}
 

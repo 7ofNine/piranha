@@ -39,7 +39,7 @@ namespace piranha
 		public:
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct ei_sub_cache_selector {
-				typedef typename Derived::TermType::cf_type::
+				typedef typename Derived::TermType::CfType::
 					template ei_sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
 					template ei_sub_cache_selector<SubSeries, SubCachesCons, ArgsTuple>::type, ArgsTuple>::type type;
 			};

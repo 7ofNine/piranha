@@ -427,7 +427,7 @@ namespace piranha
 	template <class SubSeries>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::sub(const std::string &name, const SubSeries &s) const
 	{
-		typedef typename Derived::TermType::cf_type::
+		typedef typename Derived::TermType::CfType::
 			template sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
 			template sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 			::type, ArgsTupleType>::type    sub_caches_type;

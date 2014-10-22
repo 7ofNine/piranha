@@ -37,7 +37,7 @@ namespace piranha
 		public:
 
 			/// Alias for coefficient type.
-			typedef Cf cf_type;
+			typedef Cf CfType;
 			/// Alias for expo type.
 			typedef Key key_type;
 			/// Result of the multiplication of two monomials.

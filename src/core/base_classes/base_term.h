@@ -43,7 +43,7 @@ namespace piranha
 	{
 		public:
 
-			typedef typename Term::cf_type type;
+			typedef typename Term::CfType type;
 
 			static type &run(Term &t) 
             {
@@ -118,7 +118,7 @@ namespace piranha
 			};
 
 			/// Alias for coefficient type.
-			typedef Cf cf_type;
+			typedef Cf CfType;
 			/// Alias for key type.
 			typedef Key key_type;
 			/// Alias for allocator type.
@@ -152,7 +152,7 @@ namespace piranha
 					// Try to build only if the strings actually contain something.
 					if (!vs[0].empty()) 
                     {
-						cf = cf_type(vs[0], argsTuple);
+						cf = CfType(vs[0], argsTuple);
 					}
 					if (!vs[1].empty()) 
                     {
@@ -165,7 +165,7 @@ namespace piranha
 			// Copy ctor.
 			//
 			//Construct from BaseTerm with different coefficient and key.
-		    // this requires a constuctor for cf(Derived2::cf_type, ArgsTuple)
+		    // this requires a constuctor for cf(Derived2::CfType, ArgsTuple)
 			//                            for key(Derived2::key_type, ArgsTuple) 
 			template <class Derived2, class ArgsTuple>
 			BaseTerm(const Derived2 &t, const ArgsTuple &argsTuple)
@@ -173,7 +173,7 @@ namespace piranha
 			
 
 			/// Ctor from coefficient - key pair.
-			BaseTerm(const cf_type &cf, const key_type &key): cf(cf), key(key) {}
+			BaseTerm(const CfType &cf, const key_type &key): cf(cf), key(key) {}
 
 			template <int N>
 			typename BaseTermGetHelper<N, BaseTerm>::type &get() 
@@ -291,7 +291,7 @@ namespace piranha
 
 			// Data members.
 			/// Coefficient.
-			mutable cf_type		cf;
+			mutable CfType		cf;
 			/// Key.
 			key_type		    key;
 			/// Rebound allocator for term type.
@@ -323,7 +323,7 @@ namespace piranha
 	template <class ArgsTuple> \
 	explicit term_name(const std::string &str, const ArgsTuple &argsTuple): \
 			ancestor(str, argsTuple) {} \
-	explicit term_name(const cf_type &c, const key_type &t): ancestor(c, t) {} \
+	explicit term_name(const CfType &c, const key_type &t): ancestor(c, t) {} \
 	template <class Cf2, class ArgsTuple> \
 	explicit term_name(const term_name<Cf2, key_type, Separator, Allocator> &term, const ArgsTuple &a): \
 			ancestor(term, a) {} \

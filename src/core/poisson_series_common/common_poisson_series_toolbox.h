@@ -87,7 +87,7 @@ namespace piranha
 			{
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
 				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type pos_tuple_type;
-				typedef typename Derived::TermType::cf_type::
+				typedef typename Derived::TermType::CfType::
 					template sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
 					template sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 					::type, ArgsTupleType>::type sub_caches_type;
@@ -128,7 +128,7 @@ namespace piranha
 			{
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
 				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type pos_tuple_type;
-				typedef typename Derived::TermType::cf_type::
+				typedef typename Derived::TermType::CfType::
 					template ei_sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
 					template ei_sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 					::type,ArgsTupleType>::type sub_caches_type;
@@ -171,7 +171,7 @@ namespace piranha
 						PIRANHA_THROW(value_error,"polynomial coefficient cannot be converted to numerical coefficient");
 					}
 
-					retval.insert(fourier_term(typename fourier_term::cf_type(it->cf.begin()->cf), typename fourier_term::key_type(it->key)), argsTuple);
+					retval.insert(fourier_term(typename fourier_term::CfType(it->cf.begin()->cf), typename fourier_term::key_type(it->key)), argsTuple);
 				}
 
 				return retval;
@@ -218,7 +218,7 @@ namespace piranha
 					"Size mismatch between args tuple and pos tuple in Poisson series integration.");
 
 				typedef typename Derived::const_iterator                     const_iterator;
-				typedef typename Derived::TermType::cf_type::degree_type    degree_type;
+				typedef typename Derived::TermType::CfType::degree_type    degree_type;
 				typedef typename Derived::TermType::key_type::HarmonicDegreeType HarmonicDegreeType;
 
 				// Make sure that the position tuple contains just one symbol in each element of the tuple,
@@ -233,7 +233,7 @@ namespace piranha
 					if (pos_tuple.template get<1>()[0].first && it->key[pos_tuple.template get<1>()[0].second] != 0) 
                     {
 						// Integrand argument appears as trigonometric argument: try to integrate recursively by parts.
-						typedef typename Derived::TermType::cf_type::degree_type degree_type;
+						typedef typename Derived::TermType::CfType::degree_type degree_type;
 						const degree_type degree(it->cf.partial_degree(pos_tuple));
 						if (degree < 0 || !is_integer(degree)) 
                         {
@@ -243,7 +243,7 @@ namespace piranha
 
 						const HarmonicDegreeType trig_mult(it->key[pos_tuple.template get<1>()[0].second]);
 						typename Derived::TermType tmp(*it);
-						typename Derived::TermType::cf_type tmp_cf(it->cf);
+						typename Derived::TermType::CfType tmp_cf(it->cf);
 
 						tmp_cf.divideBy(trig_mult, argsTuple);
 						
@@ -286,7 +286,7 @@ namespace piranha
 							retval.insert(tmp,argsTuple);
 							
                             // Prepare tmp's cf for next step.
-							tmp_cf = tmp_cf.template partial<typename Derived::TermType::cf_type>(pos_tuple, argsTuple);
+							tmp_cf = tmp_cf.template partial<typename Derived::TermType::CfType>(pos_tuple, argsTuple);
 							tmp_cf.divideBy(trig_mult, argsTuple);
 						}
 					} else 
@@ -310,8 +310,8 @@ namespace piranha
 			{
 				typedef typename std::complex<Derived>::TermType                 complex_term_type;
 				typedef typename Derived::TermType                               term_type;
-				typedef typename term_type::cf_type::TermType::cf_type           poly_cf_type;
-				typedef typename std::complex<Derived>::TermType::cf_type        complex_cf_type;
+				typedef typename term_type::CfType::TermType::CfType           poly_cf_type;
+				typedef typename std::complex<Derived>::TermType::CfType        complex_cf_type;
 				typedef typename std::vector<term_type const *>::const_iterator  const_iterator;
 
 				// Cache and sort the terms according to the criterion defined in the truncator.
@@ -345,15 +345,15 @@ namespace piranha
 				if (it_avoid != cache.end()) 
                 {
 					// Split the polynomial coefficient in two parts: exactly treatable and not.
-					typename term_type::cf_type exact;
-                    typename term_type::cf_type residual;
-					for (typename term_type::cf_type::const_iterator it = (*it_avoid)->cf.begin(); it != (*it_avoid)->cf.end(); ++it) 
+					typename term_type::CfType exact;
+                    typename term_type::CfType residual;
+					for (typename term_type::CfType::const_iterator it = (*it_avoid)->cf.begin(); it != (*it_avoid)->cf.end(); ++it) 
                     {
 						// Exact part has the following requisites: exactly one "active" variable with unitary exponent and a coefficient
 						// that is convertible to the type representing the harmonic degree.
-						typename term_type::cf_type::TermType::key_type::size_type n_active = 0;
+						typename term_type::CfType::TermType::key_type::size_type n_active = 0;
 						bool has_unitary = false;
-						for (typename term_type::cf_type::TermType::key_type::size_type i = 0; i < it->key.size(); ++i) 
+						for (typename term_type::CfType::TermType::key_type::size_type i = 0; i < it->key.size(); ++i) 
                         {
 							if (it->key[i] == 1) 
                             {
@@ -401,7 +401,7 @@ namespace piranha
 						tmp_term2.key.setFlavour(false);
 
 						// Copy over the exact part from polynomial into trigonometric.
-						for (typename term_type::cf_type::const_iterator it = exact.begin(); it != exact.end(); ++it)
+						for (typename term_type::CfType::const_iterator it = exact.begin(); it != exact.end(); ++it)
                         {
 							// NOTE: we use just 1 size type here, but we should be covered by prior arguments merging.
 							typedef typename complex_term_type::key_type::size_type size_type;

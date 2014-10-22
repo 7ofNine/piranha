@@ -626,7 +626,7 @@ namespace piranha
 			RetSeries sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
 			{
 				typedef typename RetSeries::TermType ret_term_type;
-				typedef typename ret_term_type::cf_type ret_cf_type;
+				typedef typename ret_term_type::CfType ret_cf_type;
 				RetSeries retval;
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very TrigVector.
@@ -685,7 +685,7 @@ namespace piranha
 			RetSeries ei_sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
 			{
 				typedef typename RetSeries::TermType ret_term_type;
-				typedef typename ret_term_type::cf_type ret_cf_type;
+				typedef typename ret_term_type::CfType ret_cf_type;
 				RetSeries retval;
 				
                 PIRANHA_ASSERT(pos_tuple.template get<ancestor::position>().size() == 1);

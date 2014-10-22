@@ -41,7 +41,7 @@ namespace piranha
 	class TermEvalTypeDeterminer
 	{
 		public:
-			typedef typename tetd_helper<typename Term::cf_type::EvalType, typename Term::key_type::EvalType>::type type;
+			typedef typename tetd_helper<typename Term::CfType::EvalType, typename Term::key_type::EvalType>::type type;
 	};
 
 	template <class CfEval, class KeyEval>
@@ -97,7 +97,7 @@ namespace piranha
 	template <class T>
 	struct is_ring_exact<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
-		static const bool value = is_ring_exact<typename T::TermType::cf_type>::value && is_ring_exact<typename T::TermType::key_type>::value;
+		static const bool value = is_ring_exact<typename T::TermType::CfType>::value && is_ring_exact<typename T::TermType::key_type>::value;
 	};
 
 	/// Default type trait for trigonometric classes.
@@ -125,7 +125,7 @@ namespace piranha
 	template <class T>
 	struct is_trig_exact<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
-		static const bool value = is_trig_exact<typename T::TermType::cf_type>::value || is_trig_exact<typename T::TermType::key_type>::value;
+		static const bool value = is_trig_exact<typename T::TermType::CfType>::value || is_trig_exact<typename T::TermType::key_type>::value;
 	};
 
 	/// Default type trait for classes dividable by int.
@@ -153,7 +153,7 @@ namespace piranha
 	template <class T>
 	struct is_divint_exact<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
-		static const bool value = is_divint_exact<typename T::TermType::cf_type>::value || is_divint_exact<typename T::TermType::key_type>::value;
+		static const bool value = is_divint_exact<typename T::TermType::CfType>::value || is_divint_exact<typename T::TermType::key_type>::value;
 	};
 
 	/// Default type trait for classes which can represent rational exponents.
@@ -175,7 +175,7 @@ namespace piranha
 	template <class CfSeries, class Enable = void>
 	struct final_cf_impl
 	{
-		typedef typename final_cf_impl<typename CfSeries::TermType::cf_type>::type type;
+		typedef typename final_cf_impl<typename CfSeries::TermType::CfType>::type type;
 	};
 
 	template <class Cf>
@@ -193,7 +193,7 @@ namespace piranha
 	{
 		PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag,Series>::value),"Cannot determine final coefficient of a non-series type.");
 
-		typedef typename final_cf_impl<typename Series::TermType::cf_type>::type type;
+		typedef typename final_cf_impl<typename Series::TermType::CfType>::type type;
 	};
 }
 

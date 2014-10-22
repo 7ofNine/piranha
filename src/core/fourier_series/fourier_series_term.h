@@ -42,7 +42,7 @@ namespace piranha
 		public:
 
 			/// Alias for coefficient type.
-			typedef Cf cf_type;
+			typedef Cf CfType;
 			/// Alias for trigonometric type.
 			typedef Trig key_type;
 			/// Result of the multiplication of two terms.
