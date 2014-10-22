@@ -39,7 +39,7 @@ namespace piranha
 			/// Alias for coefficient type.
 			typedef Cf CfType;
 			/// Alias for expo type.
-			typedef Key key_type;
+			typedef Key KeyType;
 			/// Result of the multiplication of two monomials.
 			typedef typename boost::tuple<Monomial> multiplication_result;
 

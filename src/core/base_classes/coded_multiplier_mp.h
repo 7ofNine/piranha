@@ -281,7 +281,7 @@ namespace piranha {
 	struct cm_tuple_impl {
 		PIRANHA_STATIC_CHECK(N > 0,"");
 		// minmax type, to be used for limits of input series.
-		typedef typename Series::TermType::key_type::value_type value_type;
+		typedef typename Series::TermType::KeyType::value_type value_type;
 		typedef boost::tuples::cons<std::vector<boost::numeric::interval<value_type> >,
 			typename cm_tuple_impl<typename Series::TermType::CfType, N - 1>::type_minmax> type_minmax;
 		// mp_integer minmax type, to be used when calculating global limits.
@@ -332,7 +332,7 @@ namespace piranha {
 		static void run(const ArgsTuple &argsTuple, Tuple &t)
 		{
 			typedef typename Tuple::head_type::size_type size_type;
-			t.get_head().resize(boost::numeric_cast<size_type>(argsTuple.template get<Series::TermType::key_type::position>().size()));
+			t.get_head().resize(boost::numeric_cast<size_type>(argsTuple.template get<Series::TermType::KeyType::position>().size()));
 			cm_init_vector_tuples_impl<typename Series::TermType::CfType,typename Tuple::tail_type>::run(argsTuple,t.get_tail());
 		}
 	};
@@ -594,7 +594,7 @@ namespace piranha {
 			PIRANHA_STATIC_CHECK((boost::is_same<typename CodingTuple::head_type::value_type,max_fast_int>::value),"");
 			PIRANHA_ASSERT(cf.length() == 1);
 
-			typedef typename Cf::TermType::key_type::size_type size_type;
+			typedef typename Cf::TermType::KeyType::size_type size_type;
 			const size_type size = cf.begin()->key.size();
 			PIRANHA_ASSERT(size <= ct.get_head().size());
 			max_fast_int tmp = 0;
@@ -633,7 +633,7 @@ namespace piranha {
 			PIRANHA_ASSERT(term.key.size() <= ct.get_head().size());
 
 			static const bool sub_requested = op_has_sub<OpTuple>::value;
-			typedef typename Term::key_type::size_type size_type;
+			typedef typename Term::KeyType::size_type size_type;
 			max_fast_int tmp = 0;
 			// NOTE: again the assumption that the sizes of vector and key are compatible. Need to sort this out...
 			for (size_type i = 0; i < term.key.size(); ++i)
@@ -702,9 +702,9 @@ namespace piranha {
 		{
 			PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag,Cf>::value),"");
 			typedef typename Cf::TermType term_type;
-			typedef typename term_type::key_type::size_type size_type;
+			typedef typename term_type::KeyType::size_type size_type;
 			
-            PIRANHA_ASSERT(dt.get_head().size() == argsTuple.template get<term_type::key_type::position>().size());
+            PIRANHA_ASSERT(dt.get_head().size() == argsTuple.template get<term_type::KeyType::position>().size());
 			PIRANHA_ASSERT(dt.get_head().size() == gr.get_head().size());
 
 			const size_type size = dt.get_head().size();
@@ -748,10 +748,10 @@ namespace piranha {
 			const max_fast_int &code, const ArgsTuple &argsTuple)
 		{
 			PIRANHA_ASSERT(code >= 0);
-			typedef typename Term::key_type::size_type size_type;
+			typedef typename Term::KeyType::size_type size_type;
 			// Make sure the sizes of the current tuples' elements are consistent.
 			// (De)coding tuple sizes should always be the same as args tuple's.
-			PIRANHA_ASSERT(dt.get_head().size() == argsTuple.template get<Term::key_type::position>().size());
+			PIRANHA_ASSERT(dt.get_head().size() == argsTuple.template get<Term::KeyType::position>().size());
 			PIRANHA_ASSERT(dt.get_head().size() == gr.get_head().size());
 			const size_type size = dt.get_head().size();
 			term.key.resize(size);

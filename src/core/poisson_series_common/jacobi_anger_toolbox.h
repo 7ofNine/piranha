@@ -97,7 +97,7 @@ namespace piranha
 					retval.insert(tmp_term, argsTuple);
 				}
 				const std::size_t w = argsTuple.template get<TrigPos>().size();
-				std::vector<typename std::complex<Derived>::TermType::key_type::value_type> tmp_trig_mults(w);
+				std::vector<typename std::complex<Derived>::TermType::KeyType::value_type> tmp_trig_mults(w);
 				std::complex<double> cos_multiplier(0, 2);
 				for (int i = 1; i < n; ++i) 
 				{
@@ -109,7 +109,7 @@ namespace piranha
 						tmp_trig_mults[j] *= i;
 					}
 
-					tmp_term.key.resize(boost::numeric_cast<typename std::complex<Derived>::TermType::key_type::size_type>(tmp_trig_mults.size()));
+					tmp_term.key.resize(boost::numeric_cast<typename std::complex<Derived>::TermType::KeyType::size_type>(tmp_trig_mults.size()));
 					std::copy(tmp_trig_mults.begin(),tmp_trig_mults.end(),tmp_term.key.begin());
 					if ((*it)->key.getFlavour())
 					{

@@ -139,7 +139,7 @@ namespace piranha
 	template <bool Sign, class Number, class ArgsTuple>
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::mergeWithNumber(const Number &n, const ArgsTuple &argsTuple)
 	{
-		typename Derived::TermType term(typename Derived::TermType::CfType(n, argsTuple), typename Derived::TermType::key_type());
+		typename Derived::TermType term(typename Derived::TermType::CfType(n, argsTuple), typename Derived::TermType::KeyType());
 
 		insert<true, Sign>(term, argsTuple);
 		return *derived_cast;
@@ -339,7 +339,7 @@ namespace piranha
 		// If the series is a single cf, let's try to forward the pow call to the only coefficient.
 		if (isSingleCf()) 
 		{
-			retval.insert(TermType(begin()->cf.pow(y, argsTuple), typename TermType::key_type()), argsTuple);
+			retval.insert(TermType(begin()->cf.pow(y, argsTuple), typename TermType::KeyType()), argsTuple);
 			return true;
 		}
 		if (length() == 1) 

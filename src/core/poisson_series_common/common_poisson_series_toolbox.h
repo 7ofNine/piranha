@@ -88,7 +88,7 @@ namespace piranha
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
 				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type pos_tuple_type;
 				typedef typename Derived::TermType::CfType::
-					template sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
+					template sub_cache_selector<SubSeries, typename Derived::TermType::KeyType::
 					template sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 					::type, ArgsTupleType>::type sub_caches_type;
 
@@ -129,7 +129,7 @@ namespace piranha
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
 				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type pos_tuple_type;
 				typedef typename Derived::TermType::CfType::
-					template ei_sub_cache_selector<SubSeries, typename Derived::TermType::key_type::
+					template ei_sub_cache_selector<SubSeries, typename Derived::TermType::KeyType::
 					template ei_sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 					::type,ArgsTupleType>::type sub_caches_type;
 
@@ -171,7 +171,7 @@ namespace piranha
 						PIRANHA_THROW(value_error,"polynomial coefficient cannot be converted to numerical coefficient");
 					}
 
-					retval.insert(fourier_term(typename fourier_term::CfType(it->cf.begin()->cf), typename fourier_term::key_type(it->key)), argsTuple);
+					retval.insert(fourier_term(typename fourier_term::CfType(it->cf.begin()->cf), typename fourier_term::KeyType(it->key)), argsTuple);
 				}
 
 				return retval;
@@ -219,7 +219,7 @@ namespace piranha
 
 				typedef typename Derived::const_iterator                     const_iterator;
 				typedef typename Derived::TermType::CfType::degree_type    degree_type;
-				typedef typename Derived::TermType::key_type::HarmonicDegreeType HarmonicDegreeType;
+				typedef typename Derived::TermType::KeyType::HarmonicDegreeType HarmonicDegreeType;
 
 				// Make sure that the position tuple contains just one symbol in each element of the tuple,
 				// and that the symbol is present in the series.
@@ -351,9 +351,9 @@ namespace piranha
                     {
 						// Exact part has the following requisites: exactly one "active" variable with unitary exponent and a coefficient
 						// that is convertible to the type representing the harmonic degree.
-						typename term_type::CfType::TermType::key_type::size_type n_active = 0;
+						typename term_type::CfType::TermType::KeyType::size_type n_active = 0;
 						bool has_unitary = false;
-						for (typename term_type::CfType::TermType::key_type::size_type i = 0; i < it->key.size(); ++i) 
+						for (typename term_type::CfType::TermType::KeyType::size_type i = 0; i < it->key.size(); ++i) 
                         {
 							if (it->key[i] == 1) 
                             {
@@ -370,7 +370,7 @@ namespace piranha
                         {
 							// Try to convert the coefficient.
 							try {
-								boost::lexical_cast<typename term_type::key_type::HarmonicDegreeType>(it->cf.get_value());
+								boost::lexical_cast<typename term_type::KeyType::HarmonicDegreeType>(it->cf.get_value());
 							} catch (const boost::bad_lexical_cast &) {
 								is_exact = false;
 							}
@@ -392,19 +392,19 @@ namespace piranha
 						// Prepare the terms to be inserted.
 						complex_term_type tmp_term1;
 						tmp_term1.cf = complex_cf_type(std::complex<double>(1, 0), argsTuple);
-						tmp_term1.key.resize(boost::numeric_cast<typename complex_term_type::key_type::size_type>(argsTuple.template get<1>().size()));
+						tmp_term1.key.resize(boost::numeric_cast<typename complex_term_type::KeyType::size_type>(argsTuple.template get<1>().size()));
 						tmp_term1.key.setFlavour(true);
 					
                         complex_term_type tmp_term2;
 						tmp_term2.cf = complex_cf_type(std::complex<double>(0, 1), argsTuple);
-						tmp_term2.key.resize(boost::numeric_cast<typename complex_term_type::key_type::size_type>(argsTuple.template get<1>().size()));
+						tmp_term2.key.resize(boost::numeric_cast<typename complex_term_type::KeyType::size_type>(argsTuple.template get<1>().size()));
 						tmp_term2.key.setFlavour(false);
 
 						// Copy over the exact part from polynomial into trigonometric.
 						for (typename term_type::CfType::const_iterator it = exact.begin(); it != exact.end(); ++it)
                         {
 							// NOTE: we use just 1 size type here, but we should be covered by prior arguments merging.
-							typedef typename complex_term_type::key_type::size_type size_type;
+							typedef typename complex_term_type::KeyType::size_type size_type;
 							const size_type pos_poly = boost::numeric_cast<size_type>(
 								std::distance(it->key.begin(),
 								std::find_if(it->key.begin(),it->key.end(),boost::lambda::_1 == 1)
@@ -425,8 +425,8 @@ namespace piranha
 
 							PIRANHA_ASSERT(pos_trig < argsTuple.template get<1>().size());
 
-							tmp_term1.key[pos_trig] = boost::lexical_cast<typename complex_term_type::key_type::value_type>(it->cf.get_value());
-							tmp_term2.key[pos_trig] = boost::lexical_cast<typename complex_term_type::key_type::value_type>(it->cf.get_value());
+							tmp_term1.key[pos_trig] = boost::lexical_cast<typename complex_term_type::KeyType::value_type>(it->cf.get_value());
+							tmp_term2.key[pos_trig] = boost::lexical_cast<typename complex_term_type::KeyType::value_type>(it->cf.get_value());
 						}
 
 						tmp_series.insert(tmp_term1, argsTuple);

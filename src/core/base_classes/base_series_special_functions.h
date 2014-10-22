@@ -177,7 +177,7 @@ namespace piranha
 				{
 					typedef typename Derived::TermType term_type;
 					retval.insert(term_type(derived_const_cast->begin()->cf.besselJ(order_, argsTuple),
-						typename term_type::key_type()), argsTuple);
+						typename term_type::KeyType()), argsTuple);
 					return retval;
 				}
 

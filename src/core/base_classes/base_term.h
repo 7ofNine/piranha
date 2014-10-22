@@ -61,7 +61,7 @@ namespace piranha
 	{
 		public:
 
-			typedef typename Term::key_type type;
+			typedef typename Term::KeyType type;
 
 			static type &run(Term &t) 
             {
@@ -120,7 +120,7 @@ namespace piranha
 			/// Alias for coefficient type.
 			typedef Cf CfType;
 			/// Alias for key type.
-			typedef Key key_type;
+			typedef Key KeyType;
 			/// Alias for allocator type.
 			typedef typename Allocator::template rebind<Derived>::other allocator_type;
 			
@@ -156,7 +156,7 @@ namespace piranha
 					}
 					if (!vs[1].empty()) 
                     {
-						key = key_type(vs[1], argsTuple);
+						key = KeyType(vs[1], argsTuple);
 					}
 				}
 			}
@@ -166,14 +166,14 @@ namespace piranha
 			//
 			//Construct from BaseTerm with different coefficient and key.
 		    // this requires a constuctor for cf(Derived2::CfType, ArgsTuple)
-			//                            for key(Derived2::key_type, ArgsTuple) 
+			//                            for key(Derived2::KeyType, ArgsTuple) 
 			template <class Derived2, class ArgsTuple>
 			BaseTerm(const Derived2 &t, const ArgsTuple &argsTuple)
 			        : cf(t.cf, argsTuple), key(t.key) {}
 			
 
 			/// Ctor from coefficient - key pair.
-			BaseTerm(const CfType &cf, const key_type &key): cf(cf), key(key) {}
+			BaseTerm(const CfType &cf, const KeyType &key): cf(cf), key(key) {}
 
 			template <int N>
 			typename BaseTermGetHelper<N, BaseTerm>::type &get() 
@@ -293,7 +293,7 @@ namespace piranha
 			/// Coefficient.
 			mutable CfType		cf;
 			/// Key.
-			key_type		    key;
+			KeyType		    key;
 			/// Rebound allocator for term type.
 			static allocator_type	allocator;
 			/// Separator between coefficient and key in I/O.
@@ -323,9 +323,9 @@ namespace piranha
 	template <class ArgsTuple> \
 	explicit term_name(const std::string &str, const ArgsTuple &argsTuple): \
 			ancestor(str, argsTuple) {} \
-	explicit term_name(const CfType &c, const key_type &t): ancestor(c, t) {} \
+	explicit term_name(const CfType &c, const KeyType &t): ancestor(c, t) {} \
 	template <class Cf2, class ArgsTuple> \
-	explicit term_name(const term_name<Cf2, key_type, Separator, Allocator> &term, const ArgsTuple &a): \
+	explicit term_name(const term_name<Cf2, KeyType, Separator, Allocator> &term, const ArgsTuple &a): \
 			ancestor(term, a) {} \
 	template <class Cf2, class Key2> \
 	explicit term_name(const term_name<Cf2, Key2, Separator, Allocator> &term): \

@@ -57,7 +57,7 @@ namespace piranha
 			typedef typename Series1::TermType term_type1;
 			// Alias for term type of second input series.
 			typedef typename Series2::TermType term_type2;
-			PIRANHA_STATIC_CHECK((boost::is_same<typename term_type1::key_type, typename term_type2::key_type>::value),
+			PIRANHA_STATIC_CHECK((boost::is_same<typename term_type1::KeyType, typename term_type2::KeyType>::value),
 				"Key type mismatch in base multiplier.");
 			/// Compute block size for multiplication.
 			/**

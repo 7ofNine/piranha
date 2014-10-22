@@ -42,9 +42,9 @@ namespace piranha
 		{
 			typedef typename Series::TermType::CfType cf_series_type;
 			cf_series_type cf_series;
-			SeriesFromKeyImpl<RequestedKey,typename cf_series_type::TermType::key_type>::run(cf_series, key, argsTuple);
+			SeriesFromKeyImpl<RequestedKey,typename cf_series_type::TermType::KeyType>::run(cf_series, key, argsTuple);
 
-			retval.insert(typename Series::TermType(cf_series, typename Series::TermType::key_type()), argsTuple);
+			retval.insert(typename Series::TermType(cf_series, typename Series::TermType::KeyType()), argsTuple);
 		}
 	};
 
@@ -70,7 +70,7 @@ namespace piranha
 			cf_series_type cf_series;
 			SeriesFromCfImpl<RequestedCf, typename cf_series_type::TermType::CfType>::run(cf_series, cf,argsTuple);
 
-			retval.insert(typename Series::TermType(cf_series, typename Series::TermType::key_type()), argsTuple);
+			retval.insert(typename Series::TermType(cf_series, typename Series::TermType::KeyType()), argsTuple);
 		}
 	};
 
@@ -81,7 +81,7 @@ namespace piranha
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const Cf &cf, const ArgsTuple &argsTuple)
 		{
-			retval.insert(typename Series::TermType(cf, typename Series::TermType::key_type()), argsTuple);
+			retval.insert(typename Series::TermType(cf, typename Series::TermType::KeyType()), argsTuple);
 		}
 	};
 

@@ -45,7 +45,7 @@
 #define POLYNOMIAL_CF_BASE_ANCESTOR CF_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::polynomial_cf, '!', '?')
 #define POLYNOMIAL_CF_CF_ANCESTOR piranha::cf_series< POLYNOMIAL_CF_TERM, POLYNOMIAL_CF>
 #define POLYNOMIAL_CF_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< POLYNOMIAL_CF>
-#define POLYNOMIAL_CF_DEGREE typename POLYNOMIAL_CF_TERM::key_type::degree_type
+#define POLYNOMIAL_CF_DEGREE typename POLYNOMIAL_CF_TERM::KeyType::degree_type
 #define POLYNOMIAL_CF_BASE_POLYNOMIAL_ANCESTOR piranha::BasePolynomial<0,POLYNOMIAL_CF>
 
 namespace piranha
@@ -87,7 +87,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX piranha::BaseSeriesComplex< POLYNOMIAL_CF>
 #define COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX piranha::cf_series_complex< POLYNOMIAL_CF>
 #define COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL_CF>
-#define COMPLEX_POLYNOMIAL_CF_DEGREE typename COMPLEX_POLYNOMIAL_CF_TERM::key_type::degree_type
+#define COMPLEX_POLYNOMIAL_CF_DEGREE typename COMPLEX_POLYNOMIAL_CF_TERM::KeyType::degree_type
 #define COMPLEX_POLYNOMIAL_CF_BASE_POLYNOMIAL_ANCESTOR piranha::BasePolynomial<0,COMPLEX_POLYNOMIAL_CF>
 
 namespace std

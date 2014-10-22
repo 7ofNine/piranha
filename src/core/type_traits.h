@@ -41,7 +41,7 @@ namespace piranha
 	class TermEvalTypeDeterminer
 	{
 		public:
-			typedef typename tetd_helper<typename Term::CfType::EvalType, typename Term::key_type::EvalType>::type type;
+			typedef typename tetd_helper<typename Term::CfType::EvalType, typename Term::KeyType::EvalType>::type type;
 	};
 
 	template <class CfEval, class KeyEval>
@@ -97,7 +97,7 @@ namespace piranha
 	template <class T>
 	struct is_ring_exact<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
-		static const bool value = is_ring_exact<typename T::TermType::CfType>::value && is_ring_exact<typename T::TermType::key_type>::value;
+		static const bool value = is_ring_exact<typename T::TermType::CfType>::value && is_ring_exact<typename T::TermType::KeyType>::value;
 	};
 
 	/// Default type trait for trigonometric classes.
@@ -125,7 +125,7 @@ namespace piranha
 	template <class T>
 	struct is_trig_exact<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
-		static const bool value = is_trig_exact<typename T::TermType::CfType>::value || is_trig_exact<typename T::TermType::key_type>::value;
+		static const bool value = is_trig_exact<typename T::TermType::CfType>::value || is_trig_exact<typename T::TermType::KeyType>::value;
 	};
 
 	/// Default type trait for classes dividable by int.
@@ -153,7 +153,7 @@ namespace piranha
 	template <class T>
 	struct is_divint_exact<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
-		static const bool value = is_divint_exact<typename T::TermType::CfType>::value || is_divint_exact<typename T::TermType::key_type>::value;
+		static const bool value = is_divint_exact<typename T::TermType::CfType>::value || is_divint_exact<typename T::TermType::KeyType>::value;
 	};
 
 	/// Default type trait for classes which can represent rational exponents.

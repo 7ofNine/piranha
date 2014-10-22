@@ -44,7 +44,7 @@ namespace piranha
 			/// Alias for coefficient type.
 			typedef Cf CfType;
 			/// Alias for trigonometric type.
-			typedef Trig key_type;
+			typedef Trig KeyType;
 			/// Result of the multiplication of two terms.
 			typedef typename boost::tuple<FourierSeriesTerm, FourierSeriesTerm> multiplication_result;
 

@@ -187,7 +187,7 @@ namespace piranha
 			const ArgsTuple &argsTuple)
 	{
 		PIRANHA_ASSERT(derived_cast->empty());
-		insert(TermType(typename TermType::CfType(p, n, argsTuple), typename TermType::key_type(p, n, argsTuple)), argsTuple);
+		insert(TermType(typename TermType::CfType(p, n, argsTuple), typename TermType::KeyType(p, n, argsTuple)), argsTuple);
 	}
 
 
@@ -226,7 +226,7 @@ namespace piranha
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSeriesFromKey(const Key &key, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
-		SeriesFromKeyImpl<Key, typename TermType::key_type>::run(retval, key, argsTuple);
+		SeriesFromKeyImpl<Key, typename TermType::KeyType>::run(retval, key, argsTuple);
 		return retval;
 	}
 

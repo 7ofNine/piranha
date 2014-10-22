@@ -49,7 +49,7 @@ class coded_hash_table
 {
 	public:
 		/// The Code is the key type for the hash table.
-		typedef Code key_type;
+		typedef Code KeyType;
 		/// Value type.
 		typedef std::pair<Cf,Code> value_type;
 		/// Bucket.
@@ -233,10 +233,10 @@ class coded_hash_table
 		 *
 		 * @return pair containing the result of the operation.
 		 */
-		std::pair<bool,iterator> find(const key_type &key)
+		std::pair<bool,iterator> find(const KeyType &key)
 		{
 			const size_type vector_size = m_container.size(),
-				vector_pos = get_position(boost::hash<key_type>()(key),vector_size,m_size_policy);
+				vector_pos = get_position(boost::hash<KeyType>()(key),vector_size,m_size_policy);
 			PIRANHA_ASSERT(vector_pos < vector_size);
 			const bucket_type &bucket = m_container[vector_pos];
 			// Now examine all elements in the bucket.
@@ -303,9 +303,9 @@ class coded_hash_table
 			return m_length;
 		}
 		/// Get memory position in which key would be inserted, relative to the table's starting point.
-		size_type get_memory_position(const key_type &key) const
+		size_type get_memory_position(const KeyType &key) const
 		{
-			return get_position(boost::hash<key_type>()(key),m_container.size(),m_size_policy);
+			return get_position(boost::hash<KeyType>()(key),m_container.size(),m_size_policy);
 		}
 		/// Return the size of the vector representing the hash table internally.
 		size_type get_vector_size() const
@@ -359,7 +359,7 @@ class coded_hash_table
 		bool unchecked_insertion(const value_type &v)
 		{
 			const size_type vector_size = m_container.size(),
-				vector_pos = get_position(boost::hash<key_type>()(v.second),vector_size,m_size_policy);
+				vector_pos = get_position(boost::hash<KeyType>()(v.second),vector_size,m_size_policy);
 			PIRANHA_ASSERT(vector_pos < vector_size);
 			bucket_type &bucket = m_container[vector_pos];
 			// Now check for an available slot in the bucket.

@@ -54,7 +54,7 @@ namespace piranha
 					"Size mismatch between args tuple and pos tuple in polynomial integration.");
 			
 				typedef typename Derived::const_iterator const_iterator;
-				typedef typename Derived::TermType::key_type::degree_type DegreeType;
+				typedef typename Derived::TermType::KeyType::degree_type DegreeType;
 				// Make sure that the position tuple contains just one symbol in position N and that
 				// the symbol is actually present.
 				PIRANHA_ASSERT(posTuple.template get<N>().size() == 1);
@@ -79,7 +79,7 @@ namespace piranha
 
 					typename Derived::TermType tmp(*it);
 
-					tmp.key.resize(boost::numeric_cast<typename Derived::TermType::key_type::size_type>(tmpExponents.size()));
+					tmp.key.resize(boost::numeric_cast<typename Derived::TermType::KeyType::size_type>(tmpExponents.size()));
 					std::copy(tmpExponents.begin(), tmpExponents.end(), tmp.key.begin());
 					
                     tmp.cf.divideBy(it->key[position] + 1, argsTuple);

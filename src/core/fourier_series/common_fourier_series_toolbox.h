@@ -57,14 +57,14 @@ namespace piranha
 			std::complex<Derived> base_ei(const ArgsTuple &argsTuple) const
 			{
 				typedef typename std::complex<Derived>::TermType complex_term_type;
-				typedef typename complex_term_type::key_type key_type;
+				typedef typename complex_term_type::KeyType KeyType;
 				typedef typename Derived::TermType term_type;
 				typedef typename std::vector<term_type const *>::const_iterator const_iterator;
 				std::complex<Derived> retval;
 
 				if (derived_const_cast->isSingleCf())
                 {
-					retval.insert(complex_term_type(derived_const_cast->begin()->cf.ei(argsTuple), key_type()), argsTuple);
+					retval.insert(complex_term_type(derived_const_cast->begin()->cf.ei(argsTuple), KeyType()), argsTuple);
 				} else
                 {
 					// Cache and sort the terms according to the criterion defined in the truncator.
@@ -92,7 +92,7 @@ namespace piranha
                     {
 						// Take care of the constant element.
 						std::complex<Derived> tmp;
-						tmp.insert(complex_term_type((*it)->cf.ei(argsTuple),key_type()),argsTuple);
+						tmp.insert(complex_term_type((*it)->cf.ei(argsTuple),KeyType()),argsTuple);
 						retval.baseMultBy(tmp,argsTuple);
 					}
 				}
