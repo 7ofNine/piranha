@@ -43,14 +43,14 @@ namespace piranha
 	{
 		public:
 
-			typedef typename Term::CfType type;
+			typedef typename Term::CfType Type;
 
-			static type &run(Term &t) 
+			static Type &run(Term &t) 
             {
 				return t.cf;
 			}
 
-			static const type &run(const Term &t) 
+			static const Type &run(const Term &t) 
             {
 				return t.cf;
 			}
@@ -61,14 +61,14 @@ namespace piranha
 	{
 		public:
 
-			typedef typename Term::KeyType type;
+			typedef typename Term::KeyType Type;
 
-			static type &run(Term &t) 
+			static Type &run(Term &t) 
             {
 				return t.key;
 			}
 
-			static const type &run(const Term &t) 
+			static const Type &run(const Term &t) 
             {
 				return t.key;
 			}
@@ -112,9 +112,9 @@ namespace piranha
 			// Meta-programming to get the type of the component.
 			// Is N actually used for anything?
 			template <int N>
-			struct component 
+			struct Component 
 			{
-				typedef typename BaseTermGetHelper<N, BaseTerm>::type type;
+				typedef typename BaseTermGetHelper<N, BaseTerm>::Type Type;
 			};
 
 			/// Alias for coefficient type.
@@ -176,14 +176,14 @@ namespace piranha
 			BaseTerm(const CfType &cf, const KeyType &key): cf(cf), key(key) {}
 
 			template <int N>
-			typename BaseTermGetHelper<N, BaseTerm>::type &get() 
+			typename BaseTermGetHelper<N, BaseTerm>::Type &get() 
 			{
 				BOOST_STATIC_ASSERT(N == 0 or N == 1);
 				return BaseTermGetHelper<N, BaseTerm>::run(*this);
 			}
 
 			template <int N>
-			const typename BaseTermGetHelper<N, BaseTerm>::type &get() const 
+			const typename BaseTermGetHelper<N, BaseTerm>::Type &get() const 
 			{
 				BOOST_STATIC_ASSERT(N == 0 || N == 1);
 				return BaseTermGetHelper<N, BaseTerm>::run(*this);
@@ -198,7 +198,7 @@ namespace piranha
 			// I/O.
 			/// Print in plain format.
 			template <class ArgsTuple>
-			void print_plain(std::ostream &outStream, const ArgsTuple &argsTuple) const 
+			void printPlain(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
 				cf.print_plain(outStream, argsTuple); //print coefficient
 				outStream << separator;
@@ -207,7 +207,7 @@ namespace piranha
 			
 			/// Print in pretty format.
 			template <class ArgsTuple>
-			void print_pretty(std::ostream &outStream, const ArgsTuple &argsTuple) const 
+			void printPretty(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
 				if (key.is_unity()) 
 				{
@@ -229,7 +229,7 @@ namespace piranha
 
 			/// Print in tex format.
 			template <class ArgsTuple>
-			void print_tex(std::ostream &outStream, const ArgsTuple &argsTuple) const 
+			void printTEX(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
 				if (key.is_unity()) 
 				{
@@ -293,7 +293,7 @@ namespace piranha
 			/// Coefficient.
 			mutable CfType		cf;
 			/// Key.
-			KeyType		    key;
+			KeyType		        key;
 			/// Rebound allocator for term type.
 			static allocator_type	allocator;
 			/// Separator between coefficient and key in I/O.

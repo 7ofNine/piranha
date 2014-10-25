@@ -58,7 +58,7 @@ namespace truncators {
 				template <class Term>
 				bool operator()(const Term *t1, const Term *t2) const
 				{
-					typedef typename Term::template component<ExpoTermPos>::type::degree_type DegreeType;
+					typedef typename Term::template Component<ExpoTermPos>::Type::degree_type DegreeType;
 
 					DegreeType const md1(t1->template get<ExpoTermPos>().order());
                     DegreeType const md2(t2->template get<ExpoTermPos>().order());
@@ -76,7 +76,7 @@ namespace truncators {
 				template <class Term>
 				bool operator()(const Term *t1, const Term *t2) const
 				{
-					typedef typename Term::template component<ExpoTermPos>::type::degree_type DegreeType;
+					typedef typename Term::template Component<ExpoTermPos>::Type::degree_type DegreeType;
 
 					DegreeType const md1(t1->template get<ExpoTermPos>().partial_order(posTuple));
 					DegreeType const md2(t2->template get<ExpoTermPos>().partial_order(posTuple));

@@ -68,7 +68,7 @@ namespace piranha
 		const_iterator it = begin();
 		while (it != itf) 
         {
-			it->print_plain(stream, argsTuple);
+			it->printPlain(stream, argsTuple);
 			++it;
 			if (it != itf) 
             {
@@ -88,7 +88,7 @@ namespace piranha
 		for (Iterator it = start; it != end; ++it) 
         {
 			std::ostringstream tmp_stream;
-			FromIterator<Iterator>::get(it)->print_pretty(tmp_stream,argsTuple);
+			FromIterator<Iterator>::get(it)->printPretty(tmp_stream,argsTuple);
 			std::string tmp(tmp_stream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
 			if (it != start && !tmp.empty() && tmp[0] != '-') 
@@ -143,12 +143,12 @@ namespace piranha
 		for (Iterator it = start; it != end; ++it) 
         {
 			std::ostringstream tmp_stream;
-			FromIterator<Iterator>::get(it)->print_tex(tmp_stream,argsTuple);
+			FromIterator<Iterator>::get(it)->printTEX(tmp_stream, argsTuple);
 			std::string tmp(tmp_stream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
 			if (it != start && !tmp.empty() && tmp[0] != '-') 
             {
-				tmp.insert(tmp.begin(),'+');
+				tmp.insert(tmp.begin(), '+');
 			}
 
 			if (!tmp.empty()) 
