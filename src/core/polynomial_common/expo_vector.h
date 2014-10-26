@@ -71,8 +71,8 @@ namespace piranha
 						// NOTE: move semantics here.
 						SubSeries tmp;
 						tmp.baseAdd(1, *argsTuple);
-						this->m_container[T(0)] = tmp;
-						this->m_container[T(1)] = s;
+						this->container[T(0)] = tmp;
+						this->container[T(1)] = s;
 					}
 			};
 

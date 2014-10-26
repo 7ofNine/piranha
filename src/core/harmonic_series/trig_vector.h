@@ -76,15 +76,15 @@ namespace piranha
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
 						this->arithmeticFunctor.argsTuple = argsTuple;
-						this->m_container[T(0)] = std::complex<SubSeries>().baseAdd(1, *argsTuple);
+						this->container[T(0)] = std::complex<SubSeries>().baseAdd(1, *argsTuple);
 						try {
 							std::complex<SubSeries> tmp1(s.base_ei(*argsTuple));
-							this->m_container[T(1)] = tmp1;
+							this->container[T(1)] = tmp1;
 							m_status = one;
 							SubSeries tmp2(s);
 							tmp2.baseMultBy(-1, *argsTuple);
 							std::complex<SubSeries> tmp3(tmp2.base_ei(*argsTuple));
-							this->m_container[T(-1)] = tmp3;
+							this->container[T(-1)] = tmp3;
 							m_status = full;
 						} catch (const value_error &ve) 
 						{
@@ -138,9 +138,9 @@ namespace piranha
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
 						this->arithmeticFunctor.argsTuple = argsTuple;
-						this->m_container[T(0)] = SubSeries().baseAdd(1, *argsTuple);
-						this->m_container[T(1)] = s;
-						this->m_container[T(-1)] = s.base_conjugate(*argsTuple);
+						this->container[T(0)] = SubSeries().baseAdd(1, *argsTuple);
+						this->container[T(1)] = s;
+						this->container[T(-1)] = s.base_conjugate(*argsTuple);
 					}
 			};
 
