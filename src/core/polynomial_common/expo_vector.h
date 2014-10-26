@@ -54,16 +54,16 @@ namespace piranha
 	{
 		private:
 
-			typedef VectorKey<__PIRANHA_EXPO_VECTOR_TP, ExpoVector<__PIRANHA_EXPO_VECTOR_TP> > ancestor;
+			typedef VectorKey<__PIRANHA_EXPO_VECTOR_TP, ExpoVector<__PIRANHA_EXPO_VECTOR_TP> > Ancestor;
 
 			template <class SubSeries, class ArgsTuple>
 			class SubCache: public PowerCache<SubSeries, T, BaseSeriesArithmetics<SubSeries, ArgsTuple> >
 			{
-					typedef PowerCache<SubSeries, T, BaseSeriesArithmetics<SubSeries, ArgsTuple> > ancestor;
+					typedef PowerCache<SubSeries, T, BaseSeriesArithmetics<SubSeries, ArgsTuple> > Ancestor;
 
 				public:
 
-					SubCache():ancestor() {}
+					SubCache():Ancestor() {}
 
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
@@ -93,9 +93,9 @@ namespace piranha
 
 		public:
 
-			typedef typename ancestor::value_type value_type;
+			typedef typename Ancestor::value_type value_type;
 			typedef value_type                    degree_type;
-			typedef typename ancestor::size_type  size_type;
+			typedef typename Ancestor::size_type  size_type;
 			typedef double                        EvalType;
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
@@ -113,12 +113,12 @@ namespace piranha
 
 			// Ctors.
 			/// Default ctor.
-			ExpoVector(): ancestor() {}
+			ExpoVector(): Ancestor() {}
 
 
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit ExpoVector(const std::string &s, const ArgsTuple &): ancestor()
+			explicit ExpoVector(const std::string &s, const ArgsTuple &): Ancestor()
 			{
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
@@ -132,7 +132,7 @@ namespace piranha
 
 			/// Ctor from Psym.
 			template <class ArgsTuple>
-			explicit ExpoVector(const Psym &p, const int &n, const ArgsTuple &a): ancestor(p, n, a) {}
+			explicit ExpoVector(const Psym &p, const int &n, const ArgsTuple &a): Ancestor(p, n, a) {}
 
 
 			// Math.
@@ -167,7 +167,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_plain(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() == this->size());
+				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
 
 				(void)argsTuple;
 				this->printElements(outStream);
@@ -177,7 +177,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_pretty(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() == this->size());
+				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
 
 				bool printed_something = false;
 				for (size_type i = 0; i < this->size(); ++i) 
@@ -193,7 +193,7 @@ namespace piranha
 						}
 
 						// Take care of printing the name of the exponent.
-						outStream << argsTuple.template get<ancestor::position>()[i].get_name();
+						outStream << argsTuple.template get<Ancestor::position>()[i].get_name();
 						// Print the pow operator only if exponent is not unitary.
 						if (n != 1) 
                         {
@@ -209,7 +209,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void print_tex(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() == this->size());
+				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
 
 				for (size_type i = 0; i < this->size(); ++i) 
                 {
@@ -218,7 +218,7 @@ namespace piranha
 					if (n != 0) 
                     {
 						// Take care of printing the name of the exponent.
-						outStream << ' ' << argsTuple.template get<ancestor::position>()[i].get_name() << ' ';
+						outStream << ' ' << argsTuple.template get<Ancestor::position>()[i].get_name() << ' ';
 						// Print the pow operator only if exponent is not unitary.
 						if (n != 1) 
                         {
@@ -235,12 +235,12 @@ namespace piranha
 			double eval(const double &t, const ArgsTuple &argsTuple) const
 			{
 				const size_type w = this->size();
-				PIRANHA_ASSERT(w <= argsTuple.template get<ancestor::position>().size());
+				PIRANHA_ASSERT(w <= argsTuple.template get<Ancestor::position>().size());
 
 				double retval = 1.;
 				for (size_type i = 0; i < w; ++i) 
                 {
-					retval *= std::pow(argsTuple.template get<ancestor::position>()[i].eval(t), (*this)[i]);
+					retval *= std::pow(argsTuple.template get<Ancestor::position>()[i].eval(t), (*this)[i]);
 				}
 
 				return retval;
@@ -304,7 +304,7 @@ namespace piranha
 			degree_type partial_degree(const PosTuple &pos_tuple) const
 			{
 				// TODO: check PosTuple type.
-				const std::vector<std::pair<bool,std::size_t> > &pos = pos_tuple.template get<ancestor::position>();
+				const std::vector<std::pair<bool,std::size_t> > &pos = pos_tuple.template get<Ancestor::position>();
 				const size_type w = this->size(); 
                 const size_type pos_size = boost::numeric_cast<size_type>(pos.size());
 				degree_type retval(0);
@@ -348,16 +348,16 @@ namespace piranha
 			Series partial(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
 				// TODO: check PosTuple type.
-				PIRANHA_ASSERT(pos_tuple.template get<ancestor::position>().size() == 1);
+				PIRANHA_ASSERT(pos_tuple.template get<Ancestor::position>().size() == 1);
 
-				const std::size_t pos = pos_tuple.template get<ancestor::position>()[0].second;
+				const std::size_t pos = pos_tuple.template get<Ancestor::position>()[0].second;
 
-				PIRANHA_ASSERT(!pos_tuple.template get<ancestor::position>()[0].first || pos < this->size());
+				PIRANHA_ASSERT(!pos_tuple.template get<Ancestor::position>()[0].first || pos < this->size());
 
 				// Do something only if the argument of the partial derivation is present in the exponent array
 				// and the interesting exponent is not zero.
 				Series retval;
-				if (pos_tuple.template get<ancestor::position>()[0].first && (*this)[boost::numeric_cast<size_type>(pos)] != 0) 
+				if (pos_tuple.template get<Ancestor::position>()[0].first && (*this)[boost::numeric_cast<size_type>(pos)] != 0) 
                 {
 					ExpoVector copy(*this);
 					// NOTE: move semantics here?
@@ -397,15 +397,15 @@ namespace piranha
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very ExpoVector.
 				// NOTE: for now we can substitute one symbol at a time.
-				PIRANHA_ASSERT(posTuple.template get<ancestor::position>().size() == 1);
+				PIRANHA_ASSERT(posTuple.template get<Ancestor::position>().size() == 1);
 
-				if (!posTuple.template get<ancestor::position>()[0].first) 
+				if (!posTuple.template get<Ancestor::position>()[0].first) 
                 {
 					retval = RetSeries::baseSeriesFromKey(*this, argsTuple);
 
 				} else 
                 {
-					const std::size_t pos = posTuple.template get<ancestor::position>()[0].second;
+					const std::size_t pos = posTuple.template get<Ancestor::position>()[0].second;
 
 					PIRANHA_ASSERT(pos < this->size());
 					
@@ -418,7 +418,7 @@ namespace piranha
 					
                     // NOTICE: series multadd here?
 					retval.baseAdd(orig, argsTuple);
-					retval.baseMultBy(subCaches.template get<ancestor::position>()[(*this)[pos]], argsTuple);
+					retval.baseMultBy(subCaches.template get<Ancestor::position>()[(*this)[pos]], argsTuple);
 				}
 				return retval;
 			}
