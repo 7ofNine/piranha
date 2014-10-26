@@ -280,7 +280,7 @@ namespace piranha
 
 			// I/O.
 			template <class ArgsTuple>
-			void print_plain(std::ostream &outStream, const ArgsTuple &argsTuple) const
+			void printPlain(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
 				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() == this->size());
 				(void)argsTuple;
@@ -304,7 +304,7 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			void print_pretty(std::ostream &outStream, const ArgsTuple &argsTuple) const
+			void printPretty(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
 				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() == this->size());
 

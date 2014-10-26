@@ -202,7 +202,7 @@ namespace piranha
 			{
 				cf.print_plain(outStream, argsTuple); //print coefficient
 				outStream << separator;
-				key.print_plain(outStream, argsTuple); // print key
+				key.printPlain(outStream, argsTuple); // print key
 			}
 			
 			/// Print in pretty format.
@@ -214,16 +214,16 @@ namespace piranha
 					cf.print_pretty(outStream, argsTuple);
 				} else if (cf == 1) 
 				{
-					key.print_pretty(outStream, argsTuple);
+					key.printPretty(outStream, argsTuple);
 				} else if (cf == -1) 
 				{
 					outStream << '-';
-					key.print_pretty(outStream, argsTuple);
+					key.printPretty(outStream, argsTuple);
 				} else 
 				{
 					cf.print_pretty(outStream, argsTuple);
 					outStream << '*';
-					key.print_pretty(outStream, argsTuple);
+					key.printPretty(outStream, argsTuple);
 				}
 			}
 

@@ -123,6 +123,7 @@ namespace piranha
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
 				const size_type w = boost::numeric_cast<size_type>(sd.size());
+
 				for (size_type i = 0; i < w; ++i)
 				{
 					this->container.push_back(boost::lexical_cast<value_type>(sd[i]));
@@ -132,54 +133,60 @@ namespace piranha
 
 			/// Ctor from Psym.
 			template <class ArgsTuple>
-			explicit ExpoVector(const Psym &p, const int &n, const ArgsTuple &a): Ancestor(p, n, a) {}
+			explicit ExpoVector(const Psym &p, const int n, const ArgsTuple &a): Ancestor(p, n, a) {}
 
 
 			// Math.
-			/// Multiplication.
+			// Multiplication.
+            // multiply this ExpoVector with expoVector into result
+            // result is allocated externally
+            // the exponants have to represent the same symbol in order to make sense. This
+            // has to asserted before one can use this method
 			template <class ResultType>
-			void multiply(const ExpoVector &e2, ResultType &ret) const
+			void multiply(const ExpoVector &expoVector, ResultType &result) const
 			{
-				const size_type max_w = this->size();
-				const size_type min_w = e2.size();
+				const size_type maxw = this->size();
+				const size_type minw = expoVector.size();
 				// Resize, if needed.
-				ret.resize(max_w);
+				result.resize(maxw);
 
 				// Assert widths, *this should always come from a polynomial, and its width should hence be
 				// already adjusted my merge_args in multiplication routines.
-				PIRANHA_ASSERT(max_w >= min_w);
-				PIRANHA_ASSERT(ret.size() == max_w);
+				PIRANHA_ASSERT(maxw >= minw);
+				PIRANHA_ASSERT(result.size() == maxw);
 
-				size_type i;
-				for (i = 0; i < min_w; ++i) 
+                size_type i;
+				for (i = 0; i < minw; ++i) 
                 {
-					ret[i] = (*this)[i] + e2[i];
+					result[i] = (*this)[i] + expoVector[i]; //multiplying means adding exponents
 				}
 
-				for (; i < max_w; ++i) 
+                //i comes from previous for loop and starts with i == minw
+				for (; i < maxw; ++i) 
                 {
-					ret[i] = (*this)[i];
+					result[i] = (*this)[i]; 
 				}
 			}
 
 
 			// I/O.
 			template <class ArgsTuple>
-			void print_plain(std::ostream &outStream, const ArgsTuple &argsTuple) const
+			void printPlain(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
 				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
+                (void)argsTuple;
 
-				(void)argsTuple;
 				this->printElements(outStream);
 			}
 
 
 			template <class ArgsTuple>
-			void print_pretty(std::ostream &outStream, const ArgsTuple &argsTuple) const
+			void printPretty(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
 				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
 
-				bool printed_something = false;
+				bool printedSomething = false;
+
 				for (size_type i = 0; i < this->size(); ++i) 
                 {
 					const value_type &n = (*this)[i];
@@ -187,20 +194,21 @@ namespace piranha
 					if (n != 0) 
                     {
 						// Prepend the multiplication operator only if we already printed something.
-						if (printed_something) 
+						if (printedSomething) 
                         {
 							outStream << '*';
 						}
 
 						// Take care of printing the name of the exponent.
 						outStream << argsTuple.template get<Ancestor::position>()[i].get_name();
+
 						// Print the pow operator only if exponent is not unitary.
 						if (n != 1) 
                         {
 							outStream << "**";
 							expo_vector_print_element_pretty(outStream, n);
 						}
-						printed_something = true;
+						printedSomething = true;
 					}
 				}
 			}
@@ -237,9 +245,10 @@ namespace piranha
 				const size_type w = this->size();
 				PIRANHA_ASSERT(w <= argsTuple.template get<Ancestor::position>().size());
 
-				double retval = 1.;
+				double retval = 1.0;
 				for (size_type i = 0; i < w; ++i) 
                 {
+                    //get the numerical value for the parameter (may be time depeden) and calculate its poer according to this ExpoVector
 					retval *= std::pow(argsTuple.template get<Ancestor::position>()[i].eval(t), (*this)[i]);
 				}
 
@@ -260,14 +269,15 @@ namespace piranha
 
 			bool is_unity() const
 			{
+                //its a 1 if all exponante are 0
 				return (this->elementsAreZero());
 			}
 
 
 			/// Comparison operator.
-			bool operator<(const ExpoVector &e2) const
+			bool operator<(const ExpoVector &expoVector) const
 			{
-				return this->lex_comparison(e2);
+				return this->lex_comparison(expoVector);
 			}
 
 
