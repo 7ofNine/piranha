@@ -439,6 +439,7 @@ namespace piranha
 			{
 				ExpoVector retval(*this);
 				const size_type w = this->size();
+
 				for (size_type i = 0; i < w; ++i) 
                 {
 					retval[i] *= x;

@@ -309,6 +309,7 @@ namespace piranha
 	const char BaseTerm<__PIRANHA_BASE_TERM_TP>::separator;
 
 	/// Overload of hash_value function for piranha::BaseTerm.
+    /// Don't rename is used by boost and name is required.
 	/**
 	 * The key's hash_value() method is used to calculate the term's hash value.
 	 */

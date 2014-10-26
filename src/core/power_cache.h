@@ -35,8 +35,8 @@ namespace piranha
 	{
 		protected:
 
-			typedef boost::unordered_map<T, Argument> container_type;
-			typedef typename container_type::iterator iterator;
+			typedef boost::unordered_map<T, Argument> ContainerType;
+			typedef typename ContainerType::iterator iterator;
 
 			PowerCache():container(), arithmeticFunctor() {}
 
@@ -62,12 +62,12 @@ namespace piranha
 				{
 					if (x == 0) 
 					{
-						container[T(0)] = arithmeticFunctor.pow(Argument(),0);
+						container[T(0)] = arithmeticFunctor.pow(Argument(), 0);
 						return container[T(0)];
 
 					} else 
 					{
-						return insert_new(x);
+						return insertNew(x);
 					}
 				} else 
 				{
@@ -78,24 +78,24 @@ namespace piranha
 
 		private:
 
-			Argument &insert_new(const T &x)
+			Argument &insertNew(const T &x)
 			{
 				if (x < 0) 
 				{
 					iterator it = container.find(T(-1));
 					if (it != container.end()) 
 					{
-						container[x] = arithmeticFunctor.pow(container[T(-1)],-x);
+						container[x] = arithmeticFunctor.pow(container[T(-1)], -x);
 						return container[x];
 					}
 				}
 
-				container[x] = arithmeticFunctor.pow(container[T(1)],x);
+				container[x] = arithmeticFunctor.pow(container[T(1)], x);
 				return container[x];
 			}
 
 		protected:
-			container_type		    container;
+			ContainerType		    container;
 			const ArithmeticFunctor	arithmeticFunctor;
 	};
 }
