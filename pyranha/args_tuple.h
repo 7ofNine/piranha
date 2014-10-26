@@ -56,7 +56,7 @@ namespace pyranha
 	template <int N>
 	inline void expose_argsTuples()
 	{
-		typedef typename piranha::Ntuple<piranha::VectorPsym, N>::type ArgsTupleType;
+		typedef typename piranha::NTuple<piranha::VectorPsym, N>::Type ArgsTupleType;
 		boost::python::class_<ArgsTupleType>
 		argsTuple_inst((std::string("__base_argsTuple") + boost::lexical_cast<std::string>(N) + "__").c_str(),
 						(std::string("Tuple of ") + boost::lexical_cast<std::string>(N) + " arguments vectors.").c_str());
