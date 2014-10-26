@@ -120,7 +120,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void invert_trig_args(const ArgsTuple &argsTuple) 
             {
-				ancestor::key.invert_sign();
+				ancestor::key.invertSign();
 				if (!(ancestor::key.getFlavour())) 
                 {
 					ancestor::cf.invert_sign(argsTuple);

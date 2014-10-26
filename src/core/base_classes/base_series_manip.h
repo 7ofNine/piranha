@@ -83,16 +83,16 @@ namespace piranha
 	{
 		term_converter<Term2, TermType> converted_term(term_, argsTuple);
 		// Make sure the appropriate routines for the management of arguments have been called.
-		PIRANHA_ASSERT(converted_term.result.cf.is_insertable(argsTuple) && converted_term.result.key.is_insertable(argsTuple));
+		PIRANHA_ASSERT(converted_term.result.cf.is_insertable(argsTuple) && converted_term.result.key.isInsertable(argsTuple));
 
 		TermType *new_term(0);
 		if (unlikely(converted_term.result.cf.needs_padding(argsTuple) ||
-			converted_term.result.key.needs_padding(argsTuple))) 
+			converted_term.result.key.needsPadding(argsTuple))) 
 		{
 			new_term = TermType::allocator.allocate(1);
 			TermType::allocator.construct(new_term, converted_term.result);
 			new_term->cf.pad_right(argsTuple);
-			new_term->key.pad_right(argsTuple);
+			new_term->key.padRight(argsTuple);
 		}
 
 		if (CanonicalCheck) 
@@ -163,8 +163,8 @@ namespace piranha
 		{
 			return;
 		}
-		PIRANHA_ASSERT(term.cf.is_insertable(argsTuple) && term.key.is_insertable(argsTuple) &&
-			!term.cf.needs_padding(argsTuple) && !term.key.needs_padding(argsTuple) && term.is_canonical(argsTuple));
+		PIRANHA_ASSERT(term.cf.is_insertable(argsTuple) && term.key.isInsertable(argsTuple) &&
+			!term.cf.needs_padding(argsTuple) && !term.key.needsPadding(argsTuple) && term.is_canonical(argsTuple));
 
 		const_iterator it(findTerm(term));
 		if (it == end()) 
@@ -234,7 +234,7 @@ namespace piranha
 		{
 			TermType term(*it);
 			term.cf.apply_layout(l, argsTuple);
-			term.key.apply_layout(l, argsTuple);
+			term.key.applyLayout(l, argsTuple);
 			retval.insert(term, argsTuple);
 		}
 	}
@@ -248,7 +248,7 @@ namespace piranha
 		for (const_iterator it = begin(); it != itf; ++it) 
 		{
 			it->cf.trim_test(tf);
-			it->key.trim_test(tf);
+			it->key.trimTest(tf);
 		}
 	}
 

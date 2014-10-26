@@ -36,8 +36,6 @@
 #include "../memory.h"
 #include "../Psym.h"
 
-#define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -53,18 +51,18 @@ namespace piranha
 	{
 			PIRANHA_STATIC_CHECK(Position >= 0, "Wrong position.");
 
-			typedef std::vector<T, CountingAllocator<T, std::allocator<T> > > container_type;
+			typedef std::vector<T, CountingAllocator<T, std::allocator<T> > > ContainerType;
 
 		public:
 
 			/// Type of contained data.
 			typedef T value_type;
 			/// Size type.
-			typedef typename container_type::size_type size_type;
+			typedef typename ContainerType::size_type size_type;
 			/// Const iterator
-			typedef typename container_type::const_iterator const_iterator;
+			typedef typename ContainerType::const_iterator const_iterator;
 			/// Iterator
-			typedef typename container_type::iterator iterator;
+			typedef typename ContainerType::iterator iterator;
 			/// Position in the series' arguments tuple.
 			// a series has Echelon+1 tuples as keys
 			static const int position = Position;
@@ -80,15 +78,15 @@ namespace piranha
 			/**
 			 * Constructs an empty vector key..
 			 */
-			VectorKey(): m_container() {}
+			VectorKey(): container() {}
 
 			/// Copy ctor.
-			VectorKey(const VectorKey &other): m_container(other.m_container) {}
+			VectorKey(const VectorKey &other): container(other.container) {}
 
 
 			/// Copy ctor, different position..
 			template <int Position2, class Derived2>
-			VectorKey(const VectorKey<T, Position2, Derived2> &other): m_container(other.m_container) {}
+			VectorKey(const VectorKey<T, Position2, Derived2> &other): container(other.container) {}
 
 
 			/// Ctor from Psym.
@@ -96,7 +94,7 @@ namespace piranha
 			 * If the position matches input integer n, then resize to one element and set it to one.
 			 */
 			template <class ArgsTuple>
-			VectorKey(const Psym &p, const int &n, const ArgsTuple &argsTuple): m_container()
+			VectorKey(const Psym &p, const int &n, const ArgsTuple &argsTuple): container()
 			{
 				(void)p;
 				(void)argsTuple;
@@ -104,7 +102,8 @@ namespace piranha
 				if (n == Position) 
 				{
 					PIRANHA_ASSERT(argsTuple.template get<Position>().size() == 1 && argsTuple.template get<Position>()[0] == p);
-					m_container.push_back(value_type(1));
+
+					container.push_back(value_type(1));
 				}
 			}
 
@@ -112,23 +111,23 @@ namespace piranha
 			/// Swap content.
 			void swap(VectorKey &other)
 			{
-				m_container.swap(other.m_container);
+				container.swap(other.container);
 			}
 
 
 			/// Is padding needed in order to be compatible with argsTuple?
 			template <class ArgsTuple>
-			bool needs_padding(const ArgsTuple &argsTuple) const
+			bool needsPadding(const ArgsTuple &argsTuple) const
 			{
-				return (m_container.size() < argsTuple.template get<Position>().size());
+				return (container.size() < argsTuple.template get<Position>().size());
 			}
 
 
 			/// Is this insertion-compatible with argsTuple?
 			template <class ArgsTuple>
-			bool is_insertable(const ArgsTuple &argsTuple) const
+			bool isInsertable(const ArgsTuple &argsTuple) const
 			{
-				return (m_container.size() <= argsTuple.template get<Position>().size());
+				return (container.size() <= argsTuple.template get<Position>().size());
 			}
 
 
@@ -144,11 +143,11 @@ namespace piranha
 
 			/// Pad right.
 			template <class ArgsTuple>
-			void pad_right(const ArgsTuple &argsTuple)
+			void padRight(const ArgsTuple &argsTuple)
 			{
-				PIRANHA_ASSERT(argsTuple.template get<Position>().size() >= m_container.size());
+				PIRANHA_ASSERT(argsTuple.template get<Position>().size() >= container.size());
 
-				m_container.resize(boost::numeric_cast<size_type>(argsTuple.template get<Position>().size()));
+				container.resize(boost::numeric_cast<size_type>(argsTuple.template get<Position>().size()));
 			}
 
 
@@ -157,43 +156,43 @@ namespace piranha
 			 * A layout tuple is a tuple of vectors of pairs bool,std::size_t.
 			 */
 			template <class Layout, class ArgsTuple>
-			void apply_layout(const Layout &l, const ArgsTuple &)
+			void applyLayout(const Layout &l, const ArgsTuple &)
 			{
 				PIRANHA_STATIC_CHECK((boost::is_same<std::vector<std::pair<bool, std::size_t> >, typename boost::tuples::element<Position, Layout>::type>::value), "Wrong layout type.");
 				// TODO: add check about tuples length.
-				const size_type l_size = boost::numeric_cast<size_type>(l.template get<Position>().size());
+				const size_type layoutSize = boost::numeric_cast<size_type>(l.template get<Position>().size());
 
 				// The layout must have at least all arguments in this.
-				PIRANHA_ASSERT(l_size >= m_container.size());
+				PIRANHA_ASSERT(layoutSize >= container.size());
 				
-                container_type new_container(l_size);
+                ContainerType newContainer(layoutSize);
 
-				for (size_type i = 0; i < l_size; ++i) 
+				for (size_type i = 0; i < layoutSize; ++i) 
 				{
 					if (l.template get<Position>()[i].first) 
 					{
-						PIRANHA_ASSERT(l.template get<Position>()[i].second < m_container.size());
-						new_container[i] = m_container[boost::numeric_cast<size_type>(l.template get<Position>()[i].second)];
+						PIRANHA_ASSERT(l.template get<Position>()[i].second < container.size());
+						newContainer[i] = container[boost::numeric_cast<size_type>(l.template get<Position>()[i].second)];
 					}
 				}
 
-				new_container.swap(m_container);
+				newContainer.swap(container);
 			}
 
 
 			/// Test if vector key can be trimmed.
 			template <class TrimFlags>
-			void trim_test(TrimFlags &tf) const
+			void trimTest(TrimFlags &tf) const
 			{
 				// TODO: add checks on TrimFlags type.
-				const size_type size = m_container.size();
+				const size_type size = container.size();
 				
                 PIRANHA_ASSERT(tf.template get<Position>().size() == size);
 
 				for (size_type i = 0; i < size; ++i) 
 				{
 					// If the element is different from zero, turn on the flag.
-					if (m_container[i] != 0) 
+					if (container[i] != 0) 
 					{
 						tf.template get<Position>()[i] = true;
 					}
@@ -207,17 +206,17 @@ namespace piranha
 			{
 				// TODO: add checks on TrimFlags type.
 				Derived retval;
-				const size_type size = m_container.size();
+				const size_type size = container.size();
 
 				PIRANHA_ASSERT(tf.template get<position>().size() == size);
 
 				// Make space, so we can avoid extra allocations in the cycle.
-				retval.m_container.reserve(size);
+				retval.container.reserve(size);
 				for (size_type i = 0; i < size; ++i) 
 				{
 					if (tf.template get<Position>()[i]) 
 					{
-						retval.m_container.push_back(m_container[i]);
+						retval.container.push_back(container[i]);
 					}
 				}
 				return retval;
@@ -225,13 +224,13 @@ namespace piranha
 
 
 			/// Invert the sign of the integers in the array.
-			void invert_sign()
+			void invertSign()
 			{
 				// NOTE: here perf with MP type could be improved by using in-place negate.
-				const size_type size = m_container.size();
+				const size_type size = container.size();
 				for (size_type i = 0; i < size; ++i) 
 				{
-					m_container[i] = - m_container[i];
+					container[i] = - container[i];
 				}
 			}
 
@@ -241,81 +240,85 @@ namespace piranha
 			/// Array-like operator[], const version.
 			const value_type &operator[](const size_type &n) const
 			{
-				PIRANHA_ASSERT(n < m_container.size());
-				return m_container[n];
+				PIRANHA_ASSERT(n < container.size());
+				return container[n];
 			}
 
 
 			/// Array-like operator[], mutable version.
 			value_type &operator[](const size_type &n)
 			{
-				PIRANHA_ASSERT(n < m_container.size());
+				PIRANHA_ASSERT(n < container.size());
 
-				return m_container[n];
+				return container[n];
 			}
 
 
 			/// Resize.
-			void resize(const size_type &new_size)
+			void resize(const size_type &newSize)
 			{
-				m_container.resize(new_size);
+				container.resize(newSize);
 			}
 
 
 			/// Size.
 			size_type size() const
 			{
-				return m_container.size();
+				return container.size();
 			}
 
 
 			/// Const begin.
 			const_iterator begin() const
 			{
-				return m_container.begin();
+				return container.begin();
 			}
 
 
 			/// Const end.
 			const_iterator end() const
 			{
-				return m_container.end();
+				return container.end();
 			}
 
 
 			/// Begin.
 			iterator begin()
 			{
-				return m_container.begin();
+				return container.begin();
 			}
 
 
 			/// End.
 			iterator end()
 			{
-				return m_container.end();
+				return container.end();
 			}
 
 
 			//@}
 			/// Reverse lexicographic comparison.
-			bool revlex_comparison(const VectorKey &v2) const
+			bool revlexComparison(const VectorKey &v2) const
 			{
 				const size_type size = this->size();
 				PIRANHA_ASSERT(size == v2.size());
+
 				// Shortcut in case there are no elements to compare.
 				if (!size)
 				{
 					return false;
 				}
+
 				// Now we are certain that the size is at least 1, extract pointer to first element.
 				// C++ standard guarantees that elements in std::vector are in contiguous memory areas.
-				const value_type *ptr1 = &m_container[0], *ptr2 = &(v2.m_container[0]);
+				const value_type *ptr1 = &container[0];
+                const value_type *ptr2 = &(v2.container[0]);
 				for (size_type i = size; i > 0; --i) 
 				{
 					if (ptr1[i - 1] < ptr2[i - 1]) 
 					{
 						return true;
+
 					} else if (ptr1[i - 1] > ptr2[i - 1]) 
 					{
 						return false;
@@ -326,7 +329,7 @@ namespace piranha
 
 
 			/// Lexicographic comparison.
-			bool lex_comparison(const VectorKey &v2) const
+			bool lexComparison(const VectorKey &v2) const
 			{
 				const size_type size = this->size();
 				PIRANHA_ASSERT(size == v2.size());
@@ -334,12 +337,15 @@ namespace piranha
 				{
 					return false;
 				}
-				const value_type *ptr1 = &m_container[0], *ptr2 = &(v2.m_container[0]);
+
+				const value_type *ptr1 = &container[0];
+                const value_ype  *ptr2 = &(v2.container[0]);
 				for (size_type i = 0; i < size; ++i)
 				{
 					if (ptr1[i] < ptr2[i]) 
 					{
 						return true;
+
 					} else if (ptr1[i] > ptr2[i]) 
 					{
 						return false;
@@ -352,28 +358,29 @@ namespace piranha
 			/// Equality operator.
 			bool operator==(const VectorKey &v2) const
 			{
-				return (m_container == v2.m_container);
+				return (container == v2.container);
 			}
 
 
 			/// Equality test for elements.
-			bool elements_equal_to(const VectorKey &v2) const
+			bool elementsEqualTo(const VectorKey &v2) const
 			{
-				return (m_container == v2.m_container);
+				return (container == v2.container);
 			}
 
 
 		protected:
 
 			/// Print to stream the elements separated by the separator character.
-			void print_elements(std::ostream &outStream) const
+			void printElements(std::ostream &outStream) const
 			{
 				const size_type size = this->size();
 				for (size_type i = 0; i < size; ++i) 
 				{
-					outStream << m_container[i];
+					outStream << container[i];
 					// Print the separator iff this is not the last element.
-					if (i != (size - 1)) {
+					if (i != (size - 1))
+                    {
 						outStream << separator;
 					}
 				}
@@ -384,7 +391,7 @@ namespace piranha
 			/**
 			 * Returns true if all elements are zero or size is zero, false otherwise.
 			 */
-			bool elements_are_zero() const
+			bool elementsAreZero() const
 			{
 				const size_type size = this->size();
 				if (!size) 
@@ -392,7 +399,7 @@ namespace piranha
 					return true;
 				}
 
-				const value_type *ptr = &m_container[0];
+				const value_type *ptr = &container[0];
 				for (size_type i = 0; i < size; ++i) 
 				{
 					if (ptr[i] != 0) 
@@ -409,15 +416,18 @@ namespace piranha
 			 * Will produce a combined hash of all the elements of the vector using boost::hash_combine.
 			 * An empty vector will produce a hash value of zero.
 			 */
-			std::size_t elements_hasher() const
+			std::size_t elementsHasher() const
 			{
 				const size_type size = this->size();
+
 				if (!size) 
 				{
 					return 0;
 				}
+
 				std::size_t retval = 0;
-				const value_type *ptr = &m_container[0];
+				const value_type *ptr = &container[0];
+
 				for (size_type i = 0; i < size; ++i) 
 				{
 					boost::hash_combine(retval, ptr[i]);
@@ -427,11 +437,9 @@ namespace piranha
 
 		protected:
 
-			container_type m_container;
+			ContainerType container;
 	};
 };
 
-#undef derived_const_cast
-#undef derived_cast
 
 #endif

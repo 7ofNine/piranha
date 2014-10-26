@@ -51,35 +51,45 @@ namespace piranha
 			return orig.pow(y);
 		}
 	};
+    
 
 	template <class T, class ArgsTuple>
-	struct base_series_arithmetics {
-		base_series_arithmetics():m_argsTuple(0) {}
-		T inv(const T &orig) const
+	struct BaseSeriesArithmetics {
+
+		BaseSeriesArithmetics():argsTuple(0) {}
+		
+        T inv(const T &orig) const
 		{
-			PIRANHA_ASSERT(m_argsTuple);
-			return orig.basePow(-1,*m_argsTuple);
+			PIRANHA_ASSERT(argsTuple);
+
+			return orig.basePow(-1, *argsTuple);
 		}
+
 		void multiply(T &orig, const T &other) const
 		{
-			PIRANHA_ASSERT(m_argsTuple);
-			orig.baseMultBy(other,*m_argsTuple);
+			PIRANHA_ASSERT(argsTuple);
+
+			orig.baseMultBy(other, *argsTuple);
 		}
+
 		template <class U>
 		T pow(const T &orig, const U &y) const
 		{
-			PIRANHA_ASSERT(m_argsTuple);
-			return orig.basePow(y,*m_argsTuple);
+			PIRANHA_ASSERT(argsTuple);
+
+			return orig.basePow(y, *argsTuple);
 		}
-		mutable ArgsTuple const *m_argsTuple;
+
+		mutable ArgsTuple const *argsTuple;
 	};
 
-	struct ei_sub_functor {
-		template <class RetSeries, class Element, class PosTuple, class SubCaches,
-			class ArgsTuple>
-		static RetSeries run(const Element &e, const PosTuple &pos_tuple,
-			SubCaches &sub_caches, const ArgsTuple &argsTuple) {
-			return e.template ei_sub<RetSeries>(pos_tuple, sub_caches, argsTuple);
+
+	struct EiSubFunctor {
+
+		template <class RetSeries, class Element, class PosTuple, class SubCaches, class ArgsTuple>
+		static RetSeries run(const Element &e, const PosTuple &posTuple, SubCaches &subCaches, const ArgsTuple &argsTuple)
+        {
+			return e.template ei_sub<RetSeries>(posTuple, subCaches, argsTuple);
 		}
 	};
 }

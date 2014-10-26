@@ -43,7 +43,7 @@ namespace piranha
         {
 			term_type term(*it);
 			term.cf.pad_right(argsTuple);
-			term.key.pad_right(argsTuple);
+			term.key.padRight(argsTuple);
 			retval.insert(term, argsTuple);
 		}
 

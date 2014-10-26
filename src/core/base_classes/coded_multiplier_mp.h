@@ -77,7 +77,7 @@ namespace piranha {
 	{
 		static bool run(const Term *t1, const Term *t2)
 		{
-			return t1->key.revlex_comparison(t2->key);
+			return t1->key.revlexComparison(t2->key);
 		}
 	};
 
@@ -87,7 +87,7 @@ namespace piranha {
 	{
 		static bool run(const Term *t1, const Term *t2)
 		{
-			if (t1->key.elements_equal_to(t2->key))
+			if (t1->key.elementsEqualTo(t2->key))
             {
 				PIRANHA_ASSERT(t1->cf.length() == 1 && t2->cf.length() == 1);
 
@@ -95,7 +95,7 @@ namespace piranha {
 
 			} else
             {
-				return t1->key.revlex_comparison(t2->key);
+				return t1->key.revlexComparison(t2->key);
 			}
 		}
 	};

@@ -57,9 +57,9 @@ namespace piranha
 			typedef VectorKey<__PIRANHA_EXPO_VECTOR_TP, ExpoVector<__PIRANHA_EXPO_VECTOR_TP> > ancestor;
 
 			template <class SubSeries, class ArgsTuple>
-			class SubCache: public PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> >
+			class SubCache: public PowerCache<SubSeries, T, BaseSeriesArithmetics<SubSeries, ArgsTuple> >
 			{
-					typedef PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> > ancestor;
+					typedef PowerCache<SubSeries, T, BaseSeriesArithmetics<SubSeries, ArgsTuple> > ancestor;
 
 				public:
 
@@ -67,10 +67,10 @@ namespace piranha
 
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
-						this->m_arith_functor.m_argsTuple = argsTuple;
+						this->m_arith_functor.argsTuple = argsTuple;
 						// NOTE: move semantics here.
 						SubSeries tmp;
-						tmp.baseAdd(1,*argsTuple);
+						tmp.baseAdd(1, *argsTuple);
 						this->m_container[T(0)] = tmp;
 						this->m_container[T(1)] = s;
 					}
@@ -125,7 +125,7 @@ namespace piranha
 				const size_type w = boost::numeric_cast<size_type>(sd.size());
 				for (size_type i = 0; i < w; ++i)
 				{
-					this->m_container.push_back(boost::lexical_cast<value_type>(sd[i]));
+					this->container.push_back(boost::lexical_cast<value_type>(sd[i]));
 				}
 			}
 
@@ -170,7 +170,7 @@ namespace piranha
 				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() == this->size());
 
 				(void)argsTuple;
-				this->print_elements(outStream);
+				this->printElements(outStream);
 			}
 
 
@@ -260,7 +260,7 @@ namespace piranha
 
 			bool is_unity() const
 			{
-				return (this->elements_are_zero());
+				return (this->elementsAreZero());
 			}
 
 
@@ -285,7 +285,7 @@ namespace piranha
 			/// Calculate hash value.
 			std::size_t hash_value() const
 			{
-				return this->elements_hasher();
+				return this->elementsHasher();
 			}
 
 

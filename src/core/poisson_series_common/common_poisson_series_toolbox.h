@@ -145,7 +145,7 @@ namespace piranha
 
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1,p), this_copy.arguments());
 
-				Derived retval(this_copy.template baseSub<Derived,ei_sub_functor>(pos_tuple, sub_caches, this_copy.arguments()));
+				Derived retval(this_copy.template baseSub<Derived, EiSubFunctor>(pos_tuple, sub_caches, this_copy.arguments()));
 				retval.setArguments(this_copy.arguments());
 				retval.trim();
 				

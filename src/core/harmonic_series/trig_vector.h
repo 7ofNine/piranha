@@ -58,9 +58,9 @@ namespace piranha
 			typedef VectorKey<__PIRANHA_TRIG_VECTOR_TP, TrigVector<__PIRANHA_TRIG_VECTOR_TP> > ancestor;
 
 			template <class SubSeries, class ArgsTuple>
-			class SubCache: public PowerCache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>, ArgsTuple> >
+			class SubCache: public PowerCache<std::complex<SubSeries>, T, BaseSeriesArithmetics<std::complex<SubSeries>, ArgsTuple> >
 			{
-					typedef PowerCache<std::complex<SubSeries>, T, base_series_arithmetics<std::complex<SubSeries>, ArgsTuple> > ancestor;
+					typedef PowerCache<std::complex<SubSeries>, T, BaseSeriesArithmetics<std::complex<SubSeries>, ArgsTuple> > ancestor;
 
 					enum status {
 						zero,
@@ -75,7 +75,7 @@ namespace piranha
 
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
-						this->m_arith_functor.m_argsTuple = argsTuple;
+						this->m_arith_functor.argsTuple = argsTuple;
 						this->m_container[T(0)] = std::complex<SubSeries>().baseAdd(1, *argsTuple);
 						try {
 							std::complex<SubSeries> tmp1(s.base_ei(*argsTuple));
@@ -124,9 +124,9 @@ namespace piranha
 
 
 			template <class SubSeries, class ArgsTuple>
-			class ei_sub_cache: public PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> >
+			class ei_sub_cache: public PowerCache<SubSeries, T, BaseSeriesArithmetics<SubSeries, ArgsTuple> >
 			{
-					typedef PowerCache<SubSeries, T, base_series_arithmetics<SubSeries, ArgsTuple> > ancestor;
+					typedef PowerCache<SubSeries, T, BaseSeriesArithmetics<SubSeries, ArgsTuple> > ancestor;
 
 				public:
 
@@ -137,7 +137,7 @@ namespace piranha
 					// inverse as conjugate. Note it into the documentation.
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
-						this->m_arith_functor.m_argsTuple = argsTuple;
+						this->m_arith_functor.argsTuple = argsTuple;
 						this->m_container[T(0)] = SubSeries().baseAdd(1, *argsTuple);
 						this->m_container[T(1)] = s;
 						this->m_container[T(-1)] = s.base_conjugate(*argsTuple);
@@ -285,7 +285,7 @@ namespace piranha
 				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() == this->size());
 				(void)argsTuple;
 
-				this->print_elements(outStream);
+				this->printElements(outStream);
 				// Print the separator before flavour only if we actually printed something above.
 				if (this->size() != 0) 
 				{
@@ -395,7 +395,7 @@ namespace piranha
 
 			bool is_unity() const
 			{
-				return (this->elements_are_zero() && flavour);
+				return (this->elementsAreZero() && flavour);
 			}
 
 
@@ -543,14 +543,14 @@ namespace piranha
 			template <class ArgsTuple>
 			bool is_ignorable(const ArgsTuple &) const
 			{
-				return (!flavour && this->elements_are_zero());
+				return (!flavour && this->elementsAreZero());
 			}
 
 
 			/// Equality test.
 			bool operator==(const TrigVector &t2) const
 			{
-				return (flavour == t2.flavour && this->elements_equal_to(t2));
+				return (flavour == t2.flavour && this->elementsEqualTo(t2));
 			}
 
 
@@ -572,7 +572,7 @@ namespace piranha
 			 */
 			std::size_t hash_value() const
 			{
-				std::size_t retval = this->elements_hasher();
+				std::size_t retval = this->elementsHasher();
 				boost::hash_combine(retval, flavour);
 				return retval;
 			}
@@ -732,7 +732,7 @@ namespace piranha
 			template <class Number>
 			TrigVector pow_number(const Number &y) const 
 			{
-				const bool int_zero = this->elements_are_zero();
+				const bool int_zero = this->elementsAreZero();
 				TrigVector retval;
 				if (y < 0) 
 				{
