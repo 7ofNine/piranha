@@ -75,7 +75,7 @@ namespace piranha
 
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
-						this->m_arith_functor.argsTuple = argsTuple;
+						this->arithmeticFunctor.argsTuple = argsTuple;
 						this->m_container[T(0)] = std::complex<SubSeries>().baseAdd(1, *argsTuple);
 						try {
 							std::complex<SubSeries> tmp1(s.base_ei(*argsTuple));
@@ -137,7 +137,7 @@ namespace piranha
 					// inverse as conjugate. Note it into the documentation.
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
-						this->m_arith_functor.argsTuple = argsTuple;
+						this->arithmeticFunctor.argsTuple = argsTuple;
 						this->m_container[T(0)] = SubSeries().baseAdd(1, *argsTuple);
 						this->m_container[T(1)] = s;
 						this->m_container[T(-1)] = s.base_conjugate(*argsTuple);

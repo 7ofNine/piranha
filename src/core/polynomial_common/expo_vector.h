@@ -67,7 +67,7 @@ namespace piranha
 
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
 					{
-						this->m_arith_functor.argsTuple = argsTuple;
+						this->arithmeticFunctor.argsTuple = argsTuple;
 						// NOTE: move semantics here.
 						SubSeries tmp;
 						tmp.baseAdd(1, *argsTuple);
