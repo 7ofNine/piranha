@@ -373,7 +373,7 @@ namespace pyranha
 	template <class PowerSeries>
 	typename PowerSeries::degree_type p_degree_str(const PowerSeries &p, const std::string &name)
 	{
-		return p.partial_degree(std::vector<std::string>(1,name));
+		return p.partialDegree(std::vector<std::string>(1,name));
 	}
 
 	template <class PowerSeries>
@@ -386,7 +386,7 @@ namespace pyranha
 	inline void power_series_instantiation(boost::python::class_<T> &inst)
 	{
 		inst.def("degree", &T::degree, "(Partial) degree.");
-		inst.def("degree", &T::partial_degree);
+		inst.def("degree", &T::partialDegree);
 		inst.def("degree", &p_degree_str<T>);
 		inst.def("order", &T::order, "(Partial) order.");
 		inst.def("order", &T::partial_order);

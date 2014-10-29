@@ -215,7 +215,7 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			void print_tex(std::ostream &outStream, const ArgsTuple &argsTuple) const
+			void printTEX(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
 				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
 
@@ -240,7 +240,7 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			double eval(const double &t, const ArgsTuple &argsTuple) const
+			double eval(const double t, const ArgsTuple &argsTuple) const
 			{
 				const size_type w = this->size();
 				PIRANHA_ASSERT(w <= argsTuple.template get<Ancestor::position>().size());
@@ -248,7 +248,7 @@ namespace piranha
 				double retval = 1.0;
 				for (size_type i = 0; i < w; ++i) 
                 {
-                    //get the numerical value for the parameter (may be time depeden) and calculate its poer according to this ExpoVector
+                    //get the numerical value for the parameter (may be time depeden) and calculate its pwoer according to this ExpoVector
 					retval *= std::pow(argsTuple.template get<Ancestor::position>()[i].eval(t), (*this)[i]);
 				}
 
@@ -261,23 +261,23 @@ namespace piranha
 			 * By construction an array of exponents is never ignorable.
 			 */
 			template <class ArgsTuple>
-			bool is_ignorable(const ArgsTuple &) const
+			bool isIgnorable(const ArgsTuple &) const
 			{
 				return false;
 			}
 
 
-			bool is_unity() const
+			bool isUnity() const
 			{
                 //its a 1 if all exponante are 0
-				return (this->elementsAreZero());
+				return this->elementsAreZero();
 			}
 
 
 			/// Comparison operator.
 			bool operator<(const ExpoVector &expoVector) const
 			{
-				return this->lex_comparison(expoVector);
+				return this->lexComparison(expoVector);
 			}
 
 
@@ -293,6 +293,7 @@ namespace piranha
 
 
 			/// Calculate hash value.
+            /// Don't rename. Might be needed by boost
 			std::size_t hash_value() const
 			{
 				return this->elementsHasher();
@@ -311,14 +312,15 @@ namespace piranha
 			 * pos_tuple must be a tuple of vectors of (bool,std::size_t) pairs.
 			 */
 			template <class PosTuple>
-			degree_type partial_degree(const PosTuple &pos_tuple) const
+			degree_type partialDegree(const PosTuple &posTuple) const
 			{
 				// TODO: check PosTuple type.
-				const std::vector<std::pair<bool,std::size_t> > &pos = pos_tuple.template get<Ancestor::position>();
+				const std::vector<std::pair<bool, std::size_t> > &pos = posTuple.template get<Ancestor::position>();
 				const size_type w = this->size(); 
-                const size_type pos_size = boost::numeric_cast<size_type>(pos.size());
+                const size_type posSize = boost::numeric_cast<size_type>(pos.size());
 				degree_type retval(0);
-				for (size_type i = 0; i < pos_size; ++i) 
+
+				for (size_type i = 0; i < posSize; ++i) 
                 {
 					// Add up exponents only if they are present and don't try to read outside boundaries
 					// (this last could happen after merging arguments with a second series with smaller
@@ -344,12 +346,12 @@ namespace piranha
 
 			/// Minimum total degree of the variables at specified positions pos.
 			/**
-			 * Provided for use within the power series toolbox, and defined to be equivalent to partial_degree().
+			 * Provided for use within the power series toolbox, and defined to be equivalent to partialDegree().
 			 */
 			template <class PosTuple>
 			degree_type partial_order(const PosTuple &pos_tuple) const
 			{
-				return partial_degree(pos_tuple);
+				return partialDegree(pos_tuple);
 			}
 
 

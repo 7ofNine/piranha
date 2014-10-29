@@ -209,7 +209,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void printPretty(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
-				if (key.is_unity()) 
+				if (key.isUnity()) 
 				{
 					cf.print_pretty(outStream, argsTuple);
 				} else if (cf == 1) 
@@ -231,23 +231,23 @@ namespace piranha
 			template <class ArgsTuple>
 			void printTEX(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
-				if (key.is_unity()) 
+				if (key.isUnity()) 
 				{
 					cf.print_tex(outStream, argsTuple);
 
 				} else if (cf == 1) 
 				{
-					key.print_tex(outStream, argsTuple);
+					key.printTEX(outStream, argsTuple);
 
 				} else if (cf == -1) 
 				{
 					outStream << '-';
-					key.print_tex(outStream, argsTuple);
+					key.printTEX(outStream, argsTuple);
 
 				} else 
 				{
 					cf.print_tex(outStream, argsTuple);
-					key.print_tex(outStream, argsTuple);
+					key.printTEX(outStream, argsTuple);
 				}
 			}
 

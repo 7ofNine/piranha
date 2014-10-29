@@ -65,14 +65,17 @@ namespace piranha
 	struct expo_vector_pow_double
 	{
 		template <class ExpoVector>
-		static ExpoVector run(const ExpoVector &ev, const double &)
+		static ExpoVector run(const ExpoVector &expoVector, const double &)
 		{
-			if (!ev.is_unity()) {
-				PIRANHA_THROW(value_error,"cannot raise non-unity exponent vector to real power");
+			if (!expoVector.isUnity())
+            {
+				PIRANHA_THROW(value_error, "cannot raise non-unity exponent vector to real power");
 			}
-			return ev;
+
+			return expoVector;
 		}
 	};
+
 
 	// For rationals, we build a rational from the double and go on with the exponentiation.
 	template <class T>

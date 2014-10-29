@@ -234,7 +234,7 @@ namespace piranha
                     {
 						// Integrand argument appears as trigonometric argument: try to integrate recursively by parts.
 						typedef typename Derived::TermType::CfType::degree_type degree_type;
-						const degree_type degree(it->cf.partial_degree(pos_tuple));
+						const degree_type degree(it->cf.partialDegree(pos_tuple));
 						if (degree < 0 || !is_integer(degree)) 
                         {
 							PIRANHA_THROW(value_error,"cannot integrate Poisson series term if the polynomial degree of the integrand argument "
@@ -331,7 +331,7 @@ namespace piranha
 				const_iterator it_avoid = cache.end();
 				for (const_iterator it = cache.begin(); it != cache.end(); ++it) 
                 {
-					if ((*it)->key.is_unity()) 
+					if ((*it)->key.isUnity()) 
                     {
 						it_avoid = it;
 						break;

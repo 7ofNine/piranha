@@ -81,7 +81,7 @@ namespace piranha
 					const const_iterator it_f = cache.end();
 					for (; it != it_f; ++it)
                     {
-						if ((*it)->key.is_unity())
+						if ((*it)->key.isUnity())
                         {
 							break;
 						}

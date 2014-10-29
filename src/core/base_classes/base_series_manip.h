@@ -159,7 +159,7 @@ namespace piranha
 	{
 		// TODO: think about moving this check higher in the stack of functions, we probably don't want to reach
 		// _this_ point before checking for ignorability.
-		if (term.cf.is_ignorable(argsTuple) || term.key.is_ignorable(argsTuple)) 
+		if (term.cf.is_ignorable(argsTuple) || term.key.isIgnorable(argsTuple)) 
 		{
 			return;
 		}

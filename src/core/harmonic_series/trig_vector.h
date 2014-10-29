@@ -350,7 +350,7 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			void print_tex(std::ostream &outStream, const ArgsTuple &argsTuple) const
+			void printTEX(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
 				PIRANHA_ASSERT(argsTuple.template get<ancestor::position>().size() == this->size());
 				if (flavour) 
@@ -393,9 +393,10 @@ namespace piranha
 			}
 
 
-			bool is_unity() const
+			bool isUnity() const
 			{
-				return (this->elementsAreZero() && flavour);
+                //vlavour == true for cos
+				return this->elementsAreZero() && flavour;
 			}
 
 
@@ -541,9 +542,9 @@ namespace piranha
 
 			/// All multipliers are zero and flavour is sine.
 			template <class ArgsTuple>
-			bool is_ignorable(const ArgsTuple &) const
+			bool isIgnorable(const ArgsTuple &) const
 			{
-				return (!flavour && this->elementsAreZero());
+				return !flavour && this->elementsAreZero();
 			}
 
 
@@ -555,14 +556,20 @@ namespace piranha
 
 
 			/// Less than.
-			bool operator<(const TrigVector &t2) const
+			bool operator<(const TrigVector &trigVector) const
 			{
-				if (flavour < t2.flavour) {
+                //sin before cos
+				if (flavour < trigVector.flavour)
+                {
 					return true;
-				} else if (flavour > t2.flavour) {
+
+				} else if (flavour > trigVector.flavour)
+                {
 					return false;
 				}
-				return this->lex_comparison(t2);
+
+                // both are either sin or cos
+				return this->lexComparison(trigVector);
 			}
 
 

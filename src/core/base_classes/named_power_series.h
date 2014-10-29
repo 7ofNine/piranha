@@ -38,7 +38,7 @@ namespace piranha
 	{
 		public:
 
-			Degree partial_degree(const std::vector<std::string> &vs) const
+			Degree partialDegree(const std::vector<std::string> &vs) const
 			{
 				return derived_const_cast->base_partial_degree(psyms2pos(names2psyms(vs), derived_const_cast->arguments()));
 			}

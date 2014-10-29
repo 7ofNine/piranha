@@ -40,7 +40,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::isSingleCf() const
 	{
-		return (length() == 1 && begin()->key.is_unity());
+		return (length() == 1 && begin()->key.isUnity());
 	}
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>

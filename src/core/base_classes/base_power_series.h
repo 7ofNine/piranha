@@ -64,7 +64,7 @@ namespace piranha
 
 				bool operator()(const Term &t1, const Term &t2) const 
                 {
-					return (t1.template get<ExpoTermPosition>().partial_degree(m_p) < t2.template get<ExpoTermPosition>().partial_degree(m_p));
+					return (t1.template get<ExpoTermPosition>().partialDegree(m_p) < t2.template get<ExpoTermPosition>().partialDegree(m_p));
 				}
 
 				const PosTuple &m_p;
@@ -132,7 +132,7 @@ namespace piranha
 				const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(),
 							                                  partial_degree_binary_predicate<typename Derived::TermType, PosTuple>(pos_tuple) ));
 
-				return result->template get<ExpoTermPosition>().partial_degree(pos_tuple);
+				return result->template get<ExpoTermPosition>().partialDegree(pos_tuple);
 			}
 
 
