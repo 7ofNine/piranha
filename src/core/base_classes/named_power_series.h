@@ -44,7 +44,7 @@ namespace piranha
 			}
 
 
-			Degree partial_order(const std::vector<std::string> &vs) const
+			Degree partialOrder(const std::vector<std::string> &vs) const
 			{
 				VectorPsym v;
 				v.reserve(vs.size());

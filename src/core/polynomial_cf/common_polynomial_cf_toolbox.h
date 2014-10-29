@@ -46,7 +46,7 @@ namespace piranha
 
 
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &argsTuple) const
+			RetSeries eiSub(const PosTuple &p, SubCaches &s, const ArgsTuple &argsTuple) const
 			{
 				return derived_const_cast->template baseSub<RetSeries, EiSubFunctor>(p, s, argsTuple);
 			}

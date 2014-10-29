@@ -37,7 +37,7 @@ namespace piranha
 			}
 
 			template <class PosTuple>
-			Degree partial_order(const PosTuple &pos_tuple) const {
+			Degree partialOrder(const PosTuple &pos_tuple) const {
 				return derived_const_cast->base_partial_order(pos_tuple);
 			}
 	};

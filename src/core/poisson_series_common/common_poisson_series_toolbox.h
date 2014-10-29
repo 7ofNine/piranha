@@ -124,7 +124,7 @@ namespace piranha
 
 
 			template <class SubSeries>
-			Derived ei_sub(const std::string &name, const SubSeries &series) const
+			Derived eiSub(const std::string &name, const SubSeries &series) const
 			{
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
 				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type pos_tuple_type;

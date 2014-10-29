@@ -89,7 +89,7 @@ namespace piranha
 		template <class RetSeries, class Element, class PosTuple, class SubCaches, class ArgsTuple>
 		static RetSeries run(const Element &e, const PosTuple &posTuple, SubCaches &subCaches, const ArgsTuple &argsTuple)
         {
-			return e.template ei_sub<RetSeries>(posTuple, subCaches, argsTuple);
+			return e.template eiSub<RetSeries>(posTuple, subCaches, argsTuple);
 		}
 	};
 }

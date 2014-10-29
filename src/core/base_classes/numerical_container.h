@@ -271,7 +271,7 @@ namespace piranha
 			}
 			
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &p, SubCaches &s, const ArgsTuple &a) const 
+			RetSeries eiSub(const PosTuple &p, SubCaches &s, const ArgsTuple &a) const 
 			{
 				return sub<RetSeries>(p,s,a);
 			}

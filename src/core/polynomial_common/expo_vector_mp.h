@@ -84,7 +84,7 @@ namespace piranha
 		template <class ExpoVector>
 		static ExpoVector run(const ExpoVector &ev, const double &x)
 		{
-			return ev.generic_pow(mp_rational(x));
+			return ev.genericPow(mp_rational(x));
 		}
 	};
 
@@ -118,7 +118,7 @@ namespace piranha
 		template <class ExpoVector>
 		static ExpoVector run(const ExpoVector &ev, const mp_rational &q)
 		{
-			return ev.generic_pow(q);
+			return ev.genericPow(q);
 		}
 	};
 }

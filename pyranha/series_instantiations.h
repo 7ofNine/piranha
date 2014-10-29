@@ -301,7 +301,7 @@ namespace pyranha
 	template <class T, class Series>
 	static inline T py_series_ei_sub_string_series(const T &series, const std::string &s, const Series &sub)
 	{
-		return series.template ei_sub<Series>(s, sub);
+		return series.template eiSub<Series>(s, sub);
 	}
 
 	template <class T, class Series>
@@ -379,7 +379,7 @@ namespace pyranha
 	template <class PowerSeries>
 	typename PowerSeries::degree_type p_order_str(const PowerSeries &p, const std::string &name)
 	{
-		return p.partial_order(std::vector<std::string>(1,name));
+		return p.partialOrder(std::vector<std::string>(1,name));
 	}
 
 	template <class T>
@@ -389,7 +389,7 @@ namespace pyranha
 		inst.def("degree", &T::partialDegree);
 		inst.def("degree", &p_degree_str<T>);
 		inst.def("order", &T::order, "(Partial) order.");
-		inst.def("order", &T::partial_order);
+		inst.def("order", &T::partialOrder);
 		inst.def("order", &p_order_str<T>);
 	}
 

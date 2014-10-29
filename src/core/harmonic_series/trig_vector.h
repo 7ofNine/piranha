@@ -689,7 +689,7 @@ namespace piranha
 
 
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
+			RetSeries eiSub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
 			{
 				typedef typename RetSeries::TermType ret_term_type;
 				typedef typename ret_term_type::CfType ret_cf_type;

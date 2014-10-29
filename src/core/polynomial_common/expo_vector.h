@@ -349,33 +349,33 @@ namespace piranha
 			 * Provided for use within the power series toolbox, and defined to be equivalent to partialDegree().
 			 */
 			template <class PosTuple>
-			degree_type partial_order(const PosTuple &pos_tuple) const
+			degree_type partialOrder(const PosTuple &posTuple) const
 			{
-				return partialDegree(pos_tuple);
+				return partialDegree(posTuple);
 			}
 
 
 			/// Calculate partial derivative.
 			template <class Series, class PosTuple, class ArgsTuple>
-			Series partial(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
+			Series partial(const PosTuple &posTuple, const ArgsTuple &argsTuple) const
 			{
 				// TODO: check PosTuple type.
-				PIRANHA_ASSERT(pos_tuple.template get<Ancestor::position>().size() == 1);
+				PIRANHA_ASSERT(posTuple.template get<Ancestor::position>().size() == 1);
 
-				const std::size_t pos = pos_tuple.template get<Ancestor::position>()[0].second;
+				const std::size_t pos = posTuple.template get<Ancestor::position>()[0].second;
 
-				PIRANHA_ASSERT(!pos_tuple.template get<Ancestor::position>()[0].first || pos < this->size());
+				PIRANHA_ASSERT(!posTuple.template get<Ancestor::position>()[0].first || pos < this->size());
 
 				// Do something only if the argument of the partial derivation is present in the exponent array
 				// and the interesting exponent is not zero.
 				Series retval;
-				if (pos_tuple.template get<Ancestor::position>()[0].first && (*this)[boost::numeric_cast<size_type>(pos)] != 0) 
+				if (posTuple.template get<Ancestor::position>()[0].first && (*this)[boost::numeric_cast<size_type>(pos)] != 0) 
                 {
 					ExpoVector copy(*this);
 					// NOTE: move semantics here?
 					copy[pos] -= 1;
-					retval = Series::baseSeriesFromKey(copy,argsTuple);
-					retval.baseMultBy((*this)[pos],argsTuple);
+					retval = Series::baseSeriesFromKey(copy, argsTuple);
+					retval.baseMultBy((*this)[pos], argsTuple);
 				}
 				return retval;
 			}
@@ -386,10 +386,10 @@ namespace piranha
 			{
 				if (is_integer(y)) 
                 {
-					return generic_pow((int)y);
+					return genericPow((int)y);
 				} else 
                 {
-					return expo_vector_pow_double<value_type>::run(*this,y);
+					return expo_vector_pow_double<value_type>::run(*this, y);
 				}
 			}
 
@@ -397,7 +397,7 @@ namespace piranha
 			template <class ArgsTuple>
 			ExpoVector pow(const mp_rational &q, const ArgsTuple &) const
 			{
-				return expo_vector_pow_rational<value_type>::run(*this,q);
+				return expo_vector_pow_rational<value_type>::run(*this, q);
 			}
 
 
@@ -421,10 +421,10 @@ namespace piranha
 
 					PIRANHA_ASSERT(pos < this->size());
 					
-                    ExpoVector tmp_ea(*this);
+                    ExpoVector tmpEa(*this);
 					// Let's turn off the exponent associated to the symbol we are substituting.
-					tmp_ea[pos] = 0;
-					RetSeries orig(RetSeries::baseSeriesFromKey(tmp_ea, argsTuple));
+					tmpEa[pos] = 0;
+					RetSeries orig(RetSeries::baseSeriesFromKey(tmpEa, argsTuple));
 
 					PIRANHA_ASSERT(retval.empty());
 					
@@ -437,7 +437,7 @@ namespace piranha
 
 
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries ei_sub(const PosTuple &, SubCaches &, const ArgsTuple &argsTuple) const
+			RetSeries eiSub(const PosTuple &, SubCaches &, const ArgsTuple &argsTuple) const
 			{
 				return RetSeries::baseSeriesFromKey(*this, argsTuple);
 			}
@@ -447,7 +447,7 @@ namespace piranha
 
 			// Generic exponentiation.
 			template <class U>
-			ExpoVector generic_pow(const U &x) const
+			ExpoVector genericPow(const U &x) const
 			{
 				ExpoVector retval(*this);
 				const size_type w = this->size();

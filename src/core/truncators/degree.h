@@ -78,8 +78,8 @@ namespace truncators {
 				{
 					typedef typename Term::template Component<ExpoTermPos>::Type::degree_type DegreeType;
 
-					DegreeType const md1(t1->template get<ExpoTermPos>().partial_order(posTuple));
-					DegreeType const md2(t2->template get<ExpoTermPos>().partial_order(posTuple));
+					DegreeType const md1(t1->template get<ExpoTermPos>().partialOrder(posTuple));
+					DegreeType const md2(t2->template get<ExpoTermPos>().partialOrder(posTuple));
 
                     return md1 < md2;
 				}
@@ -128,7 +128,7 @@ namespace truncators {
                         {
 							case TruncationDeg:      return ((*t1)->template get<expo_term_pos>().order() + (*t2)->template get<expo_term_pos>().order() >= degreeLimit);
 
-							case TruncationPartialDeg:	   return ((*t1)->template get<expo_term_pos>().partial_order(m_pos_tuple) + (*t2)->template get<expo_term_pos>().partial_order(m_pos_tuple) >= degreeLimit);
+							case TruncationPartialDeg:	   return ((*t1)->template get<expo_term_pos>().partialOrder(m_pos_tuple) + (*t2)->template get<expo_term_pos>().partialOrder(m_pos_tuple) >= degreeLimit);
 
 							case TruncationInactive: PIRANHA_ASSERT(false); // We should never get there.
 				 	    }
