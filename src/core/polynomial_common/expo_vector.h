@@ -86,10 +86,10 @@ namespace piranha
 			};
 
 			template <class, class>
-			friend struct expo_vector_pow_double;
+			friend struct ExpoVectorPowDouble;
 
 			template <class, class>
-			friend struct expo_vector_pow_rational;
+			friend struct ExpoVectorPowRational;
 
 		public:
 
@@ -206,7 +206,7 @@ namespace piranha
 						if (n != 1) 
                         {
 							outStream << "**";
-							expo_vector_print_element_pretty(outStream, n);
+							expoVectorPrintElementPretty(outStream, n);
 						}
 						printedSomething = true;
 					}
@@ -231,7 +231,7 @@ namespace piranha
 						if (n != 1) 
                         {
 							outStream << "^{";
-							expo_vector_print_element_tex(outStream, n);
+							expoVectorPrintElementTEX(outStream, n);
 							outStream << '}';
 						}
 					}
@@ -389,7 +389,7 @@ namespace piranha
 					return genericPow((int)y);
 				} else 
                 {
-					return expo_vector_pow_double<value_type>::run(*this, y);
+					return ExpoVectorPowDouble<value_type>::run(*this, y);
 				}
 			}
 
@@ -397,7 +397,7 @@ namespace piranha
 			template <class ArgsTuple>
 			ExpoVector pow(const mp_rational &q, const ArgsTuple &) const
 			{
-				return expo_vector_pow_rational<value_type>::run(*this, q);
+				return ExpoVectorPowRational<value_type>::run(*this, q);
 			}
 
 
