@@ -89,7 +89,7 @@ namespace piranha
 
 			static const int expo_args_position = ExpoArgsPosition;
 			static const int expo_term_position = ExpoTermPosition;
-			typedef Degree degree_type;
+			typedef Degree DegreeType;
 
 			/// Get the degree of the power series.
 			Degree degree() const 

@@ -94,7 +94,7 @@ namespace piranha
 		public:
 
 			typedef typename Ancestor::value_type value_type;
-			typedef value_type                    degree_type;
+			typedef value_type                    DegreeType;
 			typedef typename Ancestor::size_type  size_type;
 			typedef double                        EvalType;
 
@@ -301,9 +301,9 @@ namespace piranha
 
 
 			/// Return the total degree of the exponents array.
-			degree_type degree() const
+			DegreeType degree() const
 			{
-				return std::accumulate(this->begin(), this->end(), degree_type(0));
+				return std::accumulate(this->begin(), this->end(), DegreeType(0));
 			}
 
 
@@ -312,13 +312,13 @@ namespace piranha
 			 * pos_tuple must be a tuple of vectors of (bool,std::size_t) pairs.
 			 */
 			template <class PosTuple>
-			degree_type partialDegree(const PosTuple &posTuple) const
+			DegreeType partialDegree(const PosTuple &posTuple) const
 			{
 				// TODO: check PosTuple type.
 				const std::vector<std::pair<bool, std::size_t> > &pos = posTuple.template get<Ancestor::position>();
 				const size_type w = this->size(); 
                 const size_type posSize = boost::numeric_cast<size_type>(pos.size());
-				degree_type retval(0);
+				DegreeType retval(0);
 
 				for (size_type i = 0; i < posSize; ++i) 
                 {
@@ -338,7 +338,7 @@ namespace piranha
 			/**
 			 * Provided for use within the power series toolbox, and defined to be equivalent to degree().
 			 */
-			degree_type order() const
+			DegreeType order() const
 			{
 				return degree();
 			}
@@ -349,7 +349,7 @@ namespace piranha
 			 * Provided for use within the power series toolbox, and defined to be equivalent to partialDegree().
 			 */
 			template <class PosTuple>
-			degree_type partialOrder(const PosTuple &posTuple) const
+			DegreeType partialOrder(const PosTuple &posTuple) const
 			{
 				return partialDegree(posTuple);
 			}

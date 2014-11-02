@@ -218,7 +218,7 @@ namespace piranha
 					"Size mismatch between args tuple and pos tuple in Poisson series integration.");
 
 				typedef typename Derived::const_iterator                     const_iterator;
-				typedef typename Derived::TermType::CfType::degree_type    degree_type;
+				typedef typename Derived::TermType::CfType::DegreeType       degree_type;
 				typedef typename Derived::TermType::KeyType::HarmonicDegreeType HarmonicDegreeType;
 
 				// Make sure that the position tuple contains just one symbol in each element of the tuple,
@@ -233,7 +233,7 @@ namespace piranha
 					if (pos_tuple.template get<1>()[0].first && it->key[pos_tuple.template get<1>()[0].second] != 0) 
                     {
 						// Integrand argument appears as trigonometric argument: try to integrate recursively by parts.
-						typedef typename Derived::TermType::CfType::degree_type degree_type;
+						typedef typename Derived::TermType::CfType::DegreeType degree_type;
 						const degree_type degree(it->cf.partialDegree(pos_tuple));
 						if (degree < 0 || !is_integer(degree)) 
                         {

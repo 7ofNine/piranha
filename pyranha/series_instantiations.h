@@ -371,13 +371,13 @@ namespace pyranha
 #undef __celmec_inst
 
 	template <class PowerSeries>
-	typename PowerSeries::degree_type p_degree_str(const PowerSeries &p, const std::string &name)
+	typename PowerSeries::DegreeType p_degree_str(const PowerSeries &p, const std::string &name)
 	{
 		return p.partialDegree(std::vector<std::string>(1,name));
 	}
 
 	template <class PowerSeries>
-	typename PowerSeries::degree_type p_order_str(const PowerSeries &p, const std::string &name)
+	typename PowerSeries::DegreeType p_order_str(const PowerSeries &p, const std::string &name)
 	{
 		return p.partialOrder(std::vector<std::string>(1,name));
 	}
