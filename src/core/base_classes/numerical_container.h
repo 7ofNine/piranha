@@ -87,7 +87,7 @@ namespace piranha
 			};
 
 			template <class, class SubCachesCons, class>
-			struct ei_sub_cache_selector {
+			struct EiSubstitutionCacheSelector {
 				typedef SubCachesCons type;
 			};
 

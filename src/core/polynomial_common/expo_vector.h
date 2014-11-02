@@ -78,7 +78,7 @@ namespace piranha
 
 			// This is just a stub.
 			template <class SubSeries, class ArgsTuple>
-			class ei_sub_cache
+			class EiSubCache
 			{
 				public:
 
@@ -105,9 +105,9 @@ namespace piranha
 			};
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
-			struct ei_sub_cache_selector 
+			struct EiSubstitutionCacheSelector 
             {
-				typedef boost::tuples::cons<ei_sub_cache<SubSeries, ArgsTuple>, SubCachesCons> type;
+				typedef boost::tuples::cons<EiSubCache<SubSeries, ArgsTuple>, SubCachesCons> type;
 			};
 
 
