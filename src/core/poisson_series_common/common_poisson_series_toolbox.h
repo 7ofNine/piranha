@@ -88,8 +88,8 @@ namespace piranha
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
 				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type pos_tuple_type;
 				typedef typename Derived::TermType::CfType::
-					template sub_cache_selector<SubSeries, typename Derived::TermType::KeyType::
-					template sub_cache_selector<SubSeries, boost::tuples::null_type, ArgsTupleType>
+					template SubstitutionCacheSelector<SubSeries, typename Derived::TermType::KeyType::
+					template SubstitutionCacheSelector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 					::type, ArgsTupleType>::type sub_caches_type;
 
 				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,

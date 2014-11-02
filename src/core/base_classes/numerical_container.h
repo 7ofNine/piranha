@@ -82,7 +82,7 @@ namespace piranha
 			typedef T numerical_type;
 			
 			template <class, class SubCachesCons, class>
-			struct sub_cache_selector {
+			struct SubstitutionCacheSelector {
 				typedef SubCachesCons type;
 			};
 

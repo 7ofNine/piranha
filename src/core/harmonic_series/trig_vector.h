@@ -152,7 +152,7 @@ namespace piranha
 			typedef double                        EvalType;
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
-			struct sub_cache_selector 
+			struct SubstitutionCacheSelector 
 			{
 				typedef boost::tuples::cons<SubCache<SubSeries, ArgsTuple>, SubCachesCons> type;
 			};
