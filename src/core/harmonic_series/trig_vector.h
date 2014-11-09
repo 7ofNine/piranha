@@ -388,7 +388,7 @@ namespace piranha
 							outStream << '-';
 						} else 
 						{
-							trig_vector_print_element_tex(outStream,n);
+							trigVectorPrintElementTEX(outStream,n);
 						}
 						outStream << argsTuple.template get<Ancestor::position>()[i].get_name();
 						printedSomething = true;
@@ -491,7 +491,7 @@ namespace piranha
 				{
 					if ((*this)[i] != 0) 
 					{
-						retval += trig_vector_eval_element((*this)[i]) * argsTuple.template get<Ancestor::position>()[i].eval(t);
+						retval += trigVectorEvalElement((*this)[i]) * argsTuple.template get<Ancestor::position>()[i].eval(t);
 					}
 				}
 

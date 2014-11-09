@@ -27,27 +27,27 @@
 
 namespace piranha
 {
-	inline void trig_vector_print_element_tex(std::ostream &outStream, const mp_rational &q)
+	inline void trigVectorPrintElementTEX(std::ostream &outStream, const mp_rational &q)
 	{
 		q.print_tex(outStream);
 	}
 
 
 	template <class T>
-	inline void trig_vector_print_element_tex(std::ostream &outStream, const T &x)
+	inline void trigVectorPrintElementTEX(std::ostream &outStream, const T &x)
 	{
 		outStream << x;
 	}
 
 
-	inline double trig_vector_eval_element(const mp_rational &q)
+	inline double trigVectorEvalElement(const mp_rational &q)
 	{
 		return q.to_double();
 	}
 
 
 	template <class T>
-	inline double trig_vector_eval_element(const T &x)
+	inline double trigVectorEvalElement(const T &x)
 	{
 		return static_cast<double>(x);
 	}
