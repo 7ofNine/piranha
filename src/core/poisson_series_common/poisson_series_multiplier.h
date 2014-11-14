@@ -81,8 +81,8 @@ namespace piranha
 					friend class coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,
 						typename poisson_series_multiplier_ops_selector<Series1::echelonLevel>::type>;
 
-					typedef typename ancestor::term_type1 term_type1;
-					typedef typename ancestor::term_type2 term_type2;
+					typedef typename ancestor::TermType1 term_type1;
+					typedef typename ancestor::TermType2 term_type2;
 					typedef typename final_cf<Series1>::type cf_type1;
 					typedef typename final_cf<Series2>::type cf_type2;
 
@@ -228,12 +228,12 @@ namespace piranha
 						const ArgsTupleType &argsTuple = this->m_argsTuple;
 						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - this->m_fast_h.lower(), &vc_sin[0] - this->m_fast_h.lower());
 						// Find out a suitable block size.
-						const std::size_t block_size = this->template compute_block_size<sizeof(cf_type1)>();
+						const std::size_t block_size = this->template computeBlockSize<sizeof(cf_type1)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n';)
 
 						// Perform multiplication.
 						vector_functor<GenericTruncator> vm(m_flavours1, m_flavours2, tc1, tc2,this->m_ckeys1, this->m_ckeys2a, this->m_ckeys2b, t1, t2, trunc, &res, argsTuple);
-						this->blocked_multiplication(block_size, size1, size2, vm);
+						this->blockedMultiplication(block_size, size1, size2, vm);
 						__PDEBUG(std::cout << "Done multiplying\n");
 
 						// Decode and insert the results into return value.
@@ -421,14 +421,16 @@ namespace piranha
 						const ArgsTupleType &argsTuple = this->m_argsTuple;
 
 						// Find out a suitable block size.
-						const std::size_t block_size = this->template compute_block_size<sizeof(std::pair<cf_type1,max_fast_int>)>();
+						const std::size_t block_size = this->template computeBlockSize<sizeof(std::pair<cf_type1,max_fast_int>)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n';)
-						std::pair<cf_type1,max_fast_int> tmp_term1, tmp_term2;
+						std::pair<cf_type1, max_fast_int> tmp_term1, tmp_term2;
 						hash_functor<std::pair<cf_type1, max_fast_int>, max_fast_int, GenericTruncator, csht>
 							hm(m_flavours1,m_flavours2,tc1,tc2,this->m_ckeys1,this->m_ckeys2a,this->m_ckeys2b,t1,t2,trunc,&res,&tmp_term1,&tmp_term2,argsTuple);
 
-						this->blocked_multiplication(block_size, size1, size2, hm);
+						this->blockedMultiplication(block_size, size1, size2, hm);
+
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
+
 						term_type1 tmp_term;
 						{
 							const c_iterator c_it_f = cms_cos.end();

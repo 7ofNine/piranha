@@ -379,8 +379,8 @@ struct polynomial_multiplier
 			
 			friend class coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> >;
 
-			typedef typename ancestor::term_type1 term_type1;
-			typedef typename ancestor::term_type2 term_type2;
+			typedef typename ancestor::TermType1 term_type1;
+			typedef typename ancestor::TermType2 term_type2;
 			typedef typename term_type1::CfType  cf_type1;
 			typedef typename term_type2::CfType  cf_type2;
 
@@ -409,10 +409,12 @@ struct polynomial_multiplier
 				} catch (const std::bad_alloc &)
 				{
 					__PDEBUG(std::cout << "Not enough physical memory available for vector coded.\n");
+
 					return false;
 				} catch (const memory_error &)
 				{
 					__PDEBUG(std::cout << "Memory limit reached for vector coded.\n");
+
 					return false;
 				}
 				__PDEBUG(std::cout << "Going for vector coded polynomial multiplication\n");
@@ -431,7 +433,7 @@ struct polynomial_multiplier
 				cf_type1 *vc_res =  &vc[0] - this->m_fast_h.lower();
 
 				// Find out a suitable block size.
-				const std::size_t block_size = this->template compute_block_size<sizeof(cf_type1)>();
+				const std::size_t block_size = this->template computeBlockSize<sizeof(cf_type1)>();
 				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 				// Perform multiplication.
@@ -506,14 +508,14 @@ struct polynomial_multiplier
 				const ArgsTupleType &argsTuple = this->m_argsTuple;
 				csht cms(size_hint);
 				// Find out a suitable block size.
-				const std::size_t block_size = this->template compute_block_size<sizeof(std::pair<cf_type1, max_fast_int>)>();
+				const std::size_t block_size = this->template computeBlockSize<sizeof(std::pair<cf_type1, max_fast_int>)>();
 				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
  std::cout << "Block size: " << block_size << '\n';
  const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 				std::pair<cf_type1, max_fast_int> cterm;
 				polynomial_hash_functor<Series1,Series2,ArgsTuple,GenericTruncator>
 					hm(cterm, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, trunc, &cms, argsTuple);
-				this->blocked_multiplication(block_size, size1, size2, hm);
+				this->blockedMultiplication(block_size, size1, size2, hm);
  std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 				__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 				// Decode and insert into retval.
@@ -522,7 +524,7 @@ struct polynomial_multiplier
 				term_type1 tmp_term;
 				for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it)
 				{
-					this->decode(c_it->first,c_it->second + 2 * this->m_fast_h.lower(), tmp_term);
+					this->decode(c_it->first, c_it->second + 2 * this->m_fast_h.lower(), tmp_term);
 					if (!tmp_term.is_canonical(argsTuple)) 
 					{
 						tmp_term.canonicalise(argsTuple);

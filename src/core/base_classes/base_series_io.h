@@ -83,25 +83,26 @@ namespace piranha
 	template <class Iterator, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericPrintTermsPretty(std::ostream &stream, const Iterator &start, const Iterator &end, const ArgsTuple &argsTuple) const
 	{
-		const std::size_t max_length = settings::get_max_pretty_print_size();
+		const std::size_t maxLength = settings::get_max_pretty_print_size();
 		std::size_t count = 0;
 		for (Iterator it = start; it != end; ++it) 
         {
-			std::ostringstream tmp_stream;
-			FromIterator<Iterator>::get(it)->printPretty(tmp_stream,argsTuple);
-			std::string tmp(tmp_stream.str());
+			std::ostringstream tmpStream;
+			FromIterator<Iterator>::get(it)->printPretty(tmpStream, argsTuple);
+			std::string tmp(tmpStream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
 			if (it != start && !tmp.empty() && tmp[0] != '-') 
             {
-				tmp.insert(tmp.begin(),'+');
+				tmp.insert(tmp.begin(), '+');
 			}
 
 			count += tmp.size();
-			if (count > max_length) 
+			if (count > maxLength) 
             {
 				std::for_each(tmp.begin(),
-					tmp.begin() + boost::numeric_cast<std::string::iterator::difference_type>(max_length - (count - boost::numeric_cast<std::size_t>(tmp.size()))),
+					tmp.begin() + boost::numeric_cast<std::string::iterator::difference_type>(maxLength - (count - boost::numeric_cast<std::size_t>(tmp.size()))),
 					stream << boost::lambda::_1);
+
 				stream << "...";
 				break;
 			}
@@ -121,13 +122,15 @@ namespace piranha
 		if (empty()) 
         {
 			stream << '0';
+
 		} else 
         {
 			try {
 				const std::vector<typename Derived::TermType const *> s(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
 				genericPrintTermsPretty(stream, s.begin(), s.end(), argsTuple);
 
-			} catch (const value_error &) {
+			} catch (const value_error &)
+            {
 				genericPrintTermsPretty(stream, begin(), end(), argsTuple);
 			}
 		}
@@ -136,15 +139,13 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericPrintTermsTEX(std::ostream &stream, const Iterator &start, const Iterator &end,
-		const ArgsTuple &argsTuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericPrintTermsTEX(std::ostream &stream, const Iterator &start, const Iterator &end, const ArgsTuple &argsTuple) const
 	{
-
 		for (Iterator it = start; it != end; ++it) 
         {
-			std::ostringstream tmp_stream;
-			FromIterator<Iterator>::get(it)->printTEX(tmp_stream, argsTuple);
-			std::string tmp(tmp_stream.str());
+			std::ostringstream tmpStream;
+			FromIterator<Iterator>::get(it)->printTEX(tmpStream, argsTuple);
+			std::string tmp(tmpStream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
 			if (it != start && !tmp.empty() && tmp[0] != '-') 
             {
@@ -183,8 +184,7 @@ namespace piranha
 	/// Constructor from Psym and from position in the arguments set.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseConstructFromPsym(const Psym &p, const int n,
-			const ArgsTuple &argsTuple)
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseConstructFromPsym(const Psym &p, const int n, const ArgsTuple &argsTuple)
 	{
 		PIRANHA_ASSERT(derived_cast->empty());
 		insert(TermType(typename TermType::CfType(p, n, argsTuple), typename TermType::KeyType(p, n, argsTuple)), argsTuple);
