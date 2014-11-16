@@ -429,30 +429,33 @@ struct base_coded_functor
 				{
 					f_terms1 = derived_cast->m_s1.flattenTerms(derived_cast->m_argsTuple);
 					f_terms2 = derived_cast->m_s2.flattenTerms(derived_cast->m_argsTuple);
-					derived_cast->cache_terms_pointers(f_terms1,f_terms2);
+					derived_cast->cacheTermsPointers(f_terms1,f_terms2);
 				} else
 				{
 					// Cache term pointers.
-					derived_cast->cache_terms_pointers(derived_cast->m_s1,derived_cast->m_s2);
+					derived_cast->cacheTermsPointers(derived_cast->m_s1,derived_cast->m_s2);
 				}
-				// NOTE: hard coded value of 1000.
+				
+                // NOTE: hard coded value of 1000.
 				if ((algo == settings::automatic && double(derived_cast->m_terms1.size()) * double(derived_cast->m_terms2.size()) < 1000)
 					|| algo == settings::plain)
 				{
-					derived_cast->perform_plain_multiplication();
+					derived_cast->performPlainMultiplication();
 					trace_mult_type(plain);
 					return;
 				}
+
 				// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 				// coefficients and coded keys.
 				const typename Derived::truncator_type trunc(derived_cast->m_terms1,derived_cast->m_terms2,derived_cast->m_argsTuple);
 				determine_viability();
 				if (!m_gr_is_viable)
 				{
-					if (algo == settings::vector_coded || algo == settings::hash_coded) {
-						PIRANHA_THROW(value_error,"coded multiplication requested, but coded representation is infeasible");
+					if (algo == settings::vector_coded || algo == settings::hash_coded)
+                    {
+						PIRANHA_THROW(value_error, "coded multiplication requested, but coded representation is infeasible");
 					}
-					derived_cast->perform_plain_multiplication();
+					derived_cast->performPlainMultiplication();
 					trace_mult_type(plain);
 					return;
 				}
@@ -460,6 +463,7 @@ struct base_coded_functor
 				if (trunc.isEffective())
 				{
 					derived_cast->ll_perform_multiplication(trunc);
+
 				} else
 				{
 					// Sort input series for better cache usage and multi-threaded implementation.

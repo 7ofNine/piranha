@@ -92,20 +92,20 @@ namespace piranha
 
 				for (std::size_t n1 = 0; n1 < nblocks1; ++n1)
                 {
-					const std::size_t i_start = n1 * blockSize; 
-                    const std::size_t i_end = i_start + blockSize;
+					const std::size_t iStart = n1 * blockSize; 
+                    const std::size_t iEnd   = iStart + blockSize;
 
 					// regulars1 * regulars2
 					for (std::size_t n2 = 0; n2 < nblocks2; ++n2)
                     {
-						const std::size_t j_start = n2 * blockSize; 
-                        const std::size_t j_end = j_start + blockSize;
+						const std::size_t jStart = n2 * blockSize; 
+                        const std::size_t jEnd   = jStart + blockSize;
 
-						for (std::size_t i = i_start; i < i_end; ++i)
+						for (std::size_t i = iStart; i < iEnd; ++i)
                         {
-							for (std::size_t j = j_start; j < j_end; ++j)
+							for (std::size_t j = jStart; j < jEnd; ++j)
                             {
-								if (!m(i,j))
+								if (!m(i, j))
                                 {
 									break;
 								}
@@ -114,11 +114,11 @@ namespace piranha
 					}
 
 					// regulars1 * rem2
-					for (std::size_t i = i_start; i < i_end; ++i)
+					for (std::size_t i = iStart; i < iEnd; ++i)
                     {
 						for (std::size_t j = nblocks2 * blockSize; j < size2; ++j)
                         {
-							if (!m(i,j))
+							if (!m(i, j))
                             {
 								break;
 							}
@@ -129,14 +129,14 @@ namespace piranha
 				// rem1 * regulars2
 				for (std::size_t n2 = 0; n2 < nblocks2; ++n2)
                 {
-					const std::size_t j_start = n2 * blockSize; 
-                    const std::size_t j_end = j_start + blockSize;
+					const std::size_t jStart = n2 * blockSize; 
+                    const std::size_t jEnd   = jStart + blockSize;
 
 					for (std::size_t i = nblocks1 * blockSize; i < size1; ++i)
                     {
-						for (std::size_t j = j_start; j < j_end; ++j)
+						for (std::size_t j = jStart; j < jEnd; ++j)
                         {
-							if (!m(i,j))
+							if (!m(i, j))
                             {
 								break;
 							}
@@ -149,7 +149,7 @@ namespace piranha
                 {
 					for (std::size_t j = nblocks2 * blockSize; j < size2; ++j)
                     {
-						if (!m(i,j))
+						if (!m(i, j))
                         {
 							break;
 						}
@@ -160,26 +160,26 @@ namespace piranha
 
 			/// Cache pointers to series' terms in the internal storage.
 			template <class Container1, class Container2>
-			void cache_terms_pointers(const Container1 &c1, const Container2 &c2)
+			void cacheTermsPointers(const Container1 &container1, const Container2 &container2)
 			{
 				PIRANHA_ASSERT(m_terms1.empty() && m_terms2.empty());
 
-				std::transform(c1.begin(), c1.end(), std::insert_iterator<std::vector<typename Series1::TermType const *> >(m_terms1, m_terms1.begin()), &(boost::lambda::_1));
-				std::transform(c2.begin(), c2.end(), std::insert_iterator<std::vector<typename Series2::TermType const *> >(m_terms2, m_terms2.begin()), &(boost::lambda::_1));
+				std::transform(container1.begin(), container1.end(), std::insert_iterator<std::vector<typename Series1::TermType const *> >(m_terms1, m_terms1.begin()), &(boost::lambda::_1));
+				std::transform(container2.begin(), container2.end(), std::insert_iterator<std::vector<typename Series2::TermType const *> >(m_terms2, m_terms2.begin()), &(boost::lambda::_1));
 			}
 
 
 		public:
 
-			BaseSeriesMultiplier(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):
-				m_s1(s1), m_s2(s2), m_argsTuple(argsTuple), m_retval(retval)
+			BaseSeriesMultiplier(const Series1 &series1, const Series2 &series2, Series1 &result, const ArgsTuple &argsTuple):
+				m_s1(series1), m_s2(series2), m_argsTuple(argsTuple), m_retval(result)
 			{
-				PIRANHA_ASSERT(s1.length() > 0 && s2.length() > 0);
+				PIRANHA_ASSERT(series1.length() > 0 && series2.length() > 0);
 			}
 
 
 			// Plain multiplication.
-			void perform_plain_multiplication()
+			void performPlainMultiplication()
 			{
 				perform_plain_threaded_multiplication();
 			}
@@ -187,87 +187,85 @@ namespace piranha
 		private:
 
 			template <class GenericTruncator>
-			struct plain_functor {
-				typedef typename TermType1::multiplication_result mult_res;
+			struct PlainFunctor {
+				typedef typename TermType1::multiplication_result ResultType;
 
-				plain_functor(mult_res &res, const TermType1 **t1, const TermType2 **t2, const GenericTruncator &trunc,
-					          Series1 &retval, const ArgsTuple &argsTuple): m_res(res), m_t1(t1), m_t2(t2),
-					          m_trunc(trunc), m_retval(retval), m_argsTuple(argsTuple)
+				PlainFunctor(ResultType &result, const TermType1 **term1, const TermType2 **term2, const GenericTruncator &truncator, Series1 &retval, const ArgsTuple &argsTuple)
+                             : result(result), term1(term1), term2(term2), truncator(truncator), retval(retval), argsTuple(argsTuple)
 				{}
 
 				bool operator()(const std::size_t i, const std::size_t j)
 				{
-					if (m_trunc.skip(&m_t1[i], &m_t2[j]))
+					if (truncator.skip(&term1[i], &term2[j]))
                     {
 						return false;
 					}
 
-					TermType1::multiply(*m_t1[i], *m_t2[j], m_res, m_argsTuple);
-					insert_multiplication_result<mult_res>::run(m_res, m_retval, m_argsTuple);
+					TermType1::multiply(*term1[i], *term2[j], result, argsTuple);
+					insert_multiplication_result<ResultType>::run(result, retval, argsTuple);
+
 					return true;
 				}
 
 
-				mult_res		    &m_res;
-				const TermType1	    **m_t1;
-				const TermType2	    **m_t2;
-				const GenericTruncator	&m_trunc;
-				Series1			    &m_retval;
-				const ArgsTuple		&m_argsTuple;
+				ResultType		        &result;
+				const TermType1	        **term1;
+				const TermType2	        **term2;
+				const GenericTruncator	&truncator;
+				Series1			        &retval;
+				const ArgsTuple		    &argsTuple;
 			};
 
 
 
-			struct plain_worker {
+			struct PlainWorker {
 
-				plain_worker(BaseSeriesMultiplier &mult, Series1 &retval):
-					m_mult(mult), m_retval(retval), m_terms1(mult.m_terms1)
+				PlainWorker(BaseSeriesMultiplier &multiplier, Series1 &retval)
+                    : multiplier(multiplier), m_retval(retval), m_terms1(multiplier.m_terms1)
 				{}
 
-				plain_worker(BaseSeriesMultiplier &mult, Series1 &retval,
-					std::vector<std::vector<TermType1 const *> > &split1, const std::size_t &idx):
-					m_mult(mult),m_retval(retval),m_terms1(split1[idx])
+				PlainWorker(BaseSeriesMultiplier &multiplier, Series1 &retval, std::vector<std::vector<TermType1 const *> > &split1, const std::size_t idx)
+                    : multiplier(multiplier), m_retval(retval), m_terms1(split1[idx])
 				{}
 
 				void operator()()
 				{
 					// Build the truncator.
-					const typename Truncator::template get_type<Series1,Series2,ArgsTuple> trunc(m_terms1,m_mult.m_terms2,m_mult.m_argsTuple);
+					const typename Truncator::template get_type<Series1, Series2, ArgsTuple> trunc(m_terms1, multiplier.m_terms2, multiplier.m_argsTuple);
 					// Use the selected truncator only if it really truncates, otherwise use the
 					// null truncator.
 					if (trunc.isEffective())
                     {
-						plain_implementation(trunc);
+						plainImplementation(trunc);
 
 					} else
                     {
-						plain_implementation(
-							null_truncator::template get_type<Series1,Series2,ArgsTuple>(
-							m_terms1,m_mult.m_terms2,m_mult.m_argsTuple
-							)
-						);
+						plainImplementation(null_truncator::template get_type<Series1, Series2, ArgsTuple>(
+							                  m_terms1, multiplier.m_terms2, multiplier.m_argsTuple) );
 					}
 				}
 
 
 				template <class GenericTruncator>
-				void plain_implementation(const GenericTruncator &trunc)
+				void plainImplementation(const GenericTruncator &trunc)
 				{
 					typedef typename TermType1::multiplication_result mult_res;
 					mult_res res;
-					const std::size_t size1 = m_terms1.size(), size2 = m_mult.m_terms2.size();
+					const std::size_t size1 = m_terms1.size(), size2 = multiplier.m_terms2.size();
+
 					PIRANHA_ASSERT(size1 && size2);
+
 					const TermType1 **t1 = &m_terms1[0];
-					const TermType2 **t2 = &m_mult.m_terms2[0];
-					plain_functor<GenericTruncator> pf(res, t1, t2, trunc, m_retval, m_mult.m_argsTuple);
-					const std::size_t block_size = computeBlockSize
-						<boost::tuples::length<mult_res>::value * sizeof(TermType1)>();
+					const TermType2 **t2 = &multiplier.m_terms2[0];
+					PlainFunctor<GenericTruncator> pf(res, t1, t2, trunc, m_retval, multiplier.m_argsTuple);
+					const std::size_t block_size = computeBlockSize<boost::tuples::length<mult_res>::value * sizeof(TermType1)>();
+
 					blockedMultiplication(block_size, size1, size2, pf);
 				}
 
 
-				BaseSeriesMultiplier		&m_mult;
-				Series1				&m_retval;
+				BaseSeriesMultiplier		    &multiplier;
+				Series1				            &m_retval;
 				std::vector<TermType1 const *>	&m_terms1;
 			};
 
@@ -282,7 +280,7 @@ namespace piranha
                 {
 					stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 
-					plain_worker w(*derived_cast, m_retval);
+					PlainWorker w(*derived_cast, m_retval);
 					w();
 
 				} else
@@ -303,15 +301,17 @@ namespace piranha
 						split1[i].insert(split1[i].end(), m_terms1.begin() + i * m, m_terms1.begin() + (i + 1) * m);
 					}
 
+
 					// Last iteration.
 					split1[n - 1].insert(split1[n - 1].end(),m_terms1.begin() + (n - 1) * m, m_terms1.end());
-					boost::thread_group tg;
-					std::vector<Series1> retvals(n,Series1());
+					boost::thread_group threadGroup;
+					std::vector<Series1> retvals(n, Series1());
 					for (std::size_t i = 0; i < n; ++i)
                     {
-						tg.create_thread(plain_worker(*derived_cast,retvals[i],split1,i));
+						threadGroup.create_thread(PlainWorker(*derived_cast, retvals[i], split1, i));
 					}
-					tg.join_all();
+					threadGroup.join_all();
+
 					// Take the retvals and insert them into final retval.
 					for (std::size_t i = 0; i < n; ++i)
                     {
