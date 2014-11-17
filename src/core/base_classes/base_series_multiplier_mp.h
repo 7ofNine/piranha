@@ -27,19 +27,20 @@ namespace piranha
 {
 	// Traverse the tuple of results of multiplication and insert each result into the multiplication result set.
 	template <class ResultTuple>
-	class insert_multiplication_result
+	class InsertMultiplicationResult
 	{
 		public:
 			template <class Series, class ArgsTuple>
-			static void run(const ResultTuple &mult_res, Series &s, const ArgsTuple &argsTuple)
+			static void run(const ResultTuple &result, Series &series, const ArgsTuple &argsTuple)
 			{
-				s.insert(mult_res.get_head(), argsTuple);
-				insert_multiplication_result<typename ResultTuple::tail_type>::run(mult_res.get_tail(), s, argsTuple);
+				series.insert(result.get_head(), argsTuple);
+				InsertMultiplicationResult<typename ResultTuple::tail_type>::run(result.get_tail(), series, argsTuple);
 			}
 	};
 
+
 	template <>
-	class insert_multiplication_result<boost::tuples::null_type>
+	class InsertMultiplicationResult<boost::tuples::null_type>
 	{
 		public:
 			template <class Series, class ArgsTuple>

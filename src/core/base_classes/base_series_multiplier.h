@@ -40,8 +40,7 @@
 #include "null_truncator.h"
 
 
-#define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
+#define DC static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -182,7 +181,7 @@ namespace piranha
 			// Plain multiplication.
 			void performPlainMultiplication()
 			{
-				perform_plain_threaded_multiplication();
+				performPlainThreadedMultiplication();
 			}
 
 		private:
@@ -204,7 +203,7 @@ namespace piranha
 					}
 
 					TermType1::multiply(*term1[i], *term2[j], result, argsTuple);
-					insert_multiplication_result<ResultType>::run(result, retval, argsTuple);
+					InsertMultiplicationResult<ResultType>::run(result, retval, argsTuple);
 
 					return true;
 				}
@@ -273,7 +272,7 @@ namespace piranha
 
 
 			// Threaded multiplication.
-			void perform_plain_threaded_multiplication()
+			void performPlainThreadedMultiplication()
 			{
 				// Effective number of threads to use. If the two series are small, we want to use one single thread.
 				// NOTE: here the number 2500 is a kind of rule-of thumb. Basically multiplications of series < 50 elements
@@ -282,7 +281,7 @@ namespace piranha
                 {
 					stats::trace_stat("mult_st", std::size_t(0), boost::lambda::_1 + 1);
 
-					PlainWorker w(*derived_cast, retval);
+					PlainWorker w(*DC, retval);
 					w();
 
 				} else
@@ -310,7 +309,7 @@ namespace piranha
 					std::vector<Series1> retvals(n, Series1());
 					for (std::size_t i = 0; i < n; ++i)
                     {
-						threadGroup.create_thread(PlainWorker(*derived_cast, retvals[i], split1, i));
+						threadGroup.create_thread(PlainWorker(*DC, retvals[i], split1, i));
 					}
 					threadGroup.join_all();
 
@@ -338,8 +337,6 @@ namespace piranha
 	};
 }
 
-
-#undef derived_const_cast
-#undef derived_cast
+#undef DC
 
 #endif
