@@ -425,18 +425,22 @@ struct polynomial_multiplier
 				//       indices in [0,ncodes - 1]. But since we are doing arithmetics on shifted codes, the
 				//       code range is [-h_min,ncodes - 1 - h_min]. So we shift the baseline memory location
 				//       so that we can use shifted codes directly as indices.
-				const std::size_t size1 = this->m_terms1.size();
-				const std::size_t size2 = this->m_terms2.size();
+				const std::size_t size1 = this->terms1.size();
+				const std::size_t size2 = this->terms2.size();
  std::cout << "sizes: " << size1 << ',' << size2 << '\n';
+
 				PIRANHA_ASSERT(size1 && size2);
-				const ArgsTupleType &argsTuple = this->m_argsTuple;
+
+                const ArgsTupleType &argsTuple = this->argsTuple;
 				cf_type1 *vc_res =  &vc[0] - this->m_fast_h.lower();
 
 				// Find out a suitable block size.
 				const std::size_t block_size = this->template computeBlockSize<sizeof(cf_type1)>();
+
 				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
-				// Perform multiplication.
+				
+                // Perform multiplication.
 				typedef polynomial_vector_functor<Series1,Series2,ArgsTuple,GenericTruncator> vf_type;
 				vf_type vm(tc1,tc2,this->m_ckeys1,this->m_ckeys2a,t1,t2,trunc,vc_res,argsTuple);
 //				const std::size_t nthread = settings::get_nthread();
@@ -448,7 +452,7 @@ struct polynomial_multiplier
 				bool breakout = false;
 				std::size_t cur_idx1_start = 0;
 				// TODO: probably we need to rethink a bit this, taking into account also the number of threads. Also drop the truncation limitation.
-				if (trunc.isEffective() || (this->m_terms1.size() * this->m_terms2.size()) <= 400 || nthread == 1) 
+				if (trunc.isEffective() || (this->terms1.size() * this->terms2.size()) <= 400 || nthread == 1) 
                 {
 					stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 					threaded_blocked_multiplier<vf_type> t(block_size,size1,size2,0,1,0,cur_idx1_start,breakout,vm,s1,s2);
@@ -482,7 +486,7 @@ struct polynomial_multiplier
 						{
 							tmp_term.canonicalise(argsTuple);
 						}
-						this->m_retval.insert(tmp_term, argsTuple);
+						this->retval.insert(tmp_term, argsTuple);
 					}
 				}
 				__PDEBUG(std::cout << "Done polynomial vector coded.\n");
@@ -501,27 +505,33 @@ struct polynomial_multiplier
 				const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);
 				const std::size_t size_hint = static_cast<std::size_t>(
 					std::max<double>(this->m_density1,this->m_density2) * n_codes);
-				const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
+				const std::size_t size1 = this->terms1.size(); 
+                const std::size_t size2 = this->terms2.size();
 
 				PIRANHA_ASSERT(size1 && size2);
 
-				const ArgsTupleType &argsTuple = this->m_argsTuple;
+				const ArgsTupleType &argsTuple = this->argsTuple;
 				csht cms(size_hint);
 				// Find out a suitable block size.
 				const std::size_t block_size = this->template computeBlockSize<sizeof(std::pair<cf_type1, max_fast_int>)>();
+
 				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
+
  std::cout << "Block size: " << block_size << '\n';
  const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 				std::pair<cf_type1, max_fast_int> cterm;
-				polynomial_hash_functor<Series1,Series2,ArgsTuple,GenericTruncator>
-					hm(cterm, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, trunc, &cms, argsTuple);
+				polynomial_hash_functor<Series1, Series2, ArgsTuple, GenericTruncator> hm(cterm, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, trunc, &cms, argsTuple);
+
 				this->blockedMultiplication(block_size, size1, size2, hm);
  std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
+
 				__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
-				// Decode and insert into retval.
+
+                // Decode and insert into retval.
 				// TODO: add debug info about cms' size here.
 				const c_iterator c_it_f = cms.end();
 				term_type1 tmp_term;
+
 				for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it)
 				{
 					this->decode(c_it->first, c_it->second + 2 * this->m_fast_h.lower(), tmp_term);
@@ -529,8 +539,9 @@ struct polynomial_multiplier
 					{
 						tmp_term.canonicalise(argsTuple);
 					}
-					this->m_retval.insert(tmp_term, argsTuple);
+					this->retval.insert(tmp_term, argsTuple);
 				}
+
 				__PDEBUG(std::cout << "Done polynomial hash coded\n");
 			}
 	};

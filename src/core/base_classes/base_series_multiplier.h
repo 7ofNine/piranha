@@ -39,6 +39,7 @@
 #include "base_series_multiplier_mp.h"
 #include "null_truncator.h"
 
+
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
@@ -162,17 +163,17 @@ namespace piranha
 			template <class Container1, class Container2>
 			void cacheTermsPointers(const Container1 &container1, const Container2 &container2)
 			{
-				PIRANHA_ASSERT(m_terms1.empty() && m_terms2.empty());
+				PIRANHA_ASSERT(terms1.empty() && terms2.empty());
 
-				std::transform(container1.begin(), container1.end(), std::insert_iterator<std::vector<typename Series1::TermType const *> >(m_terms1, m_terms1.begin()), &(boost::lambda::_1));
-				std::transform(container2.begin(), container2.end(), std::insert_iterator<std::vector<typename Series2::TermType const *> >(m_terms2, m_terms2.begin()), &(boost::lambda::_1));
+				std::transform(container1.begin(), container1.end(), std::insert_iterator<std::vector<typename Series1::TermType const *> >(terms1, terms1.begin()), &(boost::lambda::_1));
+				std::transform(container2.begin(), container2.end(), std::insert_iterator<std::vector<typename Series2::TermType const *> >(terms2, terms2.begin()), &(boost::lambda::_1));
 			}
 
 
 		public:
 
 			BaseSeriesMultiplier(const Series1 &series1, const Series2 &series2, Series1 &result, const ArgsTuple &argsTuple):
-				m_s1(series1), m_s2(series2), m_argsTuple(argsTuple), m_retval(result)
+				series1(series1), series2(series2), argsTuple(argsTuple), retval(result)
 			{
 				PIRANHA_ASSERT(series1.length() > 0 && series2.length() > 0);
 			}
@@ -187,7 +188,8 @@ namespace piranha
 		private:
 
 			template <class GenericTruncator>
-			struct PlainFunctor {
+			struct PlainFunctor
+            {
 				typedef typename TermType1::multiplication_result ResultType;
 
 				PlainFunctor(ResultType &result, const TermType1 **term1, const TermType2 **term2, const GenericTruncator &truncator, Series1 &retval, const ArgsTuple &argsTuple)
@@ -221,52 +223,52 @@ namespace piranha
 			struct PlainWorker {
 
 				PlainWorker(BaseSeriesMultiplier &multiplier, Series1 &retval)
-                    : multiplier(multiplier), m_retval(retval), m_terms1(multiplier.m_terms1)
+                    : multiplier(multiplier), retval(retval), terms1(multiplier.terms1)
 				{}
 
 				PlainWorker(BaseSeriesMultiplier &multiplier, Series1 &retval, std::vector<std::vector<TermType1 const *> > &split1, const std::size_t idx)
-                    : multiplier(multiplier), m_retval(retval), m_terms1(split1[idx])
+                    : multiplier(multiplier), retval(retval), terms1(split1[idx])
 				{}
 
 				void operator()()
 				{
 					// Build the truncator.
-					const typename Truncator::template get_type<Series1, Series2, ArgsTuple> trunc(m_terms1, multiplier.m_terms2, multiplier.m_argsTuple);
+					const typename Truncator::template get_type<Series1, Series2, ArgsTuple> truncator(terms1, multiplier.terms2, multiplier.argsTuple);
 					// Use the selected truncator only if it really truncates, otherwise use the
 					// null truncator.
-					if (trunc.isEffective())
+					if (truncator.isEffective())
                     {
-						plainImplementation(trunc);
+						plainImplementation(truncator);
 
 					} else
                     {
-						plainImplementation(null_truncator::template get_type<Series1, Series2, ArgsTuple>(
-							                  m_terms1, multiplier.m_terms2, multiplier.m_argsTuple) );
+						plainImplementation(null_truncator::template get_type<Series1, Series2, ArgsTuple>(terms1, multiplier.terms2, multiplier.argsTuple) );
 					}
 				}
 
 
 				template <class GenericTruncator>
-				void plainImplementation(const GenericTruncator &trunc)
+				void plainImplementation(const GenericTruncator &truncator)
 				{
-					typedef typename TermType1::multiplication_result mult_res;
-					mult_res res;
-					const std::size_t size1 = m_terms1.size(), size2 = multiplier.m_terms2.size();
+					typedef typename TermType1::multiplication_result ResultType;
+					ResultType res;
+					const std::size_t size1 = terms1.size();
+                    const std::size_t size2 = multiplier.terms2.size();
 
 					PIRANHA_ASSERT(size1 && size2);
 
-					const TermType1 **t1 = &m_terms1[0];
-					const TermType2 **t2 = &multiplier.m_terms2[0];
-					PlainFunctor<GenericTruncator> pf(res, t1, t2, trunc, m_retval, multiplier.m_argsTuple);
-					const std::size_t block_size = computeBlockSize<boost::tuples::length<mult_res>::value * sizeof(TermType1)>();
+					const TermType1 **t1 = &terms1[0];
+					const TermType2 **t2 = &multiplier.terms2[0];
+					PlainFunctor<GenericTruncator> plainFunctor(res, t1, t2, truncator, retval, multiplier.argsTuple);
+					const std::size_t blockSize = computeBlockSize<boost::tuples::length<ResultType>::value * sizeof(TermType1)>();
 
-					blockedMultiplication(block_size, size1, size2, pf);
+					blockedMultiplication(blockSize, size1, size2, plainFunctor);
 				}
 
 
 				BaseSeriesMultiplier		    &multiplier;
-				Series1				            &m_retval;
-				std::vector<TermType1 const *>	&m_terms1;
+				Series1				            &retval;
+				std::vector<TermType1 const *>	terms1;
 			};
 
 
@@ -276,34 +278,34 @@ namespace piranha
 				// Effective number of threads to use. If the two series are small, we want to use one single thread.
 				// NOTE: here the number 2500 is a kind of rule-of thumb. Basically multiplications of series < 50 elements
 				// will use just one thread.
-				if (double(m_terms1.size()) * double(m_terms2.size()) < 2500)
+				if (double(terms1.size()) * double(terms2.size()) < 2500)
                 {
-					stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
+					stats::trace_stat("mult_st", std::size_t(0), boost::lambda::_1 + 1);
 
-					PlainWorker w(*derived_cast, m_retval);
+					PlainWorker w(*derived_cast, retval);
 					w();
 
 				} else
                 {
-					stats::trace_stat("mult_mt", std::size_t(0),boost::lambda::_1 + 1);
+					stats::trace_stat("mult_mt", std::size_t(0), boost::lambda::_1 + 1);
 					// TODO: fix numeric casting here.
 					// If size1 is less than the number of desired threads,
 					// use size1 as number of threads.
-					const std::size_t n = std::min(boost::numeric_cast<typename std::vector<TermType1 const *>::size_type>(settings::get_nthread()), m_terms1.size());
+					const std::size_t n = std::min(boost::numeric_cast<typename std::vector<TermType1 const *>::size_type>(settings::get_nthread()), terms1.size());
 					std::vector<std::vector<TermType1 const *> > split1(n);
 					// m is the number of terms per thread for regular blocks.
-					const std::size_t m = m_terms1.size() / n;
+					const std::size_t m = terms1.size() / n;
 
 					// Iterate up to n - 1 because that's the number up to which we can divide series1 into
 					// regular blocks.
 					for (std::size_t i = 0; i < n - 1; ++i)
                     {
-						split1[i].insert(split1[i].end(), m_terms1.begin() + i * m, m_terms1.begin() + (i + 1) * m);
+						split1[i].insert(split1[i].end(), terms1.begin() + i * m, terms1.begin() + (i + 1) * m);
 					}
 
 
 					// Last iteration.
-					split1[n - 1].insert(split1[n - 1].end(),m_terms1.begin() + (n - 1) * m, m_terms1.end());
+					split1[n - 1].insert(split1[n - 1].end(), terms1.begin() + (n - 1) * m, terms1.end());
 					boost::thread_group threadGroup;
 					std::vector<Series1> retvals(n, Series1());
 					for (std::size_t i = 0; i < n; ++i)
@@ -315,7 +317,7 @@ namespace piranha
 					// Take the retvals and insert them into final retval.
 					for (std::size_t i = 0; i < n; ++i)
                     {
-						m_retval.insertRange(retvals[i].begin(),retvals[i].end(),m_argsTuple);
+						retval.insertRange(retvals[i].begin(), retvals[i].end(), argsTuple);
 					}
 				}
 			}
@@ -324,17 +326,18 @@ namespace piranha
 		public:
 			// TODO: make these protected?
 			// References to the series.
-			const Series1					&m_s1;
-			const Series2					&m_s2;
+			const Series1					&series1;
+			const Series2					&series2;
 			// Reference to the arguments tuple.
-			const ArgsTuple					&m_argsTuple;
+			const ArgsTuple					&argsTuple;
 			// Reference to the result.
-			Series1						&m_retval;
+			Series1						    &retval;
 			// Vectors of pointers to the input terms.
-			std::vector<TermType1 const *>			m_terms1;
-			std::vector<TermType2 const *>			m_terms2;
+			std::vector<TermType1 const *>	terms1;
+			std::vector<TermType2 const *>	terms2;
 	};
 }
+
 
 #undef derived_const_cast
 #undef derived_cast

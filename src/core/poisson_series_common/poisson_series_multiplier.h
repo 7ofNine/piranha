@@ -110,17 +110,17 @@ namespace piranha
 					// Store flavours of the series into own vectors.
 					void cache_flavours()
 					{
-						m_flavours1.resize(this->m_terms1.size());
-						m_flavours2.resize(this->m_terms2.size());
+						m_flavours1.resize(this->terms1.size());
+						m_flavours2.resize(this->terms2.size());
 						std::size_t i;
-						for (i = 0; i < this->m_terms1.size(); ++i)
+						for (i = 0; i < this->terms1.size(); ++i)
 						{
-							m_flavours1[i] = this->m_terms1[i]->key.getFlavour();
+							m_flavours1[i] = this->terms1[i]->key.getFlavour();
 						}
 
-						for (i = 0; i < this->m_terms2.size(); ++i)
+						for (i = 0; i < this->terms2.size(); ++i)
 						{
-							m_flavours2[i] = this->m_terms2[i]->key.getFlavour();
+							m_flavours2[i] = this->terms2[i]->key.getFlavour();
 						}
 					}
 
@@ -223,17 +223,21 @@ namespace piranha
 						// Please note that even if here it seems like we are going to write outside allocated memory,
 						// the indices from the analysis of the coded series will prevent out-of-boundaries
 						// reads/writes.
-						const std::size_t size1 = this->m_terms1.size(), size2 = this->m_terms2.size();
-						PIRANHA_ASSERT(size1 && size2);
-						const ArgsTupleType &argsTuple = this->m_argsTuple;
+						const std::size_t size1 = this->terms1.size(), size2 = this->terms2.size();
+						
+                        PIRANHA_ASSERT(size1 && size2);
+
+						const ArgsTupleType &argsTuple = this->argsTuple;
 						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - this->m_fast_h.lower(), &vc_sin[0] - this->m_fast_h.lower());
 						// Find out a suitable block size.
 						const std::size_t block_size = this->template computeBlockSize<sizeof(cf_type1)>();
-						__PDEBUG(std::cout << "Block size: " << block_size << '\n';)
+						
+                        __PDEBUG(std::cout << "Block size: " << block_size << '\n';)
 
 						// Perform multiplication.
 						vector_functor<GenericTruncator> vm(m_flavours1, m_flavours2, tc1, tc2,this->m_ckeys1, this->m_ckeys2a, this->m_ckeys2b, t1, t2, trunc, &res, argsTuple);
 						this->blockedMultiplication(block_size, size1, size2, vm);
+
 						__PDEBUG(std::cout << "Done multiplying\n");
 
 						// Decode and insert the results into return value.
@@ -257,7 +261,7 @@ namespace piranha
 								{
 									tmp_term.canonicalise(argsTuple);
 								}
-								this->m_retval.insert(tmp_term, argsTuple);
+								this->retval.insert(tmp_term, argsTuple);
 							}
 						}
 
@@ -272,7 +276,7 @@ namespace piranha
 								{
 									tmp_term.canonicalise(argsTuple);
 								}
-								this->m_retval.insert(tmp_term, argsTuple);
+								this->retval.insert(tmp_term, argsTuple);
 							}
 						}
 
@@ -416,9 +420,9 @@ namespace piranha
 						csht cms_cos(size_hint); 
 						csht cms_sin(size_hint);
 						std::pair<csht *, csht *> res(&cms_cos, &cms_sin);
-						const std::size_t size1 = this->m_terms1.size();
-						const std::size_t size2 = this->m_terms2.size();
-						const ArgsTupleType &argsTuple = this->m_argsTuple;
+						const std::size_t size1 = this->terms1.size();
+						const std::size_t size2 = this->terms2.size();
+						const ArgsTupleType &argsTuple = this->argsTuple;
 
 						// Find out a suitable block size.
 						const std::size_t block_size = this->template computeBlockSize<sizeof(std::pair<cf_type1,max_fast_int>)>();
@@ -443,7 +447,7 @@ namespace piranha
 								{
 									tmp_term.canonicalise(argsTuple);
 								}
-								this->m_retval.insert(tmp_term, argsTuple);
+								this->retval.insert(tmp_term, argsTuple);
 							}
 						}
 						{
@@ -457,7 +461,7 @@ namespace piranha
 								{
 									tmp_term.canonicalise(argsTuple);
 								}
-								this->m_retval.insert(tmp_term, argsTuple);
+								this->retval.insert(tmp_term, argsTuple);
 							}
 						}
 						__PDEBUG(std::cout << "Done Poisson series hash coded\n");

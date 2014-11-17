@@ -411,10 +411,10 @@ struct base_coded_functor
 				// NOTE: beware the order of inheritance here, make sure to init BaseSeriesMultiplier before,
 				//       otherwise m_argsTuple will be uninitialised here.
 				// Initialise the member tuples.
-				cm_init_vector_tuple<Series1>(m_mp_gr,derived_const_cast->m_argsTuple);
-				cm_init_vector_tuple<Series1>(m_fast_gr,derived_const_cast->m_argsTuple);
-				cm_init_vector_tuple<Series1>(m_mp_ct,derived_const_cast->m_argsTuple);
-				cm_init_vector_tuple<Series1>(m_fast_ct,derived_const_cast->m_argsTuple);
+				cm_init_vector_tuple<Series1>(m_mp_gr,   derived_const_cast->argsTuple);
+				cm_init_vector_tuple<Series1>(m_fast_gr, derived_const_cast->argsTuple);
+				cm_init_vector_tuple<Series1>(m_mp_ct,   derived_const_cast->argsTuple);
+				cm_init_vector_tuple<Series1>(m_fast_ct, derived_const_cast->argsTuple);
 			}
 
 
@@ -427,17 +427,17 @@ struct base_coded_functor
 				// If echelon level is more than zero we need to flatten out the series.
 				if (Series1::echelonLevel)
 				{
-					f_terms1 = derived_cast->m_s1.flattenTerms(derived_cast->m_argsTuple);
-					f_terms2 = derived_cast->m_s2.flattenTerms(derived_cast->m_argsTuple);
+					f_terms1 = derived_cast->series1.flattenTerms(derived_cast->argsTuple);
+					f_terms2 = derived_cast->series2.flattenTerms(derived_cast->argsTuple);
 					derived_cast->cacheTermsPointers(f_terms1,f_terms2);
 				} else
 				{
 					// Cache term pointers.
-					derived_cast->cacheTermsPointers(derived_cast->m_s1,derived_cast->m_s2);
+					derived_cast->cacheTermsPointers(derived_cast->series1, derived_cast->series2);
 				}
 				
                 // NOTE: hard coded value of 1000.
-				if ((algo == settings::automatic && double(derived_cast->m_terms1.size()) * double(derived_cast->m_terms2.size()) < 1000)
+				if ((algo == settings::automatic && double(derived_cast->terms1.size()) * double(derived_cast->terms2.size()) < 1000)
 					|| algo == settings::plain)
 				{
 					derived_cast->performPlainMultiplication();
@@ -447,7 +447,7 @@ struct base_coded_functor
 
 				// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 				// coefficients and coded keys.
-				const typename Derived::truncator_type trunc(derived_cast->m_terms1,derived_cast->m_terms2,derived_cast->m_argsTuple);
+				const typename Derived::truncator_type trunc(derived_cast->terms1, derived_cast->terms2, derived_cast->argsTuple);
 				determine_viability();
 				if (!m_gr_is_viable)
 				{
@@ -467,10 +467,10 @@ struct base_coded_functor
 				} else
 				{
 					// Sort input series for better cache usage and multi-threaded implementation.
-					std::sort(derived_cast->m_terms1.begin(),derived_cast->m_terms1.end(),key_revlex_comparison());
-					std::sort(derived_cast->m_terms2.begin(),derived_cast->m_terms2.end(),key_revlex_comparison());
+					std::sort(derived_cast->terms1.begin(), derived_cast->terms1.end(), key_revlex_comparison());
+					std::sort(derived_cast->terms2.begin(), derived_cast->terms2.end(), key_revlex_comparison());
 					derived_cast->ll_perform_multiplication(null_truncator::template get_type<Series1, Series2, typename Derived::ArgsTupleType>(
-						                                                                     derived_cast->m_terms1, derived_cast->m_terms2, derived_cast->m_argsTuple));
+						                                                                     derived_cast->terms1, derived_cast->terms2, derived_cast->argsTuple));
 				}
 			}
 
@@ -490,25 +490,25 @@ struct base_coded_functor
 				std::vector<cf_type2> cf2_cache;
 				std::insert_iterator<std::vector<cf_type1> > i_it1(cf1_cache,cf1_cache.begin());
 				std::insert_iterator<std::vector<cf_type2> > i_it2(cf2_cache,cf2_cache.begin());
-				std::transform(derived_cast->m_terms1.begin(),derived_cast->m_terms1.end(),i_it1,final_cf_getter<Series1>());
-				std::transform(derived_cast->m_terms2.begin(),derived_cast->m_terms2.end(),i_it2,final_cf_getter<Series2>());
+				std::transform(derived_cast->terms1.begin(), derived_cast->terms1.end(), i_it1,final_cf_getter<Series1>());
+				std::transform(derived_cast->terms2.begin(), derived_cast->terms2.end(), i_it2,final_cf_getter<Series2>());
 				bool vec_res;
 				if ((algo == settings::automatic && is_sparse()) || algo == settings::hash_coded) 
 				{
 					vec_res = false;
 				} else 
 				{
-					vec_res = derived_cast->perform_vector_coded_multiplication(cf1_cache,cf2_cache,derived_cast->m_terms1,derived_cast->m_terms2,trunc);
+					vec_res = derived_cast->perform_vector_coded_multiplication(cf1_cache, cf2_cache, derived_cast->terms1, derived_cast->terms2, trunc);
 				}
 
 				if (!vec_res) 
 				{
 					if (algo == settings::vector_coded) 
 					{
-						PIRANHA_THROW(value_error,"vector coded multiplication requested, but vector coded representation is infeasible");
+						PIRANHA_THROW(value_error, "vector coded multiplication requested, but vector coded representation is infeasible");
 					}
 					shift_codes();
-					derived_cast->perform_hash_coded_multiplication(cf1_cache,cf2_cache,derived_cast->m_terms1,derived_cast->m_terms2,trunc);
+					derived_cast->perform_hash_coded_multiplication(cf1_cache, cf2_cache, derived_cast->terms1, derived_cast->terms2, trunc);
 					trace_mult_type(hash);
 				} else 
 				{
@@ -524,30 +524,32 @@ struct base_coded_functor
 			void determine_viability()
 			{
 				// Make sure that the series have at least one term.
-				PIRANHA_ASSERT(derived_const_cast->m_terms1.size() > 0 &&
-					derived_const_cast->m_terms2.size() > 0);
+				PIRANHA_ASSERT(derived_const_cast->terms1.size() > 0 && derived_const_cast->terms2.size() > 0);
+
 				// Declare and init the min/max types for the two series.
-				minmax_type t1, t2;
-				cm_init_vector_tuple<Series1>(t1,derived_const_cast->m_argsTuple);
-				cm_init_vector_tuple<Series2>(t2,derived_const_cast->m_argsTuple);
+				minmax_type t1;
+                minmax_type t2;
+				cm_init_vector_tuple<Series1>(t1,derived_const_cast->argsTuple);
+				cm_init_vector_tuple<Series2>(t2,derived_const_cast->argsTuple);
+
 				// Init and test the first series' tuple.
 				typedef typename std::vector<typename Series1::TermType const *>::size_type size_type1;
-				const size_type1 size1 = derived_const_cast->m_terms1.size();
+				const size_type1 size1 = derived_const_cast->terms1.size();
 				// Value handler tuples.
 				value_handler_type vh1, vh2;
-				cm_minmax<minmax_type>::run_init(*derived_const_cast->m_terms1[0],t1,vh1);
+				cm_minmax<minmax_type>::run_init(*derived_const_cast->terms1[0], t1, vh1);
 				for (size_type1 i = 1; i < size1; ++i) 
 				{
-					cm_minmax<minmax_type>::run_test(*derived_const_cast->m_terms1[i],t1,vh1);
+					cm_minmax<minmax_type>::run_test(*derived_const_cast->terms1[i], t1, vh1);
 				}
 				// Init and test the second series' tuple.
 				typedef typename std::vector<typename Series2::TermType const *>::size_type size_type2;
-				const size_type2 size2 = derived_const_cast->m_terms2.size();
-				cm_minmax<minmax_type>::run_init(*derived_const_cast->m_terms2[0],t2,vh2);
+				const size_type2 size2 = derived_const_cast->terms2.size();
+				cm_minmax<minmax_type>::run_init(*derived_const_cast->terms2[0], t2, vh2);
 
 				for (size_type2 i = 1; i < size2; ++i) 
 				{
-					cm_minmax<minmax_type>::run_test(*derived_const_cast->m_terms2[i], t2, vh2);
+					cm_minmax<minmax_type>::run_test(*derived_const_cast->terms2[i], t2, vh2);
 				}
 
 				// Now compute the global representation in multiprecision.
@@ -556,9 +558,9 @@ struct base_coded_functor
 				PIRANHA_ASSERT(vh1 == vh2);
 				m_vh = vh1;
 				// Compute the multiprecision coding tuple.
-				compute_mp_coding_tuple(m_mp_ct,m_mp_gr);
+				compute_mp_coding_tuple(m_mp_ct, m_mp_gr);
 				// Compute multiprecision codes range.
-				tuple_vector_dot(m_mp_gr,m_mp_ct,m_mp_h);
+				tuple_vector_dot(m_mp_gr, m_mp_ct, m_mp_h);
 				// To test whether a representation is viable or not, we need to test for the following things:
 				// - m_mp_h must be in the max_fast_int range;
 				// - m_mp_h's width must be within halft max_fast_int's range (needed for 2*chi shifting).
@@ -573,10 +575,11 @@ struct base_coded_functor
 					// Mark representation as viable.
 					m_gr_is_viable = true;
 					// Log viability.
-					stats::trace_stat("mult_coded_feasible",std::size_t(0),boost::lambda::_1 + 1);
+					stats::trace_stat("mult_coded_feasible", std::size_t(0),boost::lambda::_1 + 1);
+
 				} else 
 				{
-					stats::trace_stat("mult_coded_unfeasible",std::size_t(0),boost::lambda::_1 + 1);
+					stats::trace_stat("mult_coded_unfeasible", std::size_t(0),boost::lambda::_1 + 1);
 				}
 			}
 
@@ -585,19 +588,19 @@ struct base_coded_functor
 			void code_terms()
 			{
 				PIRANHA_ASSERT(m_gr_is_viable);
+
 				// Downcast multiprecision to fast representation.
-				cm_mp_tuple_downcast(m_mp_gr,m_fast_gr);
-				cm_mp_tuple_downcast(m_mp_ct,m_fast_ct);
-				m_fast_h.assign(boost::lexical_cast<max_fast_int>(m_mp_h.lower()),
-					            boost::lexical_cast<max_fast_int>(m_mp_h.upper()));
+				cm_mp_tuple_downcast(m_mp_gr, m_fast_gr);
+				cm_mp_tuple_downcast(m_mp_ct, m_fast_ct);
+				m_fast_h.assign(boost::lexical_cast<max_fast_int>(m_mp_h.lower()), boost::lexical_cast<max_fast_int>(m_mp_h.upper()));
 				// Build decoding tuple.
-				cm_build_decoding_tuple(m_dt,m_fast_gr);
+				cm_build_decoding_tuple(m_dt, m_fast_gr);
 				// Establish if subtraction is requested or not.
 				static const bool sub_requested = op_has_sub<OpTuple>::value;
 				// Resize codes vectors.
 				typedef std::vector<max_fast_int>::size_type size_type;
-				const size_type csize1 = boost::numeric_cast<size_type>(derived_const_cast->m_terms1.size());
-				const size_type csize2 = boost::numeric_cast<size_type>(derived_const_cast->m_terms2.size());
+				const size_type csize1 = boost::numeric_cast<size_type>(derived_const_cast->terms1.size());
+				const size_type csize2 = boost::numeric_cast<size_type>(derived_const_cast->terms2.size());
 				m_ckeys1.resize(csize1);
 				m_ckeys2a.resize(csize2);
 				if (sub_requested) 
@@ -608,13 +611,13 @@ struct base_coded_functor
 				max_fast_int code_a = 0, code_b = 0;
 				for (size_type i = 0; i < csize1; ++i) 
 				{
-					cm_code<OpTuple>(m_fast_ct, *derived_const_cast->m_terms1[i], m_vh,code_a, code_b);
+					cm_code<OpTuple>(m_fast_ct, *derived_const_cast->terms1[i], m_vh,code_a, code_b);
 					m_ckeys1[i] = code_a;
 				}
 
 				for (size_type i = 0; i < csize2; ++i) 
 				{
-					cm_code<OpTuple>(m_fast_ct, *derived_const_cast->m_terms2[i], m_vh,code_a, code_b);
+					cm_code<OpTuple>(m_fast_ct, *derived_const_cast->terms2[i], m_vh,code_a, code_b);
 					m_ckeys2a[i] = code_a;
 					if (sub_requested) 
 					{
@@ -635,7 +638,7 @@ struct base_coded_functor
 			template <class FinalCf>
 			void decode(const FinalCf &final_cf, const max_fast_int &code, typename Series1::TermType &term) const
 			{
-				cm_decode(final_cf, m_dt, m_fast_gr, term, m_vh, code, m_fast_h.lower(), derived_const_cast->m_argsTuple);
+				cm_decode(final_cf, m_dt, m_fast_gr, term, m_vh, code, m_fast_h.lower(), derived_const_cast->argsTuple);
 			}
 
 
