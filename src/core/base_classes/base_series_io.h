@@ -37,8 +37,8 @@
 #include "base_series_mp.h"
 #include "base_series_tag.h"
 
-#define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
+#define DCC static_cast<Derived const *>(this)
+#define DC static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -65,7 +65,8 @@ namespace piranha
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::printTermsPlain(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
 		const const_iterator itf = end();
-		const_iterator it = begin();
+		const_iterator       it  = begin();
+
 		while (it != itf) 
         {
 			it->printPlain(stream, argsTuple);
@@ -126,7 +127,7 @@ namespace piranha
 		} else 
         {
 			try {
-				const std::vector<typename Derived::TermType const *> s(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
+				const std::vector<typename Derived::TermType const *> s(DCC->template get_sorted_series<Derived>(argsTuple));
 				genericPrintTermsPretty(stream, s.begin(), s.end(), argsTuple);
 
 			} catch (const value_error &)
@@ -170,7 +171,7 @@ namespace piranha
 		} else 
         {
 			try {
-				const std::vector<typename Derived::TermType const *> s(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
+				const std::vector<typename Derived::TermType const *> s(DCC->template get_sorted_series<Derived>(argsTuple));
 				genericPrintTermsTEX(stream, s.begin(), s.end(), argsTuple);
 
 			} catch (const value_error &)
@@ -186,7 +187,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseConstructFromPsym(const Psym &p, const int n, const ArgsTuple &argsTuple)
 	{
-		PIRANHA_ASSERT(derived_cast->empty());
+		PIRANHA_ASSERT(DC->empty());
 		insert(TermType(typename TermType::CfType(p, n, argsTuple), typename TermType::KeyType(p, n, argsTuple)), argsTuple);
 	}
 
@@ -258,6 +259,6 @@ namespace piranha
 }
 
 #undef derived_const_cast
-#undef derived_cast
+#undef DC
 
 #endif
