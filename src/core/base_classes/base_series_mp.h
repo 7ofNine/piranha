@@ -40,17 +40,17 @@ namespace piranha
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const RequestedKey &key, const ArgsTuple &argsTuple)
 		{
-			typedef typename Series::TermType::CfType cf_series_type;
-			cf_series_type cf_series;
-			SeriesFromKeyImpl<RequestedKey,typename cf_series_type::TermType::KeyType>::run(cf_series, key, argsTuple);
+			typedef typename Series::TermType::CfType CfSeriesType;
+			CfSeriesType cfSeries;
+			SeriesFromKeyImpl<RequestedKey, typename CfSeriesType::TermType::KeyType>::run(cfSeries, key, argsTuple);
 
-			retval.insert(typename Series::TermType(cf_series, typename Series::TermType::KeyType()), argsTuple);
+			retval.insert(typename Series::TermType(cfSeries, typename Series::TermType::KeyType()), argsTuple);
 		}
 	};
 
 
 	template <class Key>
-	struct SeriesFromKeyImpl<Key,Key>
+	struct SeriesFromKeyImpl<Key, Key>
 	{
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const Key &key, const ArgsTuple &argsTuple)
@@ -66,11 +66,11 @@ namespace piranha
 		template <class Series, class ArgsTuple>
 		static void run(Series &retval, const RequestedCf &cf, const ArgsTuple &argsTuple)
 		{
-			typedef typename Series::TermType::CfType cf_series_type;
-			cf_series_type cf_series;
-			SeriesFromCfImpl<RequestedCf, typename cf_series_type::TermType::CfType>::run(cf_series, cf,argsTuple);
+			typedef typename Series::TermType::CfType CfSeriesType;
+			CfSeriesType cfSeries;
+			SeriesFromCfImpl<RequestedCf, typename CfSeriesType::TermType::CfType>::run(cfSeries, cf, argsTuple);
 
-			retval.insert(typename Series::TermType(cf_series, typename Series::TermType::KeyType()), argsTuple);
+			retval.insert(typename Series::TermType(cfSeries, typename Series::TermType::KeyType()), argsTuple);
 		}
 	};
 
@@ -91,20 +91,22 @@ namespace piranha
 	class SeriesFlattener
 	{
 		public:
-			PIRANHA_STATIC_CHECK(N > 0,"");
+			PIRANHA_STATIC_CHECK(N > 0, "");
+
 			template <class CfSeries, class Term, class ArgsTuple>
-			static void run(CfSeries &cf_series, Term &term, std::vector<Term> &out, const ArgsTuple &argsTuple)
+			static void run(CfSeries &cfSeries, Term &term, std::vector<Term> &out, const ArgsTuple &argsTuple)
 			{
 				// For each coefficient series (which is residing inside the insertion term), we create a copy of it,
 				// then we insert one by one its original terms and, step by step, we go deeper into the recursion.
-				PIRANHA_ASSERT(!cf_series.empty());
-				const CfSeries tmp(cf_series);
+				PIRANHA_ASSERT(!cfSeries.empty());
+
+				const CfSeries tmp(cfSeries);
 
 				for (typename CfSeries::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
                 {
-					cf_series.clearTerms();
-					cf_series.insert(*it, argsTuple);
-					SeriesFlattener<N - 1>::run(cf_series.begin()->cf, term, out, argsTuple);
+					cfSeries.clearTerms();
+					cfSeries.insert(*it, argsTuple);
+					SeriesFlattener<N - 1>::run(cfSeries.begin()->cf, term, out, argsTuple);
 				}
 			}
 	};
@@ -142,7 +144,7 @@ namespace piranha
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
 		{
-			return series.template mergeTerms<true>(other, argsTuple);
+			return series.template mergeTerms<true>(other, argsTuple); // with sign
 		}
 	};
 
@@ -153,7 +155,7 @@ namespace piranha
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
 		{
-			return series.template mergeWithNumber<false>(x, argsTuple);
+			return series.template mergeWithNumber<false>(x, argsTuple); // without sign
 		}
 	};
 
@@ -164,7 +166,7 @@ namespace piranha
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
 		{
-			return series.template mergeTerms<false>(other, argsTuple);
+			return series.template mergeTerms<false>(other, argsTuple); // without sign
 		}
 	};
 
