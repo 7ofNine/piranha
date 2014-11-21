@@ -38,17 +38,21 @@ namespace piranha
 	/// Transform term.
 	/**
 	 * Non-specialized version, it will create a copy of the converted term.
+     *
+     * converts from type Term2 to type Term1 by constructing a new term with possible change for the arguments
+     * it the types are the same  a copy is created (see spcialization below)
 	 */
 	template <class Term2, class Term1>
-	class term_converter
+	class TermConverter
 	{
 		public:
 			/// Constructor.
 			template <class ArgsTuple>
-			explicit term_converter(const Term2 &c, const ArgsTuple &a): result(c,a) {}
-			/// Copy of the converted term.
+			explicit TermConverter(const Term2 &c, const ArgsTuple &a): result(c, a) {}
+			/// "Copy" of the converted term in terms of type Term1
 			const Term1 result;
 	};
+
 
 	/// Specialized term converter.
 	/**
@@ -56,15 +60,16 @@ namespace piranha
 	 * to the convertee is stored inside the class.
 	 */
 	template <class Term2>
-	class term_converter<Term2, Term2>
+	class TermConverter<Term2, Term2>
 	{
 		public:
 			/// Constructor.
 			template <class ArgsTuple>
-			explicit term_converter(const Term2 &c, const ArgsTuple &): result(c) {}
+			explicit TermConverter(const Term2 &c, const ArgsTuple &): result(c) {}
 			/// Reference to the converted term.
 			const Term2 &result;
 	};
+
 
 	// TODO: update doc here.
 	/// High-level insertion function.
@@ -79,48 +84,51 @@ namespace piranha
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool CanonicalCheck, bool Sign, class Term2, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term_, const ArgsTuple &argsTuple)
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term2, const ArgsTuple &argsTuple)
 	{
-		term_converter<Term2, TermType> converted_term(term_, argsTuple);
-		// Make sure the appropriate routines for the management of arguments have been called.
-		PIRANHA_ASSERT(converted_term.result.cf.is_insertable(argsTuple) && converted_term.result.key.isInsertable(argsTuple));
+        //convert the inserted term to the type of the term (TermType) of the series it is being inserted to
+		TermConverter<Term2, TermType> convertedTerm(term2, argsTuple);
 
-		TermType *new_term(0);
-		if (unlikely(converted_term.result.cf.needs_padding(argsTuple) ||
-			converted_term.result.key.needsPadding(argsTuple))) 
+		// Make sure the appropriate routines for the management of arguments have been called.
+		PIRANHA_ASSERT(convertedTerm.result.cf.is_insertable(argsTuple) && convertedTerm.result.key.isInsertable(argsTuple));
+
+		TermType *newTerm(0); //NULL pointer
+		if (unlikely(convertedTerm.result.cf.needs_padding(argsTuple) || convertedTerm.result.key.needsPadding(argsTuple))) 
 		{
-			new_term = TermType::allocator.allocate(1);
-			TermType::allocator.construct(new_term, converted_term.result);
-			new_term->cf.pad_right(argsTuple);
-			new_term->key.padRight(argsTuple);
+			newTerm = TermType::allocator.allocate(1);
+			TermType::allocator.construct(newTerm, convertedTerm.result); /// Shouldn't we just overload new???
+			newTerm->cf.pad_right(argsTuple);
+			newTerm->key.padRight(argsTuple);
 		}
 
 		if (CanonicalCheck) 
 		{
-			if (!converted_term.result.is_canonical(argsTuple)) 
+			if (!convertedTerm.result.is_canonical(argsTuple)) 
 			{
-				if (new_term == 0) 
+				if (newTerm == 0) 
 				{
-					new_term = TermType::allocator.allocate(1);
-					TermType::allocator.construct(new_term, converted_term.result);
+					newTerm = TermType::allocator.allocate(1);
+					TermType::allocator.construct(newTerm, convertedTerm.result);
 				}
-				new_term->canonicalise(argsTuple);
+				newTerm->canonicalise(argsTuple);
 			}
 		}
-		const TermType *insert_term(0);
-		if (new_term) 
+
+		const TermType *insertTerm(0);
+		if (newTerm) 
 		{
-			insert_term = new_term;
+			insertTerm = newTerm;
+
 		} else 
 		{
-			insert_term = &converted_term.result;
+			insertTerm = &convertedTerm.result;
 		}
-		llInsert<Sign>(*insert_term, argsTuple);
+		llInsert<Sign>(*insertTerm, argsTuple);
 		
-		if (new_term) 
+		if (newTerm) 
 		{
-			TermType::allocator.destroy(new_term);
-			TermType::allocator.deallocate(new_term, 1);
+			TermType::allocator.destroy(newTerm);   // should we use a helper for RAII?
+			TermType::allocator.deallocate(newTerm, 1);
 		}
 	}
 
@@ -135,24 +143,24 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Iterator, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::insertRange(const Iterator &begin,
-		const Iterator &end, const ArgsTuple &argsTuple)
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::insertRange(const Iterator &begin, const Iterator &end, const ArgsTuple &argsTuple)
 	{
 		for (Iterator it = begin; it != end; ++it) 
 		{
-			insert(*it,argsTuple);
+			insert(*it, argsTuple);
 		}
 	}
 
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::const_iterator
-	BaseSeries<__PIRANHA_BASE_SERIES_TP>::findTerm(const TermType &t) const
+	BaseSeries<__PIRANHA_BASE_SERIES_TP>::findTerm(const TermType &term) const
 	{
-		return container.find(t);
+		return container.find(term);
 	}
 
 
+    //the low level insert routine. All the adjustments are out of the way. See the PIRANHA_ASSERT
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::llInsert(const TermType &term, const ArgsTuple &argsTuple)
@@ -164,13 +172,14 @@ namespace piranha
 			return;
 		}
 		PIRANHA_ASSERT(term.cf.is_insertable(argsTuple) && term.key.isInsertable(argsTuple) &&
-			!term.cf.needs_padding(argsTuple) && !term.key.needsPadding(argsTuple) && term.is_canonical(argsTuple));
+			          !term.cf.needs_padding(argsTuple) && !term.key.needsPadding(argsTuple) && term.is_canonical(argsTuple));
 
 		const_iterator it(findTerm(term));
 		if (it == end()) 
 		{
 			// The term is NOT a duplicate, insert in the set.
 			termInsertNew<Sign>(term, argsTuple);
+
 		} else 
 		{
 			// The term is in the set, hence an existing term will be modified.
@@ -178,10 +187,12 @@ namespace piranha
 			if (Sign) 
 			{
 				it->cf.add(term.cf, argsTuple);
+
 			} else 
 			{
 				it->cf.subtract(term.cf, argsTuple);
 			}
+
 			// Check if the new coefficient can be ignored.
 			if (it->cf.is_ignorable(argsTuple)) 
 			{
@@ -196,15 +207,19 @@ namespace piranha
 	template <bool Sign, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::termInsertNew(const TermType &term, const ArgsTuple &argsTuple)
 	{
+        //insert the term into the container
 		std::pair<const_iterator, bool> res(container.insert(term));
-		PIRANHA_ASSERT(res.second);
+
+		PIRANHA_ASSERT(res.second); // check that insert worked
+
+        //if sign invert the coefficient
 		if (!Sign) 
 		{
 			res.first->cf.invert_sign(argsTuple);
 		}
 	}
 
-
+    //remove term given by the iterator
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::eraseTerm(const const_iterator &it)
 	{
@@ -224,7 +239,7 @@ namespace piranha
 	}
 
 
-	/// Apply an arguments layout to all terms and insert them into retval.
+	/// Apply an arguments layout to all terms and insert them into retval. What is a layout? still have to find out
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Layout, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::applyLayoutToTerms(const Layout &l, Derived &retval, const ArgsTuple &argsTuple) const
@@ -235,39 +250,40 @@ namespace piranha
 			TermType term(*it);
 			term.cf.apply_layout(l, argsTuple);
 			term.key.applyLayout(l, argsTuple);
+
 			retval.insert(term, argsTuple);
 		}
 	}
 
-
+    //what are tirm flags?? and how are they defined?
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class TrimFlags>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trimTestTerms(TrimFlags &tf) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trimTestTerms(TrimFlags &trimFlags) const
 	{
 		const const_iterator itf = end();
 		for (const_iterator it = begin(); it != itf; ++it) 
 		{
-			it->cf.trim_test(tf);
-			it->key.trimTest(tf);
+			it->cf.trim_test(trimFlags);
+			it->key.trimTest(trimFlags);
 		}
 	}
 
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class TrimFlags, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trimTerms(const TrimFlags &tf, Derived &retval, const ArgsTuple &argsTuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trimTerms(const TrimFlags &trimFlags, Derived &retval, const ArgsTuple &argsTuple) const
 	{
 		const const_iterator itf = end();
 		for (const_iterator it = begin(); it != itf; ++it) 
 		{
-			retval.insert(TermType(typename TermType::CfType(it->cf.trim(tf, argsTuple)), typename TermType::KeyType(it->key.trim(tf, argsTuple))), argsTuple);
+			retval.insert(TermType(typename TermType::CfType(it->cf.trim(trimFlags, argsTuple)), typename TermType::KeyType(it->key.trim(trimFlags, argsTuple))), argsTuple);
 		}
 	}
 
-
+    //substitution. What in detail?
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
-	inline RetSeries BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSub(const PosTuple &pos_tuple, SubCaches &sub_caches, const ArgsTuple &argsTuple) const
+	inline RetSeries BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSub(const PosTuple &posTuple, SubCaches &subCaches, const ArgsTuple &argsTuple) const
 	{
 		PIRANHA_STATIC_CHECK((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value), "Positional and arguments' tuples' lengths do not match.");
 
@@ -275,11 +291,11 @@ namespace piranha
 		const const_iterator itf = end();
 		for (const_iterator it = begin(); it != itf; ++it) 
 		{
-			RetSeries tmp = SubFunctor::template run<RetSeries>(it->cf, pos_tuple, sub_caches,argsTuple);
+			RetSeries tmp = SubFunctor::template run<RetSeries>(it->cf, posTuple, subCaches, argsTuple);
 			// NOTICE: series multadd here?
-			tmp.baseMultBy(SubFunctor::template run<RetSeries>(it->key, pos_tuple, sub_caches, argsTuple), argsTuple);
+			tmp.baseMultBy(SubFunctor::template run<RetSeries>(it->key, posTuple, subCaches, argsTuple), argsTuple);
 
-			retval.baseAdd(tmp,argsTuple);
+			retval.baseAdd(tmp, argsTuple);
 		}
 
 		return retval;
@@ -318,7 +334,7 @@ namespace piranha
 		{
 			if (!isSingleCf()) 
 			{
-				PIRANHA_THROW(value_error,"cannot split up to the specified level: series is non-degenerate");
+				PIRANHA_THROW(value_error, "cannot split up to the specified level: series is non-degenerate");
 			}
 
 			begin()->cf.split(retval, n - 1, argsTuple);
@@ -339,6 +355,7 @@ namespace piranha
 			tmp.reserve(2);
 			tmp.push_back(tmp_cf);
 			tmp.push_back(tmp_key);
+
 			retval.push_back(tmp);
 		}
 	}
