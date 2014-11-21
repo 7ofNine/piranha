@@ -47,62 +47,67 @@
 namespace piranha
 {
 	// Do not use this to merge with self, assertion will fail.
+    //merge terms of two series. wa precisely does that mean. make different types of terms from different series homogenous
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class Derived2, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::mergeTerms(const Derived2 &s2, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::mergeTerms(const Derived2 &series2, const ArgsTuple &argsTuple)
 	{
 		typedef typename Derived2::const_iterator const_iterator2;
-		PIRANHA_ASSERT((void *)boost::addressof(*derived_cast) != (void *)boost::addressof(s2));
-		const const_iterator2 it_f = s2.end();
-		for (const_iterator2 it = s2.begin(); it != it_f; ++it) 
+
+		PIRANHA_ASSERT((void *)boost::addressof(*derived_cast) != (void *)boost::addressof(series2)); // check on not insert into itself
+		
+        const const_iterator2 it_f = series2.end();
+		for (const_iterator2 it = series2.begin(); it != it_f; ++it) 
 		{
 			// No need to check, we are merging from another series.
-			insert<false, Sign>(*it, argsTuple);
+			insert<false, Sign>(*it, argsTuple); //wihtout canonical check
 		}
+
 		return *derived_cast;
 	}
 
 
 	template <int N>
-	struct mult_div_coefficients_helper
+	struct MultDivCoefficientsHelper
 	{
-		PIRANHA_STATIC_CHECK(N == 0, "N must be either 0 or 1.");
+		PIRANHA_STATIC_CHECK(N == 0, "N must be either 0 or 1."); // this checks on 0 , 1 is differetn specialisation. see below. Why aN if we only support 0 and 1?
+
 		template <class Cf, class T, class ArgsTuple>
 		static void run(Cf &cf, const T &x, const ArgsTuple &argsTuple) 
 		{
-			cf.mult_by(x,argsTuple);
+			cf.mult_by(x, argsTuple);
 		}
 	};
 
 
 	template <>
-	struct mult_div_coefficients_helper<1>
+	struct MultDivCoefficientsHelper<1>
 	{
 		template <class Cf, class T, class ArgsTuple>
 		static void run(Cf &cf, const T &x, const ArgsTuple &argsTuple)
         {
-			cf.divideBy(x,argsTuple);
+			cf.divideBy(x, argsTuple);
 		}
 	};
 
 
 	// Multiply (N = 0) or divide (N = 1) all the coefficients of the series by a generic quantity x.
+    // handle multiplication adn division in one implementation
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <int N, class T, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::multDivCoefficientsBy(const T &x,
-			const ArgsTuple &argsTuple)
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::multDivCoefficientsBy(const T &x, const ArgsTuple &argsTuple)
 	{
 		const const_iterator itf = end();
-		bool needs_rebuilding = false;
+		bool needsRebuilding = false;
 		const_iterator it = begin();
 		for (; it != itf; ++it) 
 		{
-			mult_div_coefficients_helper<N>::run(it->cf, x, argsTuple);
+			MultDivCoefficientsHelper<N>::run(it->cf, x, argsTuple);
 			// If a term becomes ignorable once its coefficient has been multiplied/divided,
 			// set the needs_rebuilding flag to true, increase the iterator and break out.
 			if (it->cf.is_ignorable(argsTuple)) 
 			{
-				needs_rebuilding = true;
+				needsRebuilding = true;
 				++it;
 				break;
 			}
@@ -112,20 +117,20 @@ namespace piranha
 		// terms without checking for ignorability.
 		for (; it != itf; ++it) 
 		{
-			mult_div_coefficients_helper<N>::run(it->cf, x, argsTuple);
+			MultDivCoefficientsHelper<N>::run(it->cf, x, argsTuple);
 		}
 
 		// Rebuild if needed.
-		if (needs_rebuilding) 
+		if (needsRebuilding) 
 		{
 			// TODO: probably insert range here.
-			Derived new_series;
+			Derived newSeries;
 			for (it = begin(); it != itf; ++it) 
 			{
-				new_series.insert(*it, argsTuple);
+				newSeries.insert(*it, argsTuple);
 			}
 
-			baseSwap(new_series);
+			baseSwap(newSeries);
 		}
 	}
 
@@ -165,13 +170,14 @@ namespace piranha
 	// operators against scalar types different from complex<>::value_type - whereas this
 	// comparison is instead available in both the mp classes and the numerical coefficient classes.
 	template <class T, class Enable = void>
-	struct multdiv_coefficients_helper
+	struct MultDivCoefficientsChecker
 	{
-		static bool check_zero(const T &x)
+		static bool checkZero(const T &x)
 		{
 			return x == 0;
 		}
-		static bool check_non_unitary(const T &x)
+
+		static bool checkNonUnitary(const T &x)
 		{
 			return x != 1;
 		}
@@ -183,16 +189,16 @@ namespace piranha
 	// but in case T is a series, extraction of real and imaginary part would be
 	// quite a bit more expensive. So this also serves as an optimisation.
 	template <class T>
-	struct multdiv_coefficients_helper<T,typename boost::enable_if_c<boost::is_complex<T>::value && (
+	struct MultDivCoefficientsChecker<T,typename boost::enable_if_c<boost::is_complex<T>::value && (
 		boost::is_integral<typename T::value_type>::value ||
 		boost::is_floating_point<typename T::value_type>::value)>::type>
 	{
-		static bool check_zero(const T &c)
+		static bool checkZero(const T &c)
 		{
 			return (c.real() == 0 && c.imag() == 0);
 		}
 
-		static bool check_non_unitary(const T &c)
+		static bool checkNonUnitary(const T &c)
 		{
 			return (c.real() != 1 || c.imag() != 0);
 		}
@@ -204,13 +210,15 @@ namespace piranha
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::multiplyCoefficientsBy(const Number &x,
 		const ArgsTuple &argsTuple)
 	{
-		if (multdiv_coefficients_helper<Number>::check_zero(x)) 
+		if (MultDivCoefficientsChecker<Number>::checkZero(x)) 
 		{
 			clearTerms();
-		} else if (multdiv_coefficients_helper<Number>::check_non_unitary(x)) 
+
+		} else if (MultDivCoefficientsChecker<Number>::checkNonUnitary(x)) 
 		{
 			multDivCoefficientsBy<0>(x,argsTuple);
 		}
+
 		return *derived_cast;
 	}
 
@@ -228,14 +236,15 @@ namespace piranha
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::divideCoefficientsBy(const Number &x,
 		const ArgsTuple &argsTuple)
 	{
-		if (multdiv_coefficients_helper<Number>::check_zero(x)) 
+		if (MultDivCoefficientsChecker<Number>::checkZero(x)) 
 		{
-			PIRANHA_THROW(zero_division_error,"cannot divide by zero");
+			PIRANHA_THROW(zero_division_error, "cannot divide by zero");
 
-		} else if (multdiv_coefficients_helper<Number>::check_non_unitary(x)) 
+		} else if (MultDivCoefficientsChecker<Number>::checkNonUnitary(x)) 
 		{
 			multDivCoefficientsBy<1>(x, argsTuple);
 		}
+
 		return *derived_cast;
 	}
 
@@ -244,31 +253,31 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseDivideBy(const T &x, const ArgsTuple &argsTuple)
 	{
-		PIRANHA_STATIC_CHECK((!boost::is_base_of<BaseSeriesTag,T>::value),"Cannot divide by another series.");
+		PIRANHA_STATIC_CHECK((!boost::is_base_of<BaseSeriesTag,T>::value), "Cannot divide by another series.");
 
 		return divideCoefficientsBy(x, argsTuple);
 	}
 
 
+    // partial derivative
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Series, class PosTuple, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(const Derived &in, Series &out, const PosTuple &pos_tuple, const ArgsTuple &argsTuple)
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(const Derived &in, Series &out, const PosTuple &posTuple, const ArgsTuple &argsTuple)
 	{
 		PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 			                 "Size mismatch between args tuple and pos tuple in partial derivative.");
+
 		PIRANHA_ASSERT(out.empty());
 
-		TermType tmp_term1;
-        TermType tmp_term2;
 		const const_iterator itf = in.end();
 
 		for (const_iterator it = in.begin(); it != itf; ++it) 
 		{
-			Series tmp1(it->cf.template partial<Series>(pos_tuple, argsTuple));
+			Series tmp1(it->cf.template partial<Series>(posTuple, argsTuple));
 
 			tmp1.baseMultBy(Series::baseSeriesFromKey(it->key, argsTuple), argsTuple);
 
-			Series tmp2(it->key.template partial<Series>(pos_tuple, argsTuple));
+			Series tmp2(it->key.template partial<Series>(posTuple, argsTuple));
 
 			tmp2.baseMultBy(Series::baseSeriesFromCf(it->cf, argsTuple), argsTuple);
 
@@ -278,24 +287,24 @@ namespace piranha
 	}
 
 
-	/// Partial derivative.
+	/// n-th Partial derivative.
 	/**
 	 * Calls partial() on all terms of the series, and inserts the resulting terms into return value.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(int n, const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(int n, const PosTuple &posTuple, const ArgsTuple &argsTuple) const
 	{
 		if (n < 0) 
 		{
-			PIRANHA_THROW(value_error,"for an n-th partial derivative, n must be non-negative");
+			PIRANHA_THROW(value_error, "for an n-th partial derivative, n must be non-negative");
 		}
 
 		Derived retval(*derived_const_cast);
 		for (; n > 0; --n) 
 		{
 			Derived tmp;
-			basePartial(retval, tmp, pos_tuple, argsTuple);
+			basePartial(retval, tmp, posTuple, argsTuple);
 			tmp.baseSwap(retval);
 		}
 
@@ -305,9 +314,9 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(const PosTuple &posTuple, const ArgsTuple &argsTuple) const
 	{
-		return basePartial(1, pos_tuple, argsTuple);
+		return basePartial(1, posTuple, argsTuple);
 	}
 
 
@@ -342,6 +351,7 @@ namespace piranha
 			retval.insert(TermType(begin()->cf.pow(y, argsTuple), typename TermType::KeyType()), argsTuple);
 			return true;
 		}
+
 		if (length() == 1) 
 		{
 			// If length is 1, let's try to compute separately pow of coefficient and key
@@ -357,6 +367,7 @@ namespace piranha
 
 		return false;
 	}
+
 
 	/// Real exponentiation.
 	// Internally it will check if y is a real or an integer number.
@@ -411,8 +422,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePow(const mp_rational &q,
-		const ArgsTuple &argsTuple) const
+	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePow(const mp_rational &q, const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
 		if (!commonPowHandler(q, retval, argsTuple))
@@ -425,6 +435,7 @@ namespace piranha
 				{
 					Derived tmp(derived_const_cast->naturalPower((std::size_t)n, argsTuple));
 					retval.baseSwap(tmp);
+
 				} else 
 				{
 					if (n == -1) 
@@ -432,10 +443,13 @@ namespace piranha
 						try {
 							Derived tmp(derived_const_cast->baseInvert(argsTuple));
 							retval.baseSwap(tmp);
-						} catch (const not_implemented_error &) {
+
+						} catch (const not_implemented_error &)
+                        {
 							Derived tmp(derived_const_cast->negativeIntegerPower(n, argsTuple));
 							retval.baseSwap(tmp);
 						}
+
 					} else 
 					{
 						Derived tmp(derived_const_cast->negativeIntegerPower(n, argsTuple));
@@ -456,7 +470,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::realPower(const double, const ArgsTuple &) const
 	{
-		PIRANHA_THROW(not_implemented_error,"real power for this series type has not been implemented");
+		PIRANHA_THROW(not_implemented_error, "real power for this series type has not been implemented");
 	}
 
 
@@ -466,7 +480,8 @@ namespace piranha
 	{
 		(void)n;
 		PIRANHA_ASSERT(n < 0);
-		PIRANHA_THROW(not_implemented_error,"negative integer power for this series type has not been implemented");
+
+		PIRANHA_THROW(not_implemented_error, "negative integer power for this series type has not been implemented");
 	}
 
 
@@ -474,7 +489,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::rationalPower(const mp_rational &, const ArgsTuple &) const
 	{
-		PIRANHA_THROW(not_implemented_error,"rational power for this series type has not been implemented");
+		PIRANHA_THROW(not_implemented_error, "rational power for this series type has not been implemented");
 	}
 
 
@@ -491,22 +506,26 @@ namespace piranha
 		case 0: {
 			retval.baseAdd(1, argsTuple);
 			break;
-		}
+		    }
+
 		case 1: {
 			retval = *derived_const_cast;
 			break;
-		}
+		    }
+
 		case 2: {
 			retval = *derived_const_cast;
 			retval.baseMultBy(*derived_const_cast, argsTuple);
 			break;
-		}
+		    }
+
 		case 3: {
 			retval = *derived_const_cast;
 			retval.baseMultBy(*derived_const_cast, argsTuple);
 			retval.baseMultBy(*derived_const_cast, argsTuple);
 			break;
-		}
+		    }
+
 		case 4: {
 			retval = *derived_const_cast;
 			retval.baseMultBy(*derived_const_cast, argsTuple);
@@ -514,28 +533,33 @@ namespace piranha
 			retval.baseMultBy(*derived_const_cast, argsTuple);
 			break;
 		}
+
 		default: {
 			retval.baseAdd(1, argsTuple);
 			// Use scoping here to have tmp destroyed when it is not needed anymore.
 			{
-			Derived tmp(*derived_const_cast);
-			std::size_t i = n;
-			while (i) {
-				if (i & 1) {
-					retval.baseMultBy(tmp, argsTuple);
-					--i;
-				}
-				i /= 2;
-				if (i != 0) {
-					tmp.baseMultBy(tmp, argsTuple);
-				}
-			}
-			}
-		}
-		}
+			    Derived tmp(*derived_const_cast);
+			    std::size_t i = n;
+			    while (i)
+                {
+				    if (i & 1) 
+                    {
+					    retval.baseMultBy(tmp, argsTuple);
+					    --i;
+				    }
 
-		return retval;
+				    i /= 2;
+				    if (i != 0) 
+                    {
+					    tmp.baseMultBy(tmp, argsTuple);
+				    }
+			    }
+			}
+		}
 	}
+
+	return retval;
+    }
 
 
 	/// Nth root.
@@ -552,7 +576,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseInvert(const ArgsTuple &) const
 	{
-		PIRANHA_THROW(not_implemented_error,"inversion for this series type has not been implemented");
+		PIRANHA_THROW(not_implemented_error, "inversion for this series type has not been implemented");
 	}
 }
 
