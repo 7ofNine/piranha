@@ -43,6 +43,7 @@ namespace piranha
 		return (length() == 1 && begin()->key.isUnity());
 	}
 
+
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline double BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseNorm(const ArgsTuple &argsTuple) const
@@ -58,10 +59,11 @@ namespace piranha
 		return retval;
 	}
 
+
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::EvalType
-		BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseEval(const double &t, const ArgsTuple &argsTuple) const
+		BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseEval(const double t, const ArgsTuple &argsTuple) const
 	{
 		const const_iterator itf = end();
 		EvalType retval(0);
@@ -151,7 +153,7 @@ namespace piranha
 
 	// Helper functor to check generically if a number, scalar or complex, is zero.
 	template <class T>
-	struct numerical_comparison_zero_check
+	struct NumericalComparisonZeroCheck
 	{
 		bool operator()(const T &value) const
 		{
@@ -161,7 +163,7 @@ namespace piranha
 
 
 	template <class T>
-	struct numerical_comparison_zero_check<std::complex<T> >
+	struct NumericalComparisonZeroCheck<std::complex<T> >
 	{
 		bool operator()(const std::complex<T> &value) const
 		{
@@ -187,7 +189,7 @@ namespace piranha
 	template <class Number>
 	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericNumericalComparison(const Number &x) const
 	{
-		if (numerical_comparison_zero_check<Number>()(x))
+		if (NumericalComparisonZeroCheck<Number>()(x))
         {
 			return empty();
 		}

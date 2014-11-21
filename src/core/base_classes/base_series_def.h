@@ -243,7 +243,7 @@ namespace piranha
 			double baseNorm(const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			EvalType baseEval(const double &, const ArgsTuple &) const;
+			EvalType baseEval(const double, const ArgsTuple &) const;
 
 			template <class T, class ArgsTuple>
 			Derived &baseAdd(const T &, const ArgsTuple &);
