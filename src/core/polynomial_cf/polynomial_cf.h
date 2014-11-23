@@ -61,7 +61,7 @@ namespace piranha
 				public base_power_series<0, 1, POLYNOMIAL_CF_DEGREE, POLYNOMIAL_CF>,
 				public cf_power_series< POLYNOMIAL_CF_DEGREE, POLYNOMIAL_CF>,
 				public series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator>,
-				public base_series_special_functions< POLYNOMIAL_CF>,
+				public BaseSeriesSpecialFunctions< POLYNOMIAL_CF>,
 				public cf_series_special_functions< POLYNOMIAL_CF>
 	{
 		public:
@@ -104,7 +104,7 @@ namespace std
 				public piranha::base_power_series<0, 1, COMPLEX_POLYNOMIAL_CF_DEGREE, COMPLEX_POLYNOMIAL_CF>,
 				public piranha::cf_power_series< COMPLEX_POLYNOMIAL_CF_DEGREE, COMPLEX_POLYNOMIAL_CF>,
 				public piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator>,
-				public piranha::base_series_special_functions< COMPLEX_POLYNOMIAL_CF>,
+				public piranha::BaseSeriesSpecialFunctions< COMPLEX_POLYNOMIAL_CF>,
 				public piranha::cf_series_special_functions< COMPLEX_POLYNOMIAL_CF>
 	{
 		public:

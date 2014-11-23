@@ -36,132 +36,141 @@
 namespace piranha
 {
 	template <class Derived>
-	class base_series_special_functions
+	class BaseSeriesSpecialFunctions
 	{
 		//protected:
 		public:
-
+            // hypergeometric
 			template <class ArgsTuple>
-			Derived base_hyperF(const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit, const ArgsTuple &argsTuple) const
+			Derived baseHyperF(const std::vector<mp_rational> &aList, const std::vector<mp_rational> &bList, const int &iterationLimit, const ArgsTuple &argsTuple) const
 			{
 				Derived retval;
-				// If one of the elements in b_list is a non-positive integer, a division by zero will occur.
-				hyperF_b_check(b_list);
+				// If one of the elements in bList is a non-positive integer, a division by zero will occur.
+				hyperFbCheck(bList);
 				// Cache values.
-				const std::size_t a_size = a_list.size(), b_size = b_list.size();
+				const std::size_t aSize = aList.size();
+                const std::size_t bSize = bList.size();
 				// HyperF of a null series will always be equal to 1.
 				if (derived_const_cast->empty()) 
 				{
-					retval.baseAdd(1,argsTuple);
+					retval.baseAdd(1, argsTuple);
 					return retval;
 				}
+
 				// If one of the elements in a_list is zero, hyperF will always be 1.
-				for (std::size_t i = 0; i < a_size; ++i) 
+				for (std::size_t i = 0; i < aSize; ++i) 
 				{
-					if (a_list[i] == 0) 
+					if (aList[i] == 0) 
 					{
-						retval.baseAdd(1,argsTuple);
+						retval.baseAdd(1, argsTuple);
 						return retval;
 					}
 				}
+
 				// Establish series limit, using the following strategy...
-				std::size_t iter_;
+				std::size_t iter;
 				try {
-					// First we try to respect the given iter_limit, if any,
+					// First we try to respect the given iterationLimit, if any,
 					// otherwise we call the truncator to see what it has to say.
-					iter_ = (iter_limit >= 0) ? iter_limit : derived_const_cast->psi_(0,1,argsTuple);
+					iter = (iterationLimit >= 0) ? iterationLimit : derived_const_cast->psi_(0, 1, argsTuple);
+
 				} catch (const value_error &) 
 				{
-					// If the truncator fails to establish a limit, we go to see into a_list and b_list
+					// If the truncator fails to establish a limit, we go to look into aList and bList
 					// whether there are negative integer numbers.
-					mp_rational const *min_int = 0;
-					for (std::size_t i = 0; i < a_size; ++i) 
+					mp_rational const *minInt = 0;
+					for (std::size_t i = 0; i < aSize; ++i) 
 					{
-						if (a_list[i] < 0 && a_list[i].get_den() == 1) 
+						if (aList[i] < 0 && aList[i].get_den() == 1) 
 						{
-							if (!min_int || a_list[i] < *min_int) 
+							if (!minInt || aList[i] < *minInt) 
 							{
-								min_int = &a_list[i];
+								minInt = &aList[i];
 							}
 						}
 					}
 
-					if (!min_int) 
+					if (!minInt) 
 					{
-						PIRANHA_THROW(value_error,"could not establish a value for the series limit in hyperF: "
+						PIRANHA_THROW(value_error, "could not establish a value for the series limit in hyperF: "
 							"no explicit limit was provided, the truncator failed to establish a limit and "
 							"no negative integer numbers were found in a_list");
 					}
-					PIRANHA_ASSERT(*min_int < 0);
-					iter_ = -(((*min_int) - 1).to_int());
+
+					PIRANHA_ASSERT(*minInt < 0);
+
+					iter = -(((*minInt) - 1).to_int());
 				}
 
-				const std::size_t iter = iter_;
+				const std::size_t maxIter = iter;
 				// If no iterations are needed, return an empty series.
-				if (!iter) 
+				if (!maxIter) 
 				{
 					return retval;
 				}
 
-				retval.baseAdd(1,argsTuple);
+				retval.baseAdd(1, argsTuple);
 				Derived tmp;
-				tmp.baseAdd(1,argsTuple);
-				for (std::size_t i = 1; i < iter; ++i) 
+				tmp.baseAdd(1, argsTuple);
+				for (std::size_t i = 1; i < maxIter; ++i) 
 				{
-					for (std::size_t j = 0; j < a_size; ++j) 
+					for (std::size_t j = 0; j < aSize; ++j) 
 					{
-						tmp.baseMultBy(a_list[j] + (int)(i - 1), argsTuple);
+						tmp.baseMultBy(aList[j] + (int)(i - 1), argsTuple);
 					}
 
-					for (std::size_t j = 0; j < b_size; ++j) 
+					for (std::size_t j = 0; j < bSize; ++j) 
 					{
-						tmp.baseDivideBy(b_list[j] + (int)(i - 1), argsTuple);
+						tmp.baseDivideBy(bList[j] + (int)(i - 1), argsTuple);
 					}
 
 					tmp.baseDivideBy(boost::numeric_cast<int>(i), argsTuple);
-					tmp.baseMultBy(*derived_const_cast,argsTuple);
-					retval.baseAdd(tmp,argsTuple);
+					tmp.baseMultBy(*derived_const_cast, argsTuple);
+					retval.baseAdd(tmp, argsTuple);
 				}
 
 				return retval;
 			}
 
-
+            // n-th derivateive of hypergeoemtric series
 			template <class ArgsTuple>
-			Derived base_dhyperF(const int &n, const std::vector<mp_rational> &a_list, const std::vector<mp_rational> &b_list, const int &iter_limit, const ArgsTuple &argsTuple) const
+			Derived baseDHyperF(const int n, const std::vector<mp_rational> &aList, const std::vector<mp_rational> &bList, const int &iterationLimit, const ArgsTuple &argsTuple) const
 			{
 				if (n < 0) 
 				{
-					PIRANHA_THROW(value_error,"please enter a non-negative order of differentiation");
+					PIRANHA_THROW(value_error, "please enter a non-negative order of differentiation");
 				}
 
 				// If one of the elements in b_list is a non-positive integer, a division by zero will occur.
-				hyperF_b_check(b_list);
+				hyperFbCheck(bList);
 				// Compute the outside factor.
 				mp_rational factor(1);
-				const std::size_t a_size = a_list.size(), b_size = b_list.size();
-				for (std::size_t i = 0; i < a_size; ++i) 
+				const std::size_t aSize = aList.size();
+                const std::size_t bSize = bList.size();
+				for (std::size_t i = 0; i < aSize; ++i) 
 				{
-					factor *= a_list[i].r_factorial(n);
+					factor *= aList[i].r_factorial(n);
 				}
 
-				for (std::size_t i = 0; i < b_size; ++i) 
+				for (std::size_t i = 0; i < bSize; ++i) 
 				{
-					factor /= b_list[i].r_factorial(n);
+					factor /= bList[i].r_factorial(n);
 				}
 
 				// Create the new a_list and b_list.
-				std::vector<mp_rational> new_a(a_list), new_b(b_list);
-				for (std::size_t i = 0; i < a_size; ++i) 
+				std::vector<mp_rational> aListNew(aList);
+                std::vector<mp_rational> bListNew(bList);
+				for (std::size_t i = 0; i < aSize; ++i) 
 				{
-					new_a[i] += n;
+					aListNew[i] += n;
 				}
 
-				for (std::size_t i = 0; i < b_size; ++i) {
-					new_b[i] += n;
+				for (std::size_t i = 0; i < bSize; ++i)
+                {
+					bListNew[i] += n;
 				}
 
-				Derived retval(base_hyperF(new_a, new_b, iter_limit, argsTuple));
+				Derived retval(baseHyperF(aListNew, bListNew, iterationLimit, argsTuple));
 				retval.baseMultBy(factor, argsTuple);
 				return retval;
 			}
@@ -169,54 +178,57 @@ namespace piranha
 
 			/// Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
-			Derived base_besselJ(const int &order_, const ArgsTuple &argsTuple) const 
+			Derived baseBesselJ(const int order, const ArgsTuple &argsTuple) const 
 			{
 				Derived retval;
 				// Dispatch besselJ to coefficient if series consists of a single coefficient.
 				if (derived_const_cast->isSingleCf()) 
 				{
-					typedef typename Derived::TermType term_type;
-					retval.insert(term_type(derived_const_cast->begin()->cf.besselJ(order_, argsTuple),
-						typename term_type::KeyType()), argsTuple);
+					typedef typename Derived::TermType termType;
+					retval.insert(termType(derived_const_cast->begin()->cf.besselJ(order, argsTuple), typename termType::KeyType()), argsTuple);
 					return retval;
 				}
 
 				// Take care of negative order.
-				const int order = (order_ >= 0) ? order_ : -order_;
+				const int orderNormalized = (order >= 0) ? order : - order;
 				// Calculate this/2.
 				Derived x_2(*derived_const_cast);
 				x_2.baseDivideBy(2, argsTuple);
+
 				retval = Derived(x_2).baseMultBy(-1, argsTuple).baseMultBy(x_2, argsTuple)
-					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, argsTuple);
-				retval.baseMultBy(x_2.basePow(order, argsTuple), argsTuple);
-				retval.baseDivideBy(mp_integer(order).factorial(), argsTuple);
-				if (order_ < 0) 
+					                 .baseHyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(orderNormalized) + 1), -1, argsTuple);
+				retval.baseMultBy(x_2.basePow(orderNormalized, argsTuple), argsTuple);
+				retval.baseDivideBy(mp_integer(orderNormalized).factorial(), argsTuple);
+
+				if (order < 0) 
 				{
-					retval.baseMultBy(cs_phase(order_), argsTuple);
+					retval.baseMultBy(cs_phase(order), argsTuple); //(-1)^n
 				}
+
 				return retval;
 			}
 
 
 			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
-			Derived base_dbesselJ(const int &order_, const ArgsTuple &argsTuple) const
+			Derived baseDBesselJ(const int order, const ArgsTuple &argsTuple) const
 			{
 				// NOTE: we don't user hyperF here because direct series expansion is faster.
-				const int order = (order_ >= 0) ? order_ : -order_;
+				const int orderNormalized = (order >= 0) ? order : - order;
 				Derived retval;
-				if (!order) 
+
+				if (!orderNormalized) 
 				{
 					// Exploit the fact that for order == 0, derivative is -J_1.
-					retval = base_besselJ(1, argsTuple);
+					retval = baseBesselJ(1, argsTuple);
 					retval.baseMultBy(-1, argsTuple);
 					return retval;
 				}
 
 				// Get the expansion limit from the truncator.
-				std::size_t limit_;
+				std::size_t limit = 0;
 				try {
-					limit_ = derived_const_cast->psi_(order - 1, 2, argsTuple);
+					limit = derived_const_cast->psi_(orderNormalized - 1, 2, argsTuple);
 				} catch (const value_error &ve) 
 				{
 					PIRANHA_THROW(value_error,std::string("series is unsuitable as argument of the derivative of "
@@ -224,43 +236,47 @@ namespace piranha
 						+ ve.what());
 				}
 
-				const std::size_t limit = limit_;
 				if (!limit) 
 				{
 					return retval;
 				}
+
 				// Now we buid the starting point of the power series expansion.
 				retval = *derived_const_cast;
 				retval.baseDivideBy(2, argsTuple);
-				// This will be used later.
+				
+                // This will be used later.
 				Derived square_x2(retval);
 				square_x2.baseMultBy(square_x2, argsTuple);
-				retval = retval.basePow(order - 1, argsTuple);
-				retval.baseDivideBy(mp_integer(order).factorial(), argsTuple);
-				retval.baseMultBy(order, argsTuple);
+				retval = retval.basePow(orderNormalized - 1, argsTuple);
+				retval.baseDivideBy(mp_integer(orderNormalized).factorial(), argsTuple);
+				retval.baseMultBy(orderNormalized, argsTuple);
 				retval.baseDivideBy(2, argsTuple);
-				// Now let's proceed to the bulk of the power series expansion.
+				
+                // Now let's proceed to the bulk of the power series expansion.
 				Derived tmp(retval);
+
 				for (int i = 1; i < (int)limit; ++i) 
 				{
-					tmp.baseMultBy((-1) * (mp_integer(order) + 2 * mp_integer(i)), argsTuple);
-					tmp.baseDivideBy((mp_integer(i) * (mp_integer(i) + order)) * (mp_integer(order) + 2 * (mp_integer(i) - 1)), argsTuple);
+					tmp.baseMultBy((-1) * (mp_integer(orderNormalized) + 2 * mp_integer(i)), argsTuple);
+					tmp.baseDivideBy((mp_integer(i) * (mp_integer(i) + orderNormalized)) * (mp_integer(orderNormalized) + 2 * (mp_integer(i) - 1)), argsTuple);
 					tmp.baseMultBy(square_x2, argsTuple);
 					retval.baseAdd(tmp, argsTuple);
 				}
+
 				return retval;
 			}
 
 
 			/// Bessel function of the first kind of integer order divided by its argument**m.
 			template <class ArgsTuple>
-			Derived base_besselJ_div_m(const int &order_, const int &m, const ArgsTuple &argsTuple) const
+			Derived baseBesselJDivm(const int order, const int m, const ArgsTuple &argsTuple) const
 			{
 				// Take care of negative order.
-				const int order = (order_ >= 0) ? order_ : -order_;
-				if (order < m) 
+				const int orderNormalized = (order >= 0) ? order : - order;
+				if (orderNormalized < m) 
 				{
-					PIRANHA_THROW(zero_division_error,"absolute value of order must not be smaller than m");
+					PIRANHA_THROW(zero_division_error, "absolute value of order must not be smaller than m");
 				}
 
 				Derived retval;
@@ -269,13 +285,13 @@ namespace piranha
 				x_2.baseDivideBy(2, argsTuple);
 
 				retval = Derived(x_2).baseMultBy(-1, argsTuple).baseMultBy(x_2, argsTuple)
-					.base_hyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(order) + 1), -1, argsTuple);
-				retval.baseMultBy(derived_const_cast->basePow(order - m, argsTuple), argsTuple);
-				retval.baseDivideBy(mp_integer(order).factorial() * mp_integer(2).pow(order), argsTuple);
+					                 .baseHyperF(std::vector<mp_rational>(), std::vector<mp_rational>((std::size_t)1, mp_rational(orderNormalized) + 1), -1, argsTuple);
+				retval.baseMultBy(derived_const_cast->basePow(orderNormalized - m, argsTuple), argsTuple);
+				retval.baseDivideBy(mp_integer(orderNormalized).factorial() * mp_integer(2).pow(orderNormalized), argsTuple);
 
-				if (order_ < 0) 
+				if (order < 0) 
 				{
-					retval.baseMultBy(cs_phase(order_), argsTuple);
+					retval.baseMultBy(cs_phase(order), argsTuple);
 				}
 
 				return retval;
@@ -283,12 +299,13 @@ namespace piranha
 
 		private:
 
-			static void hyperF_b_check(const std::vector<mp_rational> &b_list)
+            //check the hypergeometric b-list for negative numbers or 0 . Not good to have it
+			static void hyperFbCheck(const std::vector<mp_rational> &bList)
 			{
-				const std::size_t b_size = b_list.size();
-				for (std::size_t i = 0; i < b_size; ++i) 
+				const std::size_t bSize = bList.size();
+				for (std::size_t i = 0; i < bSize; ++i) 
 				{
-					if (b_list[i] <= 0 && b_list[i].get_den() == 1) 
+					if (bList[i] <= 0 && bList[i].get_den() == 1) 
 					{
 						PIRANHA_THROW(zero_division_error, "b_list in hyperF contains a non-positive integer");
 					}
