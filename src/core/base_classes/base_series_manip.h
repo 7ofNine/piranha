@@ -103,7 +103,7 @@ namespace piranha
 
 		if (CanonicalCheck) 
 		{
-			if (!convertedTerm.result.is_canonical(argsTuple)) 
+			if (!convertedTerm.result.isCanonical(argsTuple)) 
 			{
 				if (newTerm == 0) 
 				{
@@ -172,7 +172,7 @@ namespace piranha
 			return;
 		}
 		PIRANHA_ASSERT(term.cf.is_insertable(argsTuple) && term.key.isInsertable(argsTuple) &&
-			          !term.cf.needs_padding(argsTuple) && !term.key.needsPadding(argsTuple) && term.is_canonical(argsTuple));
+			          !term.cf.needs_padding(argsTuple) && !term.key.needsPadding(argsTuple) && term.isCanonical(argsTuple));
 
 		const_iterator it(findTerm(term));
 		if (it == end()) 

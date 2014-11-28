@@ -482,7 +482,7 @@ struct polynomial_multiplier
 					if (!vc_res[i].is_ignorable(argsTuple))
 					{
 						this->decode(vc_res[i], i, tmp_term);
-						if (!tmp_term.is_canonical(argsTuple))
+						if (!tmp_term.isCanonical(argsTuple))
 						{
 							tmp_term.canonicalise(argsTuple);
 						}
@@ -535,7 +535,7 @@ struct polynomial_multiplier
 				for (c_iterator c_it = cms.begin(); c_it != c_it_f; ++c_it)
 				{
 					this->decode(c_it->first, c_it->second + 2 * this->m_fast_h.lower(), tmp_term);
-					if (!tmp_term.is_canonical(argsTuple)) 
+					if (!tmp_term.isCanonical(argsTuple)) 
 					{
 						tmp_term.canonicalise(argsTuple);
 					}

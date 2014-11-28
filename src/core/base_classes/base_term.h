@@ -122,7 +122,7 @@ namespace piranha
 			/// Alias for key type.
 			typedef Key KeyType;
 			/// Alias for allocator type.
-			typedef typename Allocator::template rebind<Derived>::other allocator_type;
+			typedef typename Allocator::template rebind<Derived>::other AllocatorType;
 			
 
 
@@ -265,7 +265,7 @@ namespace piranha
 			 * Will always return true, re-implement in derived term if necessary.
 			 */
 			template <class ArgsTuple>
-			bool is_canonical(const ArgsTuple &) const 
+			bool isCanonical(const ArgsTuple &) const 
 			{
 				return true;
 			}
@@ -281,7 +281,7 @@ namespace piranha
 			/**
 			 * Useful in STL-like containers.
 			 */
-			struct hasher 
+			struct Hasher 
 			{
 				std::size_t operator()(const BaseTerm &t) const 
 				{
@@ -295,14 +295,14 @@ namespace piranha
 			/// Key.
 			KeyType		        key;
 			/// Rebound allocator for term type.
-			static allocator_type	allocator;
+			static AllocatorType	allocator;
 			/// Separator between coefficient and key in I/O.
 			static const char separator = Separator;
 	};
 
 	// Static members initializations.
 	template <__PIRANHA_BASE_TERM_TP_DECL>
-	typename BaseTerm<__PIRANHA_BASE_TERM_TP>::allocator_type
+	typename BaseTerm<__PIRANHA_BASE_TERM_TP>::AllocatorType
 	BaseTerm<__PIRANHA_BASE_TERM_TP>::allocator;
 
 	template <__PIRANHA_BASE_TERM_TP_DECL>
@@ -319,17 +319,17 @@ namespace piranha
 		return t.key.hash_value();
 	}
 
-#define PIRANHA_TERM_CTORS(term_name) \
-	explicit term_name(): ancestor() {} \
+#define PIRANHA_TERM_CTORS(TermName) \
+	explicit TermName(): ancestor() {} \
 	template <class ArgsTuple> \
-	explicit term_name(const std::string &str, const ArgsTuple &argsTuple): \
+	explicit TermName(const std::string &str, const ArgsTuple &argsTuple): \
 			ancestor(str, argsTuple) {} \
-	explicit term_name(const CfType &c, const KeyType &t): ancestor(c, t) {} \
+	explicit TermName(const CfType &c, const KeyType &t): ancestor(c, t) {} \
 	template <class Cf2, class ArgsTuple> \
-	explicit term_name(const term_name<Cf2, KeyType, Separator, Allocator> &term, const ArgsTuple &a): \
+	explicit TermName(const TermName<Cf2, KeyType, Separator, Allocator> &term, const ArgsTuple &a): \
 			ancestor(term, a) {} \
 	template <class Cf2, class Key2> \
-	explicit term_name(const term_name<Cf2, Key2, Separator, Allocator> &term): \
+	explicit TermName(const TermName<Cf2, Key2, Separator, Allocator> &term): \
 			ancestor(term) {}
 }
 
