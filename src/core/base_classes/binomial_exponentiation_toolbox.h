@@ -43,25 +43,23 @@ namespace piranha
 	 * and reimplements them using binomial expansion.
 	 */
 	template <class Derived>
-	class binomial_exponentiation
+	class BinomialExponentiation
 	{
 		public:
 
 			/// Real power.
 			template <class ArgsTuple>
-			Derived realPower(const double &y, const ArgsTuple &argsTuple) const
+			Derived realPower(const double y, const ArgsTuple &argsTuple) const
 			{
-				return generic_binomial_power(
-					derived_const_cast->template get_sorted_series<Derived>(argsTuple),y,argsTuple);
+				return genericBinomialPower(derived_const_cast->template get_sorted_series<Derived>(argsTuple), y, argsTuple);
 			}
 
 
 			/// Negative integer power.
 			template <class ArgsTuple>
-			Derived negativeIntegerPower(const int &y, const ArgsTuple &argsTuple) const
+			Derived negativeIntegerPower(const int y, const ArgsTuple &argsTuple) const
 			{
-				return generic_binomial_power(
-					derived_const_cast->template get_sorted_series<Derived>(argsTuple),y, argsTuple);
+				return genericBinomialPower(derived_const_cast->template get_sorted_series<Derived>(argsTuple), y, argsTuple);
 			}
 
 
@@ -70,39 +68,40 @@ namespace piranha
 			Derived rationalPower(const mp_rational &q, const ArgsTuple &argsTuple) const
 			{
 				PIRANHA_ASSERT(q != 0 && q != 1);
-				return generic_binomial_power(
-					derived_const_cast->template get_sorted_series<Derived>(argsTuple), q, argsTuple);
+
+				return genericBinomialPower(derived_const_cast->template get_sorted_series<Derived>(argsTuple), q, argsTuple);
 			}
 
 		private:
 
 			template <class Term, class Number, class ArgsTuple>
-			static Derived generic_binomial_power(const std::vector<Term const *> &v, const Number &y, const ArgsTuple &argsTuple)
+			static Derived genericBinomialPower(const std::vector<Term const *> &v, const Number &y, const ArgsTuple &argsTuple)
 			{
-				typedef typename Derived::TermType term_type;
+				typedef typename Derived::TermType TermType;
 				// Here we know that the cases of empty series and natural power have already
 				// been taken care of in BaseSeries::basePow.
 				PIRANHA_ASSERT(v.size() >= 1);
 
-				term_type A(*v[0]);
-				// This is X, i.e., the original series without the leading term, which will then be divided by A.
-				Derived XoverA;
+				TermType a(*v[0]);
+				// This is x, i.e., the original series without the leading term, which will then be divided by A.
+				Derived x_a;
 				const std::size_t size = v.size();
 				for (std::size_t i = 1; i < size; ++i) 
                 {
-					XoverA.insert(term_type(*v[i]),argsTuple);
+					x_a.insert(TermType(*v[i]), argsTuple);
 				}
 
 				// Now let's try to calculate 1/A. There will be exceptions thrown if we cannot do that.
-				term_type tmp_term(A.cf.pow(-1, argsTuple), A.key.pow(-1, argsTuple));
-				Derived Ainv;
-				Ainv.insert(tmp_term, argsTuple);
+				TermType tmpTerm(a.cf.pow(-1, argsTuple), a.key.pow(-1, argsTuple));
+				Derived aInv;
+				aInv.insert(tmpTerm, argsTuple);
 				// Now let's compute X/A.
-				XoverA.baseMultBy(Ainv, argsTuple);
+				x_a.baseMultBy(aInv, argsTuple);
 				// Get the expansion limit from the truncator.
 				std::size_t n;
 				try {
-					n = XoverA.psi_(0, 1, argsTuple);
+					n = x_a.psi_(0, 1, argsTuple);
+
 				} catch (const value_error &ve) 
                 {
 					PIRANHA_THROW(value_error,std::string("series is unsuitable for exponentiation through binomial expansion."
@@ -110,42 +109,43 @@ namespace piranha
 						+ ve.what());
 				}
 
-				return binomial_expansion(A, XoverA, y, n, argsTuple);
+				return binomialExpansion(a, x_a, y, n, argsTuple);
 			}
 
 
 			template <class Term, class Number, class ArgsTuple>
-			static Derived binomial_expansion(const Term &A, const Derived &XoverA,
-				const Number &y, const std::size_t &n, const ArgsTuple &argsTuple)
+			static Derived binomialExpansion(const Term &a, const Derived &x_a, const Number &y, const std::size_t n, const ArgsTuple &argsTuple)
 			{
-				typedef typename Derived::TermType term_type;
+				typedef typename Derived::TermType TermType;
 
-				PIRANHA_STATIC_CHECK((boost::is_same<Term, typename Derived::TermType>::value),
-					                 "Term type mismatch in binomial expansion.");
+				PIRANHA_STATIC_CHECK((boost::is_same<Term, typename Derived::TermType>::value), "Term type mismatch in binomial expansion.");
 
 				// Start the binomial expansion.
-				term_type tmp_term;
-				// Calculate A**y. See if we can raise to real power the coefficient and the key.
+				TermType tmpTerm;
+				// Calculate a**y. See if we can raise to real power the coefficient and the key.
 				// Exceptions will be thrown in case of problems.
-				tmp_term.cf  = A.cf.pow(y, argsTuple);
-				tmp_term.key = A.key.pow(y, argsTuple);
-				Derived Apowy;
-				Apowy.insert(tmp_term, argsTuple);
+				tmpTerm.cf  = a.cf.pow(y, argsTuple);
+				tmpTerm.key = a.key.pow(y, argsTuple);
+				Derived ay;
+				ay.insert(tmpTerm, argsTuple);
 				// Let's proceed now to the bulk of the binomial expansion. Luckily we can compute the needed generalised
 				// binomial coefficient incrementally at every step. We start with 1.
 				Derived retval;
 				Derived tmp;
 				tmp.baseAdd(1, argsTuple);
 				retval.baseAdd(tmp, argsTuple);
+
 				for (std::size_t i = 1; i < n; ++i) 
                 {
 					tmp.baseMultBy(y - (double)i + 1, argsTuple);
 					tmp.baseDivideBy(boost::numeric_cast<int>(i), argsTuple);
-					tmp.baseMultBy(XoverA, argsTuple);
+					tmp.baseMultBy(x_a, argsTuple);
 					retval.baseAdd(tmp, argsTuple);
 				}
+
 				// Finally, multiply the result of the summation by A**y.
-				retval.baseMultBy(Apowy, argsTuple);
+				retval.baseMultBy(ay, argsTuple);
+
 				return retval;
 			}
 	};

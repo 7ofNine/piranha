@@ -49,7 +49,7 @@
 #define FOURIER_SERIES                   E0_SERIES(piranha::fourier_series)
 #define FOURIER_SERIES_BASE_ANCESTOR     E0_SERIES_BASE_ANCESTOR(piranha::FourierSeriesTerm,piranha::fourier_series)
 #define FOURIER_SERIES_NAMED_ANCESTOR    E0_SERIES_NAMED_ANCESTOR(boost::tuple<TrigArgsDescriptor>, FOURIER_SERIES_TERM ,piranha::fourier_series)
-#define FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< FOURIER_SERIES>
+#define FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::BinomialExponentiation< FOURIER_SERIES>
 #define FOURIER_SERIES_H_DEGREE          typename FOURIER_SERIES_TERM::KeyType::HarmonicDegreeType
 #define FOURIER_SERIES_BASE_FOURIER_SERIES_ANCESTOR   piranha::BaseFourierSeries<0, FOURIER_SERIES>
 #define FOURIER_SERIES_NAMED_FOURIER_SERIES_ANCESTOR  piranha::NamedFourierSeries<FOURIER_SERIES>
@@ -95,7 +95,7 @@ namespace piranha
 		COMPLEX_FOURIER_SERIES_TERM , piranha::fourier_series)
 #define COMPLEX_FOURIER_SERIES_BASE_COMPLEX_TOOLBOX piranha::BaseSeriesComplex< FOURIER_SERIES>
 #define COMPLEX_FOURIER_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex< FOURIER_SERIES>
-#define COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< COMPLEX_FOURIER_SERIES>
+#define COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::BinomialExponentiation< COMPLEX_FOURIER_SERIES>
 #define COMPLEX_FOURIER_SERIES_H_DEGREE typename COMPLEX_FOURIER_SERIES_TERM::KeyType::HarmonicDegreeType
 #define COMPLEX_FOURIER_SERIES_BASE_FOURIER_SERIES_ANCESTOR piranha::BaseFourierSeries<0,COMPLEX_FOURIER_SERIES>
 #define COMPLEX_FOURIER_SERIES_NAMED_FOURIER_SERIES_ANCESTOR piranha::NamedFourierSeries<COMPLEX_FOURIER_SERIES>

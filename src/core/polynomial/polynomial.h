@@ -48,7 +48,7 @@
 #define POLYNOMIAL                   E0_SERIES(piranha::Polynomial)
 #define POLYNOMIAL_BASE_ANCESTOR     E0_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::Polynomial)
 #define POLYNOMIAL_NAMED_ANCESTOR    E0_SERIES_NAMED_ANCESTOR(boost::tuple<PolyArgsDescr>, POLYNOMIAL_TERM, piranha::Polynomial)
-#define POLYNOMIAL_BINOMIAL_ANCESTOR piranha::binomial_exponentiation<POLYNOMIAL>
+#define POLYNOMIAL_BINOMIAL_ANCESTOR piranha::BinomialExponentiation<POLYNOMIAL>
 #define POLYNOMIAL_DEGREE            typename POLYNOMIAL_TERM::KeyType::DegreeType
 #define POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR  piranha::BasePolynomial<0, POLYNOMIAL >
 #define POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::named_polynomial<POLYNOMIAL >
@@ -94,7 +94,7 @@ namespace piranha
 		COMPLEX_POLYNOMIAL_TERM, piranha::Polynomial)
 #define COMPLEX_POLYNOMIAL_BASE_COMPLEX_TOOLBOX piranha::BaseSeriesComplex<POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex<POLYNOMIAL>
-#define COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR piranha::binomial_exponentiation< COMPLEX_POLYNOMIAL>
+#define COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR piranha::BinomialExponentiation< COMPLEX_POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_DEGREE typename COMPLEX_POLYNOMIAL_TERM::KeyType::DegreeType
 #define COMPLEX_POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR piranha::BasePolynomial<0, COMPLEX_POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::named_polynomial<COMPLEX_POLYNOMIAL>
