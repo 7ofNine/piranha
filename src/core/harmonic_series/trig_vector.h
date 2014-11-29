@@ -144,7 +144,7 @@ namespace piranha
 						this->arithmeticFunctor.argsTuple = argsTuple;
 						this->container[T(0)]  = SubSeries().baseAdd(1, *argsTuple);
 						this->container[T(1)]  = s;
-						this->container[T(-1)] = s.base_conjugate(*argsTuple);
+						this->container[T(-1)] = s.baseConjugate(*argsTuple);
 					}
 			};
 
@@ -676,15 +676,15 @@ namespace piranha
                     if (this->getFlavour()) 
 					{
 						retval.baseAdd(originalCos, argsTuple);
-						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].base_real(argsTuple), argsTuple);
-						originalSin.baseMultBy(subCaches.template get<Ancestor::position>()[power].base_imag(argsTuple), argsTuple);
+						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseReal(argsTuple), argsTuple);
+						originalSin.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseImag(argsTuple), argsTuple);
 						retval.baseSubtract(originalSin, argsTuple);
 
 					} else 
 					{
 						retval.baseAdd(originalSin, argsTuple);
-						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].base_real(argsTuple), argsTuple);
-						originalCos.baseMultBy(subCaches.template get<Ancestor::position>()[power].base_imag(argsTuple), argsTuple);
+						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseReal(argsTuple), argsTuple);
+						originalCos.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseImag(argsTuple), argsTuple);
 						// NOTE: series multadd here (and multiply by -1 to do subtraction too)?
 						// Below too...
 						retval.baseAdd(originalCos, argsTuple);
@@ -724,14 +724,14 @@ namespace piranha
                     if (flavour) 
 					{
 						retval.baseAdd(originalCos, argsTuple);
-						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].base_real(argsTuple), argsTuple);
-						originalSin.baseMultBy(subCaches.template get<Ancestor::position>()[power].base_imag(argsTuple), argsTuple);
+						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseReal(argsTuple), argsTuple);
+						originalSin.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseImag(argsTuple), argsTuple);
 						retval.baseSubtract(originalSin, argsTuple);
 					} else 
 					{
 						retval.baseAdd(originalSin, argsTuple);
-						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].base_real(argsTuple), argsTuple);
-						originalCos.baseMultBy(subCaches.template get<Ancestor::position>()[power].base_imag(argsTuple), argsTuple);
+						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseReal(argsTuple), argsTuple);
+						originalCos.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseImag(argsTuple), argsTuple);
 						retval.baseAdd(originalCos, argsTuple);
 					}
 				}

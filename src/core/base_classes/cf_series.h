@@ -171,11 +171,11 @@ namespace piranha
 	} \
 	template <class ArgsTuple> \
 	explicit complex(const real_series &r, const ArgsTuple &a) { \
-		this->base_construct_from_real(r, a); \
+		this->baseConstructFromReal(r, a); \
 	} \
 	template <class ArgsTuple> \
 	explicit complex(const real_series &r, const real_series &i, const ArgsTuple &a) { \
-		this->base_construct_from_real_imag(r, i, a); \
+		this->baseConstructFromRealImag(r, i, a); \
 	}
 
 

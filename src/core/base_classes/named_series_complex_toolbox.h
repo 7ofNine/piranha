@@ -37,41 +37,41 @@ namespace piranha
 			typedef std::complex<RealDerived> Derived;
 		public:
 			RealDerived real() const {
-				RealDerived retval(derived_const_cast->base_real(derived_const_cast->arguments()));
+				RealDerived retval(derived_const_cast->baseReal(derived_const_cast->arguments()));
 				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			RealDerived imag() const {
-				RealDerived retval(derived_const_cast->base_imag(derived_const_cast->arguments()));
+				RealDerived retval(derived_const_cast->baseImag(derived_const_cast->arguments()));
 				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			void set_real(const RealDerived &r) {
 				derived_cast->merge_args(r);
-				derived_cast->base_set_real(r, derived_const_cast->arguments());
+				derived_cast->baseSetReal(r, derived_const_cast->arguments());
 				derived_cast->trim();
 			}
 			void set_imag(const RealDerived &i) {
 				derived_cast->merge_args(i);
-				derived_cast->base_set_imag(i, derived_const_cast->arguments());
+				derived_cast->baseSetImag(i, derived_const_cast->arguments());
 				derived_cast->trim();
 			}
 			RealDerived abs() const {
-				RealDerived retval = derived_const_cast->base_abs(derived_const_cast->arguments());
+				RealDerived retval = derived_const_cast->baseAbs(derived_const_cast->arguments());
 				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			RealDerived abs2() const {
-				RealDerived retval = derived_const_cast->base_abs2(derived_const_cast->arguments());
+				RealDerived retval = derived_const_cast->baseAbs2(derived_const_cast->arguments());
 				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
 			}
 			Derived conjugate() const {
-				Derived retval = derived_const_cast->base_conjugate(derived_const_cast->arguments());
+				Derived retval = derived_const_cast->baseConjugate(derived_const_cast->arguments());
 				retval.setArguments(derived_const_cast->arguments());
 				retval.trim();
 				return retval;
@@ -82,7 +82,7 @@ namespace piranha
 
 			void construct_from_real(const RealDerived &r) {
 				derived_cast->setArguments(r.arguments());
-				derived_cast->base_construct_from_real(r, derived_cast->arguments());
+				derived_cast->baseConstructFromReal(r, derived_cast->arguments());
 				derived_cast->trim();
 			}
 
@@ -96,7 +96,7 @@ namespace piranha
 				// same arguments layout.
 				RealDerived r_copy(r);
 				r_copy.merge_args(i);
-				derived_cast->base_construct_from_real_imag(r_copy, i, derived_cast->arguments());
+				derived_cast->baseConstructFromRealImag(r_copy, i, derived_cast->arguments());
 				derived_cast->trim();
 			}
 	};

@@ -39,82 +39,85 @@ namespace piranha
 			typedef RealDerived value_type;
 
 			template <class ArgsTuple>
-			RealDerived base_real(const ArgsTuple &argsTuple) const 
+			RealDerived baseReal(const ArgsTuple &argsTuple) const 
 			{
-				return get_comp<0>(argsTuple);
+				return getComponent<0>(argsTuple);
 			}
 
 
 			template <class ArgsTuple>
-			RealDerived base_imag(const ArgsTuple &argsTuple) const 
+			RealDerived baseImag(const ArgsTuple &argsTuple) const 
 			{
-				return get_comp<1>(argsTuple);
+				return getComponent<1>(argsTuple);
 			}
 
 
 			template <class ArgsTuple>
-			void base_set_real(const RealDerived &r, const ArgsTuple &argsTuple) 
+			void baseSetReal(const RealDerived &real, const ArgsTuple &argsTuple) 
 			{
-				derived_cast->baseSubtract(base_real(argsTuple), argsTuple);
-				derived_cast->baseAdd(r, argsTuple);
+				derived_cast->baseSubtract(baseReal(argsTuple), argsTuple);
+				derived_cast->baseAdd(real, argsTuple);
 			}
 
 
 			template <class ArgsTuple>
-			void base_set_imag(const RealDerived &i, const ArgsTuple &argsTuple) 
+			void baseSetImag(const RealDerived &imaginary, const ArgsTuple &argsTuple) 
 			{
-				typedef typename RealDerived::const_iterator real_iterator;
-				typedef typename Derived::TermType complex_term_type;
-				complex_term_type tmp;
+				typedef typename RealDerived::const_iterator RealIterator;
+				typedef typename Derived::TermType ComplexTermType;
+
+				ComplexTermType tmp;
 				// First let's remove the old imaginary part.
-				RealDerived old_i(base_imag(argsTuple));
-				const real_iterator old_i_it_f = old_i.end();
+				RealDerived oldImaginary(baseImag(argsTuple));
+				const RealIterator oldImaginaryEnd = oldImaginary.end();
 
-				for (real_iterator i_it = old_i.begin(); i_it != old_i_it_f; ++i_it) 
+				for (RealIterator it = oldImaginary.begin(); it != oldImaginaryEnd; ++it) 
 				{
-					tmp.key = i_it->key;
-					tmp.cf.set_imag(i_it->cf, argsTuple);
+					tmp.key = it->key;
+					tmp.cf.set_imag(it->cf, argsTuple);
 					derived_cast->template insert<true, false>(tmp, argsTuple);
 				}
 
 				// Now add the new imaginary part.
-				const real_iterator i_it_f = i.end();
+				const RealIterator itEnd = imaginary.end();
 				
-                for (real_iterator i_it = i.begin(); i_it != i_it_f; ++i_it) 
+                for (RealIterator it = imaginary.begin(); it != itEnd; ++it) 
 				{
-					tmp.key = i_it->key;
-					tmp.cf.set_imag(i_it->cf, argsTuple);
+					tmp.key = it->key;
+					tmp.cf.set_imag(it->cf, argsTuple);
 					derived_cast->insert(tmp, argsTuple);
 				}
 			}
 
 
+            // square of complex norm/absolute value
 			template <class ArgsTuple>
-			RealDerived base_abs2(const ArgsTuple &argsTuple) const
+			RealDerived baseAbs2(const ArgsTuple &argsTuple) const
 			{
-				RealDerived retval = base_real(argsTuple), tmp = base_imag(argsTuple);
-				retval.baseMultBy(retval,argsTuple);
-				tmp.baseMultBy(tmp,argsTuple);
-				retval.baseAdd(tmp,argsTuple);
+				RealDerived retval = baseReal(argsTuple);
+                RealDerived tmp    = baseImag(argsTuple);
+				retval.baseMultBy(retval, argsTuple);
+				tmp.baseMultBy(tmp, argsTuple);
+				retval.baseAdd(tmp, argsTuple);
 				return retval;
 			}
 
-
-			template <class ArgsTuple>
-			RealDerived base_abs(const ArgsTuple &argsTuple) const
+            // complex norm/absolute value
+            template <class ArgsTuple>
+			RealDerived baseAbs(const ArgsTuple &argsTuple) const
 			{
-				return base_abs2(argsTuple).baseRoot(2,argsTuple);
+				return baseAbs2(argsTuple).baseRoot(2, argsTuple);
 			}
 
-
+            // complex conjugate
 			template <class ArgsTuple>
-			Derived base_conjugate(const ArgsTuple &argsTuple) const 
+			Derived baseConjugate(const ArgsTuple &argsTuple) const 
 			{
 				Derived retval;
-				retval.baseAdd(base_real(argsTuple),argsTuple);
-				RealDerived tmp = base_imag(argsTuple);
+				retval.baseAdd(baseReal(argsTuple), argsTuple);
+				RealDerived tmp = baseImag(argsTuple);
 				tmp.baseMultBy(-1, argsTuple);
-				retval.base_set_imag(tmp, argsTuple);
+				retval.baseSetImag(tmp, argsTuple);
 				return retval;
 			}
 
@@ -124,37 +127,40 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived baseInvert(const ArgsTuple &argsTuple) const 
 			{
-				Derived retval = base_conjugate(argsTuple);
-				retval.baseMultBy(base_abs2(argsTuple).basePow(-1,argsTuple),argsTuple);
+				Derived retval = baseConjugate(argsTuple);
+				retval.baseMultBy(baseAbs2(argsTuple).basePow(-1, argsTuple), argsTuple);
 				return retval;
 			}
 
 
 			template <class ArgsTuple>
-			void base_construct_from_real(const RealDerived &r, const ArgsTuple &argsTuple) 
+			void baseConstructFromReal(const RealDerived &real, const ArgsTuple &argsTuple) 
 			{
 				// Make sure we are being called from an empty series.
 				PIRANHA_ASSERT(derived_const_cast->empty());
-				derived_cast->insertRange(r.begin(),r.end(),argsTuple);
+				derived_cast->insertRange(real.begin(), real.end(), argsTuple);
 			}
 
 
 			template <class ArgsTuple>
-			void base_construct_from_real_imag(const RealDerived &r, const RealDerived &i, const ArgsTuple &argsTuple) 
+			void baseConstructFromRealImag(const RealDerived &real, const RealDerived &imaginary, const ArgsTuple &argsTuple) 
 			{
-				typedef typename RealDerived::const_iterator real_iterator;
-				typedef typename Derived::TermType complex_term_type;
+				typedef typename RealDerived::const_iterator RealIterator;
+				typedef typename Derived::TermType ComplexTermType;
+
 				// Make sure we are being called from an empty series.
 				PIRANHA_ASSERT(derived_const_cast->empty());
-				// Let's build the real part first.
-				base_construct_from_real(r, argsTuple);
+				
+                // Let's build the real part first.
+				baseConstructFromReal(real, argsTuple);
 				// Now let's proceed to the imaginary part.
-				const real_iterator i_it_f = i.end();
-				complex_term_type tmp;
-				for (real_iterator i_it = i.begin(); i_it != i_it_f; ++i_it) 
+				const RealIterator itEnd = imaginary.end();
+				ComplexTermType tmp;
+
+				for (RealIterator it = imaginary.begin(); it != itEnd; ++it) 
 				{
-					tmp.key = i_it->key;
-					tmp.cf.set_imag(i_it->cf, argsTuple);
+					tmp.key = it->key;
+					tmp.cf.set_imag(it->cf, argsTuple);
 					derived_cast->insert(tmp, argsTuple);
 				}
 			}
@@ -162,7 +168,7 @@ namespace piranha
 		private:
 			// Use N = 0 for real, N != 0 for imag.
 			template <int N, class Real, class ArgsTuple>
-			static Real get_cf_comp(const std::complex<Real> &c, const ArgsTuple &argsTuple) 
+			static Real getCfComponent(const std::complex<Real> &c, const ArgsTuple &argsTuple) 
 			{
 				if (N) 
 				{
@@ -175,29 +181,31 @@ namespace piranha
 
 
 			template <int N, class ArgsTuple>
-			RealDerived get_comp(const ArgsTuple &argsTuple) const 
+			RealDerived getComponent(const ArgsTuple &argsTuple) const 
 			{
-				typedef typename Derived::const_iterator complex_iterator;
+				typedef typename Derived::const_iterator ComplexIterator;
 				RealDerived retval;
-				const complex_iterator c_it_f = derived_const_cast->end();
-				for (complex_iterator c_it = derived_const_cast->begin(); c_it != c_it_f; ++c_it) 
+				
+                const ComplexIterator itEnd = derived_const_cast->end();
+				for (ComplexIterator it = derived_const_cast->begin(); it != itEnd; ++it) 
 				{
-					typename RealDerived::TermType tmp(get_cf_comp<N>(c_it->cf, argsTuple), c_it->key);
+					typename RealDerived::TermType tmp(getCfComponent<N>(it->cf, argsTuple), it->key);
 					retval.insert(tmp, argsTuple);
 				}
+
 				return retval;
 			}
 	};
 
-#define COMPLEX_E0_SERIES_TERM(term_name) term_name<std::complex<Cf>, Key, '|', Allocator>
-#define COMPLEX_E0_SERIES(series_name) std::complex<E0_SERIES(series_name)>
-#define COMPLEX_E0_SERIES_BASE_ANCESTOR(term_name,series_name) piranha::BaseSeries<COMPLEX_E0_SERIES_TERM(term_name), '\n', \
-	Allocator, COMPLEX_E0_SERIES(series_name) >
+#define COMPLEX_E0_SERIES_TERM(TermName) TermName<std::complex<Cf>, Key, '|', Allocator>
+#define COMPLEX_E0_SERIES(SeriesName) std::complex<E0_SERIES(SeriesName)>
+#define COMPLEX_E0_SERIES_BASE_ANCESTOR(TermName, SeriesName) piranha::BaseSeries<COMPLEX_E0_SERIES_TERM(TermName), '\n', \
+	Allocator, COMPLEX_E0_SERIES(SeriesName) >
 
-#define COMPLEX_E1_SERIES_TERM(term_name,cf_name) term_name<std::complex<cf_name>, Key1, '|', Allocator>
-#define COMPLEX_E1_SERIES(series_name) std::complex<E1_SERIES(series_name)>
-#define COMPLEX_E1_SERIES_BASE_ANCESTOR(term_name, cf_name, series_name) piranha::BaseSeries<COMPLEX_E1_SERIES_TERM(term_name, cf_name), \
-	'\n', Allocator,COMPLEX_E1_SERIES(series_name) >
+#define COMPLEX_E1_SERIES_TERM(TermName, CfName) TermName<std::complex<CfName>, Key1, '|', Allocator>
+#define COMPLEX_E1_SERIES(SeriesName) std::complex<E1_SERIES(SeriesName)>
+#define COMPLEX_E1_SERIES_BASE_ANCESTOR(TermName, CfName, SeriesName) piranha::BaseSeries<COMPLEX_E1_SERIES_TERM(TermName, CfName), \
+	'\n', Allocator,COMPLEX_E1_SERIES(SeriesName) >
 }
 
 #undef derived_const_cast
