@@ -27,7 +27,7 @@
 namespace piranha
 {
 	template <class Derived>
-	class cf_series_special_functions
+	class CfSeriesSpecialFunctions
 	{
 		public:
 			/// Bessel function of the first kind of integer order.
@@ -42,15 +42,15 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived dbesselJ(const int order, const ArgsTuple &argsTuple) const
             {
-				return derived_const_cast->base_dbesselJ(order,argsTuple);
+				return derived_const_cast->base_dbesselJ(order, argsTuple);
 			}
 
 
 			/// Bessel function of the first kind of integer order divided by its argument**m.
 			template <class ArgsTuple>
-			Derived besselJ_div_m(const int order, const int &m, const ArgsTuple &argsTuple) const
+			Derived besselJDivM(const int order, const int m, const ArgsTuple &argsTuple) const
             {
-				return derived_const_cast->base_besselJ_div_m(order,m,argsTuple);
+				return derived_const_cast->base_besselJ_div_m(order, m, argsTuple);
 			}
 	};
 }

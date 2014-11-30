@@ -62,7 +62,7 @@ namespace piranha
 				public cf_power_series< POLYNOMIAL_CF_DEGREE, POLYNOMIAL_CF>,
 				public series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator>,
 				public BaseSeriesSpecialFunctions< POLYNOMIAL_CF>,
-				public cf_series_special_functions< POLYNOMIAL_CF>
+				public CfSeriesSpecialFunctions< POLYNOMIAL_CF>
 	{
 		public:
 			// Specify we will use the power functions from the binomial toolbox.
@@ -105,7 +105,7 @@ namespace std
 				public piranha::cf_power_series< COMPLEX_POLYNOMIAL_CF_DEGREE, COMPLEX_POLYNOMIAL_CF>,
 				public piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator>,
 				public piranha::BaseSeriesSpecialFunctions< COMPLEX_POLYNOMIAL_CF>,
-				public piranha::cf_series_special_functions< COMPLEX_POLYNOMIAL_CF>
+				public piranha::CfSeriesSpecialFunctions< COMPLEX_POLYNOMIAL_CF>
 	{
 		public:
 			using COMPLEX_POLYNOMIAL_CF_BINOMIAL_ANCESTOR::realPower;
