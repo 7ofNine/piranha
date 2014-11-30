@@ -58,7 +58,7 @@ namespace piranha
 				derived_cast->set_value(r.get_value());
 			}
 			template <class ArgsTuple>
-			void set_imag(const value_type &i, const ArgsTuple &) {
+			void setImag(const value_type &i, const ArgsTuple &) {
 				// NOTE: this code works in gcc, but it is not standard.
 				// derived_cast->m_value.imag() = i.value();
 				derived_cast->set_value(typename Derived::numerical_type(derived_const_cast->get_value().real(),

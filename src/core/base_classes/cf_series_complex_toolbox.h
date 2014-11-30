@@ -29,25 +29,36 @@
 namespace piranha
 {
 	template <class RealDerived>
-	class cf_series_complex
+	class CfSeriesComplex
 	{
 			typedef std::complex<RealDerived> Derived;
+
 		public:
 			template <class ArgsTuple>
-			RealDerived real(const ArgsTuple &argsTuple) const {
+			RealDerived real(const ArgsTuple &argsTuple) const 
+            {
 				return derived_const_cast->baseReal(argsTuple);
 			}
+
+
 			template <class ArgsTuple>
-			RealDerived imag(const ArgsTuple &argsTuple) const {
+			RealDerived imag(const ArgsTuple &argsTuple) const
+            {
 				return derived_const_cast->baseImag(argsTuple);
 			}
+
+
 			template <class ArgsTuple>
-			void set_real(const RealDerived &r, const ArgsTuple &argsTuple) {
-				derived_cast->baseSetReal(r,argsTuple);
+			void setReal(const RealDerived &r, const ArgsTuple &argsTuple)
+            {
+				derived_cast->baseSetReal(r, argsTuple);
 			}
+
+
 			template <class ArgsTuple>
-			void set_imag(const RealDerived &r, const ArgsTuple &argsTuple) {
-				derived_cast->baseSetImag(r,argsTuple);
+			void setImag(const RealDerived &r, const ArgsTuple &argsTuple)
+            {
+				derived_cast->baseSetImag(r, argsTuple);
 			}
 	};
 }

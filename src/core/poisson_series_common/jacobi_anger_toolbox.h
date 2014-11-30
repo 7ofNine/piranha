@@ -79,7 +79,7 @@ namespace piranha
 				{
 					std::complex<Derived> tmp;
 					complex_term_type tmp_term;
-					tmp_term.cf.set_real((*it)->cf, argsTuple);
+					tmp_term.cf.setReal((*it)->cf, argsTuple);
 					tmp.insert(tmp_term, argsTuple);
 					try {
 						n_ = tmp.psi_(0,1,argsTuple);
@@ -93,7 +93,7 @@ namespace piranha
 				std::complex<Derived> retval;
 				{
 					complex_term_type tmp_term;
-					tmp_term.cf.set_real((*it)->cf.besselJ(0, argsTuple), argsTuple);
+					tmp_term.cf.setReal((*it)->cf.besselJ(0, argsTuple), argsTuple);
 					retval.insert(tmp_term, argsTuple);
 				}
 				const std::size_t w = argsTuple.template get<TrigPos>().size();
@@ -102,7 +102,7 @@ namespace piranha
 				for (int i = 1; i < n; ++i) 
 				{
 					complex_term_type tmp_term;
-					tmp_term.cf.set_real((*it)->cf.besselJ(i, argsTuple), argsTuple);
+					tmp_term.cf.setReal((*it)->cf.besselJ(i, argsTuple), argsTuple);
 					std::copy((*it)->key.begin(),(*it)->key.end(),tmp_trig_mults.begin());
 					for (std::size_t j = 0; j < w; ++j) 
 					{

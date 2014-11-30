@@ -74,7 +74,7 @@ namespace piranha
 				for (RealIterator it = oldImaginary.begin(); it != oldImaginaryEnd; ++it) 
 				{
 					tmp.key = it->key;
-					tmp.cf.set_imag(it->cf, argsTuple);
+					tmp.cf.setImag(it->cf, argsTuple);
 					derived_cast->template insert<true, false>(tmp, argsTuple);
 				}
 
@@ -84,7 +84,7 @@ namespace piranha
                 for (RealIterator it = imaginary.begin(); it != itEnd; ++it) 
 				{
 					tmp.key = it->key;
-					tmp.cf.set_imag(it->cf, argsTuple);
+					tmp.cf.setImag(it->cf, argsTuple);
 					derived_cast->insert(tmp, argsTuple);
 				}
 			}
@@ -160,7 +160,7 @@ namespace piranha
 				for (RealIterator it = imaginary.begin(); it != itEnd; ++it) 
 				{
 					tmp.key = it->key;
-					tmp.cf.set_imag(it->cf, argsTuple);
+					tmp.cf.setImag(it->cf, argsTuple);
 					derived_cast->insert(tmp, argsTuple);
 				}
 			}
