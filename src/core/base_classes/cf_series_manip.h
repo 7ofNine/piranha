@@ -29,7 +29,7 @@ namespace piranha
 	template <class ArgsTuple>
 	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::padRight(const ArgsTuple &argsTuple)
 	{
-		typedef typename Derived::TermType term_type;
+		typedef typename Derived::TermType TermType;
 		typedef typename Derived::const_iterator const_iterator;
 		
 		if (derived_const_cast->empty()) 
@@ -38,12 +38,13 @@ namespace piranha
 		}
 
 		Derived retval;
-		const const_iterator it_f = derived_const_cast->end();
-		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
+		const const_iterator itEnd = derived_const_cast->end();
+		for (const_iterator it = derived_const_cast->begin(); it != itEnd; ++it) 
         {
-			term_type term(*it);
+			TermType term(*it);
 			term.cf.padRight(argsTuple);
 			term.key.padRight(argsTuple);
+
 			retval.insert(term, argsTuple);
 		}
 
@@ -52,46 +53,46 @@ namespace piranha
 
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::swap(Derived &s2)
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::swap(Derived &series2)
 	{
-		derived_cast->baseSwap(s2);
+		derived_cast->baseSwap(series2);
 	}
 
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class Layout, class ArgsTuple>
-	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::applyLayout(const Layout &l, const ArgsTuple &argsTuple)
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::applyLayout(const Layout &layout, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
-		derived_cast->applyLayoutToTerms(l, retval, argsTuple);
+		derived_cast->applyLayoutToTerms(layout, retval, argsTuple);
 		derived_cast->baseSwap(retval);
 	}
 
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class TrimFlags>
-	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::trimTest(TrimFlags &tf) const
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::trimTest(TrimFlags &trimFlags) const
 	{
-		derived_const_cast->trimTestTerms(tf);
+		derived_const_cast->trimTestTerms(trimFlags);
 	}
 
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class TrimFlags, class ArgsTuple>
-	inline Derived CfSeries<__PIRANHA_CF_SERIES_TP>::trim(const TrimFlags &tf, const ArgsTuple &argsTuple) const
+	inline Derived CfSeries<__PIRANHA_CF_SERIES_TP>::trim(const TrimFlags &trimFlags, const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
-		derived_const_cast->trimTerms(tf, retval, argsTuple);
+		derived_const_cast->trimTerms(trimFlags, retval, argsTuple);
 		return retval;
 	}
 
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-	inline RetSeries CfSeries<__PIRANHA_CF_SERIES_TP>::sub(const PosTuple &p,
-		SubCaches &s, const ArgsTuple &a) const
+	inline RetSeries CfSeries<__PIRANHA_CF_SERIES_TP>::sub(const PosTuple &positionTuple,
+		SubCaches &subCaches, const ArgsTuple &argsTuple) const
 	{
-		return derived_const_cast->template baseSub<RetSeries,typename Derived::sub_functor>(p, s, a);
+		return derived_const_cast->template baseSub<RetSeries, typename Derived::sub_functor>(positionTuple, subCaches, argsTuple);
 	}
 
 
