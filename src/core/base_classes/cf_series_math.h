@@ -31,16 +31,18 @@ namespace piranha
 	{
 		// TODO: improve performance on this.
 		typedef typename Derived::const_iterator const_iterator;
-		typedef typename Derived::TermType term_type;
+		typedef typename Derived::TermType TermType;
+
 		Derived retval;
-		const const_iterator it_f = derived_const_cast->end();
-		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it)
+		const const_iterator itEnd = derived_const_cast->end();
+		for (const_iterator it = derived_const_cast->begin(); it != itEnd; ++it)
         {
-			term_type term(*it);
+			TermType term(*it);
 			term.cf.invertSign(argsTuple);
 			// No need to check, we are merging terms from this series.
 			retval.template insert<false, true>(term, argsTuple);
 		}
+
 		derived_cast->baseSwap(retval);
 	}
 
@@ -96,6 +98,7 @@ namespace piranha
 	{
 		Series retval;
 		Derived::basePartial(*derived_const_cast, retval, pos_tuple, argsTuple);
+
 		return retval;
 	}
 }
