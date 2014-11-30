@@ -35,25 +35,28 @@ namespace piranha
 	  */
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::constructFromString(const std::string &str_, const ArgsTuple &argsTuple)
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::constructFromString(const std::string &input, const ArgsTuple &argsTuple)
 	{
-		typedef typename Derived::TermType term_type;
+		typedef typename Derived::TermType TermType;
 		const char separator = Derived::separator;
-		std::string str(str_);
+
+		std::string str(input);
 		// Remove extra spaces.
 		boost::trim(str);
 		// Split into single terms.
-		std::vector<std::string> vs;
-		boost::split(vs, str, boost::is_any_of(std::string(1, separator)));
-		const std::size_t length = vs.size();
+		std::vector<std::string> terms;
+		boost::split(terms, str, boost::is_any_of(std::string(1, separator)));
+
+		const std::size_t length = terms.size();
 		for (std::size_t i = 0; i < length; ++i) 
         {
 			// Build the term from the string.
-			term_type term(vs[i], argsTuple);
+			TermType term(terms[i], argsTuple);
 			// Insert it.
 			derived_cast->insert(term, argsTuple);
 		}
 	}
+
 
 	/// Print in plain mode.
 	template <__PIRANHA_CF_SERIES_TP_DECL>
@@ -62,6 +65,7 @@ namespace piranha
 	{
 		derived_const_cast->printTermsPlain(stream, argsTuple);
 	}
+
 
 	/// Print in pretty mode.
 	template <__PIRANHA_CF_SERIES_TP_DECL>
@@ -72,6 +76,7 @@ namespace piranha
         {
 			stream << '(';
 		}
+
 		derived_const_cast->printTermsPretty(stream, argsTuple);
 		
         if (derived_const_cast->length() > 1) 
@@ -79,6 +84,7 @@ namespace piranha
 			stream << ')';
 		}
 	}
+
 
 	/// Print in tex mode.
 	template <__PIRANHA_CF_SERIES_TP_DECL>
