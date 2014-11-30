@@ -28,17 +28,20 @@ namespace piranha
 {
 	/// Coefficient power series toolbox.
 	template <class Degree, class Derived>
-	class cf_power_series
+	class CfPowerSeries
 	{
 		public:
 			template <class PosTuple>
-			Degree partialDegree(const PosTuple &pos_tuple) const {
-				return derived_const_cast->base_partial_degree(pos_tuple);
+			Degree partialDegree(const PosTuple &posTuple) const
+            {
+				return derived_const_cast->base_partial_degree(posTuple);
 			}
 
+
 			template <class PosTuple>
-			Degree partialOrder(const PosTuple &pos_tuple) const {
-				return derived_const_cast->base_partial_order(pos_tuple);
+			Degree partialOrder(const PosTuple &posTuple) const
+            {
+				return derived_const_cast->base_partial_order(posTuple);
 			}
 	};
 }
