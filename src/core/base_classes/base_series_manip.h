@@ -90,14 +90,14 @@ namespace piranha
 		TermConverter<Term2, TermType> convertedTerm(term2, argsTuple);
 
 		// Make sure the appropriate routines for the management of arguments have been called.
-		PIRANHA_ASSERT(convertedTerm.result.cf.is_insertable(argsTuple) && convertedTerm.result.key.isInsertable(argsTuple));
+		PIRANHA_ASSERT(convertedTerm.result.cf.isInsertable(argsTuple) && convertedTerm.result.key.isInsertable(argsTuple));
 
 		TermType *newTerm(0); //NULL pointer
-		if (unlikely(convertedTerm.result.cf.needs_padding(argsTuple) || convertedTerm.result.key.needsPadding(argsTuple))) 
+		if (unlikely(convertedTerm.result.cf.needsPadding(argsTuple) || convertedTerm.result.key.needsPadding(argsTuple))) 
 		{
 			newTerm = TermType::allocator.allocate(1);
 			TermType::allocator.construct(newTerm, convertedTerm.result); /// Shouldn't we just overload new???
-			newTerm->cf.pad_right(argsTuple);
+			newTerm->cf.padRight(argsTuple);
 			newTerm->key.padRight(argsTuple);
 		}
 
@@ -167,12 +167,12 @@ namespace piranha
 	{
 		// TODO: think about moving this check higher in the stack of functions, we probably don't want to reach
 		// _this_ point before checking for ignorability.
-		if (term.cf.is_ignorable(argsTuple) || term.key.isIgnorable(argsTuple)) 
+		if (term.cf.isIgnorable(argsTuple) || term.key.isIgnorable(argsTuple)) 
 		{
 			return;
 		}
-		PIRANHA_ASSERT(term.cf.is_insertable(argsTuple) && term.key.isInsertable(argsTuple) &&
-			          !term.cf.needs_padding(argsTuple) && !term.key.needsPadding(argsTuple) && term.isCanonical(argsTuple));
+		PIRANHA_ASSERT(term.cf.isInsertable(argsTuple) && term.key.isInsertable(argsTuple) &&
+			          !term.cf.needsPadding(argsTuple) && !term.key.needsPadding(argsTuple) && term.isCanonical(argsTuple));
 
 		const_iterator it(findTerm(term));
 		if (it == end()) 
@@ -194,7 +194,7 @@ namespace piranha
 			}
 
 			// Check if the new coefficient can be ignored.
-			if (it->cf.is_ignorable(argsTuple)) 
+			if (it->cf.isIgnorable(argsTuple)) 
 			{
 				eraseTerm(it);
 			}
@@ -215,7 +215,7 @@ namespace piranha
         //if sign invert the coefficient
 		if (!Sign) 
 		{
-			res.first->cf.invert_sign(argsTuple);
+			res.first->cf.invertSign(argsTuple);
 		}
 	}
 
@@ -248,7 +248,7 @@ namespace piranha
 		for (const_iterator it = begin(); it != itf; ++it) 
 		{
 			TermType term(*it);
-			term.cf.apply_layout(l, argsTuple);
+			term.cf.applyLayout(l, argsTuple);
 			term.key.applyLayout(l, argsTuple);
 
 			retval.insert(term, argsTuple);
@@ -263,7 +263,7 @@ namespace piranha
 		const const_iterator itf = end();
 		for (const_iterator it = begin(); it != itf; ++it) 
 		{
-			it->cf.trim_test(trimFlags);
+			it->cf.trimTest(trimFlags);
 			it->key.trimTest(trimFlags);
 		}
 	}

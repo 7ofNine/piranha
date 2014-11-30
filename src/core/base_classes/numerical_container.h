@@ -143,15 +143,15 @@ namespace piranha
 			
 			/// Pad right.
 			template <class ArgsTuple>
-			void pad_right(const ArgsTuple &) {}
+			void padRight(const ArgsTuple &) {}
 			
 			/// Apply layout.
 			template <class Layout, class ArgsTuple>
-			void apply_layout(const Layout &, const ArgsTuple &) {}
+			void applyLayout(const Layout &, const ArgsTuple &) {}
 			
 			/// Test if trimming is possible.
 			template <class TrimFlags>
-			void trim_test(TrimFlags &) const {}
+			void trimTest(TrimFlags &) const {}
 			
 			/// Trim.
 			template <class TrimFlags, class ArgsTuple>
@@ -177,21 +177,21 @@ namespace piranha
 			 * Returns true if norm() is less than settings::get_numerical_zero().
 			 */
 			template <class ArgsTuple>
-			bool is_ignorable(const ArgsTuple &a) const 
+			bool isIgnorable(const ArgsTuple &a) const 
 			{
 				return (derived_const_cast->norm(a) < settings::get_numerical_zero());
 			}
 			
 			/// Insertability test. Returns true.
 			template <class ArgsTuple>
-			bool is_insertable(const ArgsTuple &) const 
+			bool isInsertable(const ArgsTuple &) const 
 			{
 				return true;
 			}
 			
 			/// Padding test. Returns false.
 			template <class ArgsTuple>
-			bool needs_padding(const ArgsTuple &) const 
+			bool needsPadding(const ArgsTuple &) const 
 			{
 				return false;
 			}
@@ -210,7 +210,7 @@ namespace piranha
 
 			// Math.
 			template <class ArgsTuple>
-			void invert_sign(const ArgsTuple &) 
+			void invertSign(const ArgsTuple &) 
 			{
 				m_value *= -1;
 			}
@@ -228,7 +228,7 @@ namespace piranha
 			}
 
 			template <class U, class ArgsTuple>
-			Derived &mult_by(const U &x, const ArgsTuple &) 
+			Derived &multBy(const U &x, const ArgsTuple &) 
 			{
 				return numerical_container_multiply_selector<U>::run(*derived_cast,x);
 			}

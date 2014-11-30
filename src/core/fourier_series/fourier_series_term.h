@@ -87,7 +87,7 @@ namespace piranha
 				// cf1.multiply_by_cf(cf2,res.template get<0>().cf,argsTuple),
 				// so that we can avoid a copy.
 				res.template get<0>().cf = t1.cf;
-				res.template get<0>().cf.mult_by(t2.cf, argsTuple);
+				res.template get<0>().cf.multBy(t2.cf, argsTuple);
 				res.template get<0>().cf.divideBy(2, argsTuple);
 				res.template get<1>().cf = res.template get<0>().cf;
 				// Now adjust the signs according to werner's formulas.
@@ -97,7 +97,7 @@ namespace piranha
 					res.template get<1>().key.setFlavour(true);
 					if (!t1.key.getFlavour()) 
                     {
-						res.template get<1>().cf.invert_sign(argsTuple);
+						res.template get<1>().cf.invertSign(argsTuple);
 					}
 				} else 
                 {
@@ -105,7 +105,7 @@ namespace piranha
 					res.template get<1>().key.setFlavour(false);
 					if (t1.key.getFlavour()) 
                     {
-						res.template get<0>().cf.invert_sign(argsTuple);
+						res.template get<0>().cf.invertSign(argsTuple);
 					}
 				}
 
@@ -123,7 +123,7 @@ namespace piranha
 				ancestor::key.invertSign();
 				if (!(ancestor::key.getFlavour())) 
                 {
-					ancestor::cf.invert_sign(argsTuple);
+					ancestor::cf.invertSign(argsTuple);
 				}
 			}
 	};

@@ -149,7 +149,7 @@ namespace piranha
 							// mult_by_and_insert_into<bool Sign>(cf2,retval,m_argsTuple)
 							// so that we can avoid copying stuff around here and elsewhere?
 							cf_type1 tmp_cf = m_tc1[i];
-							tmp_cf.mult_by(m_tc2[j], m_argsTuple);
+							tmp_cf.multBy(m_tc2[j], m_argsTuple);
 							const max_fast_int index_plus  = m_ck1[i] + m_ck2a[j]; 
 							const max_fast_int index_minus = m_ck1[i] + m_ck2b[j];
 
@@ -251,7 +251,7 @@ namespace piranha
 							vc_res_cos[i].divideBy(2,argsTuple);
 							// Take a shortcut and check for ignorability of the coefficient here.
 							// This way we avoid decodification, and all the series term insertion yadda-yadda.
-							if (!vc_res_cos[i].is_ignorable(argsTuple)) 
+							if (!vc_res_cos[i].isIgnorable(argsTuple)) 
 							{
 								this->decode(vc_res_cos[i], i, tmp_term);
 								tmp_term.key.setFlavour(true);
@@ -268,7 +268,7 @@ namespace piranha
 						for (max_fast_int i = this->m_fast_h.lower(); i <= i_f; ++i) 
 						{
 							vc_res_sin[i].divideBy(2,argsTuple);
-							if (!vc_res_sin[i].is_ignorable(argsTuple)) 
+							if (!vc_res_sin[i].isIgnorable(argsTuple)) 
 							{
 								this->decode(vc_res_sin[i], i, tmp_term);
 								tmp_term.key.setFlavour(false);
@@ -321,7 +321,7 @@ namespace piranha
 							tmp_term1.second = m_ck1[i];
 
 							// Handle the coefficient, with positive signs for now.
-							tmp_term1.first.mult_by(m_tc2[j], m_argsTuple);
+							tmp_term1.first.multBy(m_tc2[j], m_argsTuple);
 							tmp_term1.second += m_ck2b[j];
 							
 							// Create the second term, using the first one's coefficient and the appropriate code.
@@ -337,7 +337,7 @@ namespace piranha
 							{
 								if (!m_f1[i]) 
 								{
-									tmp_term2.first.invert_sign(m_argsTuple);
+									tmp_term2.first.invertSign(m_argsTuple);
 								}
 								// Insert into cosine container.
 								std::pair<bool, c_iterator> res = cms_cos.find(tmp_term1.second);
@@ -361,7 +361,7 @@ namespace piranha
 							{
 								if (m_f1[i]) 
 								{
-									tmp_term1.first.invert_sign(m_argsTuple);
+									tmp_term1.first.invertSign(m_argsTuple);
 								}
 								// Insert into sine container.
 								std::pair<bool,c_iterator> res = cms_sin.find(tmp_term1.second);

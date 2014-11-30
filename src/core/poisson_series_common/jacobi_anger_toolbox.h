@@ -113,15 +113,15 @@ namespace piranha
 					std::copy(tmp_trig_mults.begin(),tmp_trig_mults.end(),tmp_term.key.begin());
 					if ((*it)->key.getFlavour())
 					{
-						tmp_term.cf.mult_by(cos_multiplier, argsTuple);
+						tmp_term.cf.multBy(cos_multiplier, argsTuple);
 					} else 
 					{
 						if (i % 2 == 0) 
 						{
-							tmp_term.cf.mult_by(2, argsTuple);
+							tmp_term.cf.multBy(2, argsTuple);
 						} else 
 						{
-							tmp_term.cf.mult_by(std::complex<double>(0, 2), argsTuple);
+							tmp_term.cf.multBy(std::complex<double>(0, 2), argsTuple);
 							tmp_term.key.setFlavour(false);
 						}
 					}

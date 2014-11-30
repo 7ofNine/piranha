@@ -313,7 +313,7 @@ struct polynomial_hash_functor:
 			// Assign to the temporary term the old cf (new_key is already assigned).
 			m_cterm.first = this->m_tc1[i];
 			// Multiply the old term by the second term.
-			m_cterm.first.mult_by(this->m_tc2[j],this->m_argsTuple);
+			m_cterm.first.multBy(this->m_tc2[j],this->m_argsTuple);
 			m_cms->insert_new(m_cterm,res.second);
 		}
 
@@ -479,7 +479,7 @@ struct polynomial_multiplier
 				{
 					// Take a shortcut and check for ignorability of the coefficient here.
 					// This way we avoid decodification, and all the series term insertion yadda-yadda.
-					if (!vc_res[i].is_ignorable(argsTuple))
+					if (!vc_res[i].isIgnorable(argsTuple))
 					{
 						this->decode(vc_res[i], i, tmp_term);
 						if (!tmp_term.isCanonical(argsTuple))

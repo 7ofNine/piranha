@@ -59,7 +59,7 @@ namespace piranha
 				// cf1.multiply_by_cf(cf2,res.template get<0>().cf,argsTuple),
 				// so that we can avoid a copy.
 				res.template get<0>().cf = m1.cf;
-				res.template get<0>().cf.mult_by(m2.cf, argsTuple);
+				res.template get<0>().cf.multBy(m2.cf, argsTuple);
 			}
 	};
 }

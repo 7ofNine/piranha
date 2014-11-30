@@ -27,7 +27,7 @@ namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::pad_right(const ArgsTuple &argsTuple)
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::padRight(const ArgsTuple &argsTuple)
 	{
 		typedef typename Derived::TermType term_type;
 		typedef typename Derived::const_iterator const_iterator;
@@ -42,7 +42,7 @@ namespace piranha
 		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it) 
         {
 			term_type term(*it);
-			term.cf.pad_right(argsTuple);
+			term.cf.padRight(argsTuple);
 			term.key.padRight(argsTuple);
 			retval.insert(term, argsTuple);
 		}
@@ -52,7 +52,7 @@ namespace piranha
 
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::swap(Derived &s2)
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::swap(Derived &s2)
 	{
 		derived_cast->baseSwap(s2);
 	}
@@ -60,7 +60,7 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class Layout, class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::apply_layout(const Layout &l, const ArgsTuple &argsTuple)
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::applyLayout(const Layout &l, const ArgsTuple &argsTuple)
 	{
 		Derived retval;
 		derived_cast->applyLayoutToTerms(l, retval, argsTuple);
@@ -70,7 +70,7 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class TrimFlags>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::trim_test(TrimFlags &tf) const
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::trimTest(TrimFlags &tf) const
 	{
 		derived_const_cast->trimTestTerms(tf);
 	}
@@ -78,7 +78,7 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class TrimFlags, class ArgsTuple>
-	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::trim(const TrimFlags &tf, const ArgsTuple &argsTuple) const
+	inline Derived CfSeries<__PIRANHA_CF_SERIES_TP>::trim(const TrimFlags &tf, const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
 		derived_const_cast->trimTerms(tf, retval, argsTuple);
@@ -88,7 +88,7 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-	inline RetSeries cf_series<__PIRANHA_CF_SERIES_TP>::sub(const PosTuple &p,
+	inline RetSeries CfSeries<__PIRANHA_CF_SERIES_TP>::sub(const PosTuple &p,
 		SubCaches &s, const ArgsTuple &a) const
 	{
 		return derived_const_cast->template baseSub<RetSeries,typename Derived::sub_functor>(p, s, a);
@@ -97,7 +97,7 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class Series, class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::split(std::vector<std::vector<Series> > &retval, const int &n, const ArgsTuple &argsTuple) const
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::split(std::vector<std::vector<Series> > &retval, const int n, const ArgsTuple &argsTuple) const
 	{
 		derived_const_cast->baseSplit(retval, n, argsTuple);
 	}

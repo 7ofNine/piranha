@@ -90,7 +90,7 @@ namespace piranha
 				typedef typename Derived::TermType::CfType::
 					template SubstitutionCacheSelector<SubSeries, typename Derived::TermType::KeyType::
 					template SubstitutionCacheSelector<SubSeries, boost::tuples::null_type, ArgsTupleType>
-					::type, ArgsTupleType>::type sub_caches_type;
+					::type, ArgsTupleType>::Type sub_caches_type;
 
 				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 					                 "Size mismatch for position and cache tuples in Poisson series substitution.");

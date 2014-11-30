@@ -27,7 +27,7 @@ namespace piranha
 {
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void cf_series<__PIRANHA_CF_SERIES_TP>::invert_sign(const ArgsTuple &argsTuple)
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::invertSign(const ArgsTuple &argsTuple)
 	{
 		// TODO: improve performance on this.
 		typedef typename Derived::const_iterator const_iterator;
@@ -37,7 +37,7 @@ namespace piranha
 		for (const_iterator it = derived_const_cast->begin(); it != it_f; ++it)
         {
 			term_type term(*it);
-			term.cf.invert_sign(argsTuple);
+			term.cf.invertSign(argsTuple);
 			// No need to check, we are merging terms from this series.
 			retval.template insert<false, true>(term, argsTuple);
 		}
@@ -47,7 +47,7 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::add(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &CfSeries<__PIRANHA_CF_SERIES_TP>::add(const T &x, const ArgsTuple &argsTuple)
 	{
 		return derived_cast->baseAdd(x, argsTuple);
 	}
@@ -55,7 +55,7 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::subtract(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &CfSeries<__PIRANHA_CF_SERIES_TP>::subtract(const T &x, const ArgsTuple &argsTuple)
 	{
 		return derived_cast->baseSubtract(x, argsTuple);
 	}
@@ -63,7 +63,7 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::mult_by(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &CfSeries<__PIRANHA_CF_SERIES_TP>::multBy(const T &x, const ArgsTuple &argsTuple)
 	{
 		return derived_cast->baseMultBy(x, argsTuple);
 	}
@@ -71,28 +71,28 @@ namespace piranha
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &cf_series<__PIRANHA_CF_SERIES_TP>::divideBy(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &CfSeries<__PIRANHA_CF_SERIES_TP>::divideBy(const T &x, const ArgsTuple &argsTuple)
 	{
 		return derived_cast->baseDivideBy(x, argsTuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::pow(const double &y, const ArgsTuple &argsTuple) const
+	inline Derived CfSeries<__PIRANHA_CF_SERIES_TP>::pow(const double y, const ArgsTuple &argsTuple) const
 	{
 		return derived_const_cast->basePow(y, argsTuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived cf_series<__PIRANHA_CF_SERIES_TP>::pow(const mp_rational &q, const ArgsTuple &argsTuple) const
+	inline Derived CfSeries<__PIRANHA_CF_SERIES_TP>::pow(const mp_rational &q, const ArgsTuple &argsTuple) const
 	{
 		return derived_const_cast->basePow(q, argsTuple);
 	}
 
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class Series, class PosTuple, class ArgsTuple>
-	inline Series cf_series<__PIRANHA_CF_SERIES_TP>::partial(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
+	inline Series CfSeries<__PIRANHA_CF_SERIES_TP>::partial(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 	{
 		Series retval;
 		Derived::basePartial(*derived_const_cast, retval, pos_tuple, argsTuple);

@@ -225,7 +225,7 @@ namespace piranha
 
 			try {
 				term_type term(temp, argumentsTuple);
-				if (!term.cf.is_insertable(argumentsTuple) || !term.key.isInsertable(argumentsTuple)) 
+				if (!term.cf.isInsertable(argumentsTuple) || !term.key.isInsertable(argumentsTuple)) 
                 {
 					PIRANHA_THROW(value_error,"term not insertable in series");
 				}
@@ -284,8 +284,8 @@ namespace piranha
 		const const_iterator itf = derived_const_cast->end();
 		for (const_iterator it = derived_const_cast->begin(); it != itf; ++it) 
         {
-			if (!it->cf.is_insertable(argsTuple) || !it->key.isInsertable(argsTuple) ||
-				it->cf.needs_padding(argsTuple) || it->key.needsPadding(argsTuple))
+			if (!it->cf.isInsertable(argsTuple) || !it->key.isInsertable(argsTuple) ||
+				it->cf.needsPadding(argsTuple) || it->key.needsPadding(argsTuple))
 			{
 				PIRANHA_THROW(value_error,"incompatible arguments tuple in set_arguments()");
 			}

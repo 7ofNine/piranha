@@ -34,7 +34,7 @@
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast       static_cast<Derived *>(this)
 #define __PIRANHA_CF_SERIES_TP_DECL class Term, class Derived
-#define __PIRANHA_CF_SERIES_TP Term,Derived
+#define __PIRANHA_CF_SERIES_TP Term, Derived
 
 // TODO: split this off like in base/name series.
 
@@ -46,48 +46,49 @@ namespace piranha
 	 * Intended to be inherited by piranha::BaseSeries.
 	 */
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	class cf_series
+	class CfSeries
 	{
 		public:
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
-			struct SubstitutionCacheSelector {
+			struct SubstitutionCacheSelector
+            {
 				typedef typename Derived::TermType::CfType::
 					template SubstitutionCacheSelector<SubSeries, typename Derived::TermType::KeyType::
-					template SubstitutionCacheSelector<SubSeries, SubCachesCons, ArgsTuple>::type, ArgsTuple>::type type;
+					template SubstitutionCacheSelector<SubSeries, SubCachesCons, ArgsTuple>::type, ArgsTuple>::type Type;
 			};
 
 			template <class ArgsTuple>
-			void print_plain(std::ostream &, const ArgsTuple &) const;
+			void printPlain(std::ostream &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			void print_pretty(std::ostream &, const ArgsTuple &) const;
+			void printPretty(std::ostream &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			void print_tex(std::ostream &, const ArgsTuple &) const;
+			void printTEX(std::ostream &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			bool is_insertable(const ArgsTuple &) const;
+			bool isInsertable(const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			bool needs_padding(const ArgsTuple &) const;
+			bool needsPadding(const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			bool is_ignorable(const ArgsTuple &) const;
+			bool isIgnorable(const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			void pad_right(const ArgsTuple &);
+			void padRight(const ArgsTuple &);
 
 			template <class ArgsTuple>
-			void invert_sign(const ArgsTuple &);
+			void invertSign(const ArgsTuple &);
 
 			void swap(Derived &);
 
 			template <class Layout, class ArgsTuple>
-			void apply_layout(const Layout &, const ArgsTuple &);
+			void applyLayout(const Layout &, const ArgsTuple &);
 
 			template <class TrimFlags>
-			void trim_test(TrimFlags &) const;
+			void trimTest(TrimFlags &) const;
 
 			template <class TrimFlags, class ArgsTuple>
 			Derived trim(const TrimFlags &, const ArgsTuple &) const;
@@ -102,13 +103,13 @@ namespace piranha
 			Derived &subtract(const T &, const ArgsTuple &);
 
 			template <class T, class ArgsTuple>
-			Derived &mult_by(const T &, const ArgsTuple &);
+			Derived &multBy(const T &, const ArgsTuple &);
 
 			template <class T, class ArgsTuple>
 			Derived &divideBy(const T &, const ArgsTuple &);
 
 			template <class ArgsTuple>
-			Derived pow(const double &, const ArgsTuple &) const;
+			Derived pow(const double, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
 			Derived pow(const mp_rational &, const ArgsTuple &) const;
@@ -129,36 +130,36 @@ namespace piranha
 			bool operator!=(const T &) const;
 
 			template <class Series, class ArgsTuple>
-			void split(std::vector<std::vector<Series> > &, const int &, const ArgsTuple &) const;
+			void split(std::vector<std::vector<Series> > &, const int , const ArgsTuple &) const;
 
 		protected:
 
 			template <class ArgsTuple>
-			void construct_from_string(const std::string &, const ArgsTuple &);
+			void constructFromString(const std::string &, const ArgsTuple &);
 	};
 
 
 	// Useful macro for ctors in coefficient series.
 	// TODO: maybe we can call these BaseSeries ctors and use them in NamedSeries ctors macro too?
-#define CF_SERIES_CTORS(series_name) \
-	explicit series_name() {} \
+#define CF_SERIES_CTORS(SeriesName) \
+	explicit SeriesName() {} \
 	template <class ArgsTuple> \
-	explicit series_name(const std::string &s, const ArgsTuple &argsTuple) \
+	explicit SeriesName(const std::string &s, const ArgsTuple &argsTuple) \
 	{ \
-		this->construct_from_string(s, argsTuple); \
+		this->constructFromString(s, argsTuple); \
 	} \
 	template <class ArgsTuple> \
-	explicit series_name(const double &x, const ArgsTuple &a) \
+	explicit SeriesName(const double x, const ArgsTuple &a) \
 	{ \
 		*this = baseSeriesFromNumber(x, a); \
 	} \
 	template <class ArgsTuple> \
-	explicit series_name(const piranha::mp_rational &q, const ArgsTuple &a) \
+	explicit SeriesName(const piranha::mp_rational &q, const ArgsTuple &a) \
 	{ \
 		*this = baseSeriesFromNumber(q, a); \
 	} \
 	template <class ArgsTuple> \
-	explicit series_name(const piranha::mp_integer &z, const ArgsTuple &a) \
+	explicit SeriesName(const piranha::mp_integer &z, const ArgsTuple &a) \
 	{ \
 		*this = baseSeriesFromNumber(z, a); \
 	}
@@ -179,14 +180,16 @@ namespace piranha
 	}
 
 
-#define CF_SERIES_TERM(term_name, separator) term_name<Cf, Key, separator, Allocator>
-#define CF_SERIES_BASE_ANCESTOR(term_name, series_name, term_separator, separator) \
-	piranha::BaseSeries<CF_SERIES_TERM(term_name, term_separator), separator, \
-	Allocator,E0_SERIES(series_name)>
+#define CF_SERIES_TERM(TermName, Separator) TermName<Cf, Key, Separator, Allocator>
 
-#define COMPLEX_CF_SERIES_TERM(term_name, separator) term_name<std::complex<Cf>, Key, separator, Allocator>
-#define COMPLEX_CF_SERIES_BASE_ANCESTOR(term_name, series_name, term_separator, separator) piranha::BaseSeries< \
-	COMPLEX_CF_SERIES_TERM(term_name, term_separator), separator, Allocator, COMPLEX_E0_SERIES(series_name)>
+#define CF_SERIES_BASE_ANCESTOR(TermName, SeriesName, TermSeparator, Separator) \
+	piranha::BaseSeries<CF_SERIES_TERM(TermName, TermSeparator), Separator, \
+	Allocator,E0_SERIES(SeriesName)>
+
+#define COMPLEX_CF_SERIES_TERM(TermName, Separator) TermName<std::complex<Cf>, Key, Separator, Allocator>
+
+#define COMPLEX_CF_SERIES_BASE_ANCESTOR(TermName, SeriesName, TermSeparator, Separator) piranha::BaseSeries< \
+	COMPLEX_CF_SERIES_TERM(TermName, TermSeparator), Separator, Allocator, COMPLEX_E0_SERIES(SeriesName)>
 }
 
 

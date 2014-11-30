@@ -75,7 +75,7 @@ namespace piranha
 		template <class Cf, class T, class ArgsTuple>
 		static void run(Cf &cf, const T &x, const ArgsTuple &argsTuple) 
 		{
-			cf.mult_by(x, argsTuple);
+			cf.multBy(x, argsTuple);
 		}
 	};
 
@@ -105,7 +105,7 @@ namespace piranha
 			MultDivCoefficientsHelper<N>::run(it->cf, x, argsTuple);
 			// If a term becomes ignorable once its coefficient has been multiplied/divided,
 			// set the needs_rebuilding flag to true, increase the iterator and break out.
-			if (it->cf.is_ignorable(argsTuple)) 
+			if (it->cf.isIgnorable(argsTuple)) 
 			{
 				needsRebuilding = true;
 				++it;
