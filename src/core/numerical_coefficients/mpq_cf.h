@@ -53,9 +53,9 @@ namespace piranha
 
 			/// Override print in Tex mode.
 			template <class ArgsTuple>
-			void print_tex(std::ostream &outStream, const ArgsTuple &) const
+			void printTex(std::ostream &outStream, const ArgsTuple &) const
 			{
-				get_value().print_tex(outStream);
+				get_value().printTex(outStream);
 			}
 
 			// Override norm and evaluation.

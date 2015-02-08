@@ -200,7 +200,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void printPlain(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
-				cf.print_plain(outStream, argsTuple); //print coefficient
+				cf.printPlain(outStream, argsTuple); //print coefficient
 				outStream << separator;
 				key.printPlain(outStream, argsTuple); // print key
 			}
@@ -211,7 +211,7 @@ namespace piranha
 			{
 				if (key.isUnity()) 
 				{
-					cf.print_pretty(outStream, argsTuple);
+					cf.printPretty(outStream, argsTuple);
 				} else if (cf == 1) 
 				{
 					key.printPretty(outStream, argsTuple);
@@ -221,7 +221,7 @@ namespace piranha
 					key.printPretty(outStream, argsTuple);
 				} else 
 				{
-					cf.print_pretty(outStream, argsTuple);
+					cf.printPretty(outStream, argsTuple);
 					outStream << '*';
 					key.printPretty(outStream, argsTuple);
 				}
@@ -229,25 +229,25 @@ namespace piranha
 
 			/// Print in tex format.
 			template <class ArgsTuple>
-			void printTEX(std::ostream &outStream, const ArgsTuple &argsTuple) const 
+			void printTex(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
 				if (key.isUnity()) 
 				{
-					cf.print_tex(outStream, argsTuple);
+					cf.printTex(outStream, argsTuple);
 
 				} else if (cf == 1) 
 				{
-					key.printTEX(outStream, argsTuple);
+					key.printTex(outStream, argsTuple);
 
 				} else if (cf == -1) 
 				{
 					outStream << '-';
-					key.printTEX(outStream, argsTuple);
+					key.printTex(outStream, argsTuple);
 
 				} else 
 				{
-					cf.print_tex(outStream, argsTuple);
-					key.printTEX(outStream, argsTuple);
+					cf.printTex(outStream, argsTuple);
+					key.printTex(outStream, argsTuple);
 				}
 			}
 

@@ -103,7 +103,7 @@ namespace piranha
 				{
 					complex_term_type tmp_term;
 					tmp_term.cf.setReal((*it)->cf.besselJ(i, argsTuple), argsTuple);
-					std::copy((*it)->key.begin(),(*it)->key.end(),tmp_trig_mults.begin());
+					std::copy((*it)->key.begin(), (*it)->key.end(), tmp_trig_mults.begin());
 					for (std::size_t j = 0; j < w; ++j) 
 					{
 						tmp_trig_mults[j] *= i;

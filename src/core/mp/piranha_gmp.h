@@ -352,7 +352,7 @@ namespace piranha
 				return retval;
 			}
 			/// Print to stream in Tex format.
-			void print_tex(std::ostream &outStream) const
+			void printTex(std::ostream &outStream) const
 			{
 				if (m_value.get_den() == 1) {
 					outStream << ' ' << m_value.get_num() << ' ';

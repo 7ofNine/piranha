@@ -99,8 +99,8 @@ namespace piranha
 			std::complex<Derived> complex() const;
 
 			void print(std::ostream &stream = std::cout) const;
-			void print_plain(std::ostream &) const;
-			void print_tex(std::ostream &) const;
+			void printPlain(std::ostream &) const;
+			void printTex(std::ostream &) const;
 
 			void save_to(const std::string &) const;
 			// Rework this.

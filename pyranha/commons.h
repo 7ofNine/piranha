@@ -47,7 +47,7 @@ namespace pyranha
 	std::string py_print_to_string_tex(const T &origin)
 	{
 		std::ostringstream stream;
-		origin.print_tex(stream);
+		origin.printTex(stream);
 		return stream.str();
 	}
 
@@ -55,7 +55,7 @@ namespace pyranha
 	std::string py_print_to_string_plain(const T &origin)
 	{
 		std::ostringstream stream;
-		origin.print_plain(stream);
+		origin.printPlain(stream);
 		return stream.str();
 	}
 

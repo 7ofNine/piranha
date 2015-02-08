@@ -31,43 +31,52 @@ int main()
 	// Expansion to order 401 of r/a in terms of e and M.
 	int retval = 0;
 	Psym e("e"), M("M");
-	truncators::degree::set(10);
+	truncators::degree::set(401);
+    {
 	ps res(ps::r_a(ps(e),ps(M)));
 	std::cout << res.length() << '\n';
 	std::cout << res.atoms() << '\n';
 	retval += (res.length() != 401 || res.atoms() != 80805);
-
-    Psym ep("e'"),Mp("M'");
-    ps resp(ps::a_r(ps(ep), ps(Mp)));
-    ps retp = res*resp;
-    retp.save_to("testxxxx.qps");
-    retp.print(std::cout);
-    return 0;
+    }
+    std::cout<< "test 1: " << retval << '\n';
+//    Psym ep("e'"),Mp("M'");
+//    ps resp(ps::a_r(ps(ep), ps(Mp)));
+//    ps retp = res*resp;
+//    retp.save_to("testxxxx.qps");
+ //   retp.print(std::cout);
+//    return 0;
 	// Identity.
 	truncators::degree::set(20);
 	ps e_s(e), M_s(M);
 	retval += (qps::EE(e_s,M_s).cos().sub("e",e_s-1).sub("e",e_s+1) != qps::cos_E(e_s,M_s));
+    std::cout<< "test 2: " << retval << '\n';
 
 	// Another identity.
 	retval += (qps::r_a(e_s,M_s) * qps::sin_f(e_s,M_s) !=
 		(-e_s*e_s + 1).root(2) * qps::sin_E(e_s,M_s));
-
+    std::cout<< "test 3: " << retval << '\n';
 	// Testing pow.
 	retval += (ps::r_a(e_s,M_s).pow(3).root(3) != ps::r_a(e_s,M_s));
-
+    std::cout<< "test 4: " << retval << '\n';
 	// Trigonometric identity.
 	retval += ((ps::cos_E(e_s,M_s).pow(2) + ps::sin_E(e_s,M_s).pow(2))
 		!= 1);
-
+    std::cout<< "test 5: " << retval << '\n';
 	// r_a ** -2 == a_r ** 2 and vice-versa.
 	retval += (ps::a_r(e_s,M_s).pow(2) != ps::r_a(e_s,M_s).pow(-2));
+     std::cout<< "test 6: " << retval << '\n';
 	retval += (ps::r_a(e_s,M_s).pow(2) != ps::a_r(e_s,M_s).pow(-2));
+     std::cout<< "test 7: " << retval << '\n';
 
 	// eipE tests.
 	retval += (ps::eipE(e_s,M_s,5).abs() != 1);
+     std::cout<< "test 8: " << retval << '\n';
 	retval += (ps::eipE(e_s,M_s,5) * ps::eipE(e_s,M_s,-5) != 1);
+     std::cout<< "test 9: " << retval << '\n';
 	retval += (ps::eipE(e_s,M_s,1).pow(6) != ps::eipE(e_s,M_s,6));
+     std::cout<< "test 10: " << retval << '\n';
 	retval += (ps::eipE(e_s,M_s,1).pow(-1).pow(6) != ps::eipE(e_s,M_s,-6));
-
+     std::cout<< "test 11: " << retval << '\n';
+    std::cout << retval << std::endl << std::flush;
 	return retval;
 }

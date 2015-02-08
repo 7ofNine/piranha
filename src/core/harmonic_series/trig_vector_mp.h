@@ -29,7 +29,7 @@ namespace piranha
 {
 	inline void trigVectorPrintElementTEX(std::ostream &outStream, const mp_rational &q)
 	{
-		q.print_tex(outStream);
+		q.printTex(outStream);
 	}
 
 

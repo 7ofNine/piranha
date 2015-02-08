@@ -185,6 +185,14 @@ SET(INCS
 				manipulators/qqpoly.h
 				manipulators/qqps.h
 				manipulators/zpoly.h
+				../pyranha/args_tuple.h
+				../pyranha/boost_python_container_conversions.h
+				../pyranha/boost_python_p_exceptions.h
+				../pyranha/commons.h
+				../pyranha/exceptions.h
+				../pyranha/mp_classes.h
+				../pyranha/series_instantiations.h
+				../pyranha/stl_containers.h
 				)
 				
 ADD_CUSTOM_TARGET(Headers SOURCES ${INCS})

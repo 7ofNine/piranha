@@ -65,7 +65,7 @@ namespace piranha
 			void printPretty(std::ostream &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
-			void printTEX(std::ostream &, const ArgsTuple &) const;
+			void printTex(std::ostream &, const ArgsTuple &) const;
 
 			template <class ArgsTuple>
 			bool isInsertable(const ArgsTuple &) const;

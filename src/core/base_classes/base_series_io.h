@@ -145,7 +145,7 @@ namespace piranha
 		for (Iterator it = start; it != end; ++it) 
         {
 			std::ostringstream tmpStream;
-			FromIterator<Iterator>::get(it)->printTEX(tmpStream, argsTuple);
+			FromIterator<Iterator>::get(it)->printTex(tmpStream, argsTuple);
 			std::string tmp(tmpStream.str());
 			// If this is not the first term, we need to add the "+" sign if appropriate.
 			if (it != start && !tmp.empty() && tmp[0] != '-') 

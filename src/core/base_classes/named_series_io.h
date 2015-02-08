@@ -71,7 +71,7 @@ namespace piranha
 	 * This is the same text format used when saving series to file.
 	 */
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::print_plain(std::ostream &stream) const
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::printPlain(std::ostream &stream) const
 	{
 		named_series_print_plain<arguments_description>(stream, argumentsTuple);
 		stream << "[terms]" << std::endl;
@@ -89,7 +89,7 @@ namespace piranha
 
 	/// Print in tex format.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::print_tex(std::ostream &stream) const
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::printTex(std::ostream &stream) const
 	{
 		derived_const_cast->printTermsTEX(stream, argumentsTuple);
 	}
@@ -252,7 +252,7 @@ namespace piranha
 			return;
 		}
 
-		print_plain(outf);
+		printPlain(outf);
 		outf.close();
 	}
 

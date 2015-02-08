@@ -215,7 +215,7 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			void printTEX(std::ostream &outStream, const ArgsTuple &argsTuple) const
+			void printTex(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
 				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
 

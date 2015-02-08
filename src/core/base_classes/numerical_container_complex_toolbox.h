@@ -54,7 +54,7 @@ namespace piranha
 				return retval;
 			}
 			template <class ArgsTuple>
-			void set_real(const value_type &r, const ArgsTuple &) {
+			void setReal(const value_type &r, const ArgsTuple &) {
 				derived_cast->set_value(r.get_value());
 			}
 			template <class ArgsTuple>

@@ -318,17 +318,17 @@ namespace piranha
 
 
 			/// Print in Tex format.
-			void print_tex(std::ostream &outStream) const
+			void printTex(std::ostream &outStream) const
 			{
 				outStream << "\\left(";
-				m_real.print_tex(outStream);
+				m_real.printTex(outStream);
 
 				if (m_imag >= 0) 
 				{
 					outStream << '+';
 				}
 
-				m_imag.print_tex(outStream);
+				m_imag.printTex(outStream);
 				outStream << "\\, \\imath\\right)";
 			}
 		protected:

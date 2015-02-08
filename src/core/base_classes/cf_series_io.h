@@ -89,7 +89,7 @@ namespace piranha
 	/// Print in tex mode.
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::printTEX(std::ostream &stream, const ArgsTuple &argsTuple) const
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::printTex(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
 		if (derived_const_cast->length() > 1) 
         {

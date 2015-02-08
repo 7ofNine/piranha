@@ -281,7 +281,7 @@ namespace piranha
 							}
 
 							tmp.cf = tmp_cf;
-							tmp.cf.mult_by(mult * cs_phase(i),argsTuple);
+							tmp.cf.multBy(mult * cs_phase(i),argsTuple);
 
 							retval.insert(tmp,argsTuple);
 							

@@ -117,19 +117,19 @@ namespace piranha
 			
 			/// Print in plain mode.
 			template <class ArgsTuple>
-			void print_plain(std::ostream &outStream, const ArgsTuple &) const {
+			void printPlain(std::ostream &outStream, const ArgsTuple &) const {
 				outStream << boost::lexical_cast<std::string>(m_value);
 			}
 			
 			/// Print in pretty mode. Equivalent to print_plain.
 			template <class ArgsTuple>
-			void print_pretty(std::ostream &outStream, const ArgsTuple &) const {
+			void printPretty(std::ostream &outStream, const ArgsTuple &) const {
 				numerical_container_print_pretty_selector<T>::run(m_value,outStream);
 			}
 			
 			/// Print in Tex mode.
 			template <class ArgsTuple>
-			void print_tex(std::ostream &outStream, const ArgsTuple &) const 
+			void printTex(std::ostream &outStream, const ArgsTuple &) const 
 			{
 				numerical_container_print_tex_selector<T>::run(m_value,outStream);
 			}
