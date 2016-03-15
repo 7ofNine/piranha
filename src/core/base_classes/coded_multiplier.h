@@ -59,51 +59,50 @@
 namespace piranha
 {
 
-typedef std::pair<std::size_t,std::size_t> block_type;
-typedef std::vector<block_type> block_sequence;
-typedef boost::numeric::interval<max_fast_int,boost::numeric::interval_lib::policies<
-	boost::numeric::interval_lib::rounded_math<max_fast_int>,
-	boost::numeric::interval_lib::checking_base<max_fast_int>
-> > block_interval;
+typedef std::pair<std::size_t, std::size_t> BlockType;
+typedef std::vector<BlockType>              BlockSequence;
+typedef boost::numeric::interval< max_fast_int, boost::numeric::interval_lib::policies< boost::numeric::interval_lib::rounded_math<max_fast_int>,
+	                                            boost::numeric::interval_lib::checking_base<max_fast_int> > > 
+                                            BlockInterval;
 
 
 template <class Series1, class Series2, class ArgsTuple, class GenericTruncator, class Derived>
-struct base_coded_functor
+struct BaseCodedFunctor
 {
-	typedef typename final_cf<Series1>::type cf_type1;
-	typedef typename final_cf<Series2>::type cf_type2;
-	typedef typename Series1::TermType term_type1;
-	typedef typename Series2::TermType term_type2;
+	typedef typename FinalCf<Series1>::Type CfType1;
+	typedef typename FinalCf<Series2>::Type CfType2;
+	typedef typename Series1::TermType TermType1;
+	typedef typename Series2::TermType TermType2;
+
 
 	template <class Functor>
-	struct indirect_sorter
+	struct IndirectSorter
 	{
-		indirect_sorter(const Functor &func, const std::vector<max_fast_int> &v):m_func(func),m_v(v) {}
+		IndirectSorter(Functor const &functor, std::vector<max_fast_int> const &vec) : functor(functor), vec(vec) {}
 
-		bool operator()(const std::size_t &n1, const std::size_t &n2) const
+		bool operator()(std::size_t const n1, std::size_t const n2) const
 		{
 			// TODO numeric casts here, or maybe one large check at the beginning of the coded multiplier?
-			return m_func.get_mem_pos(m_v[n1]) < m_func.get_mem_pos(m_v[n2]);
+			return functor.get_mem_pos(vec[n1]) < functor.get_mem_pos(vec[n2]);
 		}
 
-		const Functor			        &m_func;
-		const std::vector<max_fast_int>	&m_v;
+		Functor const			        &functor;
+		std::vector<max_fast_int> const	&vec;
 	};
 
 
-	base_coded_functor(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
-		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
-		std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2,
-		const GenericTruncator &trunc, const ArgsTuple &argsTuple):
-		m_tc1(tc1), m_tc2(tc2), m_ck1(ck1), m_ck2(ck2), m_t1(t1), m_t2(t2), m_trunc(trunc), m_argsTuple(argsTuple)
+	BaseCodedFunctor(std::vector<CfType1>           &tc1, std::vector<CfType2>           &tc2,
+		             std::vector<max_fast_int>      &ck1, std::vector<max_fast_int>      &ck2,
+		             std::vector<TermType1 const *> &t1,  std::vector<TermType2 const *> &t2,
+		             GenericTruncator const &truncator,    ArgsTuple const &argsTuple)
+    : m_tc1(tc1), m_tc2(tc2), m_ck1(ck1), m_ck2(ck2), m_t1(t1), m_t2(t2), m_trunc(truncator), m_argsTuple(argsTuple)
 	{}
 
 
-	void base_blocks_setup(std::size_t &cur_idx1_start, const std::size_t &block_size,
-		block_sequence &idx_vector1, block_sequence &idx_vector2)
+	void base_blocks_setup(std::size_t &cur_idx1_start, const std::size_t &block_size, BlockSequence &idx_vector1, BlockSequence &idx_vector2)
 	{
 #ifdef _DEBUG
-		std::cout << "base_coded_functor::base_blocks_setup" <<std::endl
+		std::cout << "BaseCodedFunctor::base_blocks_setup" <<std::endl
 			      << "cur_idx1_start: " << cur_idx1_start <<std::endl
 				  << "block_size: " << block_size << std::endl
 				  << "idx_vector1 size: " << idx_vector1.size() << std::endl
@@ -111,8 +110,10 @@ struct base_coded_functor
 				  << std::flush;
 #endif
 		PIRANHA_ASSERT(cur_idx1_start < m_tc1.size() && idx_vector1.size() == idx_vector2.size());
-		std::size_t upper_bound1 = std::min<std::size_t>(m_tc1.size(),cur_idx1_start + idx_vector1.size() * block_size),
-			upper_bound2 = std::min<std::size_t>(m_tc2.size(),idx_vector2.size() * block_size);
+
+		std::size_t upper_bound1 = std::min<std::size_t>(m_tc1.size(), cur_idx1_start + idx_vector1.size() * block_size);
+		std::size_t	upper_bound2 = std::min<std::size_t>(m_tc2.size(), idx_vector2.size() * block_size);
+
 		do {
 			// Now we must check the blocks for the following conditions:
 			// 1 - we must not be past the end of the series.
@@ -120,10 +121,11 @@ struct base_coded_functor
 			// 3 - the upper bound of each block must be different from the lower bound of next block.
 			// ---
 			// Determine the sequences, given upper and lower bounds.
-			determine_sequence(idx_vector1,cur_idx1_start,upper_bound1);
-			determine_sequence(idx_vector2,0,upper_bound2);
+			determine_sequence(idx_vector1, cur_idx1_start, upper_bound1);
+			determine_sequence(idx_vector2,              0, upper_bound2);
 			// Prepare lower-upper bounds for the next iteration, if any. But we never want to have less than 1 term in the whole sequence.
 			PIRANHA_ASSERT(upper_bound1 > cur_idx1_start);
+
 			if (idx_vector1.back().second - cur_idx1_start >= 2) 
 			{
 				upper_bound1 = cur_idx1_start + (idx_vector1.back().second - cur_idx1_start) / 2;
@@ -133,11 +135,13 @@ struct base_coded_functor
 				upper_bound2 = idx_vector2.back().second / 2;
 			}
 		} while (sequences_overlap(idx_vector1,idx_vector2));
+
 		// Blocks boundaries check.
-		adjust_block_boundaries(idx_vector1,m_ck1);
-		adjust_block_boundaries(idx_vector2,m_ck2);
+		adjust_block_boundaries(idx_vector1, m_ck1);
+		adjust_block_boundaries(idx_vector2, m_ck2);
 		// Finally, update the cur_idx1.
 		cur_idx1_start = idx_vector1.back().second;
+
 // std::cout << "init\n";
 // for (std::size_t i = 0; i < idx_vector1.size(); ++i) {
 // 	std::cout << idx_vector1[i].first << ',' << idx_vector1[i].second << '\n';
@@ -150,34 +154,36 @@ struct base_coded_functor
 
 
 	// Write into s a sequence of blocks ranging from index lower_bound to index upper_bound.
-	static void determine_sequence(block_sequence &s, const std::size_t &lower_bound, const std::size_t &upper_bound)
+	static void determine_sequence(BlockSequence &s, std::size_t const lower_bound, std::size_t const upper_bound)
 	{
 		PIRANHA_ASSERT(upper_bound > lower_bound && s.size() > 0);
-		const std::size_t n_blocks = boost::numeric_cast<std::size_t>(s.size()), n_terms = upper_bound - lower_bound;
+		const std::size_t n_blocks = boost::numeric_cast<std::size_t>(s.size());
+        const std::size_t n_terms  = upper_bound - lower_bound;
 		const std::size_t block_size = (n_blocks > n_terms) ? 1 : n_terms / n_blocks;
 		std::size_t i = 0;
 		for (; i < n_blocks - 1; ++i) 
 		{
-			s[i].first = std::min<std::size_t>(upper_bound,lower_bound + i * block_size);
-			s[i].second = std::min<std::size_t>(upper_bound,lower_bound + (i + 1) * block_size);
+			s[i].first  = std::min<std::size_t>(upper_bound, lower_bound +  i      * block_size);
+			s[i].second = std::min<std::size_t>(upper_bound, lower_bound + (i + 1) * block_size);
 		}
 		// Handle the last block separately, as it might be non homogeneous.
-		s[i].first = std::min<std::size_t>(upper_bound,lower_bound + i * block_size);
+		s[i].first = std::min<std::size_t>(upper_bound, lower_bound + i * block_size);
 		s[i].second = upper_bound;
 	}
 
 
-	void adjust_block_boundaries(block_sequence &s, const std::vector<max_fast_int> &ck) const
+	void adjust_block_boundaries(BlockSequence &s, std::vector<max_fast_int> const &ck) const
 	{
 #ifdef _DEBUG
-		std::cout << "base_coded_functor::adjust_block_boundaries: ck size = " << ck.size() << std::endl << std::flush;
+		std::cout << "BaseCodedFunctor::adjust_block_boundaries: ck size = " << ck.size() << std::endl << std::flush;
 #endif
 		PIRANHA_ASSERT(s.size() > 0);
-		for (block_sequence::size_type i = 0; i < s.size() - 1; ++i) 
+
+		for (BlockSequence::size_type i = 0; i < s.size() - 1; ++i) 
 		{
 			// Shrink non-empty blocks whose upper value's memory position is shared with the next block.
 #ifdef _DEBUG
-			std::cout << "base_coded_functor::adjust_block_boundaries: blockSequence index = " << i << std::endl << std::flush;
+			std::cout << "BaseCodedFunctor::adjust_block_boundaries: blockSequence index = " << i << std::endl << std::flush;
 			std::cout << "s[i] = " << s[i].first << "/" << s[i].second << std::endl << std::flush;
 			std::cout << " upper/lower = " << s[i].second - 1 <<"/" << s[i + 1].first << std::endl << std::flush;  
 #endif
@@ -195,11 +201,11 @@ struct base_coded_functor
 	}
 
 
-	bool block2_advance(const block_sequence &idx_vector1, block_sequence &idx_vector2,
-		const std::size_t &block_size, const block_sequence &orig2, std::size_t &wrap_count) const
+	bool block2_advance(const BlockSequence &idx_vector1, BlockSequence &idx_vector2, const std::size_t &block_size, const BlockSequence &orig2, std::size_t &wrap_count) const
 	{
 		__PDEBUG(std::cout << "coded_multiplier::block2_advance()" << std::endl << std::flush);
 		PIRANHA_ASSERT(idx_vector1.size() == idx_vector2.size() && idx_vector1.size() > 0);
+
 		if (wrap_count)
 		{
 			PIRANHA_ASSERT(wrap_count < idx_vector2.size());
@@ -209,7 +215,7 @@ struct base_coded_functor
 				return false;
 			}
 			// Shift down the blocks.
-			std::copy(idx_vector2.begin() + 1,idx_vector2.end(),idx_vector2.begin());
+			std::copy(idx_vector2.begin() + 1, idx_vector2.end(), idx_vector2.begin());
 			// Get the new block from the originals.
 			idx_vector2.back() = orig2[wrap_count];
 			// Increase the wrap count.
@@ -217,13 +223,13 @@ struct base_coded_functor
 		} else
 		{
 			// Shift down the blocks.
-			std::copy(idx_vector2.begin() + 1,idx_vector2.end(),idx_vector2.begin());
+			std::copy(idx_vector2.begin() + 1, idx_vector2.end(), idx_vector2.begin());
 			// Set the new starting point for the last block.
 			idx_vector2.back().first = idx_vector2.back().second;
 			// Add the block size or stop at the end of the series, if necessary.
-			idx_vector2.back().second = std::min<std::size_t>(m_tc2.size(),idx_vector2.back().first + block_size);
+			idx_vector2.back().second = std::min<std::size_t>(m_tc2.size(), idx_vector2.back().first + block_size);
 			// Now check if we are at the end of the first phase.
-			if (idx_vector2.front() == block_type(m_tc2.size(), m_tc2.size()))
+			if (idx_vector2.front() == BlockType(m_tc2.size(), m_tc2.size()))
 			{
 				if (idx_vector2.size() > 1)
 				{
@@ -250,6 +256,7 @@ struct base_coded_functor
 				}
 			}
 		}
+
 		// Make sure we have no overlaps.
 		PIRANHA_ASSERT(!sequences_overlap(idx_vector1,idx_vector2));
 // std::cout << "after advance\n";
@@ -260,24 +267,27 @@ struct base_coded_functor
 // 	std::cout << idx_vector2[i].first << ',' << idx_vector2[i].second << '\n';
 // }
 // std::cout << "blappo\n";
+
 		return true;
 	}
 
 
-	static bool interval_sorter(const block_interval &i1, const block_interval &i2)
+	static bool interval_sorter(BlockInterval const &i1,  BlockInterval const &i2)
 	{
 		return i1.lower() < i2.lower();
 	}
 
 
-	bool sequences_overlap(const block_sequence &s1, const block_sequence &s2) const
+	bool sequences_overlap(BlockSequence const &s1,  BlockSequence const &s2) const
 	{
 		PIRANHA_ASSERT(s1.size() == s2.size() && s1.size() > 0);
-		typedef std::vector<block_interval>::size_type size_type;
-		std::vector<block_interval> vi;
+
+		typedef std::vector<BlockInterval>::size_type size_type;
+
+		std::vector<BlockInterval> vi;
 		for (size_type i = 0; i < s1.size(); ++i) 
 		{
-			std::pair<block_interval,block_interval> tmp(derived_const_cast->blocks_to_intervals(s1[i],s2[i]));
+			std::pair<BlockInterval, BlockInterval> tmp(derived_const_cast->blocks_to_intervals(s1[i], s2[i]));
 			if (!boost::numeric::empty(tmp.first)) 
 			{
 				vi.push_back(tmp.first);
@@ -294,10 +304,12 @@ struct base_coded_functor
 			return false;
 		}
 		// Sort according to lower bound of the interval.
-		std::sort(vi.begin(),vi.end(),interval_sorter);
+		std::sort(vi.begin(), vi.end(), interval_sorter);
+
 		PIRANHA_ASSERT(vi.size() > 0);
+
 		// Check that all intervals are disjoint.
-		for (std::vector<block_interval>::size_type i = 0; i < vi.size() - 1; ++i) 
+		for (std::vector<BlockInterval>::size_type i = 0; i < vi.size() - 1; ++i) 
 		{
 			if (vi[i].upper() >= vi[i + 1].lower()) 
 			{
@@ -312,19 +324,19 @@ struct base_coded_functor
 	template <class T>
 	static void apply_permutation(const std::vector<std::size_t> &perm, std::vector<T> &v)
 	{
-		typedef boost::permutation_iterator<typename std::vector<T>::iterator,std::vector<std::size_t>::const_iterator> perm_iterator;
+		typedef boost::permutation_iterator<typename std::vector<T>::iterator, std::vector<std::size_t>::const_iterator> perm_iterator;
 		std::vector<T> other(v.size());
-		std::copy(perm_iterator(v.begin(),perm.begin()),perm_iterator(v.end(),perm.end()),other.begin());
+		std::copy(perm_iterator(v.begin(), perm.begin()), perm_iterator(v.end(), perm.end()), other.begin());
 		other.swap(v);
 	}
 
 
-	std::vector<cf_type1>		    &m_tc1;
-	std::vector<cf_type2>		    &m_tc2;
+	std::vector<CfType1>		    &m_tc1;
+	std::vector<CfType2>		    &m_tc2;
 	std::vector<max_fast_int>	    &m_ck1;
 	std::vector<max_fast_int>	    &m_ck2;
-	std::vector<term_type1 const *> &m_t1;
-	std::vector<term_type2 const *> &m_t2;
+	std::vector<TermType1 const *>  &m_t1;
+	std::vector<TermType2 const *>  &m_t2;
 	const GenericTruncator		    &m_trunc;
 	const ArgsTuple			        &m_argsTuple;
 };
@@ -359,8 +371,8 @@ struct base_coded_functor
 			typedef typename cm_tuple<Series1>::type_decoding_tuple decoding_tuple_type;
 			// These static checks makes sure that the two series have compatible types in the echelon
 			// hierarchy, apart from the numerical coefficients.
-			PIRANHA_STATIC_CHECK((boost::is_same<minmax_type,typename cm_tuple<Series2>::type_minmax>::value),"");
-			PIRANHA_STATIC_CHECK((boost::is_same<value_handler_type,typename cm_tuple<Series2>::type_value_handler>::value),"");
+			PIRANHA_STATIC_CHECK((boost::is_same<minmax_type, typename cm_tuple<Series2>::type_minmax>::value), "");
+			PIRANHA_STATIC_CHECK((boost::is_same<value_handler_type, typename cm_tuple<Series2>::type_value_handler>::value), "");
 			
 			// Generalised reverse lexicographic comparison.
 			class key_revlex_comparison
@@ -370,7 +382,7 @@ struct base_coded_functor
 					template <class Term>
 					bool operator()(const Term *t1, const Term *t2) const
 					{
-						return key_revlex_comparison_impl<Term>::run(t1,t2);
+						return key_revlex_comparison_impl<Term>::run(t1, t2);
 					}
 			};
 
@@ -429,7 +441,7 @@ struct base_coded_functor
 				{
 					f_terms1 = derived_cast->series1.flattenTerms(derived_cast->argsTuple);
 					f_terms2 = derived_cast->series2.flattenTerms(derived_cast->argsTuple);
-					derived_cast->cacheTermsPointers(f_terms1,f_terms2);
+					derived_cast->cacheTermsPointers(f_terms1, f_terms2);
 				} else
 				{
 					// Cache term pointers.
@@ -479,8 +491,8 @@ struct base_coded_functor
 			void ll_perform_multiplication(const GenericTruncator &trunc)
 			{
 				const settings::multiplication_algorithm algo = settings::get_multiplication_algorithm();
-				typedef typename final_cf<Series1>::type cf_type1;
-				typedef typename final_cf<Series2>::type cf_type2;
+				typedef typename FinalCf<Series1>::Type cf_type1;
+				typedef typename FinalCf<Series2>::Type cf_type2;
 				// Code terms.
 				// NOTE: it is important to code here since at this point we already have sorted input series,
 				//       if necessary.

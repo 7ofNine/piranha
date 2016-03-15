@@ -82,8 +82,8 @@ namespace piranha
 			}
 
 
-			template <class Functor>
-			static void blockedMultiplication(const std::size_t blockSize, const std::size_t size1, const std::size_t size2, Functor &m)
+			template <class MulitplicationFunctor>
+			static void blockedMultiplication(std::size_t const blockSize, std::size_t const size1, std::size_t const size2, MulitplicationFunctor &m)
 			{
 				PIRANHA_ASSERT(blockSize > 0);
 
@@ -171,8 +171,8 @@ namespace piranha
 
 		public:
 
-			BaseSeriesMultiplier(const Series1 &series1, const Series2 &series2, Series1 &result, const ArgsTuple &argsTuple):
-				series1(series1), series2(series2), argsTuple(argsTuple), retval(result)
+			BaseSeriesMultiplier(const Series1 &series1, const Series2 &series2, Series1 &result, const ArgsTuple &argsTuple)
+              :	series1(series1), series2(series2), argsTuple(argsTuple), retval(result)
 			{
 				PIRANHA_ASSERT(series1.length() > 0 && series2.length() > 0);
 			}

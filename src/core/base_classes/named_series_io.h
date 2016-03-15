@@ -73,7 +73,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::printPlain(std::ostream &stream) const
 	{
-		named_series_print_plain<arguments_description>(stream, argumentsTuple);
+		named_series_print_plain<ArgumentsDescription>(stream, argumentsTuple);
 		stream << "[terms]" << std::endl;
 		derived_const_cast->printTermsPlain(stream, argumentsTuple);
 	}
@@ -242,7 +242,7 @@ namespace piranha
 
 	/// Save series to file.
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::save_to(const std::string &filename) const
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::saveTo(const std::string &filename) const
 	{
 		std::ofstream outf(filename.c_str(), std::ios_base::trunc);
 		if (outf.fail()) 
@@ -326,16 +326,16 @@ namespace piranha
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<__PIRANHA_NAMED_SERIES_TP>::s_begin() const
+	inline typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<__PIRANHA_NAMED_SERIES_TP>::beginIt() const
 	{
-		return SeriesIterator(derived_const_cast->begin(), s_iterator_generator(*derived_const_cast));
+		return SeriesIterator(derived_const_cast->begin(), SeriesIteratorGenerator(*derived_const_cast));
 	}
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<__PIRANHA_NAMED_SERIES_TP>::s_end() const
+	inline typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<__PIRANHA_NAMED_SERIES_TP>::endIt() const
 	{
-		return SeriesIterator(derived_const_cast->end(), s_iterator_generator(*derived_const_cast));
+		return SeriesIterator(derived_const_cast->end(), SeriesIteratorGenerator(*derived_const_cast));
 	}
 
 
@@ -343,7 +343,7 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline NamedSeries<__PIRANHA_NAMED_SERIES_TP>::~NamedSeries()
 	{
-		PIRANHA_STATIC_CHECK(boost::tuples::length<arguments_description>::value == Derived::echelonLevel + 1, "");
+		PIRANHA_STATIC_CHECK(boost::tuples::length<ArgumentsDescription>::value == Derived::echelonLevel + 1, "");
 	}
 
 

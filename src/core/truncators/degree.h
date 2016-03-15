@@ -104,7 +104,7 @@ namespace truncators {
 					typedef GetType type;
 
 					GetType(std::vector<TermType1 const *> &t1, std::vector<TermType2 const *> &t2, const ArgsTuple &argsTuple, bool initialise = true)
-                            :m_t1(t1), m_t2(t2), m_argsTuple(argsTuple)
+                            :m_t1(t1), m_t2(t2), argsTuple(argsTuple)
 					{
 						// Some static checks.
 						PIRANHA_STATIC_CHECK(Series1::expo_args_position == Series2::expo_args_position, "");
@@ -113,7 +113,7 @@ namespace truncators {
 						// Convert psyms vector into position tuple only if we are truncating to partial degree.
 						if (truncationMode == TruncationPartialDeg) 
 						{
-							m_pos_tuple = psyms2pos(psyms, m_argsTuple);
+							positionTuple = psyms2pos(psyms, argsTuple);
 						}
 						if (initialise) 
 						{
@@ -128,7 +128,7 @@ namespace truncators {
                         {
 							case TruncationDeg:      return ((*t1)->template get<expo_term_pos>().order() + (*t2)->template get<expo_term_pos>().order() >= degreeLimit);
 
-							case TruncationPartialDeg:	   return ((*t1)->template get<expo_term_pos>().partialOrder(m_pos_tuple) + (*t2)->template get<expo_term_pos>().partialOrder(m_pos_tuple) >= degreeLimit);
+							case TruncationPartialDeg:	   return ((*t1)->template get<expo_term_pos>().partialOrder(positionTuple) + (*t2)->template get<expo_term_pos>().partialOrder(positionTuple) >= degreeLimit);
 
 							case TruncationInactive: PIRANHA_ASSERT(false); // We should never get there.
 				 	    }
@@ -256,7 +256,7 @@ namespace truncators {
 
 							case TruncationDeg:      return true;
 							
-                            case TruncationPartialDeg:    return (m_pos_tuple.template get<expo_args_pos>().size() > 0);
+                            case TruncationPartialDeg:    return (positionTuple.template get<expo_args_pos>().size() > 0);
 
 								           // In case of partial degree truncator is effective only if the position tuple
 								           // contains some elements.
@@ -279,10 +279,10 @@ namespace truncators {
 
 							case TruncationPartialDeg:	// We need to do the sorting only if the position tuple
 								        // contains some elements.
-								        if (m_pos_tuple.template get<expo_args_pos>().size() > 0) 
+								        if (positionTuple.template get<expo_args_pos>().size() > 0) 
 								        {
-									        std::sort(m_t1.begin(), m_t1.end(), partial_order_comparison<expo_term_pos, PosTupleType>(m_pos_tuple));
-                                            std::sort(m_t2.begin(), m_t2.end(), partial_order_comparison<expo_term_pos, PosTupleType>(m_pos_tuple));
+									        std::sort(m_t1.begin(), m_t1.end(), partial_order_comparison<expo_term_pos, PosTupleType>(positionTuple));
+                                            std::sort(m_t2.begin(), m_t2.end(), partial_order_comparison<expo_term_pos, PosTupleType>(positionTuple));
 								        }
 								        break;
 							case TruncationInactive: ;
@@ -294,8 +294,8 @@ namespace truncators {
 
 					std::vector<TermType1 const *>	&m_t1;
 					std::vector<TermType2 const *>	&m_t2;
-					const ArgsTuple			        &m_argsTuple;
-					PosTupleType			         m_pos_tuple;
+					const ArgsTuple			        &argsTuple;
+					PosTupleType			         positionTuple;
 			};
 
 

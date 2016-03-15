@@ -56,14 +56,14 @@ namespace piranha
 	void degree::set(const std::string &s, const int n)
 	{
 		degreeLimit    = n;
-		psyms          = names2psyms(std::vector<std::string>(1,s));
+		psyms          = names2psyms(std::vector<std::string>(1, s)); // setup input string as vector of strings
 		truncationMode = TruncationPartialDeg;
 	}
 
 	void degree::set(const std::string &s, const mp_rational &r)
 	{
 		degreeLimit    = r;
-		psyms          = names2psyms(std::vector<std::string>(1,s));
+		psyms          = names2psyms(std::vector<std::string>(1, s)); // setup input string as vector of strings
 		truncationMode = TruncationPartialDeg;
 	}
 

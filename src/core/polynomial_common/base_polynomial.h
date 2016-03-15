@@ -71,7 +71,7 @@ namespace piranha
 				{
 					if (it->key[position] == -1) 
 					{
-						PIRANHA_THROW(value_error,"exponent is -1 in integrand polynomial, cannot proceed");
+						PIRANHA_THROW(value_error, "exponent is -1 in integrand polynomial, cannot proceed"); // this would lead to logarithm
 					}
 
 					std::copy(it->key.begin(), it->key.end(), tmpExponents.begin());

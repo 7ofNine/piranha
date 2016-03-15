@@ -99,16 +99,16 @@ namespace piranha
 	}
 
 	// TMP function for checking that evaluation dictionary has all the elements needed.
-	static inline bool check_eval_dict(const eval_dict &, const boost::tuples::null_type &)
+	static inline bool check_eval_dict(const EvalDict &, const boost::tuples::null_type &)
 	{
 		return true;
 	}
 
 	template <class ArgsTuple>
-	static inline bool check_eval_dict(const eval_dict &d, const ArgsTuple &argsTuple)
+	static inline bool check_eval_dict(const EvalDict &d, const ArgsTuple &argsTuple)
 	{
 		const std::size_t size = argsTuple.get_head().size();
-		const eval_dict::const_iterator it_f = d.end();
+		const EvalDict::const_iterator it_f = d.end();
 
 		for (std::size_t i = 0; i < size; ++i)
         {
@@ -125,7 +125,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline typename TermEvalTypeDeterminer<Term>::type
-	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::eval(const eval_dict &d) const
+	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::eval(const EvalDict &d) const
 	{
 		if (!check_eval_dict(d, argumentsTuple)) 
 		{
@@ -137,9 +137,9 @@ namespace piranha
 		// and using static vectors. We should test performance before bothering though.
 		std::vector<std::pair<Psym,std::vector<double> > > orig_eval;
 		orig_eval.reserve(d.size());
-		const eval_dict::const_iterator it_f(d.end());
+		const EvalDict::const_iterator it_f(d.end());
 
-		for (eval_dict::const_iterator it = d.begin(); it != it_f; ++it)
+		for (EvalDict::const_iterator it = d.begin(); it != it_f; ++it)
         {
 			orig_eval.push_back(std::make_pair(Psym(it->first), Psym(it->first).get_time_eval()));
 			Psym(it->first, it->second);
@@ -158,7 +158,7 @@ namespace piranha
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::size_t NamedSeries<__PIRANHA_NAMED_SERIES_TP>::psi(const int &start, const int &step) const
+	inline std::size_t NamedSeries<__PIRANHA_NAMED_SERIES_TP>::psi(const int start, const int step) const
 	{
 		return derived_const_cast->psi_(start, step, argumentsTuple);
 	}

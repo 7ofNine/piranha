@@ -113,7 +113,7 @@ namespace piranha
 	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const Psym &arg)
 	{
 		PIRANHA_ASSERT(derivedConstCast->empty());
-		named_series_append_arg<arguments_description>::run(s, argumentsTuple, arg);
+		named_series_append_arg<ArgumentsDescription>::run(s, argumentsTuple, arg);
 	}
 
 
@@ -459,7 +459,7 @@ namespace piranha
 
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::vector<std::vector<Derived> > NamedSeries<__PIRANHA_NAMED_SERIES_TP>::split(const int &n) const
+	inline std::vector<std::vector<Derived> > NamedSeries<__PIRANHA_NAMED_SERIES_TP>::split(const int n) const
 	{
 		if (n < 0 || n >= boost::tuples::length<ArgsTupleType>::value) 
 		{

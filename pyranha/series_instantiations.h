@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 
-#include "../src/core/base_classes/named_series_def.h" // For eval_dict.
+#include "../src/core/base_classes/named_series_def.h" // For EvalDict.
 #include "../src/core/config.h"
 #include "../src/core/mp.h"
 #include "../src/core/psym.h"
@@ -42,13 +42,13 @@ namespace pyranha
 	template <class NamedSeries>
 	inline typename NamedSeries::SeriesIterator series_begin(const NamedSeries &s)
 	{
-		return s.s_begin();
+		return s.beginIt();
 	}
 
 	template <class NamedSeries>
 	inline typename NamedSeries::SeriesIterator series_end(const NamedSeries &s)
 	{
-		return s.s_end();
+		return s.endIt();
 	}
 
 	template <class Series>
@@ -126,9 +126,9 @@ namespace pyranha
 		}
 		inst.def("__split__", &T::split, "Split series.");
 		inst.def("__psi__", &T::psi, "Power series iterations.");
-		inst.def("save_to", &T::save_to, "Save to file.");
+		inst.def("saveTo", &T::saveTo, "Save to file.");
 		typedef typename T::EvalType (T::*eval_double)(const double &) const;
-		typedef typename T::EvalType (T::*eval_dic)(const piranha::eval_dict &) const;
+		typedef typename T::EvalType (T::*eval_dic)(const piranha::EvalDict &) const;
 		inst.def("__eval__", eval_double(&T::eval), "Evaluate at time arg2.");
 		inst.def("__eval__", eval_dic(&T::eval), "Evaluate using dictionary arg2.");
 		inst.add_property("norm", &T::norm, "Norm.");
@@ -190,7 +190,7 @@ namespace pyranha
 		inst.def(boost::python::self / piranha::mp_rational());
 		inst.def(boost::python::self / piranha::mp_integer());
 		// Exponentiation.
-		typedef T (T::*pow_double)(const double &) const;
+		typedef T (T::*pow_double)(const double) const;
 		typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
 		inst.def("__pow__", pow_double(&T::pow));
 		inst.def("__pow__", pow_rational(&T::pow));

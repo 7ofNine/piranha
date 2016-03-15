@@ -45,7 +45,7 @@ namespace piranha
 			typedef Cf CfType;
 			/// Alias for trigonometric type.
 			typedef Trig KeyType;
-			/// Result of the multiplication of two terms.
+			/// Result of the multiplication of two terms. they result in tow cos or sin terms
 			typedef typename boost::tuple<FourierSeriesTerm, FourierSeriesTerm> multiplication_result;
 
 			PIRANHA_TERM_CTORS(FourierSeriesTerm);

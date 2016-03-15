@@ -55,9 +55,9 @@ struct threaded_blocked_multiplier
 {
 	threaded_blocked_multiplier(const std::size_t &nominal_block_size, const std::size_t &size1, const std::size_t &size2, const std::size_t &thread_id,
 		                        const std::size_t &thread_n, boost::barrier *barrier, std::size_t &cur_idx1_start, bool &breakout, Functor &func,
-		                        block_sequence &idx_vector1, block_sequence &idx_vector2):
-		m_nominal_block_size(nominal_block_size), m_size1(size1), m_thread_id(thread_id), m_thread_n(thread_n),
-		m_barrier(barrier), m_cur_idx1_start(cur_idx1_start), m_breakout(breakout), m_func(func), m_idx_vector1(idx_vector1), m_idx_vector2(idx_vector2)
+		                        BlockSequence &idx_vector1, BlockSequence &idx_vector2)
+    : m_nominal_block_size(nominal_block_size), m_size1(size1), m_thread_id(thread_id), m_thread_n(thread_n),
+	  m_barrier(barrier), m_cur_idx1_start(cur_idx1_start), m_breakout(breakout), m_func(func), m_idx_vector1(idx_vector1), m_idx_vector2(idx_vector2)
 	{
 #ifdef _DEBUG
 		std::cout << "threaded_blocked_multiplier" << std::endl 
@@ -92,14 +92,14 @@ struct threaded_blocked_multiplier
 	//		std::cout << "polynomial_multiplier::(): 2 : threadid = " << m_thread_id << std::endl << std::flush;
 			// The first thread is in charge of the initial setup of the indices vectors.
 			// TODO: exception handling, in case of both single and multi thread.
-			m_idx_vector1.resize(boost::numeric_cast<block_sequence::size_type>(m_thread_n));
-			m_idx_vector2.resize(boost::numeric_cast<block_sequence::size_type>(m_thread_n));
+			m_idx_vector1.resize(boost::numeric_cast<BlockSequence::size_type>(m_thread_n));
+			m_idx_vector2.resize(boost::numeric_cast<BlockSequence::size_type>(m_thread_n));
 			m_cur_idx1_start = 0;
 		}
 
 		sync();
 //		std::cout << "polynomial_multiplier::(): 3 : threadid = " << m_thread_id << std::endl << std::flush;
-		block_sequence orig2(m_idx_vector2.size());
+		BlockSequence orig2(m_idx_vector2.size());
 		
 		while (m_cur_idx1_start != m_size1)
 		{
@@ -110,7 +110,7 @@ struct threaded_blocked_multiplier
 			if (m_thread_id == 0)
 			{
 //				std::cout << "polynomial_multiplier::(): 5 : threadid = " << m_thread_id << std::endl << std::flush;
-				m_func.blocks_setup(m_cur_idx1_start,m_nominal_block_size,m_idx_vector1,m_idx_vector2);
+				m_func.blocks_setup(m_cur_idx1_start ,m_nominal_block_size, m_idx_vector1, m_idx_vector2);
 				m_breakout = false;
 			}
 
@@ -118,7 +118,7 @@ struct threaded_blocked_multiplier
 //			std::cout << "polynomial_multiplier::(): 6 : threadid = " << m_thread_id << std::endl << std::flush;
 			const std::size_t i_start = m_idx_vector1[m_thread_id].first, i_end = m_idx_vector1[m_thread_id].second;
 			// Remember the original block sequence for the second series.
-			std::copy(m_idx_vector2.begin(),m_idx_vector2.end(),orig2.begin());
+			std::copy(m_idx_vector2.begin(), m_idx_vector2.end(), orig2.begin());
 			// Reset the wrap count.
 			std::size_t wrap_count = 0;
 
@@ -178,26 +178,25 @@ struct threaded_blocked_multiplier
 	std::size_t		   &m_cur_idx1_start;
 	bool			   &m_breakout;
 	Functor			   &m_func;
-	block_sequence	   &m_idx_vector1;
-	block_sequence	   &m_idx_vector2;
+	BlockSequence	   &m_idx_vector1;
+	BlockSequence	   &m_idx_vector2;
 };
 
 
 template <class Series1, class Series2, class ArgsTuple, class GenericTruncator>
-struct polynomial_vector_functor:
-	public base_coded_functor<Series1,Series2,ArgsTuple,GenericTruncator,polynomial_vector_functor<Series1,Series2,ArgsTuple,GenericTruncator> >
+struct PolynomialVectorFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, PolynomialVectorFunctor<Series1, Series2, ArgsTuple, GenericTruncator> >
 {
-	typedef typename final_cf<Series1>::type cf_type1;
-	typedef typename final_cf<Series2>::type cf_type2;
+	typedef typename FinalCf<Series1>::Type cf_type1;
+	typedef typename FinalCf<Series2>::Type cf_type2;
 	typedef typename Series1::TermType term_type1;
 	typedef typename Series2::TermType term_type2;
-	typedef base_coded_functor<Series1, Series2, ArgsTuple, GenericTruncator, polynomial_vector_functor<Series1, Series2, ArgsTuple, GenericTruncator> > ancestor;
+	typedef BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, PolynomialVectorFunctor<Series1, Series2, ArgsTuple, GenericTruncator> > ancestor;
 
-	polynomial_vector_functor(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
-		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
-		std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2,
-		const GenericTruncator &trunc, cf_type1 *vc_res, const ArgsTuple &argsTuple):
-		ancestor(tc1, tc2, ck1, ck2, t1, t2, trunc, argsTuple), m_vc_res(vc_res)
+	PolynomialVectorFunctor(std::vector<cf_type1>            &tc1,       std::vector<cf_type2> &tc2,
+		                    std::vector<max_fast_int>        &ck1,       std::vector<max_fast_int> &ck2,
+		                    std::vector<term_type1 const *>  &t1,        std::vector<term_type2 const *> &t2,
+		                    const GenericTruncator           &truncator, cf_type1 *vc_res, const ArgsTuple &argsTuple)
+        : ancestor(tc1, tc2, ck1, ck2, t1, t2, truncator, argsTuple), m_vc_res(vc_res)
 	{}
 
 
@@ -213,8 +212,7 @@ struct polynomial_vector_functor:
 	}
 
 
-	void blocks_setup(std::size_t &cur_idx1_start, const std::size_t &block_size,
-		block_sequence &idx_vector1, block_sequence &idx_vector2)
+	void blocks_setup(std::size_t &cur_idx1_start, const std::size_t &block_size, BlockSequence &idx_vector1, BlockSequence &idx_vector2)
 	{
 		if (cur_idx1_start == 0)
 		{
@@ -232,17 +230,19 @@ struct polynomial_vector_functor:
 
 	// Return the two intervals in indices in the output structure containing the results of
 	// one block-by-block multiplication.
-	std::pair<block_interval, block_interval> blocks_to_intervals(const block_type &b1, const block_type &b2) const
+	std::pair<BlockInterval, BlockInterval> blocks_to_intervals(BlockType const &b1, BlockType const &b2) const
 	{
 		PIRANHA_ASSERT(b1.first <= b1.second && b2.first <= b2.second);
+
 		// If at least one of the blocks is empty, then we won't be writing into any interval of indices.
-		if (b1.first == b1.second || b2.first == b2.second) {
-			return std::make_pair(block_interval::empty(),block_interval::empty());
+		if (b1.first == b1.second || b2.first == b2.second)
+        {
+			return std::make_pair(BlockInterval::empty(), BlockInterval::empty());
 		}
+
 		// In case of vector coded, we always end up with a single interval in output.
-		return std::make_pair(block_interval(this->m_ck1[b1.first] + this->m_ck2[b2.first],
-			this->m_ck1[b1.second - 1] + this->m_ck2[b2.second - 1]),
-			block_interval::empty());
+		return std::make_pair(BlockInterval(this->m_ck1[b1.first] + this->m_ck2[b2.first], this->m_ck1[b1.second - 1] + this->m_ck2[b2.second - 1]),
+			                  BlockInterval::empty());
 	}
 
 
@@ -255,7 +255,7 @@ struct polynomial_vector_functor:
 		iota(perm1.begin(), perm1.end(), std::size_t(0));
 		iota(perm2.begin(), perm2.end(), std::size_t(0));
 		// Sort the permutation vectors.
-		typedef typename ancestor::template indirect_sorter<polynomial_vector_functor> indirect_sorter;
+		typedef typename ancestor::template IndirectSorter<PolynomialVectorFunctor> indirect_sorter;
 		std::sort(perm1.begin(), perm1.end(), indirect_sorter(*this, this->m_ck1));
 		std::sort(perm2.begin(), perm2.end(), indirect_sorter(*this, this->m_ck2));
 
@@ -274,15 +274,14 @@ struct polynomial_vector_functor:
 
 
 template <class Series1, class Series2, class ArgsTuple, class GenericTruncator>
-struct polynomial_hash_functor:
-	public base_coded_functor<Series1,Series2,ArgsTuple,GenericTruncator,polynomial_hash_functor<Series1,Series2,ArgsTuple,GenericTruncator> >
+struct polynomial_hash_functor: public BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, polynomial_hash_functor<Series1, Series2, ArgsTuple, GenericTruncator> >
 {
-	typedef typename final_cf<Series1>::type cf_type1;
-	typedef typename final_cf<Series2>::type cf_type2;
+	typedef typename FinalCf<Series1>::Type cf_type1;
+	typedef typename FinalCf<Series2>::Type cf_type2;
 	typedef typename Series1::TermType term_type1;
 	typedef typename Series2::TermType term_type2;
 	typedef std::pair<cf_type1,max_fast_int> cterm_type;
-	typedef base_coded_functor<Series1,Series2,ArgsTuple,GenericTruncator,polynomial_hash_functor<Series1,Series2,ArgsTuple,GenericTruncator> > ancestor;
+	typedef BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, polynomial_hash_functor<Series1, Series2, ArgsTuple, GenericTruncator> > ancestor;
 	typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht_type;
 
 	polynomial_hash_functor(cterm_type &cterm, std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
@@ -332,27 +331,30 @@ struct polynomial_hash_functor:
 
 	// Return the two intervals in indices in the output structure containing the results of
 	// one block-by-block multiplication.
-	std::pair<block_interval,block_interval> blocks_to_intervals(const block_type &b1, const block_type &b2) const
+	std::pair<BlockInterval, BlockInterval> blocks_to_intervals(BlockType const &b1, BlockType const &b2) const
 	{
 		PIRANHA_ASSERT(b1.first <= b1.second && b2.first <= b2.second);
+
 		// If at least one of the blocks is empty, then we won't be writing into any interval of indices.
 		if (b1.first == b1.second || b2.first == b2.second)
 		{
-			return std::make_pair(block_interval::empty(), block_interval::empty());
+			return std::make_pair(BlockInterval::empty(), BlockInterval::empty());
 		}
 
-		block_interval tmp(get_mem_pos(this->m_ck1[b1.first])      + get_mem_pos(this->m_ck2[b2.first]),
-			               get_mem_pos(this->m_ck1[b1.second - 1]) + get_mem_pos(this->m_ck2[b2.second - 1]));
+		BlockInterval tmp(get_mem_pos(this->m_ck1[b1.first])      + get_mem_pos(this->m_ck2[b2.first]),
+			              get_mem_pos(this->m_ck1[b1.second - 1]) + get_mem_pos(this->m_ck2[b2.second - 1]));
+
 		const max_fast_int ht_size = boost::numeric_cast<max_fast_int>(m_cms->get_vector_size());
+
 		PIRANHA_ASSERT(ht_size > 0 && tmp.lower() >= 0 && tmp.upper() >= 0);
 
 		if (tmp.lower() >= ht_size || tmp.upper() < ht_size)
 		{
 			PIRANHA_ASSERT(tmp.upper() / 2 < ht_size);
-			return std::make_pair(block_interval(tmp.lower() % ht_size,tmp.upper() % ht_size),block_interval::empty());
+			return std::make_pair(BlockInterval(tmp.lower() % ht_size,tmp.upper() % ht_size), BlockInterval::empty());
 		} else
 		{
-			return std::make_pair(block_interval(tmp.lower(), ht_size - 1), block_interval(0, tmp.upper() % ht_size));
+			return std::make_pair(BlockInterval(tmp.lower(), ht_size - 1), BlockInterval(0, tmp.upper() % ht_size));
 		}
 	}
 
@@ -441,14 +443,16 @@ struct polynomial_multiplier
 				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
 				
                 // Perform multiplication.
-				typedef polynomial_vector_functor<Series1,Series2,ArgsTuple,GenericTruncator> vf_type;
-				vf_type vm(tc1,tc2,this->m_ckeys1,this->m_ckeys2a,t1,t2,trunc,vc_res,argsTuple);
+				typedef PolynomialVectorFunctor<Series1, Series2, ArgsTuple, GenericTruncator> vf_type;
+				vf_type vm(tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, trunc, vc_res, argsTuple);
 //				const std::size_t nthread = settings::get_nthread();
 				//TODO:GUT corrected below. There are problems with the number of threads in several places. This is one.
 				const std::size_t nthread = std::min(settings::get_nthread(), std::min(size1, size2));
- const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
-				// Variables needed by the multiplier.
-				block_sequence s1, s2;
+                const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
+				
+                // Variables needed by the multiplier.
+				BlockSequence s1;
+                BlockSequence s2;
 				bool breakout = false;
 				std::size_t cur_idx1_start = 0;
 				// TODO: probably we need to rethink a bit this, taking into account also the number of threads. Also drop the truncation limitation.

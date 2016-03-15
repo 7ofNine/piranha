@@ -48,7 +48,7 @@
 namespace piranha
 {
 	/// Dictionary for evaluation.
-	typedef boost::unordered_map<std::string, double> eval_dict;
+	typedef boost::unordered_map<std::string, double> EvalDict;
 
 	/// Named series toolbox.
 	/**
@@ -72,46 +72,48 @@ namespace piranha
 			friend struct NamedSeriesEqualitySelector;
 
 		public:
-			typedef ArgsDescr arguments_description;
-			typedef typename NTuple<VectorPsym, boost::tuples::length<arguments_description>::value>::Type ArgsTupleType;
+			typedef ArgsDescr ArgumentsDescription; //ArgsDescr is expected to be a boost::tuples (NTuple) of echelonLevel+1 length. 
+			typedef typename NTuple<VectorPsym, boost::tuples::length<ArgumentsDescription>::value>::Type ArgsTupleType;
 
 		private:
-			struct s_iterator_generator
+			struct SeriesIteratorGenerator
 			{
-				typedef Derived result_type;
+				typedef Derived result_type; // don't change. required by boost::transform_iterator
+
 				Derived operator()(const Term &t) const
 				{
 					Derived retval;
-					retval.argumentsTuple = m_series.argumentsTuple;
+					retval.argumentsTuple = series.argumentsTuple;
 					retval.insert(t, retval.argumentsTuple);
 					return retval;
 				}
 
-				s_iterator_generator(const Derived &series):m_series(series) {}
-				const Derived &m_series;
+				SeriesIteratorGenerator(const Derived &series):series(series) {}
+
+				const Derived &series;
 			};
 
 		public:
 
-			typedef boost::transform_iterator<s_iterator_generator, typename SeriesContainer<Term>::Type::const_iterator> SeriesIterator;
-			SeriesIterator s_begin() const;
-			SeriesIterator s_end() const;
+			typedef boost::transform_iterator<SeriesIteratorGenerator, typename SeriesContainer<Term>::Type::const_iterator> SeriesIterator;
+			SeriesIterator beginIt() const;
+			SeriesIterator endIt() const;
 			std::complex<Derived> complex() const;
 
 			void print(std::ostream &stream = std::cout) const;
 			void printPlain(std::ostream &) const;
 			void printTex(std::ostream &) const;
 
-			void save_to(const std::string &) const;
+			void saveTo(const std::string &) const;
 			// Rework this.
 // 			template <class Filter>
 // 			Derived filter(const Filter &) const;
 			void swap(Derived &);
 			double norm() const;
 			typename TermEvalTypeDeterminer<Term>::type eval(const double &) const;
-			typename TermEvalTypeDeterminer<Term>::type eval(const eval_dict &) const;
+			typename TermEvalTypeDeterminer<Term>::type eval(const EvalDict &) const;
 			
-            std::size_t psi(const int &start = 0, const int &step = 1) const;
+            std::size_t psi(const int start = 0, const int step = 1) const;
 			
             const ArgsTupleType &arguments() const;
 			
@@ -137,9 +139,9 @@ namespace piranha
 			template <class T>
 			Derived &operator/=(const T &);
 
-			Derived pow(const double &) const;
+			Derived pow(const double) const;
 			Derived pow(const mp_rational &) const;
-			Derived root(const int &) const;
+			Derived root(const int) const;
 			Derived partial(const std::string &, const int &n = 1) const;
 
 			template <class SubSeries>
@@ -151,7 +153,7 @@ namespace piranha
 			template <class Cf>
 			Derived seriesFromCf(const Cf &) const;
 
-			std::vector<std::vector<Derived> > split(const int &n = 0) const;
+			std::vector<std::vector<Derived> > split(const int n = 0) const;
 
 			std::vector<Derived> flatten() const;
 			

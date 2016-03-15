@@ -172,16 +172,21 @@ namespace piranha
 	struct is_rational_exponent<T,typename boost::enable_if_c<boost::is_base_of<BaseSeriesTag, T>::value && boost::is_same<typename T::degree_type, mp_rational>::value>::type>:
 	boost::true_type {};
 
-	template <class CfSeries, class Enable = void>
-	struct final_cf_impl
+
+    //
+    // traits for final coefficient type of an echeloned series
+	//
+    template <class CfSeries, class Enable = void>
+	struct FinalCfImplementation
 	{
-		typedef typename final_cf_impl<typename CfSeries::TermType::CfType>::type type;
+		typedef typename FinalCfImplementation<typename CfSeries::TermType::CfType>::Type Type;
 	};
 
+
 	template <class Cf>
-	struct final_cf_impl<Cf,typename boost::enable_if_c<!boost::is_base_of<BaseSeriesTag,Cf>::value>::type>
+	struct FinalCfImplementation<Cf, typename boost::enable_if_c<!boost::is_base_of<BaseSeriesTag, Cf>::value>::type>
 	{
-		typedef Cf type;
+		typedef Cf Type;
 	};
 
 	/// Final coefficient type.
@@ -189,11 +194,11 @@ namespace piranha
 	 * Coefficient type at the end of the echelon recursion.
 	 */
 	template <class Series>
-	struct final_cf
+	struct FinalCf
 	{
-		PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag,Series>::value),"Cannot determine final coefficient of a non-series type.");
+		PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag, Series>::value), "Cannot determine final coefficient of a non-series type.");
 
-		typedef typename final_cf_impl<typename Series::TermType::CfType>::type type;
+		typedef typename FinalCfImplementation<typename Series::TermType::CfType>::Type Type;
 	};
 }
 

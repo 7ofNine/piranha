@@ -53,10 +53,11 @@ namespace piranha {
 	template <class CfSeries>
 	struct final_cf_getter_impl<CfSeries,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,CfSeries> >::type>
 	{
-		static const typename final_cf<CfSeries>::type &run(const CfSeries &cf_series)
+		static const typename FinalCf<CfSeries>::Type &run(CfSeries const &cfSeries)
 		{
-			PIRANHA_ASSERT(cf_series.length() == 1);
-			return final_cf_getter_impl<typename CfSeries::TermType::CfType>::run(cf_series.begin()->cf);
+			PIRANHA_ASSERT(cfSeries.length() == 1);
+
+			return final_cf_getter_impl<typename CfSeries::TermType::CfType>::run(cfSeries.begin()->cf);
 		}
 	};
 
@@ -64,7 +65,7 @@ namespace piranha {
 	template <class Series>
 	struct final_cf_getter
 	{
-		const typename final_cf<Series>::type &operator()(const typename Series::TermType *term) const
+		const typename FinalCf<Series>::Type &operator()(const typename Series::TermType *term) const
 		{
 			return final_cf_getter_impl<typename Series::TermType::CfType>::run(term->cf);
 		}

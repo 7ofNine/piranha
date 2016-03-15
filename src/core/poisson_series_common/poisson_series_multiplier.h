@@ -47,15 +47,18 @@ namespace piranha
 	template <int EchelonLevel>
 	struct poisson_series_multiplier_ops_selector
 	{
-		PIRANHA_STATIC_CHECK(EchelonLevel == 0,"");
+		PIRANHA_STATIC_CHECK(EchelonLevel == 0, "");
+
 		typedef boost::tuple<boost::false_type> type;
 	};
+
 
 	template <>
 	struct poisson_series_multiplier_ops_selector<1>
 	{
-		typedef boost::tuple<boost::false_type,boost::true_type> type;
+		typedef boost::tuple<boost::false_type, boost::true_type> type;
 	};
+
 
 	/// Series multiplier specifically tuned for Poisson series.
 	/**
@@ -66,25 +69,19 @@ namespace piranha
 	{
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
-			class get_type:
-				public BaseSeriesMultiplier<Series1, Series2, ArgsTuple, Truncator,
-				get_type<Series1, Series2, ArgsTuple, Truncator> > ,
-				public coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,
-				typename poisson_series_multiplier_ops_selector<Series1::echelonLevel>::type>
+			class get_type: public BaseSeriesMultiplier<Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> > ,
+				            public coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, typename poisson_series_multiplier_ops_selector<Series1::echelonLevel>::type>
 			{
-					typedef BaseSeriesMultiplier< Series1, Series2, ArgsTuple, Truncator,
-						get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
+					typedef BaseSeriesMultiplier< Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> > ancestor;
 
-					typedef coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,
-						typename poisson_series_multiplier_ops_selector<Series1::echelonLevel>::type> coded_ancestor;
+					typedef coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, typename poisson_series_multiplier_ops_selector<Series1::echelonLevel>::type> coded_ancestor;
 
-					friend class coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,
-						typename poisson_series_multiplier_ops_selector<Series1::echelonLevel>::type>;
+					friend class coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, typename poisson_series_multiplier_ops_selector<Series1::echelonLevel>::type>;
 
-					typedef typename ancestor::TermType1 term_type1;
-					typedef typename ancestor::TermType2 term_type2;
-					typedef typename final_cf<Series1>::type cf_type1;
-					typedef typename final_cf<Series2>::type cf_type2;
+					typedef typename ancestor::TermType1 TermType1;
+					typedef typename ancestor::TermType2 TermType2;
+					typedef typename FinalCf<Series1>::Type CfType1;
+					typedef typename FinalCf<Series2>::Type CfType2;
 
 				public:
 
@@ -93,34 +90,34 @@ namespace piranha
 					typedef ArgsTuple ArgsTupleType;
 					typedef typename Truncator::template get_type<Series1, Series2, ArgsTuple> truncator_type;
 
-					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):
-						ancestor(s1, s2, retval, argsTuple) {}
+					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple)
+                            : ancestor(s1, s2, retval, argsTuple) {}
 
 
 					template <class GenericTruncator>
-					void ll_perform_multiplication(const GenericTruncator &trunc)
+					void ll_perform_multiplication(const GenericTruncator &truncator)
 					{
 						// We also need flavours here.
-						cache_flavours();
+						cacheFlavours();
 						// Procede with method from coded ancestor.
-						coded_ancestor::ll_perform_multiplication(trunc);
+						coded_ancestor::ll_perform_multiplication(truncator);
 					}
 
 
-					// Store flavours of the series into own vectors.
-					void cache_flavours()
+					// Store flavours of the series into own vectors. i.e. cosine vs. sine
+					void cacheFlavours()
 					{
-						m_flavours1.resize(this->terms1.size());
-						m_flavours2.resize(this->terms2.size());
-						std::size_t i;
-						for (i = 0; i < this->terms1.size(); ++i)
+						flavours1.resize(this->terms1.size());
+						flavours2.resize(this->terms2.size());
+
+						for (std::size_t i = 0; i < this->terms1.size(); ++i)
 						{
-							m_flavours1[i] = this->terms1[i]->key.getFlavour();
+							flavours1[i] = this->terms1[i]->key.getFlavour();
 						}
 
-						for (i = 0; i < this->terms2.size(); ++i)
+						for (std::size_t i = 0; i < this->terms2.size(); ++i)
 						{
-							m_flavours2[i] = this->terms2[i]->key.getFlavour();
+							flavours2[i] = this->terms2[i]->key.getFlavour();
 						}
 					}
 
@@ -128,27 +125,29 @@ namespace piranha
 					template <class GenericTruncator>
 					struct vector_functor {
 
-						vector_functor(std::vector<char> &f1, std::vector<char> &f2,
-							std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
-							std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2a, std::vector<max_fast_int> &ck2b,
-							std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
-							const GenericTruncator &trunc, std::pair<cf_type1 *, cf_type1 *> *vc_res_pair, const ArgsTuple &argsTuple):
-							m_f1(f1),m_f2(f2),m_tc1(tc1),m_tc2(tc2),m_ck1(ck1),m_ck2a(ck2a),m_ck2b(ck2b),m_t1(t1),m_t2(t2),m_trunc(trunc),
-							m_vc_res_pair(vc_res_pair),m_argsTuple(argsTuple) {}
+						vector_functor(std::vector<char>               &f1,         std::vector<char>         &f2,
+							           std::vector<CfType1>           &tc1,        std::vector<CfType2>     &tc2,
+							           std::vector<max_fast_int>       &ck1,        std::vector<max_fast_int> &ck2a, std::vector<max_fast_int> &ck2b,
+							           std::vector<const TermType1 *> &t1,         std::vector<const TermType2 *> &t2,
+							           const GenericTruncator          &truncator,  std::pair<CfType1 *, CfType1 *> *vc_res_pair, const ArgsTuple &argsTuple)
+                        : m_f1(f1), m_f2(f2), m_tc1(tc1), m_tc2(tc2), m_ck1(ck1), m_ck2a(ck2a), m_ck2b(ck2b), m_t1(t1), m_t2(t2), truncator(truncator),
+						  m_vc_res_pair(vc_res_pair), m_argsTuple(argsTuple) {}
 
 
 						bool operator()(const std::size_t &i, const std::size_t &j)
 						{
-							if (m_trunc.skip(&m_t1[i], &m_t2[j]))
+							if (truncator.skip(&m_t1[i], &m_t2[j]))
 							{
 								return false;
 							}
+
 							// Cache values.
-							cf_type1 *vc_res_cos = m_vc_res_pair->first, *vc_res_sin = m_vc_res_pair->second;
+							CfType1 *vc_res_cos = m_vc_res_pair->first;
+                            CfType1 *vc_res_sin = m_vc_res_pair->second;
 							// NOTE: Does it make sense here to define a method for coefficients like:
 							// mult_by_and_insert_into<bool Sign>(cf2,retval,m_argsTuple)
 							// so that we can avoid copying stuff around here and elsewhere?
-							cf_type1 tmp_cf = m_tc1[i];
+							CfType1 tmp_cf = m_tc1[i];
 							tmp_cf.multBy(m_tc2[j], m_argsTuple);
 							const max_fast_int index_plus  = m_ck1[i] + m_ck2a[j]; 
 							const max_fast_int index_minus = m_ck1[i] + m_ck2b[j];
@@ -181,25 +180,26 @@ namespace piranha
 
 						std::vector<char>					&m_f1;
 						std::vector<char>					&m_f2;
-						std::vector<cf_type1>				&m_tc1;
-						std::vector<cf_type2>				&m_tc2;
+						std::vector<CfType1>				&m_tc1;
+						std::vector<CfType2>				&m_tc2;
 						std::vector<max_fast_int>			&m_ck1;
 						std::vector<max_fast_int>			&m_ck2a;
 						std::vector<max_fast_int>			&m_ck2b;
-						std::vector<const term_type1 *>		&m_t1;
-						std::vector<const term_type2 *>		&m_t2;
-						const GenericTruncator				&m_trunc;
-						std::pair<cf_type1 *, cf_type1 *>	*m_vc_res_pair;
+						std::vector<const TermType1 *>		&m_t1;
+						std::vector<const TermType2 *>		&m_t2;
+						const GenericTruncator				&truncator;
+						std::pair<CfType1 *, CfType1 *>	   *m_vc_res_pair;
 						const ArgsTuple						&m_argsTuple;
 					};
 
 
 					template <class GenericTruncator>
-					bool perform_vector_coded_multiplication(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
-						std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2, const GenericTruncator &trunc)
+					bool perform_vector_coded_multiplication(std::vector<CfType1>           &tc1, std::vector<CfType2>           &tc2, 
+                                                             std::vector<const TermType1 *> &t1,  std::vector<const TermType2 *> &t2,
+                                                             const GenericTruncator &truncator)
 					{
-						stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
-						std::vector<cf_type1,std_counting_allocator<cf_type1> > vc_cos, vc_sin;
+						stats::trace_stat("mult_st", std::size_t(0), boost::lambda::_1 + 1);
+						std::vector<CfType1, std_counting_allocator<CfType1> > vc_cos, vc_sin;
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
 						// one for cosines, one for sines.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
@@ -223,27 +223,29 @@ namespace piranha
 						// Please note that even if here it seems like we are going to write outside allocated memory,
 						// the indices from the analysis of the coded series will prevent out-of-boundaries
 						// reads/writes.
-						const std::size_t size1 = this->terms1.size(), size2 = this->terms2.size();
+						std::size_t const size1 = this->terms1.size();
+                        std::size_t const size2 = this->terms2.size();
 						
                         PIRANHA_ASSERT(size1 && size2);
 
 						const ArgsTupleType &argsTuple = this->argsTuple;
-						std::pair<cf_type1 *, cf_type1 *> res(&vc_cos[0] - this->m_fast_h.lower(), &vc_sin[0] - this->m_fast_h.lower());
-						// Find out a suitable block size.
-						const std::size_t block_size = this->template computeBlockSize<sizeof(cf_type1)>();
+						std::pair<CfType1 *, CfType1 *> res(&vc_cos[0] - this->m_fast_h.lower(), &vc_sin[0] - this->m_fast_h.lower());
 						
-                        __PDEBUG(std::cout << "Block size: " << block_size << '\n';)
+                        // Find out a suitable block size.
+						std::size_t const blockSize = this->template computeBlockSize<sizeof(CfType1)>();
+						
+                        __PDEBUG(std::cout << "Block size: " << blockSize << '\n';)
 
 						// Perform multiplication.
-						vector_functor<GenericTruncator> vm(m_flavours1, m_flavours2, tc1, tc2,this->m_ckeys1, this->m_ckeys2a, this->m_ckeys2b, t1, t2, trunc, &res, argsTuple);
-						this->blockedMultiplication(block_size, size1, size2, vm);
+						vector_functor<GenericTruncator> vm(flavours1, flavours2, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, this->m_ckeys2b, t1, t2, truncator, &res, argsTuple);
+						this->blockedMultiplication(blockSize, size1, size2, vm);
 
 						__PDEBUG(std::cout << "Done multiplying\n");
 
 						// Decode and insert the results into return value.
-						cf_type1 *vc_res_cos = res.first;
-						cf_type1 *vc_res_sin = res.second;
-						term_type1 tmp_term;
+						CfType1 *vc_res_cos = res.first;
+						CfType1 *vc_res_sin = res.second;
+						TermType1 tmp_term;
 						const max_fast_int i_f = this->m_fast_h.upper();
 
 						for (max_fast_int i = this->m_fast_h.lower(); i <= i_f; ++i)
@@ -289,9 +291,9 @@ namespace piranha
 					struct hash_functor {
 
 						hash_functor(std::vector<char> &f1, std::vector<char> &f2,
-							std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+							std::vector<CfType1> &tc1, std::vector<CfType2> &tc2,
 							std::vector<Ckey> &ck1, std::vector<Ckey> &ck2a, std::vector<Ckey> &ck2b,
-							std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
+							std::vector<const TermType1 *> &t1, std::vector<const TermType2 *> &t2,
 							const GenericTruncator &trunc, std::pair<HashSet *,HashSet *> *cms, Cterm *tmp_term1, Cterm *tmp_term2,
 							const ArgsTuple &argsTuple):
 							m_f1(f1), m_f2(f2),
@@ -389,15 +391,15 @@ namespace piranha
 
 						std::vector<char>				&m_f1;
 						std::vector<char>				&m_f2;
-						std::vector<cf_type1>			&m_tc1;
-						std::vector<cf_type2>			&m_tc2;
+						std::vector<CfType1>			&m_tc1;
+						std::vector<CfType2>			&m_tc2;
 						std::vector<Ckey>				&m_ck1;
 						std::vector<Ckey>				&m_ck2a;
 						std::vector<Ckey>				&m_ck2b;
-						std::vector<const term_type1 *>	&m_t1;
-						std::vector<const term_type2 *>	&m_t2;
+						std::vector<const TermType1 *>	&m_t1;
+						std::vector<const TermType2 *>	&m_t2;
 						const GenericTruncator			&m_trunc;
-						std::pair<HashSet *,HashSet *>	*m_cms;
+						std::pair<HashSet *, HashSet *>	*m_cms;
 						Cterm							*m_tmp_term1;
 						Cterm							*m_tmp_term2;
 						const ArgsTuple					&m_argsTuple;
@@ -405,17 +407,16 @@ namespace piranha
 
 
 					template <class GenericTruncator>
-					void perform_hash_coded_multiplication(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
-						std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2, const GenericTruncator &trunc)
+					void perform_hash_coded_multiplication(std::vector<CfType1> &tc1, std::vector<CfType2> &tc2,
+						std::vector<const TermType1 *> &t1, std::vector<const TermType2 *> &t2, const GenericTruncator &truncator)
 					{
 						stats::trace_stat("mult_st", std::size_t(0), boost::lambda::_1 + 1);
 
-						typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
+						typedef coded_hash_table<CfType1, max_fast_int, std_counting_allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
 						// Let's find a sensible size hint.
 						const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);
-						const std::size_t size_hint = static_cast<std::size_t>(
-							std::max<double>(this->m_density1,this->m_density2) * n_codes);
+						const std::size_t size_hint = static_cast<std::size_t>(std::max<double>(this->m_density1,this->m_density2) * n_codes);
 
 						csht cms_cos(size_hint); 
 						csht cms_sin(size_hint);
@@ -425,17 +426,18 @@ namespace piranha
 						const ArgsTupleType &argsTuple = this->argsTuple;
 
 						// Find out a suitable block size.
-						const std::size_t block_size = this->template computeBlockSize<sizeof(std::pair<cf_type1,max_fast_int>)>();
+						const std::size_t block_size = this->template computeBlockSize<sizeof(std::pair<CfType1, max_fast_int>)>();
 						__PDEBUG(std::cout << "Block size: " << block_size << '\n';)
-						std::pair<cf_type1, max_fast_int> tmp_term1, tmp_term2;
-						hash_functor<std::pair<cf_type1, max_fast_int>, max_fast_int, GenericTruncator, csht>
-							hm(m_flavours1,m_flavours2,tc1,tc2,this->m_ckeys1,this->m_ckeys2a,this->m_ckeys2b,t1,t2,trunc,&res,&tmp_term1,&tmp_term2,argsTuple);
+						std::pair<CfType1, max_fast_int> tmp_term1;
+                        std::pair<CfType1, max_fast_int> tmp_term2;
+						hash_functor<std::pair<CfType1, max_fast_int>, max_fast_int, GenericTruncator, csht>
+							hm(flavours1, flavours2, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, this->m_ckeys2b, t1, t2, truncator, &res, &tmp_term1, &tmp_term2, argsTuple);
 
 						this->blockedMultiplication(block_size, size1, size2, hm);
 
 						__PDEBUG(std::cout << "Done Poisson series hash coded multiplying\n");
 
-						term_type1 tmp_term;
+						TermType1 tmp_term;
 						{
 							const c_iterator c_it_f = cms_cos.end();
 							for (c_iterator c_it = cms_cos.begin(); c_it != c_it_f; ++c_it) 
@@ -469,8 +471,8 @@ namespace piranha
 
 				private:
 					// For Poisson series we also need flavours.
-					std::vector<char>	m_flavours1;
-					std::vector<char>	m_flavours2;
+					std::vector<char>	flavours1;
+					std::vector<char>	flavours2;
 			};
 	};
 }

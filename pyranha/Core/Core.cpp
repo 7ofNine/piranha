@@ -67,7 +67,7 @@ static inline std::size_t py_psym_hash(const Psym &p)
 	return boost::hash<std::string>()(p.get_name());
 }
 
-static inline void ed_set_item(eval_dict &d, const std::string &n, const double &value)
+static inline void ed_set_item(EvalDict &d, const std::string &n, const double &value)
 {
 	d[n] = value;
 }
@@ -96,7 +96,7 @@ BOOST_PYTHON_MODULE(_Core)
 	from_python_sequence<std::vector<mp_integer>,variable_capacity_policy>();
 
 	// Expose evaluation dictionary.
-	class_<eval_dict> ed("eval_dict","Evaluation dictionary.", init<>());
+	class_<EvalDict> ed("EvalDict","Evaluation dictionary.", init<>());
 	ed.def("__setitem__",&ed_set_item);
 
 	// Expose arguments tuples.
