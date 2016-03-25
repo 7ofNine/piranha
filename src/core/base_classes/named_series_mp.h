@@ -79,7 +79,7 @@ namespace piranha
 		template <class Derived>
 		static Derived &run(Derived &series, const T &x)
 		{
-			return series.mult_number_helper(x);
+			return series.multiplyNumberHelper(x);
 		}
 	};
 	 
@@ -90,7 +90,7 @@ namespace piranha
 		template <class Derived>
 		static Derived & run(Derived & series, const T & other)
 		{
-			return series.multBySeries(other);
+			return series.multiplyBySeries(other);
 		}
 	};
 	 
@@ -110,7 +110,7 @@ namespace piranha
 		template <class Derived>
 		static bool run(const Derived &series, const T &other)
 		{
-			return series.series_comparison(other);
+			return series.isEqualTo(other);
 		}
 	};
 }

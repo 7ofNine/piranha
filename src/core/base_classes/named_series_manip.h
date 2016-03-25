@@ -59,8 +59,8 @@ namespace piranha
 
 
 	/// Swap contents of series.
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::swap(Derived &ps2)
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::swap(Derived &ps2)
 	{
 		// Do something only if we are not swapping with self.
 		if (derivedCast != &ps2)
@@ -109,17 +109,17 @@ namespace piranha
 	};
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const std::string &s, const Psym &arg)
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::appendArg(const std::string &s, const Psym &arg)
 	{
 		PIRANHA_ASSERT(derivedConstCast->empty());
 		named_series_append_arg<ArgumentsDescription>::run(s, argumentsTuple, arg);
 	}
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::append_arg(const Psym &arg)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::appendArg(const Psym &arg)
 	{
 		PIRANHA_STATIC_CHECK(N >= 0, "Trying to append argument with invalid index.");
 		PIRANHA_ASSERT(derivedConstCast->empty());
@@ -138,9 +138,9 @@ namespace piranha
 
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::mergeArgs(const Derived2 &ps2)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeArgs(const Derived2 &ps2)
 	{
 		if (static_cast<void *>(this) == static_cast<void const *>(&ps2)) 
 		{
@@ -148,9 +148,9 @@ namespace piranha
 			return;
 		}
 
-		if (unlikely(!is_args_compatible(ps2))) 
+		if (unlikely(!isArgsCompatible(ps2))) 
 		{
-			merge_incompatible_args(ps2);
+			mergeIncompatibleArgs(ps2);
 		}
 	}
 
@@ -284,9 +284,9 @@ namespace piranha
 	};
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::merge_incompatible_args(const Derived2 &ps2)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeIncompatibleArgs(const Derived2 &ps2)
 	{
 		// Build an empty retval and assign it the same arguments as this.
 		Derived retval;
@@ -383,8 +383,8 @@ namespace piranha
 	};
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::trim()
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::trim()
 	{
 		typedef typename NTuple<std::vector<char>, Derived::echelonLevel + 1>::Type trim_flags_type;
 		trim_flags_type trim_flags;
@@ -423,9 +423,9 @@ namespace piranha
     //
     // substitute series s for argument name name
     //
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class SubSeries>
-	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::sub(const std::string &name, const SubSeries &s) const
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::sub(const std::string &name, const SubSeries &s) const
 	{
 		typedef typename Derived::TermType::CfType::
 			template SubstitutionCacheSelector<SubSeries, typename Derived::TermType::KeyType::
@@ -458,8 +458,8 @@ namespace piranha
 	}
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::vector<std::vector<Derived> > NamedSeries<__PIRANHA_NAMED_SERIES_TP>::split(const int n) const
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline std::vector<std::vector<Derived> > NamedSeries<PIRANHA_NAMED_SERIES_TP>::split(const int n) const
 	{
 		if (n < 0 || n >= boost::tuples::length<ArgsTupleType>::value) 
 		{
@@ -493,8 +493,8 @@ namespace piranha
 	 * \f]
 	 * will be flattened into the vector \f$ \left[ x\cos a, y\cos a, z \right] \f$.
 	 */
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::vector<Derived> NamedSeries<__PIRANHA_NAMED_SERIES_TP>::flatten() const
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline std::vector<Derived> NamedSeries<PIRANHA_NAMED_SERIES_TP>::flatten() const
 	{
 		const std::vector<typename Derived::TermType> tmp(derivedConstCast->flattenTerms(argumentsTuple));
 		std::vector<Derived> retval;

@@ -38,8 +38,8 @@ int main()
 	int retval = 0;
 	Psym x("x"), y("y"), z("z");
 	zpoly f = zpoly(x) + zpoly(y) + zpoly(z), g = f.pow(40);
-	retval += !(g.sub("x",zpoly(x)+1).sub("x",zpoly(x)-1) == g);
-	retval += (qps(x).cos().eiSub("x",qpsc(std::complex<double>(1,0))) != 1);
-	retval += (qps(x).sin().eiSub("x",qpsc(std::complex<double>(1,0))) != 0);
+	retval += !(g.sub("x", zpoly(x) + 1).sub("x", zpoly(x) - 1) == g);
+	retval += (qps(x).cos().eiSub("x", qpsc(std::complex<double>(1, 0))) != 1);
+	retval += (qps(x).sin().eiSub("x", qpsc(std::complex<double>(1, 0))) != 0);
 	return retval;
 }

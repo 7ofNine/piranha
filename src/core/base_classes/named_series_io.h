@@ -40,8 +40,8 @@
 namespace piranha
 {
 	// TODO: move out in static method? Where is this used?
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::complex<Derived> NamedSeries<__PIRANHA_NAMED_SERIES_TP>::complex() const
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline std::complex<Derived> NamedSeries<PIRANHA_NAMED_SERIES_TP>::complex() const
 	{
 		return std::complex<Derived>(*derived_const_cast);
 	}
@@ -70,8 +70,8 @@ namespace piranha
 	/**
 	 * This is the same text format used when saving series to file.
 	 */
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::printPlain(std::ostream &stream) const
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::printPlain(std::ostream &stream) const
 	{
 		named_series_print_plain<ArgumentsDescription>(stream, argumentsTuple);
 		stream << "[terms]" << std::endl;
@@ -80,16 +80,16 @@ namespace piranha
 
 
 	/// Print series to stream in pretty format.
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::print_pretty(std::ostream &stream) const
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::printPretty(std::ostream &stream) const
 	{
 		derived_const_cast->printTermsPretty(stream, argumentsTuple);
 	}
 
 
 	/// Print in tex format.
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::printTex(std::ostream &stream) const
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::printTex(std::ostream &stream) const
 	{
 		derived_const_cast->printTermsTEX(stream, argumentsTuple);
 	}
@@ -99,16 +99,16 @@ namespace piranha
 	/**
 	 * Equivalent to NamedSeries::print_pretty.
 	 */
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::print(std::ostream &outStream) const
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::print(std::ostream &outStream) const
 	{
-		print_pretty(outStream);
+		printPretty(outStream);
 	}
 
 
 	/// Construct from file.
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::construct_from_file(const std::string &fn)
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::constructFromFile(const std::string &fn)
 	{
 		std::ifstream inf;
 		inf.open(fn.c_str(), std::ios::in | std::ios::binary);
@@ -118,14 +118,14 @@ namespace piranha
 		}
 
 		// Clear the stack of unknown data.
-		unknown_data.clear();
-		read_sections(inf);
+		unknownData.clear();
+		readSections(inf);
 		trim();
 	}
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::read_sections(std::ifstream &inf)
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::readSections(std::ifstream &inf)
 	{
 		std::string temp;
 		while (utils::get_valid_string(inf, temp)) 
@@ -140,30 +140,30 @@ namespace piranha
 
 				if (split_v.size() == 2 && split_v[1] == "arg") 
                 {
-					read_arg(inf, split_v[0]);
+					readArg(inf, split_v[0]);
 
 				} else if (sectionName == "terms") 
                 {
-					read_terms(inf);
+					readTerms(inf);
 					// If we found the data, then we don't want any more sections.
 					return;
 
 				} else 
                 {
 					std::cout << "Found unknown section '" << sectionName << "', ignoring." << std::endl;
-					unknown_data.push_back(temp);
+					unknownData.push_back(temp);
 				}
 			} else 
             {
 				std::cout << "Found string not belonging to any (known) section: " << temp << std::endl;
-				unknown_data.push_back(temp);
+				unknownData.push_back(temp);
 			}
 		}
 	}
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::read_arg(std::ifstream &inf, const std::string &name)
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::readArg(std::ifstream &inf, const std::string &name)
 	{
 		// Temporary attributes for the argument.
 		std::string temp_name, temp_time_eval;
@@ -178,7 +178,7 @@ namespace piranha
             {
 				std::cout << "Finished parsing " << name << " argument." << std::endl;
 				inf.seekg(cur_pos);
-				append_arg(name, Psym(temp_name, temp_time_eval));
+				appendArg(name, Psym(temp_name, temp_time_eval));
 				return;
 			}
 
@@ -208,8 +208,8 @@ namespace piranha
 	}
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::read_terms(std::ifstream &inf)
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::readTerms(std::ifstream &inf)
 	{
 		typedef typename Derived::TermType term_type;
 		std::string temp;
@@ -241,8 +241,8 @@ namespace piranha
 
 
 	/// Save series to file.
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::saveTo(const std::string &filename) const
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::saveTo(const std::string &filename) const
 	{
 		std::ofstream outf(filename.c_str(), std::ios_base::trunc);
 		if (outf.fail()) 
@@ -258,26 +258,26 @@ namespace piranha
 
 
 	/// Constructor from Psym and from position in the arguments set.
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::construct_from_psym(const Psym &p)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::constructFromPsym(const Psym &p)
 	{
 		PIRANHA_ASSERT(derived_const_cast->empty());
-		append_arg<N>(p);
+		appendArg<N>(p);
 		derived_cast->baseConstructFromPsym(p, N, argumentsTuple);
 	}
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline const typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::ArgsTupleType &
-	NamedSeries<__PIRANHA_NAMED_SERIES_TP>::arguments() const
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline const typename NamedSeries<PIRANHA_NAMED_SERIES_TP>::ArgsTupleType &
+	NamedSeries<PIRANHA_NAMED_SERIES_TP>::arguments() const
 	{
 		return argumentsTuple;
 	}
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::setArguments(const ArgsTupleType &argsTuple)
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::setArguments(const ArgsTupleType &argsTuple)
 	{
 		typedef typename Derived::const_iterator const_iterator;
 
@@ -299,9 +299,9 @@ namespace piranha
 	/**
 	 * @see piranha::BaseSeries::baseSeriesFromKey.
 	 */
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Key>
-	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::seriesFromKey(const Key &key) const
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::seriesFromKey(const Key &key) const
 	{
 		Derived retval(derived_const_cast->baseSeriesFromKey(key, m_arguments));
 		retval.m_arguments = m_arguments;
@@ -314,9 +314,9 @@ namespace piranha
 	/**
 	 * @see piranha::BaseSeries::baseSeriesFromCf.
 	 */
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Cf>
-	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::seriesFromCf(const Cf &cf) const
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::seriesFromCf(const Cf &cf) const
 	{
 		Derived retval(derived_const_cast->baseSeriesFromCf(cf, m_arguments));
 		retval.m_arguments = m_arguments;
@@ -325,30 +325,30 @@ namespace piranha
 	}
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<__PIRANHA_NAMED_SERIES_TP>::beginIt() const
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline typename NamedSeries<PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<PIRANHA_NAMED_SERIES_TP>::beginIt() const
 	{
 		return SeriesIterator(derived_const_cast->begin(), SeriesIteratorGenerator(*derived_const_cast));
 	}
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename NamedSeries<__PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<__PIRANHA_NAMED_SERIES_TP>::endIt() const
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline typename NamedSeries<PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<PIRANHA_NAMED_SERIES_TP>::endIt() const
 	{
 		return SeriesIterator(derived_const_cast->end(), SeriesIteratorGenerator(*derived_const_cast));
 	}
 
 
 	// Trivial destructor. It's here only to enforce a static check that cannot stay in the class definition.
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline NamedSeries<__PIRANHA_NAMED_SERIES_TP>::~NamedSeries()
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline NamedSeries<PIRANHA_NAMED_SERIES_TP>::~NamedSeries()
 	{
 		PIRANHA_STATIC_CHECK(boost::tuples::length<ArgumentsDescription>::value == Derived::echelonLevel + 1, "");
 	}
 
 
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::ostream &operator<<(std::ostream &os, const NamedSeries<__PIRANHA_NAMED_SERIES_TP> &series)
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline std::ostream &operator<<(std::ostream &os, const NamedSeries<PIRANHA_NAMED_SERIES_TP> &series)
 	{
 		series.print(os);
 		return os;

@@ -42,8 +42,8 @@
 #include "base_series_def.h"
 #include "named_series_mp.h"
 
-#define __PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Term, class Derived
-#define __PIRANHA_NAMED_SERIES_TP            ArgsDescr, Term, Derived
+#define PIRANHA_NAMED_SERIES_TP_DECL class ArgsDescr, class Term, class Derived
+#define PIRANHA_NAMED_SERIES_TP            ArgsDescr,       Term,       Derived
 
 namespace piranha
 {
@@ -56,7 +56,7 @@ namespace piranha
 	 * ArgsDescr must be a boost::tuple of structures each one containing a static const string
 	 * called "name" naming the arguments of the series.
 	 */
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	class NamedSeries
 	{
 			template <class T, class Enable>
@@ -105,10 +105,12 @@ namespace piranha
 			void printTex(std::ostream &) const;
 
 			void saveTo(const std::string &) const;
-			// Rework this.
+
+//		    Rework this.
 // 			template <class Filter>
 // 			Derived filter(const Filter &) const;
-			void swap(Derived &);
+			
+            void swap(Derived &);
 			double norm() const;
 			typename TermEvalTypeDeterminer<Term>::type eval(const double &) const;
 			typename TermEvalTypeDeterminer<Term>::type eval(const EvalDict &) const;
@@ -160,45 +162,48 @@ namespace piranha
             ~NamedSeries();
 			
             //protected:
-			void trim();
-			template <class Derived2>
+			void trim(); // remove all arguments that are no longer in the series from the argumentsTuple
+			
+            template <class Derived2>
 			void mergeArgs(const Derived2 &);
-			// TODO: check these protected methods, some of them can be moved into private
+			
+            // TODO: check these protected methods, some of them can be moved into private
 			// with proper friendship in manipulator classes.
-			void construct_from_file(const std::string &);
+			void constructFromFile(const std::string &);
+
 			template <int N>
-			void construct_from_psym(const Psym &);
+			void constructFromPsym(const Psym &);
 
 		private:
 
 			template <class T>
-			bool series_comparison(const T &) const;
+			bool isEqualTo(const T &) const;
 
-			void append_arg(const std::string &, const Psym &);
+			void appendArg(const std::string &, const Psym &);
 
 			template <int N>
-			void append_arg(const Psym &);
+			void appendArg(const Psym &);
 
 			template <class Derived2>
-			Derived & multBySeries(const Derived2 &);
+			Derived & multiplyBySeries(const Derived2 &);
 
 			template <class Number>
-			Derived & mult_number_helper(const Number &);
+			Derived & multiplyNumberHelper(const Number &);
 
 			template <class Number>
 			Derived & divideNumberHelper(const Number &);
 
-			void print_pretty(std::ostream &) const;
-			void read_from_file(std::ifstream &, const std::string &);
-			void read_sections(std::ifstream &);
-			void read_arg(std::ifstream &, const std::string &);
-			void read_terms(std::ifstream &);
+			void printPretty(std::ostream &) const;
+			void readFromFile(std::ifstream &, const std::string &);
+			void readSections(std::ifstream &);
+			void readArg(std::ifstream &, const std::string &);
+			void readTerms(std::ifstream &);
 
 			template <class Derived2>
-			bool is_args_compatible(const Derived2 &) const;
+			bool isArgsCompatible(const Derived2 &) const;
 
 			template <class Derived2>
-			void merge_incompatible_args(const Derived2 &);
+			void mergeIncompatibleArgs(const Derived2 &);
 
 			template <bool, class Derived2>
 			Derived & mergeWithSeries(const Derived2 &);
@@ -206,40 +211,40 @@ namespace piranha
 		protected:
 
 			// Data members.
-			ArgsTupleType                   argumentsTuple;
-			static std::vector<std::string> unknown_data;
+			ArgsTupleType                   argumentsTuple;  // the arguments of the NamedSeries. 
+			static std::vector<std::string> unknownData;
 	};
 
 	// Initialization of static member.
-	template <__PIRANHA_NAMED_SERIES_TP_DECL>
-	std::vector<std::string> NamedSeries<__PIRANHA_NAMED_SERIES_TP>::unknown_data;
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	std::vector<std::string> NamedSeries<PIRANHA_NAMED_SERIES_TP>::unknownData;
 
 // Useful macros for named series.
-#define E0_SERIES_NAMED_ANCESTOR(args, termName, seriesName) piranha::NamedSeries<args, termName, E0_SERIES(seriesName)>
+#define E0_SERIES_NAMED_ANCESTOR(Args, TermName, SeriesName) piranha::NamedSeries<Args, TermName, E0_SERIES(SeriesName)>
 
-#define E1_SERIES_NAMED_ANCESTOR(args1, args2, termName, seriesName) piranha::NamedSeries<boost::tuple<args1, args2>, termName, seriesName>
+#define E1_SERIES_NAMED_ANCESTOR(Args1, Args2, TermName, SeriesName) piranha::NamedSeries<boost::tuple<Args1, Args2>, TermName, SeriesName>
 
-#define NAMED_SERIES_BOILERPLATE(seriesName, N) \
+#define NAMED_SERIES_BOILERPLATE(SeriesName, N) \
 public: \
-	explicit seriesName() {} \
-	explicit seriesName(const piranha::Psym &p) { \
-		this->template construct_from_psym<N>(p); \
+	explicit SeriesName() {} \
+	explicit SeriesName(const piranha::Psym &p) { \
+		this->template constructFromPsym<N>(p); \
 	} \
-	explicit seriesName(const std::string &filename) \
+	explicit SeriesName(const std::string &filename) \
 	{ \
-		this->construct_from_file(filename); \
+		this->constructFromFile(filename); \
 	} \
-	explicit seriesName(const double &x) \
+	explicit SeriesName(const double &x) \
 	{ \
 		*this = baseSeriesFromNumber(x, this->argumentsTuple); \
 		this->trim(); \
 	} \
-	explicit seriesName(const piranha::mp_rational &q) \
+	explicit SeriesName(const piranha::mp_rational &q) \
 	{ \
 		*this = baseSeriesFromNumber(q, this->argumentsTuple); \
 		this->trim(); \
 	} \
-	explicit seriesName(const piranha::mp_integer &z) \
+	explicit SeriesName(const piranha::mp_integer &z) \
 	{ \
 		*this = baseSeriesFromNumber(z, this->argumentsTuple); \
 		this->trim(); \
