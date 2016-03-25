@@ -43,7 +43,7 @@ namespace manipulators
 		ExpoVector<mp_rational,0>,
 		TrigVector<boost::int16_t, 1>,
 		polynomial_multiplier,
-		poisson_series_multiplier,
+		PoissonSeriesMultiplier,
 		truncators::PowerSeries,
 		truncators::PowerSeries
 	> dqps;
