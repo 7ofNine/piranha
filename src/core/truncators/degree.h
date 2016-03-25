@@ -42,7 +42,7 @@ namespace piranha {
 namespace truncators {
 
 	/// Truncator based on the minium degree of the series.
-	class __PIRANHA_VISIBLE degree
+	class PIRANHA_VISIBLE degree
 	{
 
 			enum TruncationMode {

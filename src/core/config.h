@@ -43,14 +43,14 @@
 // Platform switches.
 #ifdef _PIRANHA_WIN32
 #ifdef _PIRANHA_DLL_EXPORT_API
-#define __PIRANHA_VISIBLE __declspec(dllexport)
+#define PIRANHA_VISIBLE __declspec(dllexport)
 #elif defined ( _PIRANHA_DLL_IMPORT_API )
-#define __PIRANHA_VISIBLE __declspec(dllimport)
+#define PIRANHA_VISIBLE __declspec(dllimport)
 #else
-#define __PIRANHA_VISIBLE
+#define PIRANHA_VISIBLE
 #endif
 #else
-#define __PIRANHA_VISIBLE __attribute__ ((visibility("default")))
+#define PIRANHA_VISIBLE __attribute__ ((visibility("default")))
 #endif
 
 // C++0x support.

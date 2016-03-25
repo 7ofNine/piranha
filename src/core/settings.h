@@ -35,7 +35,7 @@ namespace piranha
 	/**
 	 * This class manages parameters specific to piranha classes.
 	 */
-	class __PIRANHA_VISIBLE settings
+	class PIRANHA_VISIBLE settings
 	{
 		public:
 			enum MultiplicationAlgorithm
@@ -120,7 +120,7 @@ namespace piranha
 		private:
 
 			// Startup class.
-			class __PIRANHA_VISIBLE startup_class
+			class PIRANHA_VISIBLE startup_class
 			{
 				public:
 					startup_class();

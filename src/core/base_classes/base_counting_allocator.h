@@ -28,7 +28,7 @@
 
 namespace piranha
 {
-	class __PIRANHA_VISIBLE base_counting_allocator
+	class PIRANHA_VISIBLE base_counting_allocator
 	{
 		public:
 			static std::size_t count()

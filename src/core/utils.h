@@ -36,7 +36,7 @@
 
 namespace piranha
 {
-	class __PIRANHA_VISIBLE utils
+	class PIRANHA_VISIBLE utils
 	{
 		public:
 			/// Lexical converter.

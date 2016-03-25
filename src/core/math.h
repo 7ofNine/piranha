@@ -447,7 +447,7 @@ namespace piranha
 	}
 
 	/// Check if input argument can be represented exactly as an int type.
-	__PIRANHA_VISIBLE bool is_integer(const double &);
+	PIRANHA_VISIBLE bool is_integer(const double &);
 }
 
 #endif

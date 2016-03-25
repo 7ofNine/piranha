@@ -39,7 +39,7 @@ namespace piranha {
 namespace truncators {
 
 	/// Norm-based truncator.
-	class __PIRANHA_VISIBLE norm
+	class PIRANHA_VISIBLE norm
 	{
 			template <class ArgsTuple>
 			class norm_comparison

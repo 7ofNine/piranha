@@ -32,7 +32,7 @@
 namespace piranha
 {
 
-class __PIRANHA_VISIBLE stats
+class PIRANHA_VISIBLE stats
 {
 	public:
 		static void set(const std::string &key, const std::string &field)

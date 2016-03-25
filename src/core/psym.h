@@ -41,10 +41,10 @@
 namespace piranha
 {
 	// the global "dictionary" of Psym(s)
-	struct __PIRANHA_VISIBLE PsymManager {
+	struct PIRANHA_VISIBLE PsymManager {
 
 		//implementation of a Psym stored in the PsymManager
-		struct __PIRANHA_VISIBLE PsymImpl {
+		struct PIRANHA_VISIBLE PsymImpl {
 
 			PsymImpl(const std::string &name, const std::vector<double> &time_eval = std::vector<double>()):
 				m_name(name), m_time_eval(time_eval) {}
@@ -115,7 +115,7 @@ namespace piranha
 	 * \f]
 	 * where \f$ t \f$ is time.
 	 */
-	class __PIRANHA_VISIBLE Psym {
+	class PIRANHA_VISIBLE Psym {
 
 			typedef PsymManager::container_type::const_iterator it_type;
 			typedef PsymManager::PsymImpl PsymImpl;
