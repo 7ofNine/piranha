@@ -38,12 +38,12 @@ namespace piranha
 	class __PIRANHA_VISIBLE settings
 	{
 		public:
-			enum multiplication_algorithm
+			enum MultiplicationAlgorithm
 			{
-				automatic    = 0,
-				plain        = 1,
-				vector_coded = 2,
-				hash_coded   = 3
+				ALGORITHM_AUTOMATIC    = 0,
+				ALGORITHM_PLAIN        = 1,
+				ALGORITHM_VECTOR_CODED = 2,
+				ALGORITHM_HASH_CODED   = 3
 			};
 
 
@@ -101,18 +101,19 @@ namespace piranha
 			static unsigned get_nthread();
 			static void set_nthread(const int &);
 
-			static multiplication_algorithm get_multiplication_algorithm()
+			static MultiplicationAlgorithm getMultiplicationAlgorithm()
 			{
-				return m_mult_algo;
+				return multiplicationAlgorithm;
 			}
 
 
-			static void set_multiplication_algorithm(multiplication_algorithm mult_algo)
+			static void setMultiplicationAlgorithm(MultiplicationAlgorithm algorithm)
 			{
-				if (mult_algo < 0 || mult_algo > 3) {
-					PIRANHA_THROW(value_error,"invalid multiplication algorithm");
+				if (algorithm < 0 || algorithm > 3)
+                {
+					PIRANHA_THROW(value_error, "Invalid multiplication algorithm");
 				}
-				m_mult_algo = mult_algo;
+				multiplicationAlgorithm = algorithm;
 			}
 
 
@@ -126,26 +127,23 @@ namespace piranha
 			};
 
 
-			static std::size_t		m_max_pretty_print_size;
-			// Memory limit in bytes.
-			static std::size_t		m_memory_limit;
-			// Numerical zero.
-			static double			m_numerical_zero;
-			static bool			m_debug;
-			static const std::string	m_version;
-			static startup_class		startup;
-			// Number of threads available.
-			static unsigned			m_nthread;
-			static multiplication_algorithm	m_mult_algo;
+			static std::size_t		        m_max_pretty_print_size;
+			static std::size_t		        m_memory_limit;          // Memory limit in bytes.
+			static double			        m_numerical_zero;        // Numerical zero.
+			static bool			            m_debug;
+			static const std::string	    m_version;
+			static startup_class		    startup;
+			static unsigned			        m_nthread;               // Number of threads available.
+			static MultiplicationAlgorithm	multiplicationAlgorithm;
 	};
 }
 
 
 // Debug mode.
 #ifndef NDEBUG
-#define __PDEBUG(statement) {if (settings::get_debug()) {statement;}}
+#define PIRANHA_DEBUG(statement) {if (settings::get_debug()) {statement;}}
 #else
-#define __PDEBUG(statement)
+#define PIRANHA_DEBUG(statement)
 #endif
 
 #endif

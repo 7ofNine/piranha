@@ -199,9 +199,9 @@ class coded_hash_table
 		/// Destructor.
 		~coded_hash_table()
 		{
-			__PDEBUG(std::cout << "On destruction, the vector size of coded_hash_table was: "
+			PIRANHA_DEBUG(std::cout << "On destruction, the vector size of coded_hash_table was: "
 				<< sizes[m_size_policy][m_size_index] << '\n');
-			__PDEBUG(std::cout << "On destruction, the load factor was: "
+			PIRANHA_DEBUG(std::cout << "On destruction, the load factor was: "
 				<< double(m_length) / (sizes[m_size_policy][m_size_index] * bucket_size) << '\n');
 			PIRANHA_ASSERT(sizes[m_size_policy][m_size_index] == m_container.size());
 		}
@@ -287,10 +287,10 @@ class coded_hash_table
 			if (unlikely(!attempt_insertion(v,it))) {
 				iterator tmp(it);
 				do {
-					__PDEBUG(std::cout << "Started resizing coded series hash table." << '\n');
+					PIRANHA_DEBUG(std::cout << "Started resizing coded series hash table." << '\n');
 					increase_size();
 					tmp = find(v.second).second;
-					__PDEBUG(std::cout << "Resized coded series hash table." << '\n');
+					PIRANHA_DEBUG(std::cout << "Resized coded series hash table." << '\n');
 				} while (unlikely(!attempt_insertion(v,tmp)));
 			}
 		}
@@ -394,13 +394,13 @@ class coded_hash_table
 		void increase_size()
 		{
 			const double load_factor = static_cast<double>(m_length) / (static_cast<double>(m_container.size()) * bucket_size);
-			__PDEBUG(std::cout << "Increase size requested at load factor: " << load_factor << '\n');
+			PIRANHA_DEBUG(std::cout << "Increase size requested at load factor: " << load_factor << '\n');
 			// If load factor is too small and we are on pow2 sizes,
 			// we want to switch to prime sizes.
 			static const double min_load_factor = .1;
 			size_policy new_size_policy = m_size_policy;
 			if (m_size_policy == pow2 && load_factor < min_load_factor) {
-				__PDEBUG(std::cout << "Load factor too low in pow2 sizes, switching to prime sizes.\n";)
+				PIRANHA_DEBUG(std::cout << "Load factor too low in pow2 sizes, switching to prime sizes.\n";)
 				new_size_policy = prime;
 			}
 			coded_hash_table new_ht;
@@ -417,12 +417,12 @@ class coded_hash_table
 					// NOTICE: here maybe we can use swapping instead of copying. The only problem is that
 					// resizing can fail. In that case, we should swap back everything, if possible, and re-attempt
 					// the resize with a bigger value.
-					__PDEBUG(std::cout << "Hash table resize triggered during resize." << '\n');
+					PIRANHA_DEBUG(std::cout << "Hash table resize triggered during resize." << '\n');
 					// If we are able to rebuild less than a fraction of the initial hash table
 					// and we are working in pow2 sizes, switch to prime sizes.
 					static const double rebuild_thresh = .5;
 					if (new_ht.m_size_policy == pow2 && static_cast<double>(count) / m_length < rebuild_thresh) {
-						__PDEBUG(std::cout << "Rebuilding failed too early, switching to prime sizes.\n");
+						PIRANHA_DEBUG(std::cout << "Rebuilding failed too early, switching to prime sizes.\n");
 						new_ht.m_size_policy = prime;
 					}
 					++new_ht.m_size_index;

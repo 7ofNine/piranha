@@ -245,7 +245,7 @@ namespace piranha
                 const size_type minw = trigVector.size();
 				
                 // Assert widths, *this should always come from a regular Poisson series, and its width should hence be
-				// already adjusted my merge_args in multiplication routines.
+				// already adjusted my mergeArgs in multiplication routines.
 				PIRANHA_ASSERT(maxw >= minw);
 
 				// Adjust the width of retvals, if needed.

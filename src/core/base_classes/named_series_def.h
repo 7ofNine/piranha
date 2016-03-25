@@ -162,7 +162,7 @@ namespace piranha
             //protected:
 			void trim();
 			template <class Derived2>
-			void merge_args(const Derived2 &);
+			void mergeArgs(const Derived2 &);
 			// TODO: check these protected methods, some of them can be moved into private
 			// with proper friendship in manipulator classes.
 			void construct_from_file(const std::string &);
@@ -180,13 +180,13 @@ namespace piranha
 			void append_arg(const Psym &);
 
 			template <class Derived2>
-			Derived & mult_by_series(const Derived2 &);
+			Derived & multBySeries(const Derived2 &);
 
 			template <class Number>
 			Derived & mult_number_helper(const Number &);
 
 			template <class Number>
-			Derived & divide_number_helper(const Number &);
+			Derived & divideNumberHelper(const Number &);
 
 			void print_pretty(std::ostream &) const;
 			void read_from_file(std::ifstream &, const std::string &);
@@ -201,7 +201,7 @@ namespace piranha
 			void merge_incompatible_args(const Derived2 &);
 
 			template <bool, class Derived2>
-			Derived & merge_with_series(const Derived2 &);
+			Derived & mergeWithSeries(const Derived2 &);
 
 		protected:
 

@@ -44,7 +44,7 @@ namespace piranha
 		template <class Derived>
 		static Derived & run(Derived & series, const T & other)
 		{
-			return series.template merge_with_series<true>(other);
+			return series.template mergeWithSeries<true>(other);
 		}
 	};
 
@@ -66,7 +66,7 @@ namespace piranha
 		template <class Derived>
 		static Derived &run(Derived &series, const T &other)
 		{
-			return series.template merge_with_series<false>(other);
+			return series.template mergeWithSeries<false>(other);
 		}
 	};
 	 
@@ -90,7 +90,7 @@ namespace piranha
 		template <class Derived>
 		static Derived & run(Derived & series, const T & other)
 		{
-			return series.mult_by_series(other);
+			return series.multBySeries(other);
 		}
 	};
 	 

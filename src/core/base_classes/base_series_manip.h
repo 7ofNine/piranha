@@ -76,7 +76,7 @@ namespace piranha
 	/**
 	 * This function is used to insert terms into a series. It requires that the number of arguments
 	 * of each element of the term is smaller or equal to the series',
-	 * otherwise an assertion fails and the program aborts. base_pseries::merge_args,
+	 * otherwise an assertion fails and the program aborts. base_pseries::mergeArgs,
 	 * base_pseries::append_cf_args, base_pseries::append_trig_args, etc. can be used to add the needed arguments
 	 * to the series.
 	 *

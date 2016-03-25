@@ -49,12 +49,12 @@ namespace piranha
 				return retval;
 			}
 			void set_real(const RealDerived &r) {
-				derived_cast->merge_args(r);
+				derived_cast->mergeArgs(r);
 				derived_cast->baseSetReal(r, derived_const_cast->arguments());
 				derived_cast->trim();
 			}
 			void set_imag(const RealDerived &i) {
-				derived_cast->merge_args(i);
+				derived_cast->mergeArgs(i);
 				derived_cast->baseSetImag(i, derived_const_cast->arguments());
 				derived_cast->trim();
 			}
@@ -90,12 +90,12 @@ namespace piranha
 			void construct_from_real_imag(const RealDerived &r, const RealDerived &i)
 			{
 				derived_cast->setArguments(r.arguments());
-				derived_cast->merge_args(i);
+				derived_cast->mergeArgs(i);
 				// NOTE: here we have to copy r and merge its arguments with i, otherwise
 				// there will be arguments mismatches. All series, this, r and i must share the
 				// same arguments layout.
 				RealDerived r_copy(r);
-				r_copy.merge_args(i);
+				r_copy.mergeArgs(i);
 				derived_cast->baseConstructFromRealImag(r_copy, i, derived_cast->arguments());
 				derived_cast->trim();
 			}

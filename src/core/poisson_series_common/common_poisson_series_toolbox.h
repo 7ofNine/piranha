@@ -55,13 +55,13 @@ namespace piranha
 			{
 				// In order to account for a potential integer linear combination of arguments
 				// we must merge in as trigonometric arguments the polynomial arguments. The safe
-				// way to do this is by using NamedSeries::merge_args with a phony series having zero
+				// way to do this is by using NamedSeries::mergeArgs with a phony series having zero
 				// polynomial arguments and as trigonometric arguments the polynomial arguments of this.
 				Derived copy(*derived_const_cast), tmp;
 				typename Derived::ArgsTupleType tmp_args;
 				tmp_args.template get<1>() = derived_const_cast->arguments().template get<0>();
 				tmp.setArguments(tmp_args);
-				copy.merge_args(tmp);
+				copy.mergeArgs(tmp);
 				// Now we can call in the ei method from above.
 				std::complex<Derived> retval(copy.base_ei(copy.arguments()));
 				retval.setArguments(copy.arguments());
@@ -102,14 +102,14 @@ namespace piranha
 				tmp_args.template get<1>() = series.arguments().template get<0>();
 				tmp.setArguments(tmp_args);
 				// After the next line, s_copy's args layout is compatible with tmp's.
-				s_copy.merge_args(tmp);
+				s_copy.mergeArgs(tmp);
 				// After the next line, this_copy's args layout is compatible with s_copy's
-				this_copy.merge_args(s_copy);
+				this_copy.mergeArgs(s_copy);
 				// Finally, have s_copy have compatible arguments with this_copy. This is needed because
 				// we will be using this_copy's arguments as argsTuple in all base functions used from now
 				// on, including functions taking s_copy as arguments and which do not know anything about
 				// this_copy.
-				s_copy.merge_args(this_copy);
+				s_copy.mergeArgs(this_copy);
 				// Init sub caches using s and this_copy.m_arguments.
 				sub_caches_type sub_caches;
 				init_sub_caches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.arguments());
@@ -138,8 +138,8 @@ namespace piranha
 				const Psym p(name);
 				Derived this_copy(*derived_const_cast);
 				SubSeries s_copy(series);
-				this_copy.merge_args(s_copy);
-				s_copy.merge_args(this_copy);
+				this_copy.mergeArgs(s_copy);
+				s_copy.mergeArgs(this_copy);
 				sub_caches_type sub_caches;
 				init_sub_caches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.arguments());
 
@@ -191,7 +191,7 @@ namespace piranha
 					// We must prepare arguments list to take an extra polynomial argument, for cases such as 1 + cos(x)
 					// where integration adds a symbol to the list of polynomial symbols.
 					Derived this_copy(*derived_const_cast);
-					this_copy.merge_args(Derived(p));
+					this_copy.mergeArgs(Derived(p));
 					const pos_tuple_type new_pos_tuple = psyms2pos(VectorPsym(1,p),this_copy.arguments());
 
 					retval = this_copy.baseIntegrate(new_pos_tuple, this_copy.arguments());

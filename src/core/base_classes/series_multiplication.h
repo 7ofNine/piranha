@@ -65,7 +65,7 @@ namespace piranha
 			{
 				typedef typename Derived::const_iterator const_iterator;
 				typedef typename Derived::TermType term_type;
-				__PDEBUG(std::cout << "Input lengths for series multiplication: " << derived_const_cast->length() << ','
+				PIRANHA_DEBUG(std::cout << "Input lengths for series multiplication: " << derived_const_cast->length() << ','
 					<< s2.length() << '\n');
 				// Don't do anything if this is empty.
 				if (derived_const_cast->empty()) 
@@ -81,23 +81,22 @@ namespace piranha
 				}
 
 
-				const settings::multiplication_algorithm algo = settings::get_multiplication_algorithm();
+				const settings::MultiplicationAlgorithm algo = settings::getMultiplicationAlgorithm();
 				// Optimize the cases of single coefficient series.
-				if (s2.isSingleCf() && algo == settings::automatic)
+				if (s2.isSingleCf() && algo == settings::ALGORITHM_AUTOMATIC)
 				{
 					derived_cast->baseMultBy(s2.begin()->cf, argsTuple);
-				} else if (derived_const_cast->isSingleCf() && algo == settings::automatic)
+				} else if (derived_const_cast->isSingleCf() && algo == settings::ALGORITHM_AUTOMATIC)
 				{
 					Derived tmp;
-					tmp.insertRange(s2.begin(),s2.end(),argsTuple);
+					tmp.insertRange(s2.begin(), s2.end(), argsTuple);
 					tmp.baseMultBy(derived_const_cast->begin()->cf, argsTuple);
 					derived_cast->baseSwap(tmp);
 				} else
 				{
 					Derived retval;
-					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator>
-						                          m(*derived_const_cast, s2, retval, argsTuple);
-					m.perform_multiplication();
+					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator> m(*derived_const_cast, s2, retval, argsTuple);
+					m.performMultiplication();
 					derived_cast->baseSwap(retval);
 				}
 			}

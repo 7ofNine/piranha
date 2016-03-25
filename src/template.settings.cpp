@@ -40,7 +40,7 @@ namespace piranha
 	unsigned settings::m_nthread = boost::thread::hardware_concurrency() ? boost::thread::hardware_concurrency() : 1;
 	settings::startup_class settings::startup;
 	std::size_t settings::m_max_pretty_print_size = 500;
-	settings::multiplication_algorithm settings::m_mult_algo = settings::automatic;
+	settings::MultiplicationAlgorithm settings::multiplicationAlgorithm = settings::ALGORITHM_AUTOMATIC;
 
 	settings::startup_class::startup_class()
 	{

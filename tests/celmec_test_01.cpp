@@ -28,21 +28,40 @@ using namespace piranha;
 
 int main()
 {
+    settings::setMultiplicationAlgorithm(settings::ALGORITHM_PLAIN);
 	// Expansion to order 401 of r/a in terms of e and M.
 	int retval = 0;
-	Psym e("e"), M("M");
-	truncators::degree::set(401);
+    // todo: remove just fro some testing
     {
-	ps res(ps::r_a(ps(e),ps(M)));
-	std::cout << res.length() << '\n';
-	std::cout << res.atoms() << '\n';
-	retval += (res.length() != 401 || res.atoms() != 80805);
+        Psym x("x"), y("y"), z("z");
+        qps aSeries = 2*qps(x) + qps(y);
+        qps bSeries =   qps(y) + qps(z);
+        qps testSeries = aSeries + bSeries;
+
+        Psym p("p"), q("q");
+        qps testTrigSeries = 2*qps(p) + 3*qps(q);
+        qps testResult = testSeries*(testTrigSeries.cos() + testTrigSeries.sin());
+        
     }
+    // todo end
+
+
+	Psym e("e"), M("M");
+	truncators::degree::set(4);
+    std::vector< ps > flattened;
+    
+	    ps res(ps::r_a(ps(e), ps(M)));
+	    std::cout << res.length() << '\n';
+	    std::cout << res.atoms() << '\n';
+	    retval += (res.length() != 401 || res.atoms() != 80805);
+        flattened = res.flatten();
+    
     std::cout<< "test 1: " << retval << '\n';
-//    Psym ep("e'"),Mp("M'");
-//    ps resp(ps::a_r(ps(ep), ps(Mp)));
-//    ps retp = res*resp;
-//    retp.save_to("testxxxx.qps");
+   
+    Psym ep("e'"),Mp("M'");
+    ps resp(ps::a_r(ps(ep), ps(Mp)));
+    ps retp = res*resp;
+//    retp.saveTo("testxxxx.qps");
  //   retp.print(std::cout);
 //    return 0;
 	// Identity.

@@ -39,17 +39,17 @@ namespace piranha
 {
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <bool Sign, class Derived2>
-	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::merge_with_series(const Derived2 &s2)
+	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::mergeWithSeries(const Derived2 &s2)
 	{
 		// If we are merging with self, create a copy and call recursively.
 		if ((void *)(boost::addressof(*derived_cast)) == (void *)(boost::addressof(s2)))
 		{
-			__PDEBUG(std::cout << "Merging with self, performing a copy." << '\n');
-			merge_with_series<Sign>(Derived(*derived_const_cast));
+			PIRANHA_DEBUG(std::cout << "Merging with self, performing a copy." << '\n');
+			mergeWithSeries<Sign>(Derived(*derived_const_cast));
 
 		} else 
 		{
-			merge_args(s2);
+			mergeArgs(s2);
 			if (Sign) 
 			{
 				derived_cast->baseAdd(s2, argumentsTuple);
@@ -67,10 +67,10 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::mult_by_series(const Derived2 &s2)
+	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::multBySeries(const Derived2 &s2)
 	{
 		// First we merge the arguments of the two series.
-		merge_args(s2);
+		mergeArgs(s2);
 		// Then we perform the multiplication.
 		derived_cast->baseMultBy(s2, argumentsTuple);
 		trim();
@@ -82,7 +82,7 @@ namespace piranha
 	template <class T>
 	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator+=(const T &x)
 	{
-		return NamedSeriesAddSelector<T>::run(*derived_cast,x);
+		return NamedSeriesAddSelector<T>::run(*derived_cast, x);
 	}
 
 
@@ -121,7 +121,7 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Number>
-	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::divide_number_helper(const Number &x)
+	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::divideNumberHelper(const Number &x)
 	{
 		derived_cast->baseDivideBy(x, argumentsTuple);
 		trim();
@@ -133,7 +133,7 @@ namespace piranha
 	template <class T>
 	inline Derived & NamedSeries<__PIRANHA_NAMED_SERIES_TP>::operator/=(const T &x)
 	{
-		return divide_number_helper(x);
+		return divideNumberHelper(x);
 	}
 
 
@@ -171,10 +171,10 @@ namespace piranha
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<__PIRANHA_NAMED_SERIES_TP>::partial(const std::string &name, const int &n) const
 	{
-		typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type pos_tuple_type;
+		typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type PositionTupleType;
 		const Psym p(name);
-		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1,p), argumentsTuple);
-		Derived retval(derived_const_cast->basePartial(n, pos_tuple, argumentsTuple));
+		const PositionTupleType positionTuple = psyms2pos(VectorPsym(1, p), argumentsTuple);
+		Derived retval(derived_const_cast->basePartial(n, positionTuple, argumentsTuple));
 		retval.argumentsTuple = argumentsTuple;
 		retval.trim();
 		return retval;

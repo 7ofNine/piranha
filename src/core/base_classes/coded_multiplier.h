@@ -82,7 +82,7 @@ struct BaseCodedFunctor
 
 		bool operator()(std::size_t const n1, std::size_t const n2) const
 		{
-			// TODO numeric casts here, or maybe one large check at the beginning of the coded multiplier?
+			// TODO: numeric casts here, or maybe one large check at the beginning of the coded multiplier?
 			return functor.get_mem_pos(vec[n1]) < functor.get_mem_pos(vec[n2]);
 		}
 
@@ -99,20 +99,19 @@ struct BaseCodedFunctor
 	{}
 
 
-	void base_blocks_setup(std::size_t &cur_idx1_start, const std::size_t &block_size, BlockSequence &idx_vector1, BlockSequence &idx_vector2)
+	void baseBlocksSetup(std::size_t currentIndex1Start, std::size_t const blockSize, BlockSequence &indexVector1, BlockSequence &indexVector2)
 	{
 #ifdef _DEBUG
-		std::cout << "BaseCodedFunctor::base_blocks_setup" <<std::endl
-			      << "cur_idx1_start: " << cur_idx1_start <<std::endl
-				  << "block_size: " << block_size << std::endl
-				  << "idx_vector1 size: " << idx_vector1.size() << std::endl
-				  << "idx_vector2 size: " << idx_vector2.size() << std::endl
-				  << std::flush;
+		std::cout << "BaseCodedFunctor::baseBlocksSetup" <<std::endl
+			      << "currentIndex1Start: "              << currentIndex1Start  << std::endl
+				  << "blockSize: "                       << blockSize           << std::endl
+				  << "indexVector1 size: "               << indexVector1.size() << std::endl
+				  << "indexVector2 size: "               << indexVector2.size() << std::endl;
 #endif
-		PIRANHA_ASSERT(cur_idx1_start < m_tc1.size() && idx_vector1.size() == idx_vector2.size());
+		PIRANHA_ASSERT(currentIndex1Start < m_tc1.size() && indexVector1.size() == indexVector2.size());
 
-		std::size_t upper_bound1 = std::min<std::size_t>(m_tc1.size(), cur_idx1_start + idx_vector1.size() * block_size);
-		std::size_t	upper_bound2 = std::min<std::size_t>(m_tc2.size(), idx_vector2.size() * block_size);
+		std::size_t upperBound1 = std::min<std::size_t>(m_tc1.size(), currentIndex1Start + indexVector1.size() * blockSize);
+		std::size_t	upperBound2 = std::min<std::size_t>(m_tc2.size(), indexVector2.size() * blockSize);
 
 		do {
 			// Now we must check the blocks for the following conditions:
@@ -121,61 +120,65 @@ struct BaseCodedFunctor
 			// 3 - the upper bound of each block must be different from the lower bound of next block.
 			// ---
 			// Determine the sequences, given upper and lower bounds.
-			determine_sequence(idx_vector1, cur_idx1_start, upper_bound1);
-			determine_sequence(idx_vector2,              0, upper_bound2);
-			// Prepare lower-upper bounds for the next iteration, if any. But we never want to have less than 1 term in the whole sequence.
-			PIRANHA_ASSERT(upper_bound1 > cur_idx1_start);
+			determineSequence(indexVector1, currentIndex1Start, upperBound1);
+			determineSequence(indexVector2,                  0, upperBound2);
 
-			if (idx_vector1.back().second - cur_idx1_start >= 2) 
+			// Prepare lower-upper bounds for the next iteration, if any. But we never want to have less than 1 term in the whole sequence.
+			PIRANHA_ASSERT(upperBound1 > currentIndex1Start);
+
+			if (indexVector1.back().second - currentIndex1Start >= 2) 
 			{
-				upper_bound1 = cur_idx1_start + (idx_vector1.back().second - cur_idx1_start) / 2;
+				upperBound1 = currentIndex1Start + (indexVector1.back().second - currentIndex1Start) / 2;
 			}
-			if (idx_vector2.back().second >= 2) 
+
+			if (indexVector2.back().second >= 2) 
 			{
-				upper_bound2 = idx_vector2.back().second / 2;
+				upperBound2 = indexVector2.back().second / 2;
 			}
-		} while (sequences_overlap(idx_vector1,idx_vector2));
+
+		} while (sequencesOverlap(indexVector1, indexVector2));
 
 		// Blocks boundaries check.
-		adjust_block_boundaries(idx_vector1, m_ck1);
-		adjust_block_boundaries(idx_vector2, m_ck2);
-		// Finally, update the cur_idx1.
-		cur_idx1_start = idx_vector1.back().second;
+		adjustBlockBoundaries(indexVector1, m_ck1);
+		adjustBlockBoundaries(indexVector2, m_ck2);
+
+		// Finally, update the currentIndex1Start.
+		currentIndex1Start = indexVector1.back().second;
 
 // std::cout << "init\n";
-// for (std::size_t i = 0; i < idx_vector1.size(); ++i) {
-// 	std::cout << idx_vector1[i].first << ',' << idx_vector1[i].second << '\n';
+// for (std::size_t i = 0; i < indexVector1.size(); ++i) {
+// 	std::cout << indexVector1[i].first << ',' << indexVector1[i].second << '\n';
 // }
-// for (std::size_t i = 0; i < idx_vector2.size(); ++i) {
-// 	std::cout << idx_vector2[i].first << ',' << idx_vector2[i].second << '\n';
+// for (std::size_t i = 0; i < indexVector2.size(); ++i) {
+// 	std::cout << indexVector2[i].first << ',' << indexVector2[i].second << '\n';
 // }
 // std::cout << "blah\n";
 	}
 
 
 	// Write into s a sequence of blocks ranging from index lower_bound to index upper_bound.
-	static void determine_sequence(BlockSequence &s, std::size_t const lower_bound, std::size_t const upper_bound)
+	static void determineSequence(BlockSequence &s, std::size_t const lowerBound, std::size_t const upperBound)
 	{
-		PIRANHA_ASSERT(upper_bound > lower_bound && s.size() > 0);
-		const std::size_t n_blocks = boost::numeric_cast<std::size_t>(s.size());
-        const std::size_t n_terms  = upper_bound - lower_bound;
-		const std::size_t block_size = (n_blocks > n_terms) ? 1 : n_terms / n_blocks;
-		std::size_t i = 0;
-		for (; i < n_blocks - 1; ++i) 
+		PIRANHA_ASSERT(upperBound > lowerBound && s.size() > 0);
+		const std::size_t numBlocks = boost::numeric_cast<std::size_t>(s.size());
+        const std::size_t numTerms  = upperBound - lowerBound;
+		const std::size_t blockSize = (numBlocks > numTerms) ? 1 : numTerms / numBlocks;
+		for (std::size_t i = 0; i < numBlocks - 1; ++i) 
 		{
-			s[i].first  = std::min<std::size_t>(upper_bound, lower_bound +  i      * block_size);
-			s[i].second = std::min<std::size_t>(upper_bound, lower_bound + (i + 1) * block_size);
+			s[i].first  = std::min<std::size_t>(upperBound, lowerBound +  i      * blockSize);
+			s[i].second = std::min<std::size_t>(upperBound, lowerBound + (i + 1) * blockSize);
 		}
+
 		// Handle the last block separately, as it might be non homogeneous.
-		s[i].first = std::min<std::size_t>(upper_bound, lower_bound + i * block_size);
-		s[i].second = upper_bound;
+		s[numBlocks - 1].first = std::min<std::size_t>(upperBound, lowerBound + (numBlocks - 1) * blockSize);
+		s[numBlocks - 1].second = upperBound;
 	}
 
 
-	void adjust_block_boundaries(BlockSequence &s, std::vector<max_fast_int> const &ck) const
+	void adjustBlockBoundaries(BlockSequence &s, std::vector<max_fast_int> const &ck) const
 	{
 #ifdef _DEBUG
-		std::cout << "BaseCodedFunctor::adjust_block_boundaries: ck size = " << ck.size() << std::endl << std::flush;
+		std::cout << "BaseCodedFunctor::adjust_block_boundaries: ck size = " << ck.size() << std::endl;
 #endif
 		PIRANHA_ASSERT(s.size() > 0);
 
@@ -201,70 +204,70 @@ struct BaseCodedFunctor
 	}
 
 
-	bool block2_advance(const BlockSequence &idx_vector1, BlockSequence &idx_vector2, const std::size_t &block_size, const BlockSequence &orig2, std::size_t &wrap_count) const
+	bool block2_advance(const BlockSequence &indexVector1, BlockSequence &indexVector2, const std::size_t &BlockSize, const BlockSequence &orig2, std::size_t &wrapCount) const
 	{
-		__PDEBUG(std::cout << "coded_multiplier::block2_advance()" << std::endl << std::flush);
-		PIRANHA_ASSERT(idx_vector1.size() == idx_vector2.size() && idx_vector1.size() > 0);
+		PIRANHA_DEBUG(std::cout << "coded_multiplier::block2_advance()" << std::endl << std::flush);
+		PIRANHA_ASSERT(indexVector1.size() == indexVector2.size() && indexVector1.size() > 0);
 
-		if (wrap_count)
+		if (wrapCount)
 		{
-			PIRANHA_ASSERT(wrap_count < idx_vector2.size());
-			if (wrap_count == idx_vector2.size() - 1)
+			PIRANHA_ASSERT(wrapCount < indexVector2.size());
+			if (wrapCount == indexVector2.size() - 1)
 			{
 				// This means we are at the end.
 				return false;
 			}
 			// Shift down the blocks.
-			std::copy(idx_vector2.begin() + 1, idx_vector2.end(), idx_vector2.begin());
+			std::copy(indexVector2.begin() + 1, indexVector2.end(), indexVector2.begin());
 			// Get the new block from the originals.
-			idx_vector2.back() = orig2[wrap_count];
+			indexVector2.back() = orig2[wrapCount];
 			// Increase the wrap count.
-			++wrap_count;
+			++wrapCount;
 		} else
 		{
 			// Shift down the blocks.
-			std::copy(idx_vector2.begin() + 1, idx_vector2.end(), idx_vector2.begin());
+			std::copy(indexVector2.begin() + 1, indexVector2.end(), indexVector2.begin());
 			// Set the new starting point for the last block.
-			idx_vector2.back().first = idx_vector2.back().second;
+			indexVector2.back().first = indexVector2.back().second;
 			// Add the block size or stop at the end of the series, if necessary.
-			idx_vector2.back().second = std::min<std::size_t>(m_tc2.size(), idx_vector2.back().first + block_size);
+			indexVector2.back().second = std::min<std::size_t>(m_tc2.size(), indexVector2.back().first + BlockSize);
 			// Now check if we are at the end of the first phase.
-			if (idx_vector2.front() == BlockType(m_tc2.size(), m_tc2.size()))
+			if (indexVector2.front() == BlockType(m_tc2.size(), m_tc2.size()))
 			{
-				if (idx_vector2.size() > 1)
+				if (indexVector2.size() > 1)
 				{
 					// If multi-threaded, insert at the end the first original block.
-					idx_vector2.back() = orig2.front();
+					indexVector2.back() = orig2.front();
 					// Start the wrap count.
-					wrap_count = 1;
+					wrapCount = 1;
 				} else
 				{
 					// In single-threaded, this means we have finished.
 					return false;
 				}
-			} else if (idx_vector2.size() > 1)
+			} else if (indexVector2.size() > 1)
 			{
 				// If we are not at the end of the first phase and we are multithreaded, we need to make sure the newly-added
 				// block does not overlap.
 				// NOTE: maybe this function can be replaced by direct check that the last block of first series
 				// by the newly added block in second series do not overlap with the remaining macroblock 1 by remaining
 				// macro block 2.
-				while (sequences_overlap(idx_vector1, idx_vector2))
+				while (sequencesOverlap(indexVector1, indexVector2))
 				{
-					PIRANHA_ASSERT(idx_vector2.back().second >= idx_vector2.back().first);
-					idx_vector2.back().second = idx_vector2.back().first + (idx_vector2.back().second - idx_vector2.back().first) / 2;
+					PIRANHA_ASSERT(indexVector2.back().second >= indexVector2.back().first);
+					indexVector2.back().second = indexVector2.back().first + (indexVector2.back().second - indexVector2.back().first) / 2;
 				}
 			}
 		}
 
 		// Make sure we have no overlaps.
-		PIRANHA_ASSERT(!sequences_overlap(idx_vector1,idx_vector2));
+		PIRANHA_ASSERT(!sequencesOverlap(indexVector1, indexVector2));
 // std::cout << "after advance\n";
-// for (std::size_t i = 0; i < idx_vector1.size(); ++i) {
-// 	std::cout << idx_vector1[i].first << ',' << idx_vector1[i].second << '\n';
+// for (std::size_t i = 0; i < indexVector1.size(); ++i) {
+// 	std::cout << indexVector1[i].first << ',' << indexVector1[i].second << '\n';
 // }
-// for (std::size_t i = 0; i < idx_vector2.size(); ++i) {
-// 	std::cout << idx_vector2[i].first << ',' << idx_vector2[i].second << '\n';
+// for (std::size_t i = 0; i < indexVector2.size(); ++i) {
+// 	std::cout << indexVector2[i].first << ',' << indexVector2[i].second << '\n';
 // }
 // std::cout << "blappo\n";
 
@@ -272,13 +275,13 @@ struct BaseCodedFunctor
 	}
 
 
-	static bool interval_sorter(BlockInterval const &i1,  BlockInterval const &i2)
+	static bool intervalSorter(BlockInterval const &i1,  BlockInterval const &i2)
 	{
 		return i1.lower() < i2.lower();
 	}
 
 
-	bool sequences_overlap(BlockSequence const &s1,  BlockSequence const &s2) const
+	bool sequencesOverlap(BlockSequence const &s1,  BlockSequence const &s2) const
 	{
 		PIRANHA_ASSERT(s1.size() == s2.size() && s1.size() > 0);
 
@@ -287,7 +290,7 @@ struct BaseCodedFunctor
 		std::vector<BlockInterval> vi;
 		for (size_type i = 0; i < s1.size(); ++i) 
 		{
-			std::pair<BlockInterval, BlockInterval> tmp(derived_const_cast->blocks_to_intervals(s1[i], s2[i]));
+			std::pair<BlockInterval, BlockInterval> tmp(derived_const_cast->blocksToIntervals(s1[i], s2[i]));
 			if (!boost::numeric::empty(tmp.first)) 
 			{
 				vi.push_back(tmp.first);
@@ -304,12 +307,12 @@ struct BaseCodedFunctor
 			return false;
 		}
 		// Sort according to lower bound of the interval.
-		std::sort(vi.begin(), vi.end(), interval_sorter);
+		std::sort(vi.begin(), vi.end(), intervalSorter);
 
 		PIRANHA_ASSERT(vi.size() > 0);
 
 		// Check that all intervals are disjoint.
-		for (std::vector<BlockInterval>::size_type i = 0; i < vi.size() - 1; ++i) 
+		for (size_type i = 0; i < vi.size() - 1; ++i) 
 		{
 			if (vi[i].upper() >= vi[i + 1].lower()) 
 			{
@@ -350,7 +353,7 @@ struct BaseCodedFunctor
 	 * - input series must have at least one argument.
 	 */
 	template <class Derived, class Series1, class Series2, class OpTuple>
-	class coded_multiplier
+	class CodedMultiplier
 	{
 			// Some static checks.
 			PIRANHA_STATIC_CHECK(Series1::echelonLevel == Series2::echelonLevel, "");
@@ -386,28 +389,30 @@ struct BaseCodedFunctor
 					}
 			};
 
-			enum mult_type
+
+			enum MultiplicationType
 			{
-				plain,
-				vector,
-				hash
+				MULTIPLICATION_PLAIN   = 0,
+				MULTIPLICATION_VECTOR = 1,
+				MULTIPLICATION_HASH   = 2
 			};
 
-			static void trace_mult_type(mult_type type)
+
+			static void trace_mult_type(MultiplicationType const type)
 			{
 				std::string name = "";
 				switch (type)
 				{
-					case plain:
-						name = "mult_plain";
+					case MULTIPLICATION_PLAIN:
+						name = "multiplication_plain";
 						break;
-					case vector:
-						name = "mult_vector";
+					case MULTIPLICATION_VECTOR:
+						name = "multiplication_vector";
 						break;
-					case hash:
-						name = "mult_hash";
+					case MULTIPLICATION_HASH:
+						name = "multiplication_hash";
 				}
-				stats::trace_stat(name,std::size_t(0),boost::lambda::_1 + 1);
+				stats::trace_stat(name, std::size_t(0), boost::lambda::_1 + 1);
 			}
 
 		public:
@@ -417,8 +422,8 @@ struct BaseCodedFunctor
 			 * to zero and m_mp_gr's and m_fast_gr's sizes are initialised according to the arguments tuple stored in
 			 * piranha::BaseSeriesMultiplier.
 			 */
-			coded_multiplier():m_gr_is_viable(false),m_mp_h(mp_integer(0)),m_fast_h(0),
-				m_density1(0.),m_density2(0.)
+			CodedMultiplier()
+            : m_gr_is_viable(false), m_mp_h(mp_integer(0)), m_fast_h(0), m_density1(0.), m_density2(0.)
 			{
 				// NOTE: beware the order of inheritance here, make sure to init BaseSeriesMultiplier before,
 				//       otherwise m_argsTuple will be uninitialised here.
@@ -431,9 +436,9 @@ struct BaseCodedFunctor
 
 
 			/// Perform multiplication and place the result into m_retval.
-			void perform_multiplication()
+			void performMultiplication()
 			{
-				const settings::multiplication_algorithm algo = settings::get_multiplication_algorithm();
+				const settings::MultiplicationAlgorithm algo = settings::getMultiplicationAlgorithm();
 				std::vector<typename Series1::TermType> f_terms1;
 				std::vector<typename Series2::TermType> f_terms2;
 				// If echelon level is more than zero we need to flatten out the series.
@@ -449,26 +454,26 @@ struct BaseCodedFunctor
 				}
 				
                 // NOTE: hard coded value of 1000.
-				if ((algo == settings::automatic && double(derived_cast->terms1.size()) * double(derived_cast->terms2.size()) < 1000)
-					|| algo == settings::plain)
+				if ((algo == settings::ALGORITHM_AUTOMATIC && double(derived_cast->terms1.size()) * double(derived_cast->terms2.size()) < 1000)
+					|| algo == settings::ALGORITHM_PLAIN)
 				{
 					derived_cast->performPlainMultiplication();
-					trace_mult_type(plain);
+					trace_mult_type(MULTIPLICATION_PLAIN);
 					return;
 				}
 
 				// Build the truncator here, _before_ coding. Otherwise we mess up the relation between
 				// coefficients and coded keys.
 				const typename Derived::truncator_type trunc(derived_cast->terms1, derived_cast->terms2, derived_cast->argsTuple);
-				determine_viability();
+				determineViability();
 				if (!m_gr_is_viable)
 				{
-					if (algo == settings::vector_coded || algo == settings::hash_coded)
+					if (algo == settings::ALGORITHM_VECTOR_CODED || algo == settings::ALGORITHM_HASH_CODED)
                     {
 						PIRANHA_THROW(value_error, "coded multiplication requested, but coded representation is infeasible");
 					}
 					derived_cast->performPlainMultiplication();
-					trace_mult_type(plain);
+					trace_mult_type(MULTIPLICATION_PLAIN);
 					return;
 				}
 
@@ -490,41 +495,47 @@ struct BaseCodedFunctor
 			template <class GenericTruncator>
 			void ll_perform_multiplication(const GenericTruncator &trunc)
 			{
-				const settings::multiplication_algorithm algo = settings::get_multiplication_algorithm();
-				typedef typename FinalCf<Series1>::Type cf_type1;
-				typedef typename FinalCf<Series2>::Type cf_type2;
+				const settings::MultiplicationAlgorithm algo = settings::getMultiplicationAlgorithm();
+				
+                typedef typename FinalCf<Series1>::Type CfType1;
+				typedef typename FinalCf<Series2>::Type CfType2;
 				// Code terms.
 				// NOTE: it is important to code here since at this point we already have sorted input series,
 				//       if necessary.
 				code_terms();
 				// Cache the coefficients.
-				std::vector<cf_type1> cf1_cache;
-				std::vector<cf_type2> cf2_cache;
-				std::insert_iterator<std::vector<cf_type1> > i_it1(cf1_cache,cf1_cache.begin());
-				std::insert_iterator<std::vector<cf_type2> > i_it2(cf2_cache,cf2_cache.begin());
-				std::transform(derived_cast->terms1.begin(), derived_cast->terms1.end(), i_it1,final_cf_getter<Series1>());
-				std::transform(derived_cast->terms2.begin(), derived_cast->terms2.end(), i_it2,final_cf_getter<Series2>());
-				bool vec_res;
-				if ((algo == settings::automatic && is_sparse()) || algo == settings::hash_coded) 
+				std::vector<CfType1> cf1Cache;
+				std::vector<CfType2> cf2Cache;
+				std::insert_iterator<std::vector<CfType1> > itCache1(cf1Cache, cf1Cache.begin());
+				std::insert_iterator<std::vector<CfType2> > itCache2(cf2Cache, cf2Cache.begin());
+				std::transform(derived_cast->terms1.begin(), derived_cast->terms1.end(), itCache1, final_cf_getter<Series1>());
+				std::transform(derived_cast->terms2.begin(), derived_cast->terms2.end(), itCache2, final_cf_getter<Series2>());
+				
+                bool vec_res;
+				
+                if ((algo == settings::ALGORITHM_AUTOMATIC && is_sparse()) || algo == settings::ALGORITHM_HASH_CODED) 
 				{
 					vec_res = false;
 				} else 
 				{
-					vec_res = derived_cast->perform_vector_coded_multiplication(cf1_cache, cf2_cache, derived_cast->terms1, derived_cast->terms2, trunc);
+					vec_res = derived_cast->performVectorCodedMultiplication(cf1Cache, cf2Cache, derived_cast->terms1, derived_cast->terms2, trunc);
 				}
 
 				if (!vec_res) 
 				{
-					if (algo == settings::vector_coded) 
+					if (algo == settings::ALGORITHM_VECTOR_CODED) 
 					{
 						PIRANHA_THROW(value_error, "vector coded multiplication requested, but vector coded representation is infeasible");
 					}
-					shift_codes();
-					derived_cast->perform_hash_coded_multiplication(cf1_cache, cf2_cache, derived_cast->terms1, derived_cast->terms2, trunc);
-					trace_mult_type(hash);
+
+					shiftCodes();
+
+					derived_cast->performHashCodedMultiplication(cf1Cache, cf2Cache, derived_cast->terms1, derived_cast->terms2, trunc);
+					
+                    trace_mult_type(MULTIPLICATION_HASH);
 				} else 
 				{
-					trace_mult_type(vector);
+					trace_mult_type(MULTIPLICATION_VECTOR);
 				}
 			}
 
@@ -533,7 +544,7 @@ struct BaseCodedFunctor
 			/**
 			 * The m_gr_is_viable flag will be set accordingly after this method is called.
 			 */
-			void determine_viability()
+			void determineViability()
 			{
 				// Make sure that the series have at least one term.
 				PIRANHA_ASSERT(derived_const_cast->terms1.size() > 0 && derived_const_cast->terms2.size() > 0);
@@ -541,8 +552,8 @@ struct BaseCodedFunctor
 				// Declare and init the min/max types for the two series.
 				minmax_type t1;
                 minmax_type t2;
-				cm_init_vector_tuple<Series1>(t1,derived_const_cast->argsTuple);
-				cm_init_vector_tuple<Series2>(t2,derived_const_cast->argsTuple);
+				cm_init_vector_tuple<Series1>(t1, derived_const_cast->argsTuple);
+				cm_init_vector_tuple<Series2>(t2, derived_const_cast->argsTuple);
 
 				// Init and test the first series' tuple.
 				typedef typename std::vector<typename Series1::TermType const *>::size_type size_type1;
@@ -554,6 +565,7 @@ struct BaseCodedFunctor
 				{
 					cm_minmax<minmax_type>::run_test(*derived_const_cast->terms1[i], t1, vh1);
 				}
+
 				// Init and test the second series' tuple.
 				typedef typename std::vector<typename Series2::TermType const *>::size_type size_type2;
 				const size_type2 size2 = derived_const_cast->terms2.size();
@@ -675,26 +687,36 @@ struct BaseCodedFunctor
 			/**
 			 * Move all the the codes so that the minimum code of the representation is 0.
 			 */
-			void shift_codes()
+			void shiftCodes()
 			{
 				PIRANHA_ASSERT(m_gr_is_viable);
+
 				typedef std::vector<max_fast_int>::size_type size_type;
-				const size_type size1 = m_ckeys1.size(), size2a = m_ckeys2a.size(), size2b = m_ckeys2b.size();
+				
+                const size_type size1  = m_ckeys1.size();
+                const size_type size2a = m_ckeys2a.size();
+                const size_type size2b = m_ckeys2b.size();
 				const max_fast_int chi = m_fast_h.lower();
+
 				for (size_type i = 0; i < size1; ++i) 
 				{
 					m_ckeys1[i] -= chi;
-					PIRANHA_ASSERT(m_ckeys1[i] >= 0);
+				
+                	PIRANHA_ASSERT(m_ckeys1[i] >= 0);
 				}
+
 				for (size_type i = 0; i < size2a; ++i) 
 				{
 					m_ckeys2a[i] -= chi;
+
 					PIRANHA_ASSERT(m_ckeys2a[i] >= 0);
 				}
+
 				for (size_type i = 0; i < size2b; ++i) 
 				{
 					m_ckeys2b[i] -= chi;
-					PIRANHA_ASSERT(m_ckeys2b[i] >= 0);
+				
+                	PIRANHA_ASSERT(m_ckeys2b[i] >= 0);
 				}
 			}
 

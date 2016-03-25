@@ -209,7 +209,7 @@ namespace truncators {
 							}
 						} else 
 						{
-							__PDEBUG(std::cout << "Negative power series limit calculated, inserting 0 instead." << '\n');
+							PIRANHA_DEBUG(std::cout << "Negative power series limit calculated, inserting 0 instead." << '\n');
 							return 0;
 						}
 					}

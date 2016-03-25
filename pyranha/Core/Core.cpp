@@ -120,19 +120,18 @@ BOOST_PYTHON_MODULE(_Core)
 	mpz.def(boost::python::self % int());
 
 	class_<settings> class_setm("__settings", "Pyranha settings.", init<>());
-	class_setm.add_static_property("debug", &settings::get_debug, &settings::set_debug);
-	class_setm.add_static_property("used_memory", &settings::get_used_memory, "Amount of used memory in bytes.");
-	class_setm.add_static_property("memory_limit", &settings::get_memory_limit, &settings::set_memory_limit);
-	class_setm.add_static_property("max_pretty_print_size", &settings::get_max_pretty_print_size, &settings::set_max_pretty_print_size);
-	class_setm.add_static_property("nthread",&settings::get_nthread,&settings::set_nthread);
-	class_setm.add_static_property("multiplication_algorithm", &settings::get_multiplication_algorithm,
-		&settings::set_multiplication_algorithm);
+	class_setm.add_static_property("debug",                        &settings::get_debug, &settings::set_debug);
+	class_setm.add_static_property("used_memory",                  &settings::get_used_memory, "Amount of used memory in bytes.");
+	class_setm.add_static_property("memory_limit",                 &settings::get_memory_limit, &settings::set_memory_limit);
+	class_setm.add_static_property("max_pretty_print_size",        &settings::get_max_pretty_print_size, &settings::set_max_pretty_print_size);
+	class_setm.add_static_property("nthread",                      &settings::get_nthread,&settings::set_nthread);
+	class_setm.add_static_property("multiplication_algorithm",     &settings::getMultiplicationAlgorithm, &settings::setMultiplicationAlgorithm);
 
-	enum_<settings::multiplication_algorithm>("multiplication_algorithm")
-		.value("automatic", settings::automatic)
-		.value("plain", settings::plain)
-		.value("vector_coded", settings::vector_coded)
-		.value("hash_coded", settings::hash_coded)
+	enum_<settings::MultiplicationAlgorithm>("multiplication_algorithm")
+		.value("automatic", settings::ALGORITHM_AUTOMATIC)
+		.value("plain", settings::ALGORITHM_PLAIN)
+		.value("vector_coded", settings::ALGORITHM_VECTOR_CODED)
+		.value("hash_coded", settings::ALGORITHM_HASH_CODED)
 		.export_values();
 
 	// Psym.

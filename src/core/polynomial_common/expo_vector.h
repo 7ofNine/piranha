@@ -151,7 +151,7 @@ namespace piranha
 				result.resize(maxw);
 
 				// Assert widths, *this should always come from a polynomial, and its width should hence be
-				// already adjusted my merge_args in multiplication routines.
+				// already adjusted my mergeArgs in multiplication routines.
 				PIRANHA_ASSERT(maxw >= minw);
 				PIRANHA_ASSERT(result.size() == maxw);
 

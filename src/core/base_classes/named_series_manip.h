@@ -140,11 +140,11 @@ namespace piranha
 
 	template <__PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::merge_args(const Derived2 &ps2)
+	inline void NamedSeries<__PIRANHA_NAMED_SERIES_TP>::mergeArgs(const Derived2 &ps2)
 	{
 		if (static_cast<void *>(this) == static_cast<void const *>(&ps2)) 
 		{
-			__PDEBUG(std::cout << "Trying to merge with self, returning." << std::endl);
+			PIRANHA_DEBUG(std::cout << "Trying to merge with self, returning." << std::endl);
 			return;
 		}
 
@@ -441,8 +441,8 @@ namespace piranha
 		sub_caches_type sub_caches;
 		Derived this_copy(*derivedConstCast);
 		SubSeries s_copy(s);
-		this_copy.merge_args(s_copy);
-		s_copy.merge_args(this_copy);
+		this_copy.mergeArgs(s_copy);
+		s_copy.mergeArgs(this_copy);
 
 		// Init sub caches using s_copy and this_copy.m_arguments.
 		init_sub_caches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.argumentsTuple);

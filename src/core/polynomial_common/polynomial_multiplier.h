@@ -51,9 +51,9 @@ namespace piranha
 {
 // Generic threaded vector multiplication.
 template <class Functor>
-struct threaded_blocked_multiplier
+struct ThreadedBlockedMultiplier
 {
-	threaded_blocked_multiplier(const std::size_t &nominal_block_size, const std::size_t &size1, const std::size_t &size2, const std::size_t &thread_id,
+	ThreadedBlockedMultiplier(const std::size_t &nominal_block_size, const std::size_t &size1, const std::size_t &size2, const std::size_t &thread_id,
 		                        const std::size_t &thread_n, boost::barrier *barrier, std::size_t &cur_idx1_start, bool &breakout, Functor &func,
 		                        BlockSequence &idx_vector1, BlockSequence &idx_vector2)
     : m_nominal_block_size(nominal_block_size), m_size1(size1), m_thread_id(thread_id), m_thread_n(thread_n),
@@ -79,7 +79,7 @@ struct threaded_blocked_multiplier
 		if (nominal_block_size > boost::integer_traits<std::size_t>::const_max || size1 >= boost::integer_traits<std::size_t>::const_max - nominal_block_size ||
 			size2 >= boost::integer_traits<std::size_t>::const_max - nominal_block_size)
 		{
-			PIRANHA_THROW(std::overflow_error,"numerical overflow in threaded block multiplication");
+			PIRANHA_THROW(std::overflow_error, "numerical overflow in threaded block multiplication");
 		}
 	}
 
@@ -87,6 +87,7 @@ struct threaded_blocked_multiplier
 	void operator()()
 	{
 		std::cout << "polynomial_multiplier::(): 1 : threadid = " << m_thread_id << std::endl << std::flush;
+
 		if (m_thread_id == 0)
 		{
 	//		std::cout << "polynomial_multiplier::(): 2 : threadid = " << m_thread_id << std::endl << std::flush;
@@ -110,7 +111,7 @@ struct threaded_blocked_multiplier
 			if (m_thread_id == 0)
 			{
 //				std::cout << "polynomial_multiplier::(): 5 : threadid = " << m_thread_id << std::endl << std::flush;
-				m_func.blocks_setup(m_cur_idx1_start ,m_nominal_block_size, m_idx_vector1, m_idx_vector2);
+				m_func.blocksSetup(m_cur_idx1_start ,m_nominal_block_size, m_idx_vector1, m_idx_vector2);
 				m_breakout = false;
 			}
 
@@ -140,6 +141,7 @@ struct threaded_blocked_multiplier
 
 				sync();
 //				std::cout << "polynomial_multiplier::(): 8 : threadid = " << m_thread_id << std::endl << std::flush;
+
 				if (m_thread_id == 0)
 				{
 					std::cout << "polynomial_multiplier::(): 9 : threadid = " << m_thread_id << std::endl << std::flush;
@@ -151,6 +153,7 @@ struct threaded_blocked_multiplier
 
 				sync();
 //				std::cout << "polynomial_multiplier::(): 10 : threadid = " << m_thread_id << std::endl << std::flush;
+
 				if (m_breakout)
 				{
 					break;
@@ -190,35 +193,37 @@ struct PolynomialVectorFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTu
 	typedef typename FinalCf<Series2>::Type cf_type2;
 	typedef typename Series1::TermType term_type1;
 	typedef typename Series2::TermType term_type2;
-	typedef BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, PolynomialVectorFunctor<Series1, Series2, ArgsTuple, GenericTruncator> > ancestor;
+	typedef BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, PolynomialVectorFunctor<Series1, Series2, ArgsTuple, GenericTruncator> > Ancestor;
 
 	PolynomialVectorFunctor(std::vector<cf_type1>            &tc1,       std::vector<cf_type2> &tc2,
 		                    std::vector<max_fast_int>        &ck1,       std::vector<max_fast_int> &ck2,
 		                    std::vector<term_type1 const *>  &t1,        std::vector<term_type2 const *> &t2,
 		                    const GenericTruncator           &truncator, cf_type1 *vc_res, const ArgsTuple &argsTuple)
-        : ancestor(tc1, tc2, ck1, ck2, t1, t2, truncator, argsTuple), m_vc_res(vc_res)
+        : Ancestor(tc1, tc2, ck1, ck2, t1, t2, truncator, argsTuple), m_vc_res(vc_res)
 	{}
 
 
-	bool operator()(const std::size_t &i, const std::size_t &j)
+	bool operator()(std::size_t const i, std::size_t const j)
 	{
-		if (this->m_trunc.skip(&this->m_t1[i], &this->m_t2[j])) {
+		if (this->m_trunc.skip(&this->m_t1[i], &this->m_t2[j]))
+        {
 			return false;
 		}
 		// Calculate index of the result.
 		const max_fast_int res_index = this->m_ck1[i] + this->m_ck2[j];
-		m_vc_res[res_index].addmul(this->m_tc1[i],this->m_tc2[j],this->m_argsTuple);
+		m_vc_res[res_index].addmul(this->m_tc1[i], this->m_tc2[j], this->m_argsTuple);
+
 		return true;
 	}
 
 
-	void blocks_setup(std::size_t &cur_idx1_start, const std::size_t &block_size, BlockSequence &idx_vector1, BlockSequence &idx_vector2)
+	void blocksSetup(std::size_t currentIndexStart, std::size_t const blockSize, BlockSequence &indexVector1, BlockSequence &indexVector2)
 	{
-		if (cur_idx1_start == 0)
+		if (currentIndexStart == 0)
 		{
 			initial_setup();
 		}
-		this->base_blocks_setup(cur_idx1_start,block_size,idx_vector1,idx_vector2);
+		this->baseBlocksSetup(currentIndexStart, blockSize, indexVector1, indexVector2);
 	}
 
 
@@ -230,7 +235,7 @@ struct PolynomialVectorFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTu
 
 	// Return the two intervals in indices in the output structure containing the results of
 	// one block-by-block multiplication.
-	std::pair<BlockInterval, BlockInterval> blocks_to_intervals(BlockType const &b1, BlockType const &b2) const
+	std::pair<BlockInterval, BlockInterval> blocksToIntervals(BlockType const &b1, BlockType const &b2) const
 	{
 		PIRANHA_ASSERT(b1.first <= b1.second && b2.first <= b2.second);
 
@@ -250,14 +255,17 @@ struct PolynomialVectorFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTu
 	{
 		// Build the permutation vectors.
 		typedef std::vector<std::size_t>::size_type size_type;
-		std::vector<std::size_t> perm1(boost::numeric_cast<size_type>(this->m_ck1.size()));
+		
+        std::vector<std::size_t> perm1(boost::numeric_cast<size_type>(this->m_ck1.size()));
 		std::vector<std::size_t> perm2(boost::numeric_cast<size_type>(this->m_ck2.size()));
 		iota(perm1.begin(), perm1.end(), std::size_t(0));
 		iota(perm2.begin(), perm2.end(), std::size_t(0));
+
 		// Sort the permutation vectors.
-		typedef typename ancestor::template IndirectSorter<PolynomialVectorFunctor> indirect_sorter;
-		std::sort(perm1.begin(), perm1.end(), indirect_sorter(*this, this->m_ck1));
-		std::sort(perm2.begin(), perm2.end(), indirect_sorter(*this, this->m_ck2));
+		typedef typename Ancestor::template IndirectSorter<PolynomialVectorFunctor> IndirectSorter;
+		
+        std::sort(perm1.begin(), perm1.end(), IndirectSorter(*this, this->m_ck1));
+		std::sort(perm2.begin(), perm2.end(), IndirectSorter(*this, this->m_ck2));
 
 		// Apply the permutations to the other vectors.
 		apply_permutation(perm1, this->m_tc1);
@@ -274,27 +282,28 @@ struct PolynomialVectorFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTu
 
 
 template <class Series1, class Series2, class ArgsTuple, class GenericTruncator>
-struct polynomial_hash_functor: public BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, polynomial_hash_functor<Series1, Series2, ArgsTuple, GenericTruncator> >
+struct PolynomialHashFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, PolynomialHashFunctor<Series1, Series2, ArgsTuple, GenericTruncator> >
 {
 	typedef typename FinalCf<Series1>::Type cf_type1;
 	typedef typename FinalCf<Series2>::Type cf_type2;
 	typedef typename Series1::TermType term_type1;
 	typedef typename Series2::TermType term_type2;
 	typedef std::pair<cf_type1,max_fast_int> cterm_type;
-	typedef BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, polynomial_hash_functor<Series1, Series2, ArgsTuple, GenericTruncator> > ancestor;
+	typedef BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, PolynomialHashFunctor<Series1, Series2, ArgsTuple, GenericTruncator> > Ancestor;
 	typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht_type;
 
-	polynomial_hash_functor(cterm_type &cterm, std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+	PolynomialHashFunctor(cterm_type &cterm, std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
 		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
 		std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
-		const GenericTruncator &trunc, csht_type *cms, const ArgsTuple &argsTuple):
-		ancestor(tc1, tc2, ck1, ck2, t1, t2, trunc, argsTuple), m_cterm(cterm), m_cms(cms)/*,m_overflow_terms()*/
+		const GenericTruncator &trunc, csht_type *cms, const ArgsTuple &argsTuple)
+    :  Ancestor(tc1, tc2, ck1, ck2, t1, t2, trunc, argsTuple), m_cterm(cterm), m_cms(cms)/*,m_overflow_terms()*/
 	{}
 
 
-	bool operator()(const std::size_t &i, const std::size_t &j)
+	bool operator()(std::size_t const i, std::size_t const j)
 	{
 		typedef typename csht_type::iterator c_iterator;
+
 		if (this->m_trunc.skip(&this->m_t1[i], &this->m_t2[j])) 
 		{
 			return false;
@@ -302,18 +311,18 @@ struct polynomial_hash_functor: public BaseCodedFunctor<Series1, Series2, ArgsTu
 
 		m_cterm.second  = this->m_ck1[i];
 		m_cterm.second += this->m_ck2[j];
-		std::pair<bool,c_iterator> res = m_cms->find(m_cterm.second);
+		std::pair<bool, c_iterator> res = m_cms->find(m_cterm.second);
 		
         if (res.first)
 		{
-			res.second->first.addmul(this->m_tc1[i],this->m_tc2[j],this->m_argsTuple);
+			res.second->first.addmul(this->m_tc1[i], this->m_tc2[j], this->m_argsTuple);
 		} else
 		{
 			// Assign to the temporary term the old cf (new_key is already assigned).
 			m_cterm.first = this->m_tc1[i];
 			// Multiply the old term by the second term.
-			m_cterm.first.multBy(this->m_tc2[j],this->m_argsTuple);
-			m_cms->insert_new(m_cterm,res.second);
+			m_cterm.first.multBy(this->m_tc2[j], this->m_argsTuple);
+			m_cms->insert_new(m_cterm, res.second);
 		}
 
 		return true;
@@ -374,12 +383,12 @@ struct polynomial_multiplier
 {
 	template <class Series1, class Series2, class ArgsTuple, class Truncator>
 	class get_type: public BaseSeriesMultiplier< Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> >,
-		            public coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, boost::tuple<boost::true_type> >
+		            public CodedMultiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, boost::tuple<boost::true_type> >
 	{
 			typedef BaseSeriesMultiplier< Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> >    ancestor;
-			typedef coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, boost::tuple<boost::true_type> > coded_ancestor;
+			typedef CodedMultiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, boost::tuple<boost::true_type> > coded_ancestor;
 			
-			friend class coded_multiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> >;
+			friend class CodedMultiplier<get_type<Series1, Series2, ArgsTuple, Truncator>,Series1,Series2,boost::tuple<boost::true_type> >;
 
 			typedef typename ancestor::TermType1 term_type1;
 			typedef typename ancestor::TermType2 term_type2;
@@ -398,8 +407,8 @@ struct polynomial_multiplier
 
 
 			template <class GenericTruncator>
-			bool perform_vector_coded_multiplication(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
-				                                     std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2, const GenericTruncator &trunc)
+			bool performVectorCodedMultiplication(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
+				                                  std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2, const GenericTruncator &trunc)
 			{
 				std::vector<cf_type1, std_counting_allocator<cf_type1> > vc;
 				// Try to allocate the space for vector coded multiplication.
@@ -410,16 +419,16 @@ struct polynomial_multiplier
 					vc.resize(n_codes);
 				} catch (const std::bad_alloc &)
 				{
-					__PDEBUG(std::cout << "Not enough physical memory available for vector coded.\n");
+					PIRANHA_DEBUG(std::cout << "Not enough physical memory available for vector coded.\n");
 
 					return false;
 				} catch (const memory_error &)
 				{
-					__PDEBUG(std::cout << "Memory limit reached for vector coded.\n");
+					PIRANHA_DEBUG(std::cout << "Memory limit reached for vector coded.\n");
 
 					return false;
 				}
-				__PDEBUG(std::cout << "Going for vector coded polynomial multiplication\n");
+				PIRANHA_DEBUG(std::cout << "Going for vector coded polynomial multiplication\n");
 				// Define the base pointers for storing the results of multiplication.
 				// NOTE: even if here it seems like we are going to write outside allocated memory,
 				//       the indices from the analysis of the coded series will prevent out-of-boundaries
@@ -439,12 +448,12 @@ struct polynomial_multiplier
 				// Find out a suitable block size.
 				const std::size_t block_size = this->template computeBlockSize<sizeof(cf_type1)>();
 
-				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
-				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
+				PIRANHA_DEBUG(std::cout << "Block size: " << block_size << '\n');
+				PIRANHA_DEBUG(std::cout << "Block size: " << block_size << '\n');
 				
                 // Perform multiplication.
-				typedef PolynomialVectorFunctor<Series1, Series2, ArgsTuple, GenericTruncator> vf_type;
-				vf_type vm(tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, trunc, vc_res, argsTuple);
+				typedef PolynomialVectorFunctor<Series1, Series2, ArgsTuple, GenericTruncator> VectorFunctorType;
+				VectorFunctorType vm(tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, trunc, vc_res, argsTuple);
 //				const std::size_t nthread = settings::get_nthread();
 				//TODO:GUT corrected below. There are problems with the number of threads in several places. This is one.
 				const std::size_t nthread = std::min(settings::get_nthread(), std::min(size1, size2));
@@ -459,22 +468,22 @@ struct polynomial_multiplier
 				if (trunc.isEffective() || (this->terms1.size() * this->terms2.size()) <= 400 || nthread == 1) 
                 {
 					stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
-					threaded_blocked_multiplier<vf_type> t(block_size,size1,size2,0,1,0,cur_idx1_start,breakout,vm,s1,s2);
+					ThreadedBlockedMultiplier<VectorFunctorType> t(block_size, size1, size2, 0, 1, 0, cur_idx1_start, breakout, vm, s1, s2);
 					t();
 				} else 
                 {
-					__PDEBUG(std::cout << "using " << nthread << " threads\n");
-					stats::trace_stat("mult_mt", std::size_t(0) ,boost::lambda::_1 + 1);
+					PIRANHA_DEBUG(std::cout << "using " << nthread << " threads\n");
+					stats::trace_stat("mult_mt", std::size_t(0), boost::lambda::_1 + 1);
 					boost::thread_group tg;
 					boost::barrier b(nthread);
 					for (std::size_t i = 0; i < nthread; ++i) 
 					{
-						tg.create_thread(threaded_blocked_multiplier<vf_type>(block_size, size1, size2, i, nthread, &b, cur_idx1_start, breakout, vm, s1, s2));
+						tg.create_thread(ThreadedBlockedMultiplier<VectorFunctorType>(block_size, size1, size2, i, nthread, &b, cur_idx1_start, breakout, vm, s1, s2));
 					}
 					tg.join_all();
 				}
  std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
-				__PDEBUG(std::cout << "Done multiplying\n");
+				PIRANHA_DEBUG(std::cout << "Done multiplying\n");
 
 				const max_fast_int i_f = this->m_fast_h.upper();
 				// Decode and insert the results into return value.
@@ -493,16 +502,18 @@ struct polynomial_multiplier
 						this->retval.insert(tmp_term, argsTuple);
 					}
 				}
-				__PDEBUG(std::cout << "Done polynomial vector coded.\n");
+				PIRANHA_DEBUG(std::cout << "Done polynomial vector coded.\n");
 				return true;
 			}
 
 
 			template <class GenericTruncator>
-			void perform_hash_coded_multiplication(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
-				std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2, const GenericTruncator &trunc)
+			void performHashCodedMultiplication(std::vector<cf_type1>           &tc1, std::vector<cf_type2> &tc2,
+				                                std::vector<const term_type1 *> &t1,  std::vector<const term_type2 *> &t2,
+                                                GenericTruncator const &truncator)
 			{
 				typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
+
 				typedef typename csht::iterator c_iterator;
 				stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
 				// Let's find a sensible size hint.
@@ -519,17 +530,19 @@ struct polynomial_multiplier
 				// Find out a suitable block size.
 				const std::size_t block_size = this->template computeBlockSize<sizeof(std::pair<cf_type1, max_fast_int>)>();
 
-				__PDEBUG(std::cout << "Block size: " << block_size << '\n');
+				PIRANHA_DEBUG(std::cout << "Block size: " << block_size << '\n');
 
- std::cout << "Block size: " << block_size << '\n';
- const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
-				std::pair<cf_type1, max_fast_int> cterm;
-				polynomial_hash_functor<Series1, Series2, ArgsTuple, GenericTruncator> hm(cterm, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, trunc, &cms, argsTuple);
+                std::cout << "Block size: " << block_size << '\n';
+                const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
+				
+                std::pair<cf_type1, max_fast_int> cterm;
+				PolynomialHashFunctor<Series1, Series2, ArgsTuple, GenericTruncator> hm(cterm, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, truncator, &cms, argsTuple);
 
 				this->blockedMultiplication(block_size, size1, size2, hm);
- std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
+                
+                std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 
-				__PDEBUG(std::cout << "Done polynomial hash coded multiplying\n");
+				PIRANHA_DEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 
                 // Decode and insert into retval.
 				// TODO: add debug info about cms' size here.
@@ -546,7 +559,7 @@ struct polynomial_multiplier
 					this->retval.insert(tmp_term, argsTuple);
 				}
 
-				__PDEBUG(std::cout << "Done polynomial hash coded\n");
+				PIRANHA_DEBUG(std::cout << "Done polynomial hash coded\n");
 			}
 	};
 };
