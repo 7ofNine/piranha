@@ -113,7 +113,7 @@ namespace piranha
 		for (std::size_t i = 0; i < size; ++i)
         {
 			// If the dictionary does not contain the symbol's name, return false.
-			if (d.find(argsTuple.get_head()[i].get_name()) == it_f)
+			if (d.find(argsTuple.get_head()[i].getName()) == it_f)
             {
 				return false;
 			}
@@ -141,7 +141,7 @@ namespace piranha
 
 		for (EvalDict::const_iterator it = d.begin(); it != it_f; ++it)
         {
-			orig_eval.push_back(std::make_pair(Psym(it->first), Psym(it->first).get_time_eval()));
+			orig_eval.push_back(std::make_pair(Psym(it->first), Psym(it->first).getTimeEval()));
 			Psym(it->first, it->second);
 		}
 
@@ -151,7 +151,7 @@ namespace piranha
 		// NOTE: here RAII here, to be exception safe?
 		for (std::size_t i = 0; i < orig_eval.size(); ++i)
         {
-			orig_eval[i].first.set_time_eval(orig_eval[i].second);
+			orig_eval[i].first.setTimeEval(orig_eval[i].second);
 		}
 		return retval;
 	}

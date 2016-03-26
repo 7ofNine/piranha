@@ -50,10 +50,10 @@ using namespace pyranha;
 std::string static inline py_psym_repr(const Psym &p)
 {
 	std::ostringstream stream;
-	stream << "Symbol: '" << p.get_name() << "' - [";
-	const std::size_t size = p.get_time_eval().size();
+	stream << "Symbol: '" << p.getName() << "' - [";
+	const std::size_t size = p.getTimeEval().size();
 	for (std::size_t i = 0; i < size; ++i) {
-		stream << p.get_time_eval()[i];
+		stream << p.getTimeEval()[i];
 		if (i < size - 1) {
 			stream << ',';
 		}
@@ -64,7 +64,7 @@ std::string static inline py_psym_repr(const Psym &p)
 
 static inline std::size_t py_psym_hash(const Psym &p)
 {
-	return boost::hash<std::string>()(p.get_name());
+	return boost::hash<std::string>()(p.getName());
 }
 
 static inline void ed_set_item(EvalDict &d, const std::string &n, const double &value)
@@ -142,9 +142,9 @@ BOOST_PYTHON_MODULE(_Core)
 		.def("__hash__", &py_psym_hash)
 		.def("__repr__", &py_psym_repr)
 		.def("eval", &Psym::eval)
-		.add_property("name", make_function(&Psym::get_name,return_value_policy<copy_const_reference>()))
-		.add_property("time_eval", make_function(&Psym::get_time_eval,return_value_policy<copy_const_reference>()),
-			&Psym::set_time_eval)
+		.add_property("name", make_function(&Psym::getName,return_value_policy<copy_const_reference>()))
+		.add_property("time_eval", make_function(&Psym::getTimeEval,return_value_policy<copy_const_reference>()),
+			&Psym::setTimeEval)
 		.def("list", &Psym::list, "Get list of global psyms").staticmethod("list")
 		.def(self == self)
 		.def(self != self);

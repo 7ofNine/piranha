@@ -39,7 +39,7 @@ namespace pyranha
 	{
 		std::ostringstream stream;
 		for (size_t i = 0; i < argsTuple.get_head().size(); ++i) {
-			stream << i << ' ' << argsTuple.get_head()[i].get_name() << '\n';
+			stream << i << ' ' << argsTuple.get_head()[i].getName() << '\n';
 		}
 		out += stream.str();
 		argsTuple_py_print_helper(argsTuple.get_tail(), out);

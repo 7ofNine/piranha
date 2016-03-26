@@ -29,7 +29,7 @@ using namespace piranha;
 
 int main()
 {
-settings::set_debug(true);
+settings::set_debug(false);
 //settings::set_nthread(16); // temporary: remove
 try{
 	poly x(Psym("x")), y(Psym("y"));

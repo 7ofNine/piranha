@@ -104,7 +104,7 @@ void degree::print(std::ostream &stream)
 		case TruncationPartialDeg:  {   stream << "Partial degree limit: " << degreeLimit << ", Affected symbols: [";
 			                            for (std::size_t i = 0; i < psyms.size(); ++i)
                                         {
-				                            stream << '\'' << psyms[i].get_name() << '\'';
+				                            stream << '\'' << psyms[i].getName() << '\'';
 
                                             if (i < psyms.size() - 1)
                                             {

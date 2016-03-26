@@ -85,7 +85,7 @@ namespace piranha
 				{
 					if (arg == (*it)) 
 					{
-						std::cout << "Error: " << s << " argument '" << it->get_name() << "' already present in the set.\n";
+						std::cout << "Error: " << s << " argument '" << it->getName() << "' already present in the set.\n";
 						return;
 					}
 				}
@@ -128,7 +128,7 @@ namespace piranha
 		{
 			if (arg == (*it)) 
 			{
-				std::cout << "Error: argument '" << it->get_name() << "' already present in the set." << std::endl;
+				std::cout << "Error: argument '" << it->getName() << "' already present in the set." << std::endl;
 				return;
 			}
 		}

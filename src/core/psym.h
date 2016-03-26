@@ -22,15 +22,15 @@
 #define PIRANHA_PSYMBOL_H
 
 #include <algorithm>
-#include <boost/lexical_cast.hpp>
 #include <cstddef>
 #include <iostream>
 #include <set>
 #include <string>
 #include <utility> // For std::pair.
 #include <vector>
-
 #include <cmath>
+
+#include <boost/lexical_cast.hpp>
 
 #include "config.h"
 #include "exceptions.h"
@@ -41,61 +41,70 @@
 namespace piranha
 {
 	// the global "dictionary" of Psym(s)
-	struct PIRANHA_VISIBLE PsymManager {
+	struct PIRANHA_VISIBLE PsymManager
+    {
 
-		//implementation of a Psym stored in the PsymManager
-		struct PIRANHA_VISIBLE PsymImpl {
+        //implementation of a Psym stored in the PsymManager
+		class PIRANHA_VISIBLE PsymImpl
+        {
+            friend class Psym;
 
-			PsymImpl(const std::string &name, const std::vector<double> &time_eval = std::vector<double>()):
-				m_name(name), m_time_eval(time_eval) {}
+            public:
+
+			PsymImpl(std::string const &name, std::vector<double> const &timeEval = std::vector<double>())
+                    : name(name), timeEval(timeEval) {}
 
 			// Print to stream.
 			void print(std::ostream &outStream) const
 			{
-				outStream << "name=" << m_name << '\n';
-				outStream << "time_eval=";
-				for (std::size_t j = 0; j < m_time_eval.size(); ++j) 
+				outStream << "name=" << name << '\n' << "time_eval=";
+
+				for (std::size_t j = 0; j < timeEval.size(); ++j) 
 				{
-					outStream << boost::lexical_cast<std::string>(m_time_eval[j]);
-					if (j != m_time_eval.size() - 1) 
+					outStream << boost::lexical_cast<std::string>(timeEval[j]);
+					if (j != timeEval.size() - 1) 
 					{
 						outStream << separator;
 					}
 				}
+
 				outStream << '\n';
 			}
 
 
-			bool operator<(const PsymImpl &other) const
+			bool operator<(PsymImpl const &other) const
 			{
-				return (m_name < other.m_name);
+				return (name < other.name);
 			}
 
 
 			// Time evaluation.
-			double eval(const double &t) const
+			double eval(double const &t) const
 			{
-				double retval = 0.;
-				const std::size_t w = m_time_eval.size();
+				double retval = 0.0;
+				const std::size_t w = timeEval.size();
 				for (std::size_t i = 0; i < w; ++i) 
 				{
 					// FIXME: use natural_pow or the like here, to speed up?
-					retval += std::pow(t, (int)i) * m_time_eval[i];
+					retval += std::pow(t, (int)i) * timeEval[i];
 				}
+
 				return retval;
 			}
 
-
-			// Data members of PsymImpl
-			const std::string		    m_name;
-			// Mutable because we want to be able to freely change it in the Psym manager.
-			mutable std::vector<double>	m_time_eval;
-			static const std::string	separator;
+            private:
+           
+			const std::string		    name;     // the symbol name
+			                                      // Mutable because we want to be able to freely change it in the Psym manager.
+			mutable std::vector<double>	timeEval; // the time evolution polynomial. The order is the index into the vector 
+            
+            static const std::string	separator; // separator between timeValue elements. Leave in this position for readability during debug
+			
 		};
 
 		// PsymManager global storage variable
-		typedef std::set<PsymImpl> container_type;
-		static container_type       container;
+		typedef std::set<PsymImpl>  ContainerType;
+		static ContainerType        container;
 	};
 
 	// Forward declaration for use in the typedef below.
@@ -115,33 +124,33 @@ namespace piranha
 	 * \f]
 	 * where \f$ t \f$ is time.
 	 */
-	class PIRANHA_VISIBLE Psym {
+	class PIRANHA_VISIBLE Psym
+    {
 
-			typedef PsymManager::container_type::const_iterator it_type;
-			typedef PsymManager::PsymImpl PsymImpl;
+			typedef PsymManager::ContainerType::const_iterator Iterator;
+			typedef PsymManager::PsymImpl                      PsymImpl;
 
-			struct push_back_to 
+			struct PushBackTo 
 			{
-				push_back_to(VectorPsym &v):m_v(&v) {}
+				PushBackTo(VectorPsym &v):vectorPsym(&v) {}
 
 
 				template <class T>
 				void operator()(const T &x) const
 				{
-					m_v->push_back(Psym(x.m_name, x.m_time_eval));
+					vectorPsym->push_back(Psym(x.name, x.timeEval));
 				}
 
 
-				mutable VectorPsym *m_v;
+				mutable VectorPsym *vectorPsym;
 			};
 
 		public:
 
 			/// Constructor from name and time evaluation in string form.
-			Psym(const std::string &name, const std::string &time_eval)
+			Psym(std::string const &name, std::string const &timeEval)
 			{
-				const PsymImpl p(name, utils::str_to_vector<double>(time_eval, PsymImpl::separator));
-				connstructFromImpl(p);
+				connstructFromImpl(PsymImpl(name, utils::str_to_vector<double>(timeEval, PsymImpl::separator)));
 			}
 
 
@@ -150,54 +159,39 @@ namespace piranha
 			 * If the symbol is already present in the Psym manager then use it, otherwise initialise
 			 * a new Psym with the given name and an empty time evaluation vector.
 			 */
-			explicit Psym(const std::string &name)
+			explicit Psym(std::string const &name)
 			{
-				PsymImpl const p(name);
-
-				it_type const it = PsymManager::container.find(p);
-
-				if (it == PsymManager::container.end()) 
-				{
-					std::pair<it_type, bool> const res = PsymManager::container.insert(p);
-					PIRANHA_ASSERT(res.second);
-					m_it = res.first;
-
-				} else 
-				{
-					m_it = it;
-				}
+                connstructFromImpl(PsymImpl(name));
 			}
 
 
-			/// Constructor from name and vector.
-			Psym(const std::string &name, const std::vector<double> &time_eval)
+			/// Constructor from name and time value.
+			Psym(std::string const &name, std::vector<double> const &timeEval)
 			{
-				const PsymImpl p(name, time_eval);
-				connstructFromImpl(p);
+				connstructFromImpl(PsymImpl(name, timeEval));
 			}
 
 
 			/// Constructor from name and constant value.
-			Psym(const std::string &name, const double &value)
+			Psym(std::string const &name, double const &value)
 			{
-				const PsymImpl p(name, std::vector<double>(std::size_t(1), value));
-				connstructFromImpl(p);
+				connstructFromImpl(PsymImpl(name, std::vector<double>(std::size_t(1), value)));
 			}
 
 
-			bool operator<(const Psym &other) const
+			bool operator<(Psym const &other) const
 			{
-				return ((*m_it) < *(other.m_it));
+				return ((*it) < *(other.it));
 			}
 
 
-			bool operator==(const Psym &other) const
+			bool operator==(Psym const &other) const
 			{
-				return m_it == other.m_it;
+				return it == other.it;
 			}
 
 
-			bool operator!=(const Psym &other) const
+			bool operator!=(Psym const &other) const
 			{
 				return !(*this == other);
 			}
@@ -208,7 +202,7 @@ namespace piranha
 				VectorPsym retval;
 				retval.reserve(PsymManager::container.size());
 
-				std::for_each(PsymManager::container.begin(), PsymManager::container.end(), push_back_to(retval));
+				std::for_each(PsymManager::container.begin(), PsymManager::container.end(), PushBackTo(retval));
 				return retval;
 			}
 
@@ -217,35 +211,35 @@ namespace piranha
 			/// Print to stream.
 			void print(std::ostream &s = std::cout) const
 			{
-				m_it->print(s);
+				it->print(s);
 			}
 
 
 			/// Evaluate symbol at time t.
-			double eval(const double &t) const
+			double eval(double const &t) const
 			{
-				return m_it->eval(t);
+				return it->eval(t);
 			}
 
 
 			/// Name getter.
-			const std::string &get_name() const
+			const std::string &getName() const
 			{
-				return m_it->m_name;
+				return it->name;
 			}
 
 
 			/// Time evaluation vector getter.
-			const std::vector<double> &get_time_eval() const
+			const std::vector<double> &getTimeEval() const
 			{
-				return m_it->m_time_eval;
+				return it->timeEval;
 			}
 
 
 			/// Time evaluation vector setter.
-			void set_time_eval(const std::vector<double> &t) const
+			void setTimeEval(std::vector<double> const &t) const
 			{
-				m_it->m_time_eval = t;
+				it->timeEval = t;
 			}
 // TODO:     this does not work with the Python interfaces. How to fix
 //            void set_time_eval(const std::string &t) const
@@ -256,58 +250,79 @@ namespace piranha
 
 		private:
 
-			void connstructFromImpl(const PsymImpl &p)
+			void connstructFromImpl(PsymImpl const &p)
 			{
-				const it_type it = PsymManager::container.find(p);
-				if (it == PsymManager::container.end()) 
+				const Iterator itFound = PsymManager::container.find(p);
+				if (itFound == PsymManager::container.end()) 
 				{
-					const std::pair<it_type, bool> res = PsymManager::container.insert(p);
+					std::pair<Iterator, bool> const res = PsymManager::container.insert(p);
 					PIRANHA_ASSERT(res.second);
-					m_it = res.first;
+					it = res.first;
 				} else 
 				{
-					it->m_time_eval = p.m_time_eval;
-					m_it = it;
+					it->timeEval = p.timeEval; //overwrite time values
+					it = itFound;
 				}
 			}
 
 		private:
-			// a Psym is an iterator into the set of PsymImpl managed in a global set in PsymManager
-			it_type m_it;
+
+			// a Psym is an iterator into the set of PsymImpl managed in a global set in PsymManager . A PIMPL pattern
+			Iterator it;
 	};
 
+    // 
+    // from a given vector of psyms return a vector of indicators where and if the elemnt in the vectorPsym is present in the
+    // corresponding argsTuple component.
+    // The index for vectorPsym elemet corresponds to the index in the vector in positionTuple. Elements of the vector in position
+    // tuple are pairs (bool, int). 
+    // (false , d) : not present in the argsTuple 
+    // (true,   j) : preent in the argsTuple vector at index j;
+    //
+
 	template <class ArgsTuple>
-	struct psyms2pos_impl {
-		template <class PosTuple>
-		static void run(const VectorPsym &v, PosTuple &pos_tuple, const ArgsTuple &argsTuple)
+	class Psyms2posImpl
+    {
+        public:
+		
+        template <class PositionTuple>
+		static void run(VectorPsym const &vectorPsym, PositionTuple &positionTuple, ArgsTuple const &argsTuple)
 		{
-			const std::size_t a_size = argsTuple.get_head().size(), v_size = v.size();
-			pos_tuple.get_head().reserve(v_size);
-			// For each psymbol, test presence.
-			for (std::size_t i = 0; i < v_size; ++i) 
+			std::size_t const argsSize   = argsTuple.get_head().size();
+			std::size_t const vectorSize = vectorPsym.size();
+
+            positionTuple.get_head().reserve(vectorSize); // reserve result position vector in positionTuple
+			
+            // For each psymbol, test presence.
+			for (std::size_t i = 0; i < vectorSize; ++i) 
 			{
 				// Initially set the symbol to not found.
-				pos_tuple.get_head().push_back(std::make_pair(false,std::size_t(0)));
-				for (std::size_t j = 0; j < a_size; ++j) 
+				positionTuple.get_head().push_back(std::make_pair(false, std::size_t(0)));
+
+				for (std::size_t j = 0; j < argsSize; ++j) 
 				{
-					if (argsTuple.get_head()[j] == v[i]) 
+					if (argsTuple.get_head()[j] == vectorPsym[i]) 
 					{
-						pos_tuple.get_head().back().first  = true;
-						pos_tuple.get_head().back().second = j;
+						positionTuple.get_head().back().first  = true; // present: update the last element in the positionVector
+						positionTuple.get_head().back().second = j;    // position in argsTuple component
 						// No need to continue, the symbol is (supposed to be) unique.
 						break;
 					}
 				}
 			}
-			psyms2pos_impl<typename ArgsTuple::tail_type>::run(v,pos_tuple.get_tail(),argsTuple.get_tail());
+
+            // got to next component in tuples
+			Psyms2posImpl<typename ArgsTuple::tail_type>::run(vectorPsym, positionTuple.get_tail(), argsTuple.get_tail());
 		}
 	};
 
 
+    //terminate recursion on tuple
 	template <>
-	struct psyms2pos_impl<boost::tuples::null_type> 
+	class Psyms2posImpl<boost::tuples::null_type> 
 	{
-		static void run(const VectorPsym &, const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+        public: 
+		static void run(VectorPsym const &,  boost::tuples::null_type const &, boost::tuples::null_type const &) {}
 	};
 
 
@@ -315,32 +330,46 @@ namespace piranha
 	// Return value will be a tuple of vectors, each of size v.size(), containing (presence, position) pairs for the corresponding symbols
 	// in v.
 	template <class ArgsTuple>
-	inline typename NTuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::Type  psyms2pos(VectorPsym const &v, ArgsTuple const &argsTuple)
+	inline typename NTuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::Type  psyms2pos(VectorPsym const &vectorPsym, ArgsTuple const &argsTuple)
 	{
-		typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::Type retval_type;
+		typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::Type PositionTupleType;
+
+        // TODO: Does this really work properly??
+        // It is only used with vectors of one element i.e. find a symbols position in the argsTuple
+        // or with partialDegree truncation which is doubtfull if that really works and is properly implemented. Haven't found out, yet or don't understand how that might actually be used??
+        //
+        // Problem is the reference from the vectorPsym to the retval vector.
+        // std::set may change the sorting and because of the uniquenes in set retval may have fewer elements than vectorPsym???
+        // 
+        // I think the solution is that there is no reference back again to the original symbols. Only the position is of interest for further use, i.e. this would work
+        // but is rather dangerous without documentation
+        //
 
 		// First we want to make sure that the vector of symbols does not contain duplicate elements.
-		std::set<Psym> const uniquesSet(v.begin(), v.end());
+		std::set<Psym> const uniquesSet(vectorPsym.begin(), vectorPsym.end());
 		VectorPsym     const uniquesVector(uniquesSet.begin(), uniquesSet.end());
-		retval_type retval;
+		PositionTupleType retval;
 
-		psyms2pos_impl<ArgsTuple>::run(uniquesVector, retval, argsTuple);
+		Psyms2posImpl<ArgsTuple>::run(uniquesVector, retval, argsTuple);
 
 		return retval;
 	}
 
 
 	// Transform a vector of names into a vector of symbols.
-	inline VectorPsym names2psyms(const std::vector<std::string> &vs)
+    // If name already exists the existing symbol is returned. If not a new symbol is created and returned
+	inline VectorPsym names2psyms(std::vector<std::string> const &vectorNames)
 	{
-		const std::size_t size = vs.size();
-		VectorPsym v;
-		v.reserve(size);
+		const std::size_t size = vectorNames.size();
+		VectorPsym vectorPsym;
+		vectorPsym.reserve(size);
+
 		for (std::size_t i = 0; i < size; ++i) 
 		{
-			v.push_back(Psym(vs[i]));
+			vectorPsym.push_back(Psym(vectorNames[i]));
 		}
-		return v;
+
+		return vectorPsym;
 	}
 }
 #endif

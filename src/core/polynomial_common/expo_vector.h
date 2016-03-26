@@ -200,7 +200,7 @@ namespace piranha
 						}
 
 						// Take care of printing the name of the exponent.
-						outStream << argsTuple.template get<Ancestor::position>()[i].get_name();
+						outStream << argsTuple.template get<Ancestor::position>()[i].getName();
 
 						// Print the pow operator only if exponent is not unitary.
 						if (n != 1) 
@@ -226,7 +226,7 @@ namespace piranha
 					if (n != 0) 
                     {
 						// Take care of printing the name of the exponent.
-						outStream << ' ' << argsTuple.template get<Ancestor::position>()[i].get_name() << ' ';
+						outStream << ' ' << argsTuple.template get<Ancestor::position>()[i].getName() << ' ';
 						// Print the pow operator only if exponent is not unitary.
 						if (n != 1) 
                         {
