@@ -40,7 +40,7 @@
 namespace piranha
 {
 
-// TODO: make sure the size of the vector never goes past max_fast_int, since we are converting size_type -> max_fast_int in the hash coded
+// TODO: make sure the size of the vector never goes past MaxFastInt, since we are converting size_type -> MaxFastInt in the hash coded
 // multiplier, when determining the memory position of the key.
 
 /// Hash table for highly-sparse coded series multiplication.

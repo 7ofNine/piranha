@@ -34,9 +34,9 @@ int main()
 	for (size_t i = 0; i < 10000; ++i)
 	{
 		poly a(a_), b(b_);
-		a = a.pow((max_fast_int)20);
+		a = a.pow((MaxFastInt)20);
 		poly c(a);
-		c+=(max_fast_int)1;
+		c+=(MaxFastInt)1;
 		a*=c;
 	}
 	return 0;

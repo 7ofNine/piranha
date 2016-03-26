@@ -196,7 +196,7 @@ struct PolynomialVectorFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTu
 	typedef BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, PolynomialVectorFunctor<Series1, Series2, ArgsTuple, GenericTruncator> > Ancestor;
 
 	PolynomialVectorFunctor(std::vector<cf_type1>            &tc1,       std::vector<cf_type2> &tc2,
-		                    std::vector<max_fast_int>        &ck1,       std::vector<max_fast_int> &ck2,
+		                    std::vector<MaxFastInt>        &ck1,       std::vector<MaxFastInt> &ck2,
 		                    std::vector<term_type1 const *>  &t1,        std::vector<term_type2 const *> &t2,
 		                    const GenericTruncator           &truncator, cf_type1 *vc_res, const ArgsTuple &argsTuple)
         : Ancestor(tc1, tc2, ck1, ck2, t1, t2, truncator, argsTuple), m_vc_res(vc_res)
@@ -210,7 +210,7 @@ struct PolynomialVectorFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTu
 			return false;
 		}
 		// Calculate index of the result.
-		const max_fast_int res_index = this->m_ck1[i] + this->m_ck2[j];
+		const MaxFastInt res_index = this->m_ck1[i] + this->m_ck2[j];
 		m_vc_res[res_index].addmul(this->m_tc1[i], this->m_tc2[j], this->m_argsTuple);
 
 		return true;
@@ -227,7 +227,7 @@ struct PolynomialVectorFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTu
 	}
 
 
-	static const max_fast_int &get_mem_pos(const max_fast_int &n)
+	static const MaxFastInt &get_mem_pos(const MaxFastInt &n)
 	{
 		return n;
 	}
@@ -288,12 +288,12 @@ struct PolynomialHashFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTupl
 	typedef typename FinalCf<Series2>::Type cf_type2;
 	typedef typename Series1::TermType term_type1;
 	typedef typename Series2::TermType term_type2;
-	typedef std::pair<cf_type1,max_fast_int> cterm_type;
+	typedef std::pair<cf_type1,MaxFastInt> cterm_type;
 	typedef BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, PolynomialHashFunctor<Series1, Series2, ArgsTuple, GenericTruncator> > Ancestor;
-	typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht_type;
+	typedef coded_hash_table<cf_type1, MaxFastInt, std_counting_allocator<char> > csht_type;
 
 	PolynomialHashFunctor(cterm_type &cterm, std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
-		std::vector<max_fast_int> &ck1, std::vector<max_fast_int> &ck2,
+		std::vector<MaxFastInt> &ck1, std::vector<MaxFastInt> &ck2,
 		std::vector<const term_type1 *> &t1, std::vector<const term_type2 *> &t2,
 		const GenericTruncator &trunc, csht_type *cms, const ArgsTuple &argsTuple)
     :  Ancestor(tc1, tc2, ck1, ck2, t1, t2, trunc, argsTuple), m_cterm(cterm), m_cms(cms)/*,m_overflow_terms()*/
@@ -329,11 +329,11 @@ struct PolynomialHashFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTupl
 	}
 
 
-	max_fast_int get_mem_pos(const max_fast_int &n) const
+	MaxFastInt get_mem_pos(const MaxFastInt &n) const
 	{
-		// Assert on the convertibility to max_fast_int. We should be sure because of the logic in coded_hash_table,
+		// Assert on the convertibility to MaxFastInt. We should be sure because of the logic in coded_hash_table,
 		// but just in case...
-		PIRANHA_ASSERT(boost::numeric_cast<max_fast_int>(m_cms->get_memory_position(n)) >= 0);
+		PIRANHA_ASSERT(boost::numeric_cast<MaxFastInt>(m_cms->get_memory_position(n)) >= 0);
 		return m_cms->get_memory_position(n);
 	}
 
@@ -353,7 +353,7 @@ struct PolynomialHashFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTupl
 		BlockInterval tmp(get_mem_pos(this->m_ck1[b1.first])      + get_mem_pos(this->m_ck2[b2.first]),
 			              get_mem_pos(this->m_ck1[b1.second - 1]) + get_mem_pos(this->m_ck2[b2.second - 1]));
 
-		const max_fast_int ht_size = boost::numeric_cast<max_fast_int>(m_cms->get_vector_size());
+		const MaxFastInt ht_size = boost::numeric_cast<MaxFastInt>(m_cms->get_vector_size());
 
 		PIRANHA_ASSERT(ht_size > 0 && tmp.lower() >= 0 && tmp.upper() >= 0);
 
@@ -485,10 +485,10 @@ struct polynomial_multiplier
  std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 				PIRANHA_DEBUG(std::cout << "Done multiplying\n");
 
-				const max_fast_int i_f = this->m_fast_h.upper();
+				const MaxFastInt i_f = this->m_fast_h.upper();
 				// Decode and insert the results into return value.
 				term_type1 tmp_term;
-				for (max_fast_int i = this->m_fast_h.lower(); i <= i_f; ++i)
+				for (MaxFastInt i = this->m_fast_h.lower(); i <= i_f; ++i)
 				{
 					// Take a shortcut and check for ignorability of the coefficient here.
 					// This way we avoid decodification, and all the series term insertion yadda-yadda.
@@ -512,7 +512,7 @@ struct polynomial_multiplier
 				                                std::vector<const term_type1 *> &t1,  std::vector<const term_type2 *> &t2,
                                                 GenericTruncator const &truncator)
 			{
-				typedef coded_hash_table<cf_type1, max_fast_int, std_counting_allocator<char> > csht;
+				typedef coded_hash_table<cf_type1, MaxFastInt, std_counting_allocator<char> > csht;
 
 				typedef typename csht::iterator c_iterator;
 				stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
@@ -528,14 +528,14 @@ struct polynomial_multiplier
 				const ArgsTupleType &argsTuple = this->argsTuple;
 				csht cms(size_hint);
 				// Find out a suitable block size.
-				const std::size_t block_size = this->template computeBlockSize<sizeof(std::pair<cf_type1, max_fast_int>)>();
+				const std::size_t block_size = this->template computeBlockSize<sizeof(std::pair<cf_type1, MaxFastInt>)>();
 
 				PIRANHA_DEBUG(std::cout << "Block size: " << block_size << '\n');
 
                 std::cout << "Block size: " << block_size << '\n';
                 const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 				
-                std::pair<cf_type1, max_fast_int> cterm;
+                std::pair<cf_type1, MaxFastInt> cterm;
 				PolynomialHashFunctor<Series1, Series2, ArgsTuple, GenericTruncator> hm(cterm, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, truncator, &cms, argsTuple);
 
 				this->blockedMultiplication(block_size, size1, size2, hm);

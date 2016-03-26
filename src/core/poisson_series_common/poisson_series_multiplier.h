@@ -125,7 +125,7 @@ namespace piranha
 
 						VectorFunctor(std::vector<char>               &f1,         std::vector<char>         &f2,
 							          std::vector<CfType1>            &tc1,        std::vector<CfType2>      &tc2,
-							          std::vector<max_fast_int>       &ck1,        std::vector<max_fast_int> &ck2a, std::vector<max_fast_int> &ck2b,
+							          std::vector<MaxFastInt>       &ck1,        std::vector<MaxFastInt> &ck2a, std::vector<MaxFastInt> &ck2b,
 							          std::vector<const TermType1 *>  &t1,         std::vector<const TermType2 *> &t2,
 							          const GenericTruncator          &truncator,  std::pair<CfType1 *, CfType1 *> *vc_res_pair, const ArgsTuple &argsTuple)
                         : m_f1(f1), m_f2(f2), m_tc1(tc1), m_tc2(tc2), m_ck1(ck1), m_ck2a(ck2a), m_ck2b(ck2b), m_t1(t1), m_t2(t2), truncator(truncator),
@@ -147,8 +147,8 @@ namespace piranha
 							// so that we can avoid copying stuff around here and elsewhere?
 							CfType1 tmp_cf = m_tc1[i];
 							tmp_cf.multBy(m_tc2[j], m_argsTuple);
-							const max_fast_int index_plus  = m_ck1[i] + m_ck2a[j]; 
-							const max_fast_int index_minus = m_ck1[i] + m_ck2b[j];
+							const MaxFastInt index_plus  = m_ck1[i] + m_ck2a[j]; 
+							const MaxFastInt index_minus = m_ck1[i] + m_ck2b[j];
 
 							if (m_f1[i] == m_f2[j])
 							{
@@ -180,9 +180,9 @@ namespace piranha
 						std::vector<char>					&m_f2;
 						std::vector<CfType1>				&m_tc1;
 						std::vector<CfType2>				&m_tc2;
-						std::vector<max_fast_int>			&m_ck1;
-						std::vector<max_fast_int>			&m_ck2a;
-						std::vector<max_fast_int>			&m_ck2b;
+						std::vector<MaxFastInt>			&m_ck1;
+						std::vector<MaxFastInt>			&m_ck2a;
+						std::vector<MaxFastInt>			&m_ck2b;
 						std::vector<const TermType1 *>		&m_t1;
 						std::vector<const TermType2 *>		&m_t2;
 						const GenericTruncator				&truncator;
@@ -245,9 +245,9 @@ namespace piranha
 						CfType1 *vc_res_cos = res.first;
 						CfType1 *vc_res_sin = res.second;
 						TermType1 tmp_term;
-						const max_fast_int i_f = this->m_fast_h.upper();
+						const MaxFastInt i_f = this->m_fast_h.upper();
 
-						for (max_fast_int i = this->m_fast_h.lower(); i <= i_f; ++i)
+						for (MaxFastInt i = this->m_fast_h.lower(); i <= i_f; ++i)
 						{
 							vc_res_cos[i].divideBy(2, argsTuple);
 							// Take a shortcut and check for ignorability of the coefficient here.
@@ -266,7 +266,7 @@ namespace piranha
 							}
 						}
 
-						for (max_fast_int i = this->m_fast_h.lower(); i <= i_f; ++i) 
+						for (MaxFastInt i = this->m_fast_h.lower(); i <= i_f; ++i) 
 						{
 							vc_res_sin[i].divideBy(2, argsTuple);
 
@@ -414,7 +414,7 @@ namespace piranha
 					{
 						stats::trace_stat("mult_st", std::size_t(0), boost::lambda::_1 + 1);
 
-						typedef coded_hash_table<CfType1, max_fast_int, std_counting_allocator<char> > csht;
+						typedef coded_hash_table<CfType1, MaxFastInt, std_counting_allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
 						// Let's find a sensible size hint.
 						const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);
@@ -428,11 +428,11 @@ namespace piranha
 						const ArgsTupleType &argsTuple = this->argsTuple;
 
 						// Find out a suitable block size.
-						const std::size_t blockSize = this->template computeBlockSize<sizeof(std::pair<CfType1, max_fast_int>)>();
+						const std::size_t blockSize = this->template computeBlockSize<sizeof(std::pair<CfType1, MaxFastInt>)>();
 						PIRANHA_DEBUG(std::cout << "Block size: " << blockSize << '\n';)
-						std::pair<CfType1, max_fast_int> tmp_term1;
-                        std::pair<CfType1, max_fast_int> tmp_term2;
-						HashFunctor<std::pair<CfType1, max_fast_int>, max_fast_int, GenericTruncator, csht>
+						std::pair<CfType1, MaxFastInt> tmp_term1;
+                        std::pair<CfType1, MaxFastInt> tmp_term2;
+						HashFunctor<std::pair<CfType1, MaxFastInt>, MaxFastInt, GenericTruncator, csht>
 							hm(flavours1, flavours2, tc1, tc2, this->m_ckeys1, this->m_ckeys2a, this->m_ckeys2b, t1, t2, truncator, &res, &tmp_term1, &tmp_term2, argsTuple);
 
 						this->blockedMultiplication(blockSize, size1, size2, hm);

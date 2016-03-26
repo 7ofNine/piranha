@@ -61,8 +61,8 @@ namespace piranha
 
 typedef std::pair<std::size_t, std::size_t> BlockType;
 typedef std::vector<BlockType>              BlockSequence;
-typedef boost::numeric::interval< max_fast_int, boost::numeric::interval_lib::policies< boost::numeric::interval_lib::rounded_math<max_fast_int>,
-	                                            boost::numeric::interval_lib::checking_base<max_fast_int> > > 
+typedef boost::numeric::interval< MaxFastInt, boost::numeric::interval_lib::policies< boost::numeric::interval_lib::rounded_math<MaxFastInt>,
+	                                            boost::numeric::interval_lib::checking_base<MaxFastInt> > > 
                                             BlockInterval;
 
 
@@ -78,7 +78,7 @@ struct BaseCodedFunctor
 	template <class Functor>
 	struct IndirectSorter
 	{
-		IndirectSorter(Functor const &functor, std::vector<max_fast_int> const &vec) : functor(functor), vec(vec) {}
+		IndirectSorter(Functor const &functor, std::vector<MaxFastInt> const &vec) : functor(functor), vec(vec) {}
 
 		bool operator()(std::size_t const n1, std::size_t const n2) const
 		{
@@ -87,12 +87,12 @@ struct BaseCodedFunctor
 		}
 
 		Functor const			        &functor;
-		std::vector<max_fast_int> const	&vec;
+		std::vector<MaxFastInt> const	&vec;
 	};
 
 
 	BaseCodedFunctor(std::vector<CfType1>           &tc1, std::vector<CfType2>           &tc2,
-		             std::vector<max_fast_int>      &ck1, std::vector<max_fast_int>      &ck2,
+		             std::vector<MaxFastInt>      &ck1, std::vector<MaxFastInt>      &ck2,
 		             std::vector<TermType1 const *> &t1,  std::vector<TermType2 const *> &t2,
 		             GenericTruncator const &truncator,    ArgsTuple const &argsTuple)
     : m_tc1(tc1), m_tc2(tc2), m_ck1(ck1), m_ck2(ck2), m_t1(t1), m_t2(t2), m_trunc(truncator), m_argsTuple(argsTuple)
@@ -175,7 +175,7 @@ struct BaseCodedFunctor
 	}
 
 
-	void adjustBlockBoundaries(BlockSequence &s, std::vector<max_fast_int> const &ck) const
+	void adjustBlockBoundaries(BlockSequence &s, std::vector<MaxFastInt> const &ck) const
 	{
 #ifdef _DEBUG
 		std::cout << "BaseCodedFunctor::adjust_block_boundaries: ck size = " << ck.size() << std::endl;
@@ -336,8 +336,8 @@ struct BaseCodedFunctor
 
 	std::vector<CfType1>		    &m_tc1;
 	std::vector<CfType2>		    &m_tc2;
-	std::vector<max_fast_int>	    &m_ck1;
-	std::vector<max_fast_int>	    &m_ck2;
+	std::vector<MaxFastInt>	    &m_ck1;
+	std::vector<MaxFastInt>	    &m_ck2;
 	std::vector<TermType1 const *>  &m_t1;
 	std::vector<TermType2 const *>  &m_t2;
 	const GenericTruncator		    &m_trunc;
@@ -586,15 +586,15 @@ struct BaseCodedFunctor
 				// Compute multiprecision codes range.
 				tuple_vector_dot(m_mp_gr, m_mp_ct, m_mp_h);
 				// To test whether a representation is viable or not, we need to test for the following things:
-				// - m_mp_h must be in the max_fast_int range;
-				// - m_mp_h's width must be within halft max_fast_int's range (needed for 2*chi shifting).
+				// - m_mp_h must be in the MaxFastInt range;
+				// - m_mp_h's width must be within halft MaxFastInt's range (needed for 2*chi shifting).
 				// Use lexical cast for max interoperability between numerical types.
 				// NOTE: here probably we can reduce greatly the number of memory allocations...
 				if (boost::numeric::subset(m_mp_h,boost::numeric::interval<mp_integer>(
-					boost::lexical_cast<mp_integer>(boost::integer_traits<max_fast_int>::const_min),
-					boost::lexical_cast<mp_integer>(boost::integer_traits<max_fast_int>::const_max))) &&
+					boost::lexical_cast<mp_integer>(boost::integer_traits<MaxFastInt>::const_min),
+					boost::lexical_cast<mp_integer>(boost::integer_traits<MaxFastInt>::const_max))) &&
 					boost::numeric::width(m_mp_h) <=
-					boost::lexical_cast<mp_integer>(boost::integer_traits<max_fast_int>::const_max) / 2)
+					boost::lexical_cast<mp_integer>(boost::integer_traits<MaxFastInt>::const_max) / 2)
 				{
 					// Mark representation as viable.
 					m_gr_is_viable = true;
@@ -616,13 +616,13 @@ struct BaseCodedFunctor
 				// Downcast multiprecision to fast representation.
 				cm_mp_tuple_downcast(m_mp_gr, m_fast_gr);
 				cm_mp_tuple_downcast(m_mp_ct, m_fast_ct);
-				m_fast_h.assign(boost::lexical_cast<max_fast_int>(m_mp_h.lower()), boost::lexical_cast<max_fast_int>(m_mp_h.upper()));
+				m_fast_h.assign(boost::lexical_cast<MaxFastInt>(m_mp_h.lower()), boost::lexical_cast<MaxFastInt>(m_mp_h.upper()));
 				// Build decoding tuple.
 				cm_build_decoding_tuple(m_dt, m_fast_gr);
 				// Establish if subtraction is requested or not.
 				static const bool sub_requested = op_has_sub<OpTuple>::value;
 				// Resize codes vectors.
-				typedef std::vector<max_fast_int>::size_type size_type;
+				typedef std::vector<MaxFastInt>::size_type size_type;
 				const size_type csize1 = boost::numeric_cast<size_type>(derived_const_cast->terms1.size());
 				const size_type csize2 = boost::numeric_cast<size_type>(derived_const_cast->terms2.size());
 				m_ckeys1.resize(csize1);
@@ -632,7 +632,7 @@ struct BaseCodedFunctor
 					m_ckeys2b.resize(csize2);
 				}
 				// Now fill in the codes.
-				max_fast_int code_a = 0, code_b = 0;
+				MaxFastInt code_a = 0, code_b = 0;
 				for (size_type i = 0; i < csize1; ++i) 
 				{
 					cm_code<OpTuple>(m_fast_ct, *derived_const_cast->terms1[i], m_vh,code_a, code_b);
@@ -649,7 +649,7 @@ struct BaseCodedFunctor
 					}
 				}
 				// Compute densities.
-				const max_fast_int w = boost::numeric::width(m_fast_h) + 1;
+				const MaxFastInt w = boost::numeric::width(m_fast_h) + 1;
 				m_density1 = static_cast<double>(csize1) / w;
 				m_density2 = static_cast<double>(csize2) / w;
 			}
@@ -660,7 +660,7 @@ struct BaseCodedFunctor
 			 * Decode given code into return value term, using final_cf as the coefficient at the end of the echelon recursion.
 			 */
 			template <class FinalCf>
-			void decode(const FinalCf &final_cf, const max_fast_int &code, typename Series1::TermType &term) const
+			void decode(const FinalCf &final_cf, const MaxFastInt &code, typename Series1::TermType &term) const
 			{
 				cm_decode(final_cf, m_dt, m_fast_gr, term, m_vh, code, m_fast_h.lower(), derived_const_cast->argsTuple);
 			}
@@ -691,12 +691,12 @@ struct BaseCodedFunctor
 			{
 				PIRANHA_ASSERT(m_gr_is_viable);
 
-				typedef std::vector<max_fast_int>::size_type size_type;
+				typedef std::vector<MaxFastInt>::size_type size_type;
 				
                 const size_type size1  = m_ckeys1.size();
                 const size_type size2a = m_ckeys2a.size();
                 const size_type size2b = m_ckeys2b.size();
-				const max_fast_int chi = m_fast_h.lower();
+				const MaxFastInt chi = m_fast_h.lower();
 
 				for (size_type i = 0; i < size1; ++i) 
 				{
@@ -738,13 +738,13 @@ struct BaseCodedFunctor
 			/// Multiprecision codes range.
 			boost::numeric::interval<mp_integer>	m_mp_h;
 			/// Fast codes range.
-			boost::numeric::interval<max_fast_int>	m_fast_h;
+			boost::numeric::interval<MaxFastInt>	m_fast_h;
 			/// Codes for the first series.
-			std::vector<max_fast_int>		m_ckeys1;
+			std::vector<MaxFastInt>		m_ckeys1;
 			/// Codes for the second series, plus.
-			std::vector<max_fast_int>		m_ckeys2a;
+			std::vector<MaxFastInt>		m_ckeys2a;
 			/// Codes for the second series, minus.
-			std::vector<max_fast_int>		m_ckeys2b;
+			std::vector<MaxFastInt>		m_ckeys2b;
 			/// Density of the first series.
 			double					m_density1;
 			/// Density of the second series.
