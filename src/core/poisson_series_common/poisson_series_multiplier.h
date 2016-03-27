@@ -21,15 +21,16 @@
 #ifndef PIRANHA_POISSON_SERIES_MULTIPLIER_H
 #define PIRANHA_POISSON_SERIES_MULTIPLIER_H
 
+#include <cstddef>
+#include <exception>
+#include <utility> // For std::pair.
+#include <vector>
+
 #include <boost/lambda/lambda.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/type_traits/integral_constant.hpp>
-#include <cstddef>
-#include <exception>
-#include <utility> // For std::pair.
-#include <vector>
 
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_multiplier.h"
@@ -49,14 +50,14 @@ namespace piranha
 	{
 		PIRANHA_STATIC_CHECK(EchelonLevel == 0, "");
 
-		typedef boost::tuple<boost::false_type> type;
+		typedef boost::tuple<boost::false_type> Type;
 	};
 
 
 	template <>
 	struct PoissonSeriesMultiplierOperationSelector<1>
 	{
-		typedef boost::tuple<boost::false_type, boost::true_type> type;
+		typedef boost::tuple<boost::false_type, boost::true_type> Type;
 	};
 
 
@@ -74,9 +75,9 @@ namespace piranha
 			{
 					typedef BaseSeriesMultiplier< Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> > Ancestor;
 
-					typedef CodedMultiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, typename PoissonSeriesMultiplierOperationSelector<Series1::echelonLevel>::type> CodedAncestor;
+					typedef CodedMultiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, typename PoissonSeriesMultiplierOperationSelector<Series1::echelonLevel>::Type> CodedAncestor;
 
-					friend class CodedMultiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, typename PoissonSeriesMultiplierOperationSelector<Series1::echelonLevel>::type>;
+					friend class CodedMultiplier<get_type<Series1, Series2, ArgsTuple, Truncator>, Series1, Series2, typename PoissonSeriesMultiplierOperationSelector<Series1::echelonLevel>::Type>;
 
 					typedef typename Ancestor::TermType1 TermType1;
 					typedef typename Ancestor::TermType2 TermType2;

@@ -62,7 +62,7 @@ namespace piranha
 typedef std::pair<std::size_t, std::size_t> BlockType;
 typedef std::vector<BlockType>              BlockSequence;
 typedef boost::numeric::interval< MaxFastInt, boost::numeric::interval_lib::policies< boost::numeric::interval_lib::rounded_math<MaxFastInt>,
-	                                            boost::numeric::interval_lib::checking_base<MaxFastInt> > > 
+	                                          boost::numeric::interval_lib::checking_base<MaxFastInt> > > 
                                             BlockInterval;
 
 
@@ -75,9 +75,14 @@ struct BaseCodedFunctor
 	typedef typename Series2::TermType TermType2;
 
 
+    // 
+    // Functorial class providing the binary predicate (comaprison) operation for a std::sort
+    // It is indirect by sorting the indices not the vector itself
 	template <class Functor>
-	struct IndirectSorter
+	class IndirectSorter
 	{
+        public:
+
 		IndirectSorter(Functor const &functor, std::vector<MaxFastInt> const &vec) : functor(functor), vec(vec) {}
 
 		bool operator()(std::size_t const n1, std::size_t const n2) const
@@ -86,6 +91,7 @@ struct BaseCodedFunctor
 			return functor.get_mem_pos(vec[n1]) < functor.get_mem_pos(vec[n2]);
 		}
 
+        private:
 		Functor const			        &functor;
 		std::vector<MaxFastInt> const	&vec;
 	};
