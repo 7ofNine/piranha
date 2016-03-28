@@ -35,13 +35,16 @@ namespace piranha
 namespace truncators
 {
 	// Sequence of truncators type. NOTE: add here any new truncator.
-	typedef boost::mpl::vector<norm, degree, PowerSeries> truncator_types;
+	typedef boost::mpl::vector<Norm, Degree, PowerSeries> TruncatorTypes;
 
 
 	// General functor for calling unset() on a truncator.
 	template <class Truncator>
-	struct truncator_unset {
-		static void run()
+	class TruncatorUnset
+    {
+        public: 
+		
+        static void run()
 		{
 			Truncator::unset();
 		}
@@ -50,23 +53,32 @@ namespace truncators
 
 	// For power series truncators, there is not unset() function to be called.
 	template <>
-	struct truncator_unset<PowerSeries> {
+	struct TruncatorUnset<PowerSeries>
+    {
 		static void run() {}
 	};
 
 
+    // implementaton for unsetting all types of truncators.
+    // i.e. truncation is set to inactive or level 0. This is truncator specific.
 	template <int N>
-	struct unset_impl {
+	class UnsetImpl
+     {
+        public:
+
 		static void run()
 		{
-			truncator_unset<typename boost::mpl::at<truncator_types, boost::mpl::int_<N> >::type>::run();
-			unset_impl<N-1>::run();
+			TruncatorUnset<typename boost::mpl::at<TruncatorTypes, boost::mpl::int_<N> >::type>::run();
+			UnsetImpl<N-1>::run();
 		}
 	};
 
-
+    // terminate recursion through truncator types
 	template <>
-	struct unset_impl<-1> {
+	class UnsetImpl<-1>
+    {
+        public:
+
 		static void run() {}
 	};
 
@@ -74,7 +86,7 @@ namespace truncators
 	/// Unset all available truncators.
 	inline void unset()
 	{
-		unset_impl<boost::mpl::size<truncator_types>::type::value - 1>::run();
+		UnsetImpl<boost::mpl::size<TruncatorTypes>::type::value - 1>::run();
 	}
 }
 }

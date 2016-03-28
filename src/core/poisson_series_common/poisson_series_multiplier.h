@@ -71,7 +71,7 @@ namespace piranha
 		public:
 			template <class Series1, class Series2, class ArgsTuple, class Truncator>
 			class get_type: public BaseSeriesMultiplier<Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> > ,
-				            public CodedMultiplier< get_type< Series1, Series2, ArgsTuple, Truncator >, Series1, Series2, typename PoissonSeriesMultiplierOperationSelector< Series1::echelonLevel >::type >
+				            public CodedMultiplier< get_type< Series1, Series2, ArgsTuple, Truncator >, Series1, Series2, typename PoissonSeriesMultiplierOperationSelector< Series1::echelonLevel >::Type >
 			{
 					typedef BaseSeriesMultiplier< Series1, Series2, ArgsTuple, Truncator, get_type<Series1, Series2, ArgsTuple, Truncator> > Ancestor;
 
@@ -87,7 +87,7 @@ namespace piranha
 				public:
 
 					typedef ArgsTuple ArgsTupleType;
-					typedef typename Truncator::template get_type<Series1, Series2, ArgsTuple> truncator_type;
+					typedef typename Truncator::template GetType<Series1, Series2, ArgsTuple> truncator_type;
 
 					get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple)
                             : Ancestor(s1, s2, retval, argsTuple) {}

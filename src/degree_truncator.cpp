@@ -31,89 +31,100 @@ using namespace piranha::truncators;
 
 namespace piranha
 { 
-	// Static initialization for degree-based truncation.
-	mp_rational            degree::degreeLimit;
-	degree::TruncationMode degree::truncationMode = degree::TruncationInactive;
-	VectorPsym             degree::psyms;
+	// Static initialization and storage allocation for degree-based truncation.
+	mp_rational            Degree::degreeLimit;
+	Degree::TruncationMode Degree::truncationMode = Degree::TRUNCATION_INACTIVE;
+	VectorPsym             Degree::psyms;
 
-	void degree::unset()
+	void Degree::unset()
 	{
-		truncationMode = TruncationInactive;
+		truncationMode = TRUNCATION_INACTIVE;
 	}
 
-	void degree::set(const int n)
+	void Degree::set(int const n)
 	{
 		degreeLimit    = n;
-		truncationMode = TruncationDeg;
+		truncationMode = TRUNCATION_DEGREE;
 	}
 
-	void degree::set(const mp_rational &r)
+	void Degree::set(mp_rational const &r)
 	{
 		degreeLimit    = r;
-		truncationMode = TruncationDeg;
+		truncationMode = TRUNCATION_DEGREE;
 	}
 
-	void degree::set(const std::string &s, const int n)
+
+    // set partial truncation for name s at degree n
+	void Degree::set(std::string const &s, const int n)
 	{
 		degreeLimit    = n;
 		psyms          = names2psyms(std::vector<std::string>(1, s)); // setup input string as vector of strings
-		truncationMode = TruncationPartialDeg;
+		truncationMode = TRUNCATION_PARTIAL_DEGREE;
 	}
 
-	void degree::set(const std::string &s, const mp_rational &r)
+    // set partial truncation for name s at rational degree r
+	void Degree::set(std::string const &s, mp_rational const &r)
 	{
 		degreeLimit    = r;
 		psyms          = names2psyms(std::vector<std::string>(1, s)); // setup input string as vector of strings
-		truncationMode = TruncationPartialDeg;
+		truncationMode = TRUNCATION_PARTIAL_DEGREE;
 	}
 
-	void degree::set(const std::vector<std::string> &vs, const int n)
+    // set partial truncation for several names in vs at degree n.
+    // they all have the same degree
+	void Degree::set(std::vector<std::string> const &vs, int const n)
 	{
 		if (!vs.size())
         {
 			set(n);
 			return;
 		}
+
 		degreeLimit    = n;
 		psyms          = names2psyms(vs);
-		truncationMode = TruncationPartialDeg;
+		truncationMode = TRUNCATION_PARTIAL_DEGREE;
 	}
 
-	void degree::set(const std::vector<std::string> &vs, const mp_rational &r)
+    // set partial truncation for several names in vs at rational degree r.
+    // they all have the same degree
+	void Degree::set(const std::vector<std::string> &vs, const mp_rational &r)
 	{
 		if (!vs.size())
         {
 			set(r);
 			return;
 		}
+
 		degreeLimit     = r;
 		psyms           = names2psyms(vs);
-		truncationMode  = TruncationPartialDeg;
+		truncationMode  = TRUNCATION_PARTIAL_DEGREE;
 	}
 
-void degree::print(std::ostream &stream)
-{
-	switch (truncationMode)
+    // print current degree truncation settings
+    void Degree::print(std::ostream &stream)
     {
-		case TruncationInactive: stream << "No degree limit set.";
-			                     break;
+	    switch (truncationMode)
+        {
+		    case TRUNCATION_INACTIVE:        stream << "No degree limit set.";
+			                                 break;
 
-		case TruncationDeg:      stream << "Degree limit: " << degreeLimit;
-			                     break;
+		    case TRUNCATION_DEGREE:          stream << "Degree limit: " << degreeLimit;
+			                                 break;
 
-		case TruncationPartialDeg:  {   stream << "Partial degree limit: " << degreeLimit << ", Affected symbols: [";
-			                            for (std::size_t i = 0; i < psyms.size(); ++i)
-                                        {
-				                            stream << '\'' << psyms[i].getName() << '\'';
+		    case TRUNCATION_PARTIAL_DEGREE:  {
+                                                stream << "Partial degree limit: " << degreeLimit << ", Affected symbols: [";
+			                                    for (std::size_t i = 0; i < psyms.size(); ++i)
+                                                {
+				                                    stream << '\'' << psyms[i].getName() << '\'';
 
-                                            if (i < psyms.size() - 1)
-                                            {
-					                            stream << " ";
-				                            }
-			                            }
-			                            stream << ']';
-	                                }
+                                                    if (i < psyms.size() - 1)
+                                                    {
+					                                    stream << " ";
+				                                    }
+			                                    }
+			                                    stream << ']';
+	                                         }
+        }
     }
-}
 }
 

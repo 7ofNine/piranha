@@ -31,7 +31,7 @@ int main()
 	{
 		// This one fails if we do not handle correctly argsTuple inside substitution.
 		qps e(Psym("e")), ph(Psym("ph")), th(Psym("th"));
-		truncators::degree::set(10);
+		truncators::Degree::set(10);
 		(e*th.cos()+1).pow(-1).sub("th",ph.pow(2));
 	}
 

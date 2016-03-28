@@ -232,7 +232,7 @@ namespace piranha
 				void operator()()
 				{
 					// Build the truncator.
-					const typename Truncator::template get_type<Series1, Series2, ArgsTuple> truncator(terms1, multiplier.terms2, multiplier.argsTuple);
+					const typename Truncator::template GetType<Series1, Series2, ArgsTuple> truncator(terms1, multiplier.terms2, multiplier.argsTuple);
 					// Use the selected truncator only if it really truncates, otherwise use the
 					// null truncator.
 					if (truncator.isEffective())
@@ -241,7 +241,7 @@ namespace piranha
 
 					} else
                     {
-						plainImplementation(null_truncator::template get_type<Series1, Series2, ArgsTuple>(terms1, multiplier.terms2, multiplier.argsTuple) );
+						plainImplementation(NullTruncator::template GetType<Series1, Series2, ArgsTuple>(terms1, multiplier.terms2, multiplier.argsTuple) );
 					}
 				}
 

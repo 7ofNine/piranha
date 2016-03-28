@@ -492,7 +492,7 @@ struct BaseCodedFunctor
 					// Sort input series for better cache usage and multi-threaded implementation.
 					std::sort(derived_cast->terms1.begin(), derived_cast->terms1.end(), key_revlex_comparison());
 					std::sort(derived_cast->terms2.begin(), derived_cast->terms2.end(), key_revlex_comparison());
-					derived_cast->ll_perform_multiplication(null_truncator::template get_type<Series1, Series2, typename Derived::ArgsTupleType>(
+					derived_cast->ll_perform_multiplication(NullTruncator::template GetType<Series1, Series2, typename Derived::ArgsTupleType>(
 						                                                                     derived_cast->terms1, derived_cast->terms2, derived_cast->argsTuple));
 				}
 			}

@@ -39,22 +39,26 @@ namespace truncators
 		public:
 
 			template <class Series1, class Series2, class ArgsTuple>
-			class get_type:	public degree::template GetType<Series1, Series2, ArgsTuple>,
-				            public norm::template   get_type<Series1, Series2, ArgsTuple>
+			class GetType:	public Degree::template GetType<Series1, Series2, ArgsTuple>,
+				            public Norm::template   GetType<Series1, Series2, ArgsTuple>
 			{
-					typedef typename degree::template GetType<Series1, Series2, ArgsTuple> DegreeAncestor;
-					typedef typename norm::template   get_type<Series1, Series2, ArgsTuple> NormAncestor;
+					typedef typename Degree::template GetType<Series1, Series2, ArgsTuple> DegreeAncestor;
+					typedef typename Norm::template   GetType<Series1, Series2, ArgsTuple> NormAncestor;
 
-					enum SelectedTruncator {degTruncator, normTruncator, nullTruncator};
+					enum SelectedTruncator {
+                        TRUNCATOR_NULL   = 0,
+                        TRUNCATOR_DEGREE = 1,
+                        TRUNCATOR_NORM   = 2
+                        };
 
 				public:
 
-					typedef get_type type;
+					typedef GetType Type;
 					typedef typename Series1::TermType TermType1;
 					typedef typename Series2::TermType TermType2;
 
-					get_type(std::vector<TermType1 const *> &terms1, std::vector<TermType2 const *> &terms2, const ArgsTuple &argsTuple):
-						DegreeAncestor(terms1, terms2, argsTuple, false), NormAncestor(terms1, terms2, argsTuple, false), activeTruncator(degTruncator)
+					GetType(std::vector<TermType1 const *> &terms1, std::vector<TermType2 const *> &terms2, const ArgsTuple &argsTuple)
+                        : DegreeAncestor(terms1, terms2, argsTuple, false), NormAncestor(terms1, terms2, argsTuple, false), activeTruncator(TRUNCATOR_DEGREE)
 					{
 						DegreeAncestor::init();
 					
@@ -64,28 +68,28 @@ namespace truncators
 						
                             if(!NormAncestor::isEffective()) 
 							{
-								activeTruncator = nullTruncator;
+								activeTruncator = TRUNCATOR_NULL;
 
 							} else 
 							{
-								activeTruncator = normTruncator;
+								activeTruncator = TRUNCATOR_NORM;
 							}
 
 						} else 
 						{
-							activeTruncator = degTruncator;
+							activeTruncator = TRUNCATOR_DEGREE;
 						}
 					}
 
 
-					template <class T, class ArgsTuple2>
-					static std::size_t powerSeriesIterations(const T &x, const int &start, const int &stepSize, const ArgsTuple2 &argsTuple) 
+					template <class Series, class ArgsTuple2>
+					static std::size_t powerSeriesIterations(const Series &series, const int &start, const int &stepSize, const ArgsTuple2 &argsTuple2) 
 					{
 						std::string msg("No useful truncation limit for a power series expansion could be "
 							            "established by the power series truncator. The reported errors were:\n");
 
 						try {
-							return DegreeAncestor::powerSeriesIterations(x, start, stepSize, argsTuple);
+							return DegreeAncestor::powerSeriesIterations(series, start, stepSize, argsTuple2);
 
 						}catch (const value_error &ve) 
 						{
@@ -93,23 +97,23 @@ namespace truncators
 						}
 
 						try {
-							return NormAncestor::powerSeriesIterations(x, start, stepSize, argsTuple);
+							return NormAncestor::powerSeriesIterations(series, start, stepSize, argsTuple2);
 
 						} catch (const value_error &ve) 
 						{
 							msg += std::string(ve.what()) + "\n";
 						}
 
-						PIRANHA_THROW(value_error,msg);
+						PIRANHA_THROW(value_error, msg);
 					}
 
 
 					template <class Series, class ArgsTuple2>
-					static std::vector<typename Series::TermType const *> getSortedPointerVector(const Series &s, const ArgsTuple2 &argsTuple)
+					static std::vector<typename Series::TermType const *> getSortedPointerVector(const Series &series, const ArgsTuple2 &argsTuple2)
 					{
 						std::string msg("The power series truncator was not able to establish a series ordering. The reported errors were:\n");
 						try {
-							return DegreeAncestor::getSortedPointerVector(s, argsTuple);
+							return DegreeAncestor::getSortedPointerVector(series, argsTuple2);
 
 						} catch (const value_error &ve)
                         {
@@ -117,7 +121,7 @@ namespace truncators
 						}
 
 						try {
-							return NormAncestor::getSortedPointerVector(s, argsTuple);
+							return NormAncestor::getSortedPointerVector(series, argsTuple2);
 
 						} catch (const value_error &ve)
                         {
@@ -130,20 +134,20 @@ namespace truncators
 
 					bool isEffective() const
                     {
-						return activeTruncator != nullTruncator;
+						return activeTruncator != TRUNCATOR_NULL;
 					}
 
 
-					template <class T, class U>
-					bool skip(const T &x1, const U &x2) const 
+					template <class TermType1, class TermType2>
+					bool skip(const TermType1 &x1, const TermType2 &x2) const 
 					{
 						switch (activeTruncator)
                         {
-							case degTruncator:	 return DegreeAncestor::skip(x1,x2);
+							case TRUNCATOR_DEGREE:  return DegreeAncestor::skip(x1, x2);
 						
-                            case normTruncator:  return NormAncestor::skip(x1,x2);
+                            case TRUNCATOR_NORM:    return NormAncestor::skip(x1, x2);
 							
-                            case nullTruncator:  PIRANHA_ASSERT(false);
+                            case TRUNCATOR_NULL:    PIRANHA_ASSERT(false);
 						}
 
 						PIRANHA_ASSERT(false);

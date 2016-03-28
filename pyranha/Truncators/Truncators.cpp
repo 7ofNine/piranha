@@ -17,12 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include <vector>
+#include <string>
 
 #include <boost/python/class.hpp>
 #include <boost/python/def.hpp>
 #include <boost/python/module.hpp>
-#include <vector>
-#include <string>
+
 
 #include "../../src/core/truncators/degree.h"
 #include "../../src/core/truncators/norm.h"
@@ -46,24 +47,24 @@ BOOST_PYTHON_MODULE(_Truncators)
 	typedef void (*p_q_deg_set)(const std::vector<std::string> &, const mp_rational &);
 	typedef void (*s_p_deg_set)(const std::string &, const int);
 	typedef void (*s_p_q_deg_set)(const std::string &, const mp_rational &);
-	class_<truncators::degree>("__degree_truncator", "Minimum degree truncator.", init<>())
-	.def("__repr__", &py_print_to_string<truncators::degree>)
-	.def("set", deg_set(&truncators::degree::set), "Set truncation level of series' minimum degree to arg1.")
-	.def("set", s_p_deg_set(&truncators::degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+	class_<truncators::Degree>("__degree_truncator", "Minimum degree truncator.", init<>())
+	.def("__repr__", &py_print_to_string<truncators::Degree>)
+	.def("set", deg_set(&truncators::Degree::set), "Set truncation level of series' minimum degree to arg1.")
+	.def("set", s_p_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
 		"relatively to Psym named arg1.")
-	.def("set", p_deg_set(&truncators::degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+	.def("set", p_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
 		"relatively to list of Psym names arg1.")
-	.def("set", q_deg_set(&truncators::degree::set), "Set truncation level of series' minimum degree to arg1.")
-	.def("set", s_p_q_deg_set(&truncators::degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+	.def("set", q_deg_set(&truncators::Degree::set), "Set truncation level of series' minimum degree to arg1.")
+	.def("set", s_p_q_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
 		"relatively to Psym named arg1.")
-	.def("set", p_q_deg_set(&truncators::degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+	.def("set", p_q_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
 		"relatively to list of Psym names arg1.").staticmethod("set")
-	.def("unset", &truncators::degree::unset, "Clear minimum degree limit.").staticmethod("unset");
+	.def("unset", &truncators::Degree::unset, "Clear minimum degree limit.").staticmethod("unset");
 
-	class_<truncators::norm>("__norm_truncator", "Norm truncator.", init<>())
-	.def("__repr__", &py_print_to_string<truncators::norm>)
-	.def("set", &truncators::norm::set, "Set norm truncation level to arg1.").staticmethod("set")
-	.def("unset", &truncators::norm::unset, "Disable norm-based truncation.").staticmethod("unset");
+	class_<truncators::Norm>("__norm_truncator", "Norm truncator.", init<>())
+	.def("__repr__", &py_print_to_string<truncators::Norm>)
+	.def("set", &truncators::Norm::set, "Set norm truncation level to arg1.").staticmethod("set")
+	.def("unset", &truncators::Norm::unset, "Disable norm-based truncation.").staticmethod("unset");
 
 	def("unset",&truncators::unset,"Unset all truncators.");
 }

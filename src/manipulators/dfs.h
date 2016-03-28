@@ -39,7 +39,7 @@ namespace manipulators
 	<
 		double_cf, TrigVector<boost::int16_t, 0>,
 		PoissonSeriesMultiplier,
-		truncators::norm
+		truncators::Norm
 	> dfs;
 
 	typedef std::complex<dfs> dfsc;

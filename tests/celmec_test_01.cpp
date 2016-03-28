@@ -47,7 +47,7 @@ int main()
 
 
 	Psym e("e"), M("M");
-	truncators::degree::set(4);
+	truncators::Degree::set(4);
     std::vector< ps > flattened;
     
 	    ps res(ps::r_a(ps(e), ps(M)));
@@ -65,7 +65,7 @@ int main()
  //   retp.print(std::cout);
 //    return 0;
 	// Identity.
-	truncators::degree::set(20);
+	truncators::Degree::set(20);
 	ps e_s(e), M_s(M);
 	retval += (qps::EE(e_s,M_s).cos().sub("e",e_s-1).sub("e",e_s+1) != qps::cos_E(e_s,M_s));
     std::cout<< "test 2: " << retval << '\n';

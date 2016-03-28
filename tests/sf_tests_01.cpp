@@ -31,7 +31,7 @@ int main()
 	int retval = 0;
 	Psym x_("x");
 	const ps x(x_);
-	truncators::degree::set(80);
+	truncators::Degree::set(80);
 	retval += (x.besselJ(3) != -x.besselJ(-3));
 	retval += (x.root(1) != x);
 	retval += (x.pow(-3).root(-3) != x);

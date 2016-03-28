@@ -31,20 +31,26 @@ using namespace piranha::truncators;
 
 namespace piranha
 {
-	// Initial value for norm-based truncation.
-	double norm::m_truncation_level = 0;
+    // allocation for static member and
+	// and initial value for norm-based truncation.
+    //
+	double Norm::truncationLevel = 0.0;
 
-	void norm::print(std::ostream &stream)
+    // print the current status of the norm truncator
+	void Norm::print(std::ostream &stream)
 	{
-		if (m_truncation_level > 0) {
-			stream << "Truncation level: " << boost::lexical_cast<std::string>(m_truncation_level);
-		} else {
+		if (truncationLevel > 0)
+         {
+			stream << "Truncation level: " << boost::lexical_cast<std::string>(truncationLevel);
+		} else
+        {
 			stream << "No truncation level set.";
 		}
 	}
 
-	void norm::unset()
+
+	void Norm::unset()
 	{
-		m_truncation_level = 0;
+		truncationLevel = 0.0;
 	}
 }

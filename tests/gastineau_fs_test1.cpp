@@ -38,7 +38,7 @@ int main()
 	std::cout << "construct by copy"<<std::endl << std::flush;
 	stype elp3a(elp3);
 	std::cout << "square"<<std::endl << std::flush;
-	truncators::norm::set(1.0E10);
+	truncators::Norm::set(1.0E10);
 	elp3 * elp3a;
 	std::cout << elp3.length() << '\n';
 	std::cout << elp3a.length() << '\n';

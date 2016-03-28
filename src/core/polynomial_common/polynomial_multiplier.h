@@ -400,10 +400,10 @@ struct polynomial_multiplier
 			typedef Series1   series_type1;
 			typedef Series2   series_type2;
 			typedef ArgsTuple ArgsTupleType;
-			typedef typename Truncator::template get_type<Series1,Series2,ArgsTuple> truncator_type;
+			typedef typename Truncator::template GetType<Series1,Series2,ArgsTuple> truncator_type;
 
-			get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):
-				ancestor(s1, s2, retval, argsTuple) {}
+			get_type(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple)
+                : ancestor(s1, s2, retval, argsTuple) {}
 
 
 			template <class GenericTruncator>
