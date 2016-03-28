@@ -40,7 +40,7 @@ namespace piranha
 
 			Degree partialDegree(std::vector<std::string> const &names) const
 			{
-				return derived_const_cast->base_partial_degree(psyms2pos(names2psyms(names), derived_const_cast->arguments()));
+				return derived_const_cast->basePartialDegree(psyms2pos(names2psyms(names), derived_const_cast->arguments()));
 			}
 
 
@@ -54,7 +54,7 @@ namespace piranha
 				//	symbols.push_back(Psym(names[i]));
 				//}
 
-				return derived_const_cast->base_partial_order(psyms2pos(names2psyms(names), derived_const_cast->arguments()));
+				return derived_const_cast->basePartialOrder(psyms2pos(names2psyms(names), derived_const_cast->arguments()));
 			}
 	};
 }

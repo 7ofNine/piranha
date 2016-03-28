@@ -34,14 +34,14 @@ namespace piranha
 			template <class PosTuple>
 			Degree partialDegree(const PosTuple &posTuple) const
             {
-				return derived_const_cast->base_partial_degree(posTuple);
+				return derived_const_cast->basePartialDegree(posTuple);
 			}
 
 
 			template <class PosTuple>
 			Degree partialOrder(const PosTuple &posTuple) const
             {
-				return derived_const_cast->base_partial_order(posTuple);
+				return derived_const_cast->basePartialOrder(posTuple);
 			}
 	};
 }

@@ -300,7 +300,7 @@ namespace piranha
 			}
 
 
-			/// Return the total degree of the exponents array.
+			/// Return the total degree of the exponents array, i.e. sum over all the exponent values
 			DegreeType degree() const
 			{
 				return std::accumulate(this->begin(), this->end(), DegreeType(0));

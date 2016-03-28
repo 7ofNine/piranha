@@ -179,7 +179,7 @@ namespace truncators {
 							case TRUNCATION_DEGREE:         order = s.order();
 								                            break;
 
-							case TRUNCATION_PARTIAL_DEGREE: order = s.base_partial_order(psyms2pos(psyms, argsTuple2));
+							case TRUNCATION_PARTIAL_DEGREE: order = s.basePartialOrder(psyms2pos(psyms, argsTuple2));
 								                            break;
 
 							case TRUNCATION_INACTIVE:       PIRANHA_ASSERT(false);  // should not happen. An error

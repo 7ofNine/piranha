@@ -33,73 +33,87 @@ namespace piranha
 {
 	/// Power series toolbox.
 	template <int ExpoArgsPosition, int ExpoTermPosition, class Degree, class Derived>
-	class base_power_series
+	class BasePowerSeries
 	{
-			PIRANHA_STATIC_CHECK(ExpoArgsPosition >= 0, "Invalid expo args position.");
+			PIRANHA_STATIC_CHECK(ExpoArgsPosition >= 0, "Invalid exponent argument position.");
 
+
+            //compare functor for the total exponential degree
 			template <class Term>
-			struct degree_binary_predicate
+			class CompareDegree
 			{
-				bool operator()(const Term &t1, const Term &t2) const 
+                public:
+				bool operator()(Term const &term1, Term const &term2) const 
                 {
-					return (t1.template get<ExpoTermPosition>().degree() < t2.template get<ExpoTermPosition>().degree());
+					return (term1.template get<ExpoTermPosition>().degree() < term2.template get<ExpoTermPosition>().degree());
 				}
 			};
 
 
+            // comparison functor dor the exponential order 
 			template <class Term>
-			struct order_binary_predicate
+			class CompareOrder
 			{
-				bool operator()(const Term &t1, const Term &t2) const 
+                public:
+
+				bool operator()(Term const &term1, Term const &term2) const 
                 {
-					return (t1.template get<ExpoTermPosition>().order() < t2.template get<ExpoTermPosition>().order());
+					return (term1.template get<ExpoTermPosition>().order() < term2.template get<ExpoTermPosition>().order());
 				}
 			};
 
-
-			template <class Term, class PosTuple>
-			struct partial_degree_binary_predicate
+            // comparison functor for partial degree. Only arguments that are marked by the positionTuple are considered
+			template <class Term, class PositionTuple>
+			class  ComparePartialDegree
 			{
-				partial_degree_binary_predicate(const PosTuple &p):m_p(p) {}
+                public:
 
-				bool operator()(const Term &t1, const Term &t2) const 
+				ComparePartialDegree(PositionTuple const &p):positionTuple(positionTuple) {}
+
+				bool operator()(Term const &term1, Term const &term2) const 
                 {
-					return (t1.template get<ExpoTermPosition>().partialDegree(m_p) < t2.template get<ExpoTermPosition>().partialDegree(m_p));
+					return (term1.template get<ExpoTermPosition>().partialDegree(positionTuple) < term2.template get<ExpoTermPosition>().partialDegree(positionTuple));
 				}
 
-				const PosTuple &m_p;
+                private:
+
+				const PositionTuple &positionTuple;
 			};
 
 
-			template <class Term, class PosTuple>
-			struct partial_order_binary_predicate
+			template <class Term, class PositionTuple>
+			class ComparePartialOrder
 			{
-				partial_order_binary_predicate(const PosTuple &p):m_p(p) {}
+                public:
 
-				bool operator()(const Term &t1, const Term &t2) const 
+				ComparePartialOrder(PositionTuple const &positionTuple):positionTuple(positionTuple) {}
+
+				bool operator()(Term const &term1, Term const &term2) const 
                 {
-					return (t1.template get<ExpoTermPosition>().partialOrder(m_p) < t2.template get<ExpoTermPosition>().partialOrder(m_p));
+					return (term1.template get<ExpoTermPosition>().partialOrder(positionTuple) < term2.template get<ExpoTermPosition>().partialOrder(positionTuple));
 				}
 
-				const PosTuple &m_p;
+                private:
+
+				const PositionTuple &positionTuple;
 			};
 
 
 		public:
 
-			static const int expo_args_position = ExpoArgsPosition;
-			static const int expo_term_position = ExpoTermPosition;
+			// static const int expo_args_position = ExpoArgsPosition;
+			// static const int expo_term_position = ExpoTermPosition;
 			typedef Degree DegreeType;
 
-			/// Get the degree of the power series.
+			/// Get the degree of the power series. degree is the maximum degree of the exponent vector
 			Degree degree() const 
             {
 				if (derived_const_cast->empty()) 
                 {
 					return Degree(0);
 				}
-				const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(),
-							                                  degree_binary_predicate<typename Derived::TermType>() ));
+
+				const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(), CompareDegree<typename Derived::TermType>() ));
 
 				return result->template get<ExpoTermPosition>().degree();
 			}
@@ -115,39 +129,41 @@ namespace piranha
                 {
 					return Degree(0);
 				}
-				const typename Derived::const_iterator result(std::min_element(derived_const_cast->begin(), derived_const_cast->end(),
-							                                                   order_binary_predicate<typename Derived::TermType>() ));
+
+				const typename Derived::const_iterator result(std::min_element(derived_const_cast->begin(), derived_const_cast->end(), CompareOrder<typename Derived::TermType>() ));
 				return result->template get<ExpoTermPosition>().order();
 			}
 
 		//protected:
 			/// Get the degree of the power series for specific variables.
-			template <class PosTuple>
-			Degree base_partial_degree(const PosTuple &pos_tuple) const 
+			template <class PositionTuple>
+			Degree basePartialDegree(const PositionTuple &positionTuple) const 
             {
 				if (derived_const_cast->empty()) 
                 {
 					return Degree(0);
 				}
-				const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(),
-							                                  partial_degree_binary_predicate<typename Derived::TermType, PosTuple>(pos_tuple) ));
 
-				return result->template get<ExpoTermPosition>().partialDegree(pos_tuple);
+				const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(), 
+                                                              ComparePartialDegree<typename Derived::TermType, PositionTuple>(positionTuple) ));
+
+				return result->template get<ExpoTermPosition>().partialDegree(positionTuple);
 			}
 
 
 			/// Get the mininum degree of the power series for specific variables.
-			template <class PosTuple>
-			Degree base_partial_order(const PosTuple &pos_tuple) const 
+			template <class PositionTuple>
+			Degree basePartialOrder(const PositionTuple &positionTuple) const 
             {
 				if (derived_const_cast->empty()) 
                 {
 					return Degree(0);
 				}
-				const typename Derived::const_iterator result(std::min_element(derived_const_cast->begin(), derived_const_cast->end(),
-							                                  partial_order_binary_predicate<typename Derived::TermType, PosTuple>(pos_tuple) ));
 
-				return result->template get<ExpoTermPosition>().partialOrder(pos_tuple);
+				const typename Derived::const_iterator result(std::min_element(derived_const_cast->begin(), derived_const_cast->end(),
+							                                  ComparePartialOrder<typename Derived::TermType, PositionTuple>(positionTuple) ));
+
+				return result->template get<ExpoTermPosition>().partialOrder(positionTuple);
 			}
 	};
 }
