@@ -34,26 +34,27 @@ namespace piranha
 {
 	/// Named power series toolbox.
 	template <class Degree, class Derived>
-	class named_power_series
+	class NamedPowerSeries
 	{
 		public:
 
-			Degree partialDegree(const std::vector<std::string> &vs) const
+			Degree partialDegree(std::vector<std::string> const &names) const
 			{
-				return derived_const_cast->base_partial_degree(psyms2pos(names2psyms(vs), derived_const_cast->arguments()));
+				return derived_const_cast->base_partial_degree(psyms2pos(names2psyms(names), derived_const_cast->arguments()));
 			}
 
 
-			Degree partialOrder(const std::vector<std::string> &vs) const
+			Degree partialOrder(const std::vector<std::string> &names) const
 			{
-				VectorPsym v;
-				v.reserve(vs.size());
-				for (std::size_t i = 0; i < vs.size(); ++i) 
-                {
-					v.push_back(Psym(vs[i]));
-				}
+                // that is what names2psyms does. 
+				//VectorPsym symbols;
+				//symbols.reserve(symbols.size());
+				//for (std::size_t i = 0; i < vs.size(); ++i) 
+                //{
+				//	symbols.push_back(Psym(names[i]));
+				//}
 
-				return derived_const_cast->base_partial_order(psyms2pos(names2psyms(vs), derived_const_cast->arguments()));
+				return derived_const_cast->base_partial_order(psyms2pos(names2psyms(names), derived_const_cast->arguments()));
 			}
 	};
 }
