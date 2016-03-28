@@ -21,11 +21,12 @@
 #ifndef PIRANHA_POLYNOMIAL_H
 #define PIRANHA_POLYNOMIAL_H
 
-#include <boost/operators.hpp>
-#include <boost/type_traits/integral_constant.hpp>
 #include <cmath>
 #include <complex>
 #include <memory> // For default allocator.
+
+#include <boost/operators.hpp>
+#include <boost/type_traits/integral_constant.hpp>
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
@@ -51,7 +52,7 @@
 #define POLYNOMIAL_BINOMIAL_ANCESTOR piranha::BinomialExponentiation<POLYNOMIAL>
 #define POLYNOMIAL_DEGREE            typename POLYNOMIAL_TERM::KeyType::DegreeType
 #define POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR  piranha::BasePolynomial<0, POLYNOMIAL >
-#define POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::named_polynomial<POLYNOMIAL >
+#define POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::NamedPolynomial<POLYNOMIAL >
 
 namespace piranha
 {
@@ -62,7 +63,7 @@ namespace piranha
 				public POLYNOMIAL_NAMED_ANCESTOR,
 				public POLYNOMIAL_BINOMIAL_ANCESTOR, //piranha::binomial_exponentiation<piranha::Polynomial<Cf,Key,Multiplier,Truncator,Allocator> >
 				public POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR, //piranha::BasePolynomial<0, piranha::Polynomial<Cf,Key,Multiplier,Truncator,Allocator> >
-				public POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR, //piranha::named_polynomial<piranha::Polynomial<Cf,Key,Multiplier,Truncator,Allocator> >
+				public POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR, //piranha::NamedPolynomial<piranha::Polynomial<Cf,Key,Multiplier,Truncator,Allocator> >
 				public base_power_series<0, 1, POLYNOMIAL_DEGREE, POLYNOMIAL>,
 				public named_power_series<POLYNOMIAL_DEGREE, POLYNOMIAL>,
 				public series_multiplication< POLYNOMIAL, Multiplier, Truncator>,
@@ -97,7 +98,7 @@ namespace piranha
 #define COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR piranha::BinomialExponentiation< COMPLEX_POLYNOMIAL>
 #define COMPLEX_POLYNOMIAL_DEGREE typename COMPLEX_POLYNOMIAL_TERM::KeyType::DegreeType
 #define COMPLEX_POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR piranha::BasePolynomial<0, COMPLEX_POLYNOMIAL>
-#define COMPLEX_POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::named_polynomial<COMPLEX_POLYNOMIAL>
+#define COMPLEX_POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR piranha::NamedPolynomial<COMPLEX_POLYNOMIAL>
 
 namespace std
 {

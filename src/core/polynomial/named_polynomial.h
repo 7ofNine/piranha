@@ -35,20 +35,21 @@ namespace piranha
 {
 	/// Named polynomial toolbox.
 	template <class Derived>
-	class named_polynomial
+	class NamedPolynomial
 	{
 		public:
 
-			Derived integrate(const std::string &name) const
+			Derived integrate(std::string const &name) const
 			{
-				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, 1>::Type pos_tuple_type;
+				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, 1>::Type PositionTupleType;
 				const Psym p(name);
-				const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1, p), derived_const_cast->arguments());
+                // get positon of symbol in the arguments tuple
+				const PositionTupleType positionTuple = psyms2pos(VectorPsym(1, p), derived_const_cast->arguments());
 				Derived retval;
 				
-				if (pos_tuple.get_head()[0].first) 
+				if (positionTuple.get_head()[0].first) 
 				{
-					retval = derived_const_cast->baseIntegrate(pos_tuple, derived_const_cast->arguments());
+					retval = derived_const_cast->baseIntegrate(positionTuple, derived_const_cast->arguments());
 					retval.setArguments(derived_const_cast->arguments());
 					retval.trim();
 

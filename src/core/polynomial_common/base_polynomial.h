@@ -22,16 +22,16 @@
 #define PIRANHA_BASE_POLYNOMIAL_H
 
 #include <algorithm>
-#include <boost/numeric/conversion/cast.hpp>
-#include <boost/tuple/tuple.hpp>
 #include <cstddef>
 #include <vector>
+
+#include <boost/numeric/conversion/cast.hpp>
+#include <boost/tuple/tuple.hpp>
 
 #include "../config.h"
 #include "../exceptions.h"
 
 #define DerivedConstCast static_cast<Derived const *>(this)
-//#define derived_cast static_cast<Derived *>(this)
 
 namespace piranha
 {
@@ -47,42 +47,42 @@ namespace piranha
 		public:
 
 			// Integrate supposing that the symbol is present in the polynomial.
-			template <typename PosTuple, typename ArgsTuple>
-			Derived baseIntegrate(const PosTuple &posTuple, const ArgsTuple &argsTuple) const
+			template <typename PositionTuple, typename ArgsTuple>
+			Derived baseIntegrate(PositionTuple const &positionTuple, ArgsTuple const &argsTuple) const
 			{
-				PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
+				PIRANHA_STATIC_CHECK(boost::tuples::length<PositionTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in polynomial integration.");
 			
-				typedef typename Derived::const_iterator const_iterator;
+				typedef typename Derived::const_iterator Iterator;
 				typedef typename Derived::TermType::KeyType::DegreeType DegreeType;
 				// Make sure that the position tuple contains just one symbol in position N and that
 				// the symbol is actually present.
-				PIRANHA_ASSERT(posTuple.template get<N>().size() == 1);
-				PIRANHA_ASSERT(posTuple.template get<N>()[0].first);
+				PIRANHA_ASSERT(positionTuple.template get<N>().size() == 1);  // only one symbol we integrate over
+				PIRANHA_ASSERT(positionTuple.template get<N>()[0].first);     // and it is present
 				
                 Derived retval;
 				
-                const std::size_t position = posTuple.template get<N>()[0].second;
-				const const_iterator     itf = DerivedConstCast->end();
+                const std::size_t position = positionTuple.template get<N>()[0].second; // the position of the symbol in the argument/key 
+				const Iterator       itEnd = DerivedConstCast->end();
 
 				std::vector<DegreeType> tmpExponents(argsTuple.template get<N>().size());
 
-				for (const_iterator it = DerivedConstCast->begin(); it != itf; ++it) 
+				for (Iterator it = DerivedConstCast->begin(); it != itEnd; ++it) 
 				{
 					if (it->key[position] == -1) 
 					{
-						PIRANHA_THROW(value_error, "exponent is -1 in integrand polynomial, cannot proceed"); // this would lead to logarithm
+						PIRANHA_THROW(value_error, "Exponent is -1 in integrand polynomial, cannot proceed"); // this would lead to logarithm
 					}
 
 					std::copy(it->key.begin(), it->key.end(), tmpExponents.begin());
-					tmpExponents[position] += 1;
+					tmpExponents[position] += 1; // increment the exponent 
 
 					typename Derived::TermType tmp(*it);
 
 					tmp.key.resize(boost::numeric_cast<typename Derived::TermType::KeyType::size_type>(tmpExponents.size()));
 					std::copy(tmpExponents.begin(), tmpExponents.end(), tmp.key.begin());
 					
-                    tmp.cf.divideBy(it->key[position] + 1, argsTuple);
+                    tmp.cf.divideBy(it->key[position] + 1, argsTuple);   // divide by n + 1
 					
                     retval.insert(tmp, argsTuple);
 				}
@@ -93,6 +93,5 @@ namespace piranha
 }
 
 #undef DerivedConstCast
-//#undef derived_cast
 
 #endif
