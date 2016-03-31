@@ -101,8 +101,8 @@ namespace piranha
 
 		public:
 
-			// static const int expo_args_position = ExpoArgsPosition;
-			// static const int expo_term_position = ExpoTermPosition;
+			static const int exponentArgsPosition = ExpoArgsPosition;
+			static const int exponentTermPosition = ExpoTermPosition;
 			typedef Degree DegreeType;
 
 			/// Get the degree of the power series. degree is the maximum degree of the exponent vector
@@ -137,7 +137,7 @@ namespace piranha
 		//protected:
 			/// Get the degree of the power series for specific variables.
 			template <class PositionTuple>
-			Degree basePartialDegree(const PositionTuple &positionTuple) const 
+			Degree basePartialDegree(PositionTuple const &positionTuple) const 
             {
 				if (derived_const_cast->empty()) 
                 {
@@ -153,7 +153,7 @@ namespace piranha
 
 			/// Get the mininum degree of the power series for specific variables.
 			template <class PositionTuple>
-			Degree basePartialOrder(const PositionTuple &positionTuple) const 
+			Degree basePartialOrder(PositionTuple const &positionTuple) const 
             {
 				if (derived_const_cast->empty()) 
                 {

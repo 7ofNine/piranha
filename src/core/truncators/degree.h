@@ -104,8 +104,8 @@ namespace truncators {
 			{
 					typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple>::value>::Type PosTupleType;
 
-					static const int exponentTermPosition = Series1::expo_term_position;
-					static const int exponentArgsPosition = Series1::expo_args_position;
+					static const int exponentTermPosition = Series1::exponentTermPosition;
+					static const int exponentArgsPosition = Series1::exponentArgsPosition;
 
 				public:
 					typedef typename Series1::TermType TermType1;
@@ -116,8 +116,8 @@ namespace truncators {
                             :terms1(terms1), terms2(terms2), argsTuple(argsTuple)
 					{
 						// Some static checks.
-						PIRANHA_STATIC_CHECK(Series1::expo_args_position == Series2::expo_args_position, "");
-						PIRANHA_STATIC_CHECK(Series1::expo_term_position == Series2::expo_term_position, "");
+						PIRANHA_STATIC_CHECK(Series1::exponentArgsPosition == Series2::exponentArgsPosition, "");
+						PIRANHA_STATIC_CHECK(Series1::exponentTermPosition == Series2::exponentTermPosition, "");
 
 						// Convert psyms vector into position tuple only if we are truncating to partial degree.
 						if (truncationMode == TRUNCATION_PARTIAL_DEGREE) 
@@ -242,16 +242,16 @@ namespace truncators {
 
 						switch (truncationMode)
                         {
-							case TRUNCATION_DEGREE:         std::sort(retval.begin(), retval.end(), CompareOrder<Series::expo_term_position>());
+							case TRUNCATION_DEGREE:         std::sort(retval.begin(), retval.end(), CompareOrder<Series::exponentTermPosition>());
 								                            break;
 
 							case TRUNCATION_PARTIAL_DEGREE:	{
 								                                typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, boost::tuples::length<ArgsTuple2>::value>::Type PosTupleType;
 								                                PosTupleType const pos_tuple(psyms2pos(psyms, argsTuple2));
 
-								                                if (pos_tuple.template get<Series::expo_args_position>().size() > 0) 
+								                                if (pos_tuple.template get<Series::exponentArgsPosition>().size() > 0) 
 								                                {
-									                                std::sort(retval.begin(), retval.end(), ComparePartialOrder<Series::expo_term_position, PosTupleType>(pos_tuple));
+									                                std::sort(retval.begin(), retval.end(), ComparePartialOrder<Series::exponentTermPosition, PosTupleType>(pos_tuple));
 
 								                                } else
 								                                {

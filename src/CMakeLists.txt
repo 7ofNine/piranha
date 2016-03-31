@@ -127,6 +127,9 @@ SET(INCS
 				core/fourier_series/fourier_series.h
 				core/fourier_series/fourier_series_term.h
 				core/fourier_series/named_fourier_series.h
+				core/base_classes/base_counting_allocator.h
+				core/base_classes/base_power_series.h
+				core/base_classes/base_series.h
 				core/base_classes/base_series_complex_toolbox.h
 				core/base_classes/base_series_def.h
 				core/base_classes/base_series_io.h
