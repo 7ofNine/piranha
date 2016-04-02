@@ -21,13 +21,14 @@
 #ifndef PIRANHA_NAMED_SERIES_IO_H
 #define PIRANHA_NAMED_SERIES_IO_H
 
-#include <boost/algorithm/string.hpp>
-#include <boost/tuple/tuple.hpp>
 #include <complex>
 #include <cstddef>
 #include <iostream>
 #include <stdexcept> // For runtime error exception.
 #include <string>
+
+#include <boost/algorithm/string.hpp>
+#include <boost/tuple/tuple.hpp>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -49,7 +50,7 @@ namespace piranha
 
 	// TMP for series printing.
 	template <class ArgsDescr>
-	inline void named_series_print_plain(std::ostream &stream, const typename NTuple<VectorPsym, boost::tuples::length<ArgsDescr>::value>::Type &argsTuple)
+	inline void namedSeriesPrintPlain(std::ostream &stream, typename NTuple<VectorPsym, boost::tuples::length<ArgsDescr>::value>::Type const &argsTuple)
 	{
 		for (std::size_t i = 0; i < argsTuple.get_head().size(); ++i) 
         {
@@ -57,12 +58,12 @@ namespace piranha
 			argsTuple.get_head()[i].print(stream);
 		}
 
-		named_series_print_plain<typename ArgsDescr::tail_type>(stream, argsTuple.get_tail());
+		namedSeriesPrintPlain<typename ArgsDescr::tail_type>(stream, argsTuple.get_tail());
 	}
 
 
 	template <>
-	inline void named_series_print_plain<boost::tuples::null_type>(std::ostream &, const NTuple<VectorPsym, boost::tuples::length<boost::tuples::null_type>::value>::Type &)
+	inline void namedSeriesPrintPlain<boost::tuples::null_type>(std::ostream &, NTuple<VectorPsym, boost::tuples::length<boost::tuples::null_type>::value>::Type const &)
 	{}
 
 
@@ -73,7 +74,7 @@ namespace piranha
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::printPlain(std::ostream &stream) const
 	{
-		named_series_print_plain<ArgumentsDescription>(stream, argumentsTuple);
+		namedSeriesPrintPlain<ArgumentsDescription>(stream, argumentsTuple);
 		stream << "[terms]" << std::endl;
 		derived_const_cast->printTermsPlain(stream, argumentsTuple);
 	}
@@ -108,126 +109,130 @@ namespace piranha
 
 	/// Construct from file.
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::constructFromFile(const std::string &fn)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::constructFromFile(std::string const &fileName)
 	{
-		std::ifstream inf;
-		inf.open(fn.c_str(), std::ios::in | std::ios::binary);
-		if (inf.fail()) 
+		std::ifstream infile;
+		infile.open(fileName.c_str(), std::ios::in | std::ios::binary);
+		if (infile.fail()) 
         {
-			PIRANHA_THROW(std::runtime_error,"unable to open file");
+			PIRANHA_THROW(std::runtime_error, "Unable to open file " + fileName);
 		}
 
 		// Clear the stack of unknown data.
 		unknownData.clear();
-		readSections(inf);
+		readSections(infile);
 		trim();
 	}
 
 
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::readSections(std::ifstream &inf)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::readSections(std::ifstream &infile)
 	{
-		std::string temp;
-		while (utils::get_valid_string(inf, temp)) 
+		std::string input;
+		while (utils::get_valid_string(infile, input)) 
         {
-			if (temp.size() > 2 && temp[0] == '[' && temp[temp.size() - 1] == ']') 
+			if (input.size() > 2 && input[0] == '[' && input[input.size() - 1] == ']') 
             {
-				std::string sectionName = temp;
+				std::string sectionName = input;
 				boost::trim_if(sectionName, boost::is_any_of("[]"));
-				std::cout << "New section found: " << sectionName << std::endl;
-				std::vector<std::string> split_v;
-				boost::split(split_v, sectionName, boost::is_any_of("_"));
 
-				if (split_v.size() == 2 && split_v[1] == "arg") 
+				std::cout << "New section found: " << sectionName << std::endl;
+				
+                std::vector<std::string> splitInput;
+				boost::split(splitInput, sectionName, boost::is_any_of("_"));
+
+				if (splitInput.size() == 2 && splitInput[1] == "arg") 
                 {
-					readArg(inf, split_v[0]);
+					readArg(infile, splitInput[0]);
 
 				} else if (sectionName == "terms") 
                 {
-					readTerms(inf);
+					readTerms(infile);
 					// If we found the data, then we don't want any more sections.
 					return;
 
 				} else 
                 {
 					std::cout << "Found unknown section '" << sectionName << "', ignoring." << std::endl;
-					unknownData.push_back(temp);
+					unknownData.push_back(input);
 				}
 			} else 
             {
-				std::cout << "Found string not belonging to any (known) section: " << temp << std::endl;
-				unknownData.push_back(temp);
+				std::cout << "Found string not belonging to any (known) section: " << input << std::endl;
+				unknownData.push_back(input);
 			}
 		}
 	}
 
 
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::readArg(std::ifstream &inf, const std::string &name)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::readArg(std::ifstream &infile, std::string const &argumentTypeName)
 	{
 		// Temporary attributes for the argument.
-		std::string temp_name, temp_time_eval;
+		std::string name;
+        std::string timeEval;
 		// Record stream position, so we can rewind once we finish parsing the argument.
-		std::streampos cur_pos = inf.tellg();
+		std::streampos currentPosition = infile.tellg();
 		// Temporary storage.
-		std::string temp;
-		while (utils::get_valid_string(inf, temp)) 
+		std::string line;
+		while (utils::get_valid_string(infile, line)) 
         {
 			// If we found a new section, step back the cursor before exiting.
-			if (temp.size() > 2 && temp[0] == '[' && temp[temp.size() - 1] == ']') 
+			if (line.size() > 2 && line[0] == '[' && line[line.size() - 1] == ']') 
             {
-				std::cout << "Finished parsing " << name << " argument." << std::endl;
-				inf.seekg(cur_pos);
-				appendArg(name, Psym(temp_name, temp_time_eval));
+				std::cout << "Finished parsing " << argumentTypeName << " argument." << std::endl;
+				infile.seekg(currentPosition);
+				appendArg(line, Psym(name, timeEval));
 				return;
 			}
 
-			std::vector<std::string> split_v;
-			boost::split(split_v, temp, boost::is_any_of("="));
-			if (split_v.size() != 2) 
+			std::vector<std::string> splitArgument;
+			boost::split(splitArgument, line, boost::is_any_of("="));
+			if (splitArgument.size() != 2) 
             {
-				std::cout << "Invalid line in " << name << " argument section: \"" << temp << "\"" << std::endl;
+				std::cout << "Invalid line in " << argumentTypeName << " argument section: \"" << line << "\"" << std::endl;
 
-			} else if (split_v[0] == "name") 
+			} else if (splitArgument[0] == "name") 
             {
-				std::cout << "name=" << split_v[1] << std::endl;
-				temp_name = split_v[1];
+				std::cout << "name = " << splitArgument[1] << std::endl;
+				name = splitArgument[1];
 
-			} else if (split_v[0] == "time_eval") 
+			} else if (splitArgument[0] == "time_eval") 
             {
-				std::cout << "time_eval=" << split_v[1] << std::endl;
-				temp_time_eval = split_v[1];
+				std::cout << "time_eval = " << splitArgument[1] << std::endl;
+				timeEval = splitArgument[1];
 
 			} else 
             {
-				std::cout << "Unknown field in " << name << " argument section: \"" << split_v[0] << "\"" << std::endl;
+				std::cout << "Unknown field in " << line << " argument section: \"" << splitArgument[0] << "\"" << std::endl;
 			}
 
-			cur_pos = inf.tellg();
+			currentPosition = infile.tellg();
 		}
 	}
 
 
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::readTerms(std::ifstream &inf)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::readTerms(std::ifstream &infile)
 	{
-		typedef typename Derived::TermType term_type;
-		std::string temp;
-		while (!inf.eof())
+		typedef typename Derived::TermType TermType;
+		std::string line;
+
+		while (!infile.eof())
         {
-			getline(inf, temp, derived_const_cast->separator);
-			boost::trim(temp);
+			getline(infile, line, derived_const_cast->separator);
+			boost::trim(line);
 			// Ignore empty lines.
-			if (temp.empty()) 
+			if (line.empty()) 
             {
 				continue;
 			}
 
 			try {
-				term_type term(temp, argumentsTuple);
+				TermType term(line, argumentsTuple);
 				if (!term.cf.isInsertable(argumentsTuple) || !term.key.isInsertable(argumentsTuple)) 
                 {
-					PIRANHA_THROW(value_error,"term not insertable in series");
+					PIRANHA_THROW(value_error, "Term not insertable in series");
 				}
 
 				derived_cast->insert(term, derived_const_cast->argumentsTuple);
@@ -242,25 +247,25 @@ namespace piranha
 
 	/// Save series to file.
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::saveTo(const std::string &filename) const
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::saveTo(std::string const &filename) const
 	{
-		std::ofstream outf(filename.c_str(), std::ios_base::trunc);
-		if (outf.fail()) 
+		std::ofstream outfile(filename.c_str(), std::ios_base::trunc);
+		if (outfile.fail()) 
         {
 			std::cout << "Error saving to file " << filename << "." << std::endl;
-			outf.close();
+			outfile.close();
 			return;
 		}
 
-		printPlain(outf);
-		outf.close();
+		printPlain(outfile);
+		outfile.close();
 	}
 
 
 	/// Constructor from Psym and from position in the arguments set.
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::constructFromPsym(const Psym &p)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::constructFromPsym(Psym const &p)
 	{
 		PIRANHA_ASSERT(derived_const_cast->empty());
 		appendArg<N>(p);
@@ -279,15 +284,15 @@ namespace piranha
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::setArguments(const ArgsTupleType &argsTuple)
 	{
-		typedef typename Derived::const_iterator const_iterator;
+		typedef typename Derived::const_iterator Iterator;
 
-		const const_iterator itf = derived_const_cast->end();
-		for (const_iterator it = derived_const_cast->begin(); it != itf; ++it) 
+		const Iterator itEnd= derived_const_cast->end();
+		for (Iterator it = derived_const_cast->begin(); it != itEnd; ++it) 
         {
 			if (!it->cf.isInsertable(argsTuple) || !it->key.isInsertable(argsTuple) ||
-				it->cf.needsPadding(argsTuple) || it->key.needsPadding(argsTuple))
+			     it->cf.needsPadding(argsTuple) ||  it->key.needsPadding(argsTuple))
 			{
-				PIRANHA_THROW(value_error,"incompatible arguments tuple in set_arguments()");
+				PIRANHA_THROW(value_error, "Incompatible arguments tuple in set_arguments()");
 			}
 		}
 
@@ -301,11 +306,12 @@ namespace piranha
 	 */
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Key>
-	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::seriesFromKey(const Key &key) const
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::seriesFromKey(Key const &key) const
 	{
-		Derived retval(derived_const_cast->baseSeriesFromKey(key, m_arguments));
-		retval.m_arguments = m_arguments;
+		Derived retval(derived_const_cast->baseSeriesFromKey(key, argumentsTuple));
+		retval.argumentsTuple = argumentsTuple;
 		retval.trim();
+
 		return retval;
 	}
 
@@ -316,24 +322,25 @@ namespace piranha
 	 */
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Cf>
-	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::seriesFromCf(const Cf &cf) const
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::seriesFromCf(Cf const &cf) const
 	{
-		Derived retval(derived_const_cast->baseSeriesFromCf(cf, m_arguments));
-		retval.m_arguments = m_arguments;
+		Derived retval(derived_const_cast->baseSeriesFromCf(cf, argumentsTuple));
+		retval.argumentsTuple = argumentsTuple;
 		retval.trim();
+
 		return retval;
 	}
 
 
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename NamedSeries<PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<PIRANHA_NAMED_SERIES_TP>::beginIt() const
+	inline typename NamedSeries<PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<PIRANHA_NAMED_SERIES_TP>::itBegin() const
 	{
 		return SeriesIterator(derived_const_cast->begin(), SeriesIteratorGenerator(*derived_const_cast));
 	}
 
 
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename NamedSeries<PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<PIRANHA_NAMED_SERIES_TP>::endIt() const
+	inline typename NamedSeries<PIRANHA_NAMED_SERIES_TP>::SeriesIterator NamedSeries<PIRANHA_NAMED_SERIES_TP>::itEnd() const
 	{
 		return SeriesIterator(derived_const_cast->end(), SeriesIteratorGenerator(*derived_const_cast));
 	}
@@ -348,7 +355,7 @@ namespace piranha
 
 
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::ostream &operator<<(std::ostream &os, const NamedSeries<PIRANHA_NAMED_SERIES_TP> &series)
+	inline std::ostream &operator<<(std::ostream &os, NamedSeries<PIRANHA_NAMED_SERIES_TP> const &series)
 	{
 		series.print(os);
 		return os;

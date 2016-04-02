@@ -39,6 +39,7 @@ namespace piranha
 	{
 			PIRANHA_STATIC_CHECK(HarmonicArgsPosition >= 0, "Invalid harmonic args position.");
 
+            
 			template <class Term>
 			struct HarmonicDegreeBinaryPredicate
 			{

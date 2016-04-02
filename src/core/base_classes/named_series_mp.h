@@ -29,8 +29,10 @@
 namespace piranha
 {
 	template <class T, class Enable = void>
-	struct NamedSeriesAddSelector
+	class NamedSeriesAddSelector
 	{
+        public: 
+
 		template <class Derived>
 		static Derived & run(Derived &series, const T &x)
 		{
@@ -38,9 +40,12 @@ namespace piranha
 		}
 	};
 
+
 	template <class T>
-	struct NamedSeriesAddSelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
+	class NamedSeriesAddSelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
+        public:
+
 		template <class Derived>
 		static Derived & run(Derived & series, const T & other)
 		{
@@ -51,8 +56,10 @@ namespace piranha
 
 
 	template <class T, class Enable = void>
-	struct NamedSeriesSubtractSelector
+	class NamedSeriesSubtractSelector
 	{
+        public:
+
 		template <class Derived>
 		static Derived & run(Derived &series, const T &x)
 		{
@@ -60,9 +67,12 @@ namespace piranha
 		}
 	};
 
+
 	template <class T>
-	struct NamedSeriesSubtractSelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
+	class NamedSeriesSubtractSelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
 	{
+        public:
+
 		template <class Derived>
 		static Derived &run(Derived &series, const T &other)
 		{
@@ -74,8 +84,10 @@ namespace piranha
 	// select which type of multiplicaiton to execute
 	// multiply with a consant
 	template <class T, class Enable = void>
-	struct NamedSeriesMultiplySelector
+	class NamedSeriesMultiplySelector
 	{
+        public:
+
 		template <class Derived>
 		static Derived &run(Derived &series, const T &x)
 		{
@@ -83,10 +95,13 @@ namespace piranha
 		}
 	};
 	 
+
 	//multiply with another series
 	template <class T>
-	struct NamedSeriesMultiplySelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
+	class NamedSeriesMultiplySelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
+        public:
+
 		template <class Derived>
 		static Derived & run(Derived & series, const T & other)
 		{
@@ -94,9 +109,12 @@ namespace piranha
 		}
 	};
 	 
-	template <class T, class Enable = void>
-	struct NamedSeriesEqualitySelector
+
+    template <class T, class Enable = void>
+	class NamedSeriesEqualitySelector
 	{
+        public:
+
 		template <class Derived>
 		static bool run(const Derived & series, const T & x)
 		{
@@ -105,8 +123,10 @@ namespace piranha
 	};
 
 	template <class T>
-	struct NamedSeriesEqualitySelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
+	class NamedSeriesEqualitySelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
+        public:
+
 		template <class Derived>
 		static bool run(const Derived &series, const T &other)
 		{

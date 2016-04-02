@@ -42,13 +42,13 @@ namespace pyranha
 	template <class NamedSeries>
 	inline typename NamedSeries::SeriesIterator series_begin(const NamedSeries &s)
 	{
-		return s.beginIt();
+		return s.itBegin();
 	}
 
 	template <class NamedSeries>
 	inline typename NamedSeries::SeriesIterator series_end(const NamedSeries &s)
 	{
-		return s.endIt();
+		return s.itEnd();
 	}
 
 	template <class Series>

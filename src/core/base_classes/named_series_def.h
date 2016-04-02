@@ -21,16 +21,17 @@
 #ifndef PIRANHA_NAMED_SERIES_DEF_H
 #define PIRANHA_NAMED_SERIES_DEF_H
 
-#include <boost/functional/hash.hpp>
-#include <boost/iterator/transform_iterator.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/unordered_map.hpp>
 #include <complex>
 #include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include <boost/functional/hash.hpp>
+#include <boost/iterator/transform_iterator.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/unordered_map.hpp>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -60,27 +61,29 @@ namespace piranha
 	class NamedSeries
 	{
 			template <class T, class Enable>
-			friend struct NamedSeriesAddSelector;
+			friend class NamedSeriesAddSelector;
 
 			template <class T, class Enable>
-			friend struct NamedSeriesSubtractSelector;
+			friend class NamedSeriesSubtractSelector;
 
 			template <class T, class Enable>
-			friend struct NamedSeriesMultiplySelector;
+			friend class NamedSeriesMultiplySelector;
 
 			template <class T, class Enable>
-			friend struct NamedSeriesEqualitySelector;
+			friend class NamedSeriesEqualitySelector;
 
 		public:
 			typedef ArgsDescr ArgumentsDescription; //ArgsDescr is expected to be a boost::tuples (NTuple) of echelonLevel+1 length. 
 			typedef typename NTuple<VectorPsym, boost::tuples::length<ArgumentsDescription>::value>::Type ArgsTupleType;
 
 		private:
-			struct SeriesIteratorGenerator
+			class SeriesIteratorGenerator
 			{
+                public:
+
 				typedef Derived result_type; // don't change. required by boost::transform_iterator
 
-				Derived operator()(const Term &t) const
+				Derived operator()(Term const &t) const
 				{
 					Derived retval;
 					retval.argumentsTuple = series.argumentsTuple;
@@ -88,7 +91,9 @@ namespace piranha
 					return retval;
 				}
 
-				SeriesIteratorGenerator(const Derived &series):series(series) {}
+				SeriesIteratorGenerator(Derived const &series):series(series) {}
+
+                private:
 
 				const Derived &series;
 			};
@@ -96,8 +101,8 @@ namespace piranha
 		public:
 
 			typedef boost::transform_iterator<SeriesIteratorGenerator, typename SeriesContainer<Term>::Type::const_iterator> SeriesIterator;
-			SeriesIterator beginIt() const;
-			SeriesIterator endIt() const;
+			SeriesIterator itBegin() const;
+			SeriesIterator itEnd() const;
 			std::complex<Derived> complex() const;
 
 			void print(std::ostream &stream = std::cout) const;
@@ -112,50 +117,50 @@ namespace piranha
 			
             void swap(Derived &);
 			double norm() const;
-			typename TermEvalTypeDeterminer<Term>::type eval(const double &) const;
-			typename TermEvalTypeDeterminer<Term>::type eval(const EvalDict &) const;
+			typename TermEvalTypeDeterminer<Term>::type eval(double const &) const;
+			typename TermEvalTypeDeterminer<Term>::type eval(EvalDict const &) const;
 			
-            std::size_t psi(const int start = 0, const int step = 1) const;
+            std::size_t psi(int const start = 0, int const step = 1) const;
 			
             const ArgsTupleType &arguments() const;
 			
-            void setArguments(const ArgsTupleType &);
+            void setArguments(ArgsTupleType const &);
 
 			template <class T>
-			bool operator==(const T &) const;
+			bool operator==(T const &) const;
 
 			template <class T>
-			bool operator!=(const T &) const;
+			bool operator!=(T const &) const;
 
 			template <class T>
-			Derived &operator+=(const T &);
+			Derived &operator+=(T const &);
 
 			template <class T>
-			Derived &operator-=(const T &);
+			Derived &operator-=(T const &);
 
 			Derived operator-() const;
 
 			template <class T>
-			Derived &operator*=(const T &);
+			Derived &operator*=(T const &);
 
 			template <class T>
-			Derived &operator/=(const T &);
+			Derived &operator/=(T const &);
 
-			Derived pow(const double) const;
-			Derived pow(const mp_rational &) const;
-			Derived root(const int) const;
-			Derived partial(const std::string &, const int &n = 1) const;
+			Derived pow(double const) const;
+			Derived pow(mp_rational const &) const;
+			Derived root(int const) const;
+			Derived partial(std::string const &, int const n = 1) const;
 
 			template <class SubSeries>
-			Derived sub(const std::string &, const SubSeries &) const;
+			Derived sub(std::string const &, SubSeries const &) const;
 
 			template <class Key>
-			Derived seriesFromKey(const Key &) const;
+			Derived seriesFromKey(Key const &) const;
 
 			template <class Cf>
-			Derived seriesFromCf(const Cf &) const;
+			Derived seriesFromCf(Cf const &) const;
 
-			std::vector<std::vector<Derived> > split(const int n = 0) const;
+			std::vector<std::vector<Derived> > split(int const n = 0) const;
 
 			std::vector<Derived> flatten() const;
 			
@@ -165,48 +170,48 @@ namespace piranha
 			void trim(); // remove all arguments that are no longer in the series from the argumentsTuple
 			
             template <class Derived2>
-			void mergeArgs(const Derived2 &);
+			void mergeArgs(Derived2 const &);
 			
             // TODO: check these protected methods, some of them can be moved into private
 			// with proper friendship in manipulator classes.
-			void constructFromFile(const std::string &);
+			void constructFromFile(std::string const &);
 
 			template <int N>
-			void constructFromPsym(const Psym &);
+			void constructFromPsym(Psym const &);
 
 		private:
 
 			template <class T>
-			bool isEqualTo(const T &) const;
+			bool isEqualTo(T const &) const;
 
-			void appendArg(const std::string &, const Psym &);
+			void appendArg(std::string const &, Psym const &);
 
 			template <int N>
-			void appendArg(const Psym &);
+			void appendArg(Psym const &);
 
 			template <class Derived2>
-			Derived & multiplyBySeries(const Derived2 &);
+			Derived & multiplyBySeries(Derived2 const &);
 
 			template <class Number>
-			Derived & multiplyNumberHelper(const Number &);
+			Derived & multiplyNumberHelper(Number const &);
 
 			template <class Number>
-			Derived & divideNumberHelper(const Number &);
+			Derived & divideNumberHelper(Number const &);
 
 			void printPretty(std::ostream &) const;
-			void readFromFile(std::ifstream &, const std::string &);
+			void readFromFile(std::ifstream &, std::string const &);
 			void readSections(std::ifstream &);
-			void readArg(std::ifstream &, const std::string &);
+			void readArg(std::ifstream &, std::string const &);
 			void readTerms(std::ifstream &);
 
 			template <class Derived2>
-			bool isArgsCompatible(const Derived2 &) const;
+			bool isArgsCompatible(Derived2 const &) const;
 
 			template <class Derived2>
-			void mergeIncompatibleArgs(const Derived2 &);
+			void mergeIncompatibleArgs(Derived2 const &);
 
 			template <bool, class Derived2>
-			Derived & mergeWithSeries(const Derived2 &);
+			Derived & mergeWithSeries(Derived2 const &);
 
 		protected:
 

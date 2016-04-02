@@ -169,7 +169,7 @@ namespace piranha
 
 	/// Partial derivative with respect to a piranha::Psym.
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::partial(const std::string &name, const int &n) const
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::partial(std::string const &name, int const n) const
 	{
 		typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type PositionTupleType;
 		const Psym p(name);
