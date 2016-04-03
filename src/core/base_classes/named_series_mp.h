@@ -34,7 +34,7 @@ namespace piranha
         public: 
 
 		template <class Derived>
-		static Derived & run(Derived &series, const T &x)
+		static Derived & run(Derived &series, T const &x)
 		{
 			return series.baseAdd(x, series.argumentsTuple);
 		}
@@ -47,7 +47,7 @@ namespace piranha
         public:
 
 		template <class Derived>
-		static Derived & run(Derived & series, const T & other)
+		static Derived & run(Derived & series, T const & other)
 		{
 			return series.template mergeWithSeries<true>(other);
 		}
@@ -61,7 +61,7 @@ namespace piranha
         public:
 
 		template <class Derived>
-		static Derived & run(Derived &series, const T &x)
+		static Derived & run(Derived &series, T const &x)
 		{
 			return series.baseSubtract(x, series.argumentsTuple);
 		}
@@ -74,7 +74,7 @@ namespace piranha
         public:
 
 		template <class Derived>
-		static Derived &run(Derived &series, const T &other)
+		static Derived &run(Derived &series, T const &other)
 		{
 			return series.template mergeWithSeries<false>(other);
 		}
@@ -89,7 +89,7 @@ namespace piranha
         public:
 
 		template <class Derived>
-		static Derived &run(Derived &series, const T &x)
+		static Derived &run(Derived &series, T const &x)
 		{
 			return series.multiplyNumberHelper(x);
 		}
@@ -103,7 +103,7 @@ namespace piranha
         public:
 
 		template <class Derived>
-		static Derived & run(Derived & series, const T & other)
+		static Derived & run(Derived & series, T const & other)
 		{
 			return series.multiplyBySeries(other);
 		}
@@ -116,19 +116,19 @@ namespace piranha
         public:
 
 		template <class Derived>
-		static bool run(const Derived & series, const T & x)
+		static bool run(const Derived & series, T const & x)
 		{
 			return series.baseEqualTo(x);
 		}
 	};
 
 	template <class T>
-	class NamedSeriesEqualitySelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
+	class NamedSeriesEqualitySelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
 	{
         public:
 
 		template <class Derived>
-		static bool run(const Derived &series, const T &other)
+		static bool run(const Derived &series, T const &other)
 		{
 			return series.isEqualTo(other);
 		}

@@ -22,11 +22,12 @@
 #define PIRANHA_NAMED_SERIES_MANIP_H
 
 #include <algorithm>
-#include <boost/tuple/tuple.hpp>
 #include <cstddef>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <boost/tuple/tuple.hpp> 
 
 #include "../config.h" // For (un)likely
 #include "../exceptions.h"
@@ -41,18 +42,23 @@ namespace piranha
 {
 	// Template metaprogramming for swapping of arguments in named series.
 	template <class ArgsTuple>
-	struct named_series_swap {
-		
-        static void run(ArgsTuple &a1, ArgsTuple &a2)
+	class NamedSeriesSwap
+    {
+	    public: 
+        	
+        static void run(ArgsTuple &argsTuple1, ArgsTuple &argsTuple2)
         {
-			a1.get_head().swap(a2.get_head());
-			named_series_swap<typename ArgsTuple::tail_type>::run(a1.get_tail(), a2.get_tail());
+			argsTuple1.get_head().swap(argsTuple2.get_head());
+
+			NamedSeriesSwap<typename ArgsTuple::tail_type>::run(argsTuple1.get_tail(), argsTuple2.get_tail());
 		}
 	};
 
 
 	template <>
-	struct named_series_swap<boost::tuples::null_type> {
+	class NamedSeriesSwap<boost::tuples::null_type>
+    {
+        public: 
 
 		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &) {}
 	};
@@ -60,23 +66,25 @@ namespace piranha
 
 	/// Swap contents of series.
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::swap(Derived &ps2)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::swap(Derived &series)
 	{
 		// Do something only if we are not swapping with self.
-		if (derivedCast != &ps2)
+		if (derivedCast != &series)
         {
-			named_series_swap<ArgsTupleType>::run(argumentsTuple, ps2.argumentsTuple);
-			derivedCast->baseSwap(ps2);
+			NamedSeriesSwap<ArgsTupleType>::run(argumentsTuple, series.argumentsTuple);
+			derivedCast->baseSwap(series);
 		}
 	}
 
 
 	// Meta-programming for appending an argument.
 	template <class ArgsDescr>
-	struct named_series_append_arg {
+	class NamedSeriesAppendArg
+    {
 
-		static void run(const std::string &s, typename NTuple<VectorPsym, boost::tuples::length<ArgsDescr>::value>::Type &argsTuple,
-						const Psym &arg)
+        public:
+
+		static void run(std::string const &s, typename NTuple<VectorPsym, boost::tuples::length<ArgsDescr>::value>::Type &argsTuple, Psym const &arg)
 		{
 			if (ArgsDescr::head_type::name == s) 
 			{
@@ -93,16 +101,19 @@ namespace piranha
 
 			} else 
 			{
-				named_series_append_arg<typename ArgsDescr::tail_type>::run(s, argsTuple.get_tail(), arg);
+				NamedSeriesAppendArg<typename ArgsDescr::tail_type>::run(s, argsTuple.get_tail(), arg);
 			}
 		}
 	};
 
 
 	template <>
-	struct named_series_append_arg<boost::tuples::null_type> {
+	class NamedSeriesAppendArg<boost::tuples::null_type>
+    {
 
-		static void run(const std::string &s, const boost::tuples::null_type &, const Psym &) 
+        public: 
+
+		static void run(std::string const &s, boost::tuples::null_type const &, Psym const &) 
 		{
 			std::cout << "Error: '" << s << "' arguments are not known." << std::endl;
 		}
@@ -110,19 +121,21 @@ namespace piranha
 
 
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::appendArg(const std::string &s, const Psym &arg)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::appendArg(std::string const &s, Psym const &arg)
 	{
 		PIRANHA_ASSERT(derivedConstCast->empty());
-		named_series_append_arg<ArgumentsDescription>::run(s, argumentsTuple, arg);
+
+		NamedSeriesAppendArg<ArgumentsDescription>::run(s, argumentsTuple, arg);
 	}
 
 
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::appendArg(const Psym &arg)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::appendArg(Psym const &arg)
 	{
 		PIRANHA_STATIC_CHECK(N >= 0, "Trying to append argument with invalid index.");
 		PIRANHA_ASSERT(derivedConstCast->empty());
+
 		// Check that the argument is not already present in this set.
 		for (VectorPsym::iterator it = argumentsTuple.template get<N>().begin(); it != argumentsTuple.template get<N>().end(); ++it) 
 		{
@@ -140,95 +153,119 @@ namespace piranha
 
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeArgs(const Derived2 &ps2)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeArgs(const Derived2 &series)
 	{
-		if (static_cast<void *>(this) == static_cast<void const *>(&ps2)) 
+		if (static_cast<void *>(this) == static_cast<void const *>(&series)) 
 		{
 			PIRANHA_DEBUG(std::cout << "Trying to merge with self, returning." << std::endl);
 			return;
 		}
 
-		if (unlikely(!isArgsCompatible(ps2))) 
+		if (unlikely(!isArgsCompatible(series))) 
 		{
-			mergeIncompatibleArgs(ps2);
+			mergeIncompatibleArgs(series);
 		}
 	}
 
 
 	// Template metaprogramming for getting the relative layout of two series.
-	// used during multiplication. shomehow generates the knowledge wich parameter is where 
+	// used during multiplication. 
+    //
+    //
+    // Layout: are tuples with respect to the exponential and trigonometric keys as they are described by the argsTuple members of the series.
+    // The elements of the tuple are vectors of pairs of (bool, int).
+    // The layout is determined by starting in series2. If the symbol is present in series2 but not in series1 the
+    // bool flag is set to false. The index int is not used (typically 0). The index of the pair in the vector determines which index into the 
+    // argumentsTuple Psym vector it corresponds to (this could be changed to make it homogenous, see below)
+    // If the symbol is present in series1 the bool is set to true and the index integer is set to the index in the argsTuple psym vector of series1.
+    // The same is done for symbols that are present in series1 but not in series2.
+    // e.g.
+    // series2          :  ("x", "y", "z")
+    // series1 (= *this):  ("u", "x", "z")
+    //               "x"        "y"         "z"        "u"
+    // => layout ((true, 1), (false, 0), (true, 2), (true,0))
+    //
 	template <class ArgsTuple>
-	struct named_series_get_layout {
+	class NamedSeriesGetLayout
+    {
+        public:
+        typedef std::pair<bool, std::size_t> LayoutElement;
+        typedef std::vector<LayoutElement> Layout;
+        typedef typename NTuple< Layout, boost::tuples::length<ArgsTuple>::value >::Type LayoutTuple;
 
-		static void run(const ArgsTuple &a1, const ArgsTuple &a2, typename NTuple< std::vector<std::pair<bool, std::size_t> >,
-						boost::tuples::length<ArgsTuple>::value >::Type &layout) 
+		static void run(ArgsTuple const &argsTuple1, ArgsTuple const &argsTuple2, LayoutTuple &layoutTuple) 
 		{
 			// Store frequently-used variables.
-			const VectorPsym &v1   = a1.get_head(); 
-			const VectorPsym &v2   = a2.get_head();
-			const std::size_t size1 = v1.size(); 
-			const std::size_t size2 = v2.size();
-			std::vector<std::pair<bool, std::size_t> > &l = layout.get_head();
+			const VectorPsym &symbols1   = argsTuple1.get_head(); 
+			const VectorPsym &symbols2   = argsTuple2.get_head();
+			const std::size_t size1 = symbols1.size(); 
+			const std::size_t size2 = symbols2.size();
+			Layout &layout = layoutTuple.get_head();
 			// First we must construct v2's layout wrt to v1.
-			l.resize(size2);
+			layout.resize(size2);
 			for (std::size_t i = 0; i < size2; ++i) 
             {
-				// Let's see if current v2's symbol is present in v1.
-				const VectorPsym::const_iterator result = std::find(v1.begin(), v1.end(), v2[i]);
-				if (result == v1.end()) 
+				// Let's see if current symbols2's symbol is present in symbols1.
+				const VectorPsym::const_iterator result = std::find(symbols1.begin(), symbols1.end(), symbols2[i]);
+				if (result == symbols1.end()) 
                 {
-					l[i].first = false;
+					layout[i].first = false;
 				} else 
                 {
-					// If present, mark its position in v1
-					l[i].first = true;
-					l[i].second = result - v1.begin();
+					// If present, mark its position in symbols1
+					layout[i].first  = true;
+					layout[i].second = result - symbols1.begin();
 				}
 			}
 
-			// Now we must take care of those elements of v1 that are not represented in
-			// the layout (i.e., they are not in v2)
+			// Now we must take care of those elements of symbols1 that are not represented in
+			// the layout (i.e., they are not in symbols2)
 			for (std::size_t i = 0; i < size1; ++i) 
             {
 				// Look for element index i in the layout.
 				bool found = false;
-				const std::size_t l_size = l.size();
-				for (std::size_t j = 0; j < l_size; ++j) 
+				std::size_t const lSize = layout.size();
+				for (std::size_t j = 0; j < lSize; ++j) 
                 {
-					if (l[j].first && l[j].second == i) 
+					if (layout[j].first && layout[j].second == i) 
                     {
+                        //already handled by loop over symbols2
 						found = true;
 						break;
 					}
 				}
 
 				// If we did not find it, append it to the layout.
+                // It is in symbols1 but not in symbols2
 				if (!found) 
                 {
-					l.push_back(std::pair<bool, std::size_t>(true, i));
+					layout.push_back(LayoutElement(true, i));
 				}
 			}
 
-			named_series_get_layout<typename ArgsTuple::tail_type>::run(a1.get_tail(), a2.get_tail(), layout.get_tail());
+			NamedSeriesGetLayout<typename ArgsTuple::tail_type>::run(argsTuple1.get_tail(), argsTuple2.get_tail(), layoutTuple.get_tail());
 		}
 	};
 
 
 	template <>
-	class named_series_get_layout<boost::tuples::null_type>
+	class NamedSeriesGetLayout<boost::tuples::null_type>
 	{
 		public:
-			static void run(const boost::tuples::null_type &, const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+
+		static void run(boost::tuples::null_type const &, boost::tuples::null_type const &, boost::tuples::null_type const &) {}
 	};
 
 
 
 	// Template metaprogramming for applying a layout to a series.
 	template <class ArgsTuple>
-	struct named_series_apply_layout_to_args {
+	class NamedSeriesApplyLayoutToArgs
+    {
+        public:
 
-		static void run(ArgsTuple &a1, const ArgsTuple &a2, const typename NTuple < std::vector<std::pair<bool, std::size_t> >,
-						boost::tuples::length<ArgsTuple>::value >::Type &layout) 
+		static void run(ArgsTuple &a1, ArgsTuple const &a2, typename NTuple < std::vector<std::pair<bool, std::size_t> >,
+						boost::tuples::length<ArgsTuple>::value >::Type const &layout) 
 		{
 			// Store frequently-used variables.
 			VectorPsym       &v1 = a1.get_head();
@@ -271,37 +308,52 @@ namespace piranha
 				}
 			}
 
-			named_series_apply_layout_to_args<typename ArgsTuple::tail_type>::run(a1.get_tail(), a2.get_tail(), layout.get_tail());
+			NamedSeriesApplyLayoutToArgs<typename ArgsTuple::tail_type>::run(a1.get_tail(), a2.get_tail(), layout.get_tail());
 		}
 	};
 
 
 	template <>
-	class named_series_apply_layout_to_args<boost::tuples::null_type>
+	class NamedSeriesApplyLayoutToArgs<boost::tuples::null_type>
 	{
 		public:
-			static void run(const boost::tuples::null_type &, const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+
+			static void run(boost::tuples::null_type const &, boost::tuples::null_type const &, boost::tuples::null_type const &) {}
 	};
 
 
+    //
+    // Layout: are tuples with respect to the exponential and trigonometric keys as they are described by the argsTuple members of the series.
+    // The elements of the tuple are vectors of pairs of (bool, int).
+    // The layout is determined by starting in series2. If the symbol is present in series2 but not in series1 the
+    // bool flag is set to false. The index int is not used (typically 0). The index of the pair in the vector determines which index into the 
+    // argumentsTuple Psym vector it corresponds to (this could be changed to make it homogenous, see below)
+    // If the symbol is present in series1 the bool is set to true and the index integer is set to the index in the argsTuple psym vector of series1.
+    // The same is done for symbols that are present in series1 but not in series2.
+    // e.g.
+    // series2          :  ("x", "y", "z")
+    // series1 (= *this):  ("u", "x", "z")
+    //               "x"        "y"         "z"        "u"
+    // => layout ((true, 1), (false, 0), (true, 2), (true,0))
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeIncompatibleArgs(const Derived2 &ps2)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeIncompatibleArgs(Derived2 const &series2)
 	{
 		// Build an empty retval and assign it the same arguments as this.
 		Derived retval;
 		retval.argumentsTuple = argumentsTuple;
-		// Build a tuple of layouts.
-		typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type l;
 
-		// Get the relative layouts of this wrt ps2 and put the result into l.
-		named_series_get_layout<ArgsTupleType>::run(retval.argumentsTuple, ps2.arguments(), l);
+		// Build layout tuple.
+		typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type layout;
+
+		// Get the relative layouts of this wrt series2 and put the result into layout.
+		NamedSeriesGetLayout<ArgsTupleType>::run(retval.argumentsTuple, series2.arguments(), layout);
 		
 		// Apply the layout to the arguments tuple of retval.
-		named_series_apply_layout_to_args<ArgsTupleType>::run(retval.argumentsTuple, ps2.arguments(), l);
+		NamedSeriesApplyLayoutToArgs<ArgsTupleType>::run(retval.argumentsTuple, series2.arguments(), layout);
 		
 		// Apply the layout to all terms of this, which will be inserted into retval.
-		derivedConstCast->applyLayoutToTerms(l, retval, retval.argumentsTuple);
+		derivedConstCast->applyLayoutToTerms(layout, retval, retval.argumentsTuple);
 		
 		// Finally, swap the contents of retval with this.
 		swap(retval);
@@ -309,7 +361,9 @@ namespace piranha
 
 
 	template <class TrimFlags, class ArgsTuple>
-	struct trim_flags_init {
+	class TrimFlagsInit
+    {
+        public:
 
 		static void run(TrimFlags &tf, const ArgsTuple &argsTuple)
         {
@@ -320,28 +374,31 @@ namespace piranha
 				tf.get_head()[i] = false;
 			}
 
-			trim_flags_init<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(tf.get_tail(), argsTuple.get_tail());
+			TrimFlagsInit<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(tf.get_tail(), argsTuple.get_tail());
 		}
 	};
 
 
 	template <>
-	struct trim_flags_init<boost::tuples::null_type, boost::tuples::null_type> {
+	class TrimFlagsInit<boost::tuples::null_type, boost::tuples::null_type>
+    {
+        public:
 
-		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+		static void run(boost::tuples::null_type const &, boost::tuples::null_type const &) {}
 	};
 
 
-	inline bool trim_flags_proceed(const boost::tuples::null_type &)
+	inline bool trimFlagsProceed(boost::tuples::null_type const &)
 	{
 		return false;
 	}
 
 
 	template <class TrimFlags>
-	inline bool trim_flags_proceed(const TrimFlags &tf)
+	inline bool trimFlagsProceed(TrimFlags const &tf)
 	{
-		const std::size_t size = tf.get_head().size();
+		std::size_t const size = tf.get_head().size();
+
 		for (std::size_t i = 0; i < size; ++i) 
 		{
 			// If we find a flag that was never turned on, we have something to trim.
@@ -350,13 +407,16 @@ namespace piranha
 				return true;
 			}
 		}
-		return trim_flags_proceed(tf.get_tail());
+
+		return trimFlagsProceed(tf.get_tail());
 	}
 
 
 	template <class TrimFlags, class ArgsTuple>
-	struct trim_arguments 
+	class TrimArguments 
 	{
+        public:
+
 		static void run(const TrimFlags &tf, ArgsTuple &argsTuple) 
 		{
 			const std::size_t size = tf.get_head().size();
@@ -371,53 +431,61 @@ namespace piranha
 			}
 
 			new_vector.swap(argsTuple.get_head());
-			trim_arguments<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(tf.get_tail(), argsTuple.get_tail());
+			TrimArguments<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(tf.get_tail(), argsTuple.get_tail());
 		}
 	};
 
 
 	template <>
-	struct trim_arguments<boost::tuples::null_type, boost::tuples::null_type> 
+	class TrimArguments<boost::tuples::null_type, boost::tuples::null_type> 
 	{
-		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+        public:
+
+		static void run(boost::tuples::null_type const &, boost::tuples::null_type const &) {}
 	};
 
 
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::trim()
 	{
-		typedef typename NTuple<std::vector<char>, Derived::echelonLevel + 1>::Type trim_flags_type;
-		trim_flags_type trim_flags;
-		trim_flags_init<trim_flags_type, ArgsTupleType>::run(trim_flags, argumentsTuple);
-		derivedConstCast->trimTestTerms(trim_flags);
+		typedef typename NTuple<std::vector<char>, Derived::echelonLevel + 1>::Type TrimFlagsType;
+		TrimFlagsType trimFlags;
 
-		if (trim_flags_proceed(trim_flags)) 
+		TrimFlagsInit<TrimFlagsType, ArgsTupleType>::run(trimFlags, argumentsTuple);
+		
+        derivedConstCast->trimTestTerms(trimFlags);
+
+		if (trimFlagsProceed(trimFlags)) 
 		{
 			// First let's do the arguments.
-			trim_arguments<trim_flags_type, ArgsTupleType>::run(trim_flags, argumentsTuple);
+			TrimArguments<TrimFlagsType, ArgsTupleType>::run(trimFlags, argumentsTuple);
 			// Let's proceed to the terms now.
-			Derived tmp;
-			derivedCast->trimTerms(trim_flags, tmp, argumentsTuple);
-			derivedCast->baseSwap(tmp);
+			Derived tmpSeries;
+			derivedCast->trimTerms(trimFlags, tmpSeries, argumentsTuple);
+			derivedCast->baseSwap(tmpSeries);
 		}
 	}
 
-
+    // Initialization functor for substitution cache
 	template <class SubCaches, class SubSeries, class ArgsTuple>
-	struct init_sub_caches
+	class InitSubCaches
 	{
-		static void run(SubCaches &sub_caches, const SubSeries &s, const ArgsTuple *argsTuple) 
+        public:
+
+		static void run(SubCaches &sub_caches, SubSeries const &s, ArgsTuple const *argsTuple) 
 		{
 			sub_caches.get_head().setup(s, argsTuple);
-			init_sub_caches<typename SubCaches::tail_type, SubSeries,ArgsTuple>::run(sub_caches.get_tail(), s, argsTuple);
+			InitSubCaches<typename SubCaches::tail_type, SubSeries,ArgsTuple>::run(sub_caches.get_tail(), s, argsTuple);
 		}
 	};
 
 
 	template <class SubSeries, class ArgsTuple>
-	struct init_sub_caches<boost::tuples::null_type,SubSeries, ArgsTuple>
+	class InitSubCaches<boost::tuples::null_type, SubSeries, ArgsTuple>
 	{
-		static void run(const boost::tuples::null_type &, const SubSeries &, const ArgsTuple *) {}
+        public:
+
+		static void run(boost::tuples::null_type const &, SubSeries const &, ArgsTuple const *) {}
 	};
 
     //
@@ -444,8 +512,8 @@ namespace piranha
 		this_copy.mergeArgs(s_copy);
 		s_copy.mergeArgs(this_copy);
 
-		// Init sub caches using s_copy and this_copy.m_arguments.
-		init_sub_caches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.argumentsTuple);
+		// Init substitution caches using s_copy and this_copy.m_arguments.
+		InitSubCaches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.argumentsTuple);
 
 		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1, p), this_copy.argumentsTuple);
 
@@ -468,7 +536,7 @@ namespace piranha
 
 		std::vector<std::vector<Derived> > retval;
 		derivedConstCast->baseSplit(retval, n, argumentsTuple);
-		const std::size_t size = retval.size();
+		std::size_t const size = retval.size();
 		for (std::size_t i = 0; i < size; ++i) 
 		{
 			retval[i][0].argumentsTuple = argumentsTuple;
@@ -498,8 +566,9 @@ namespace piranha
 	{
 		const std::vector<typename Derived::TermType> tmp(derivedConstCast->flattenTerms(argumentsTuple));
 		std::vector<Derived> retval;
-		const typename std::vector<typename Derived::TermType>::const_iterator itf(tmp.end());
-		for  (typename std::vector<typename Derived::TermType>::const_iterator it = tmp.begin(); it != itf; ++it) 
+        typedef typename std::vector<typename Derived::TermType>::const_iterator Iterator;
+		Iterator const itEnd(tmp.end());
+		for  (Iterator it = tmp.begin(); it != itEnd; ++it) 
 		{
 			Derived tmpSeries;
 			tmpSeries.insert(*it, argumentsTuple);

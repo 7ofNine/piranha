@@ -208,13 +208,13 @@ namespace piranha
 
 
 		// Build a tuple of layouts.
-		typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type l;
-		// Get the relative layouts of this wrt other and put the result into l.
-		named_series_get_layout<ArgsTupleType>::run(argumentsTuple, other.arguments(), l);
+		typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type layout;
+		// Get the relative layouts of this wrt other and put the result into layout.
+		NamedSeriesGetLayout<ArgsTupleType>::run(argumentsTuple, other.arguments(), layout);
 
 		// If the layout is bigger than the current ags tuple, it means that it is not a permutation,
 		// there are different arguments in this and other. Hence we can return false.
-		if (!tuple_vector_same_sizes(argumentsTuple, l)) 
+		if (!tuple_vector_same_sizes(argumentsTuple, layout)) 
         {
 			return false;
 		}
@@ -226,10 +226,10 @@ namespace piranha
 		tmp.argumentsTuple = argumentsTuple;
 
 		// Apply the layout to the arguments tuple of retval.
-		named_series_apply_layout_to_args<ArgsTupleType>::run(tmp.argumentsTuple, other.arguments(), l);
+		NamedSeriesApplyLayoutToArgs<ArgsTupleType>::run(tmp.argumentsTuple, other.arguments(), layout);
 		
         // Apply the layout to all terms of this and insert them into tmp.
-		derived_const_cast->applyLayoutToTerms(l, tmp, tmp.argumentsTuple);
+		derived_const_cast->applyLayoutToTerms(layout, tmp, tmp.argumentsTuple);
 		
         // Now we can perform the comparison between tmp and other.
 		return tmp.baseEqualTo(other);
