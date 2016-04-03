@@ -153,17 +153,17 @@ namespace piranha
 
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeArgs(const Derived2 &series)
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeArgs(Derived2 const &series2)
 	{
-		if (static_cast<void *>(this) == static_cast<void const *>(&series)) 
+		if (static_cast<void *>(this) == static_cast<void const *>(&series2)) 
 		{
 			PIRANHA_DEBUG(std::cout << "Trying to merge with self, returning." << std::endl);
 			return;
 		}
 
-		if (unlikely(!isArgsCompatible(series))) 
+		if (unlikely(!isArgsCompatible(series2))) 
 		{
-			mergeIncompatibleArgs(series);
+			mergeIncompatibleArgs(series2);
 		}
 	}
 
@@ -196,12 +196,12 @@ namespace piranha
 		static void run(ArgsTuple const &argsTuple1, ArgsTuple const &argsTuple2, LayoutTuple &layoutTuple) 
 		{
 			// Store frequently-used variables.
-			const VectorPsym &symbols1   = argsTuple1.get_head(); 
-			const VectorPsym &symbols2   = argsTuple2.get_head();
-			const std::size_t size1 = symbols1.size(); 
-			const std::size_t size2 = symbols2.size();
+			VectorPsym const &symbols1   = argsTuple1.get_head(); 
+			VectorPsym const &symbols2   = argsTuple2.get_head();
+			std::size_t const size1      = symbols1.size(); 
+			std::size_t const size2      = symbols2.size();
 			Layout &layout = layoutTuple.get_head();
-			// First we must construct v2's layout wrt to v1.
+			// First we must construct symbols2's layout wrt to symbols1.
 			layout.resize(size2);
 			for (std::size_t i = 0; i < size2; ++i) 
             {
@@ -264,20 +264,20 @@ namespace piranha
     {
         public:
 
-		static void run(ArgsTuple &a1, ArgsTuple const &a2, typename NTuple < std::vector<std::pair<bool, std::size_t> >,
+		static void run(ArgsTuple &argsTuple1, ArgsTuple const &argsTuple2, typename NTuple < std::vector<std::pair<bool, std::size_t> >,
 						boost::tuples::length<ArgsTuple>::value >::Type const &layout) 
 		{
 			// Store frequently-used variables.
-			VectorPsym       &v1 = a1.get_head();
-			const VectorPsym &v2 = a2.get_head();
+			VectorPsym       &symbols1 = argsTuple1.get_head();
+			const VectorPsym &symbols2 = argsTuple2.get_head();
 			const std::vector<std::pair<bool, std::size_t> > &l = layout.get_head();
 			const std::size_t l_size = l.size();
 			// The layout must have at least all arguments in v1.
-			PIRANHA_ASSERT(l_size >= v1.size());
+			PIRANHA_ASSERT(l_size >= symbols1.size());
 			// Memorize the old vector.
-			const VectorPsym old(v1);
+			const VectorPsym old(symbols1);
 			// Make space.
-			v1.reserve(l_size);
+			symbols1.reserve(l_size);
 
 			for (std::size_t i = 0; i < l_size; ++i) 
             {
@@ -285,30 +285,30 @@ namespace piranha
                 {
 					// The argument was present in the old arguments sets. Copy it over.
 					PIRANHA_ASSERT(l[i].second < old.size());
-					if (i < v1.size())
+					if (i < symbols1.size())
 					{
-						v1[i] = old[l[i].second];
+						symbols1[i] = old[l[i].second];
 
 					} else 
 					{
-						v1.push_back(old[l[i].second]);
+						symbols1.push_back(old[l[i].second]);
 					}
 				} else 
                 {
 					// The argument was not present in the old arguments sets. Fetch it from a2.
-					PIRANHA_ASSERT(i < v2.size());
-					if (i < v1.size()) 
+					PIRANHA_ASSERT(i < symbols2.size());
+					if (i < symbols1.size()) 
                     {
-						v1[i] = v2[i];
+						symbols1[i] = symbols2[i];
 
 					} else 
                     {
-						v1.push_back(v2[i]);
+						symbols1.push_back(symbols2[i]);
 					}
 				}
 			}
 
-			NamedSeriesApplyLayoutToArgs<typename ArgsTuple::tail_type>::run(a1.get_tail(), a2.get_tail(), layout.get_tail());
+			NamedSeriesApplyLayoutToArgs<typename ArgsTuple::tail_type>::run(argsTuple1.get_tail(), argsTuple2.get_tail(), layout.get_tail());
 		}
 	};
 
@@ -344,16 +344,16 @@ namespace piranha
 		retval.argumentsTuple = argumentsTuple;
 
 		// Build layout tuple.
-		typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type layout;
-
+		//typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type layout;
+        typename NamedSeriesGetLayout<ArgsTupleType>::LayoutTuple layoutTuple;
 		// Get the relative layouts of this wrt series2 and put the result into layout.
-		NamedSeriesGetLayout<ArgsTupleType>::run(retval.argumentsTuple, series2.arguments(), layout);
+		NamedSeriesGetLayout<ArgsTupleType>::run(retval.argumentsTuple, series2.arguments(), layoutTuple);
 		
 		// Apply the layout to the arguments tuple of retval.
-		NamedSeriesApplyLayoutToArgs<ArgsTupleType>::run(retval.argumentsTuple, series2.arguments(), layout);
+		NamedSeriesApplyLayoutToArgs<ArgsTupleType>::run(retval.argumentsTuple, series2.arguments(), layoutTuple);
 		
 		// Apply the layout to all terms of this, which will be inserted into retval.
-		derivedConstCast->applyLayoutToTerms(layout, retval, retval.argumentsTuple);
+		derivedConstCast->applyLayoutToTerms(layoutTuple, retval, retval.argumentsTuple);
 		
 		// Finally, swap the contents of retval with this.
 		swap(retval);
