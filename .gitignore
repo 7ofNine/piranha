@@ -14,3 +14,4 @@ windows_package/changelog.txt
 windows_package/console.xml
 windows_package/license.txt
 windows_package/mpir.dll
+tests/testxxxx.qps

@@ -255,13 +255,17 @@ namespace piranha
 		}
 	}
 
-    //what are tirm flags?? and how are they defined?
+
+    //
+    // test if we can trim some arguments from the argsTuple and terms
+    // return the result as trimFlags(tuple of vector<bool>, false: trim i.e. the symbol in the argumentTuple is not used
+    //
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class TrimFlags>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trimTestTerms(TrimFlags &trimFlags) const
 	{
-		const const_iterator itf = end();
-		for (const_iterator it = begin(); it != itf; ++it) 
+		const const_iterator itEnd = end();
+		for (const_iterator it = begin(); it != itEnd; ++it) 
 		{
 			it->cf.trimTest(trimFlags);
 			it->key.trimTest(trimFlags);
@@ -269,16 +273,21 @@ namespace piranha
 	}
 
 
+    //
+    // trim the arguments according to the trimFlags from the *this terms argumentTuple and return the modified series in retval
+    // the triiming of the argumentsTuple was done earlier
+    //
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class TrimFlags, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trimTerms(const TrimFlags &trimFlags, Derived &retval, const ArgsTuple &argsTuple) const
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::trimTerms(TrimFlags const &trimFlags, ArgsTuple const &argsTuple, Derived &retval) const
 	{
-		const const_iterator itf = end();
-		for (const_iterator it = begin(); it != itf; ++it) 
+		const const_iterator itEnd = end();
+		for (const_iterator it = begin(); it != itEnd; ++it) 
 		{
 			retval.insert(TermType(typename TermType::CfType(it->cf.trim(trimFlags, argsTuple)), typename TermType::KeyType(it->key.trim(trimFlags, argsTuple))), argsTuple);
 		}
 	}
+
 
     //substitution. What in detail?
 	template <__PIRANHA_BASE_SERIES_TP_DECL>

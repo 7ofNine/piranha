@@ -68,7 +68,9 @@ namespace piranha
 		derived_cast->baseSwap(retval);
 	}
 
-
+    //
+    // test if symbol is used. If not it can be removed
+    //
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class TrimFlags>
 	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::trimTest(TrimFlags &trimFlags) const
@@ -77,12 +79,15 @@ namespace piranha
 	}
 
 
+    // 
+    // remove unused symbols
+    //
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class TrimFlags, class ArgsTuple>
 	inline Derived CfSeries<__PIRANHA_CF_SERIES_TP>::trim(const TrimFlags &trimFlags, const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
-		derived_const_cast->trimTerms(trimFlags, retval, argsTuple);
+		derived_const_cast->trimTerms(trimFlags, argsTuple, retval);
 		return retval;
 	}
 

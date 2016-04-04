@@ -59,17 +59,17 @@ struct ThreadedBlockedMultiplier
     : m_nominal_block_size(nominal_block_size), m_size1(size1), m_thread_id(thread_id), m_thread_n(thread_n),
 	  m_barrier(barrier), m_cur_idx1_start(cur_idx1_start), m_breakout(breakout), m_func(func), m_idx_vector1(idx_vector1), m_idx_vector2(idx_vector2)
 	{
-#ifdef _DEBUG
-		std::cout << "threaded_blocked_multiplier" << std::endl 
-			      << "nominal_block_size: " << nominal_block_size << std::endl 
-				  << "size1: " << size1 << std::endl
-				  << "size2: " << size2 << std::endl
-				  << "thread_id: " << thread_id << std::endl
-				  << "thread_n:  " << thread_n << std:: endl
-				  << "cur_idx1_start: " << cur_idx1_start <<std::endl
-				  << "breakout: " << breakout << std::endl
-				  <<std::flush;
-#endif
+//#ifdef _DEBUG
+//		std::cout << "threaded_blocked_multiplier" << std::endl 
+//			      << "nominal_block_size: " << nominal_block_size << std::endl 
+//				  << "size1: " << size1 << std::endl
+//				  << "size2: " << size2 << std::endl
+//				  << "thread_id: " << thread_id << std::endl
+//				  << "thread_n:  " << thread_n << std:: endl
+//				  << "cur_idx1_start: " << cur_idx1_start <<std::endl
+//				  << "breakout: " << breakout << std::endl
+//				  <<std::flush;
+//#endif
 		// Sanity checks.
 		PIRANHA_ASSERT(thread_n > 0 && thread_id < thread_n && (barrier || thread_n == 1));
 
@@ -86,7 +86,7 @@ struct ThreadedBlockedMultiplier
 
 	void operator()()
 	{
-		std::cout << "polynomial_multiplier::(): 1 : threadid = " << m_thread_id << std::endl << std::flush;
+//		std::cout << "polynomial_multiplier::(): 1 : threadid = " << m_thread_id << std::endl << std::flush;
 
 		if (m_thread_id == 0)
 		{
@@ -144,7 +144,7 @@ struct ThreadedBlockedMultiplier
 
 				if (m_thread_id == 0)
 				{
-					std::cout << "polynomial_multiplier::(): 9 : threadid = " << m_thread_id << std::endl << std::flush;
+//					std::cout << "polynomial_multiplier::(): 9 : threadid = " << m_thread_id << std::endl << std::flush;
 					if (!m_func.block2_advance(m_idx_vector1,m_idx_vector2,m_nominal_block_size,orig2,wrap_count))
 					{
 						m_breakout = true;

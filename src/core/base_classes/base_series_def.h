@@ -218,7 +218,7 @@ namespace piranha
 			void trimTestTerms(TrimFlags &) const;
 
 			template <class TrimFlags, class ArgsTuple>
-			void trimTerms(const TrimFlags &, Derived &, const ArgsTuple &) const;
+			void trimTerms(TrimFlags const &, ArgsTuple const &, Derived &) const;
 
 			template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries baseSub(const PosTuple &, SubCaches &, const ArgsTuple &) const;

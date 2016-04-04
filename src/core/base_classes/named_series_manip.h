@@ -511,7 +511,7 @@ namespace piranha
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::trim()
 	{
-		typedef typename NTuple<std::vector<char>, Derived::echelonLevel + 1>::Type TrimFlagsType;  //TODO: vector<char> ? shouldn't we use vectot<bool>?
+		typedef typename NTuple<std::vector<bool>, Derived::echelonLevel + 1>::Type TrimFlagsType;  //TODO: vector<char> ? shouldn't we use vectot<bool>?
 		TrimFlagsType trimFlags;
 
 		TrimFlagsInit<TrimFlagsType, ArgsTupleType>::run(trimFlags, argumentsTuple);
@@ -524,7 +524,7 @@ namespace piranha
 			TrimArguments<TrimFlagsType, ArgsTupleType>::run(trimFlags, argumentsTuple);
 			// Let's proceed to the terms now.
 			Derived tmpSeries;
-			derivedCast->trimTerms(trimFlags, tmpSeries, argumentsTuple);
+			derivedCast->trimTerms(trimFlags, argumentsTuple, tmpSeries);
 			derivedCast->baseSwap(tmpSeries);   // exchange trimmed contents with *this. i.e. update
 		}
 	}
