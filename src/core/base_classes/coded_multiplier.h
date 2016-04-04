@@ -107,13 +107,13 @@ struct BaseCodedFunctor
 
 	void baseBlocksSetup(std::size_t currentIndex1Start, std::size_t const blockSize, BlockSequence &indexVector1, BlockSequence &indexVector2)
 	{
-#ifdef _DEBUG
-		std::cout << "BaseCodedFunctor::baseBlocksSetup" <<std::endl
-			      << "currentIndex1Start: "              << currentIndex1Start  << std::endl
-				  << "blockSize: "                       << blockSize           << std::endl
-				  << "indexVector1 size: "               << indexVector1.size() << std::endl
-				  << "indexVector2 size: "               << indexVector2.size() << std::endl;
-#endif
+//#ifdef _DEBUG
+//		std::cout << "BaseCodedFunctor::baseBlocksSetup" <<std::endl
+//			      << "currentIndex1Start: "              << currentIndex1Start  << std::endl
+//				  << "blockSize: "                       << blockSize           << std::endl
+//				  << "indexVector1 size: "               << indexVector1.size() << std::endl
+//				  << "indexVector2 size: "               << indexVector2.size() << std::endl;
+//#endif
 		PIRANHA_ASSERT(currentIndex1Start < m_tc1.size() && indexVector1.size() == indexVector2.size());
 
 		std::size_t upperBound1 = std::min<std::size_t>(m_tc1.size(), currentIndex1Start + indexVector1.size() * blockSize);
@@ -183,28 +183,28 @@ struct BaseCodedFunctor
 
 	void adjustBlockBoundaries(BlockSequence &s, std::vector<MaxFastInt> const &ck) const
 	{
-#ifdef _DEBUG
-		std::cout << "BaseCodedFunctor::adjust_block_boundaries: ck size = " << ck.size() << std::endl;
-#endif
+//#ifdef _DEBUG
+//		std::cout << "BaseCodedFunctor::adjust_block_boundaries: ck size = " << ck.size() << std::endl;
+//#endif
 		PIRANHA_ASSERT(s.size() > 0);
 
 		for (BlockSequence::size_type i = 0; i < s.size() - 1; ++i) 
 		{
 			// Shrink non-empty blocks whose upper value's memory position is shared with the next block.
-#ifdef _DEBUG
-			std::cout << "BaseCodedFunctor::adjust_block_boundaries: blockSequence index = " << i << std::endl << std::flush;
-			std::cout << "s[i] = " << s[i].first << "/" << s[i].second << std::endl << std::flush;
-			std::cout << " upper/lower = " << s[i].second - 1 <<"/" << s[i + 1].first << std::endl << std::flush;  
-#endif
+//#ifdef _DEBUG
+//			std::cout << "BaseCodedFunctor::adjust_block_boundaries: blockSequence index = " << i << std::endl << std::flush;
+//			std::cout << "s[i] = " << s[i].first << "/" << s[i].second << std::endl << std::flush;
+//			std::cout << " upper/lower = " << s[i].second - 1 <<"/" << s[i + 1].first << std::endl << std::flush;  
+//#endif
 			while (s[i].first != s[i].second && (s[i+1].first < ck.size()) && derived_const_cast->get_mem_pos(ck[s[i].second - 1]) ==
 				derived_const_cast->get_mem_pos(ck[s[i + 1].first]))
 			{
 				--s[i].second;
 				--s[i + 1].first;
-#ifdef _DEBUG
-			std::cout << "s[i] = " << s[i].first << "/" << s[i].second << std::endl << std::flush;
-			std::cout << " upper/lower = " << s[i].second - 1 <<"/" << s[i + 1].first << std::endl << std::flush;  
-#endif
+//#ifdef _DEBUG
+//			std::cout << "s[i] = " << s[i].first << "/" << s[i].second << std::endl << std::flush;
+//			std::cout << " upper/lower = " << s[i].second - 1 <<"/" << s[i + 1].first << std::endl << std::flush;  
+//#endif
 			}
 		}
 	}
