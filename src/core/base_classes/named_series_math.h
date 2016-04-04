@@ -21,9 +21,10 @@
 #ifndef PIRANHA_NAMED_SERIES_MATH_H
 #define PIRANHA_NAMED_SERIES_MATH_H
 
-#include <boost/utility.hpp>
 #include <cstddef>
 #include <vector>
+
+#include <boost/utility.hpp>
 
 #include "../exceptions.h"
 #include "../mp.h"
@@ -33,150 +34,200 @@
 #include "named_series_def.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
-#define derived_cast static_cast<Derived *>(this)
+#define derived_cast       static_cast<Derived *>(this)
 
 namespace piranha
 {
+    //
+    // add or subtract two series (lower level)
+    // Sign: true  - addition
+    //       false - subtraction 
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <bool Sign, class Derived2>
-	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeWithSeries(const Derived2 &s2)
+	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeWithSeries(Derived2 const &series2)
 	{
 		// If we are merging with self, create a copy and call recursively.
-		if ((void *)(boost::addressof(*derived_cast)) == (void *)(boost::addressof(s2)))
+		if ((void *)(boost::addressof(*derived_cast)) == (void *)(boost::addressof(series2)))
 		{
 			PIRANHA_DEBUG(std::cout << "Merging with self, performing a copy." << '\n');
-			mergeWithSeries<Sign>(Derived(*derived_const_cast));
+			mergeWithSeries<Sign>(Derived(*derived_const_cast)); // create a copy and merge the copy
 
 		} else 
 		{
-			mergeArgs(s2);
+			mergeArgs(series2);  // combine the argument tuples first
+
 			if (Sign) 
 			{
-				derived_cast->baseAdd(s2, argumentsTuple);
+				derived_cast->baseAdd(series2, argumentsTuple);      // add
 
 			} else 
 			{
-				derived_cast->baseSubtract(s2, argumentsTuple);
+				derived_cast->baseSubtract(series2, argumentsTuple); //subtract
 			}
 		}
 
-		trim();
+		trim(); // remove unused symbols
+
 		return *derived_cast;
 	}
 
 
-	template <PIRANHA_NAMED_SERIES_TP_DECL>
+    //
+    // multiply with another series (lower level)
+	//
+    template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::multiplyBySeries(const Derived2 &s2)
+	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::multiplyBySeries(Derived2 const &series2)
 	{
-		// First we merge the arguments of the two series.
-		mergeArgs(s2);
-		// Then we perform the multiplication.
-		derived_cast->baseMultBy(s2, argumentsTuple);
-		trim();
+		mergeArgs(series2); // First we merge the arguments of the two series.
+		
+		derived_cast->baseMultBy(series2, argumentsTuple); // Then we perform the multiplication. (the terms)
+		trim();  // remove unused symbols
+
 		return *derived_cast;
 	}
 
 
+    //
+    //  += 
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator+=(const T &x)
+	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator+=(T const &x)
 	{
-		return NamedSeriesAddSelector<T>::run(*derived_cast, x);
+		return NamedSeriesAddSelector<T>::run(*derived_cast, x); // select dependend on T
 	}
 
 
+    //
+    //  -=
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator-=(const T &x)
+	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator-=(T const &x)
 	{
-		return NamedSeriesSubtractSelector<T>::run(*derived_cast, x);
+		return NamedSeriesSubtractSelector<T>::run(*derived_cast, x); // select dependend on T
 	}
 
 
+    //
+    //  unitary -
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator-() const
 	{
 		Derived retval(*derived_const_cast);
-		retval *= -1;
+		retval *= -1;  // multiply with 1
 		return retval;
 	}
 
 
+    //
+    // multiply with x and trim result
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Number>
-	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::multiplyNumberHelper(const Number &x)
+	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::multiplyNumberHelper(Number const &x)
 	{
 		derived_cast->baseMultBy(x, argumentsTuple);
-		trim();
+		trim();   // remove unused symbols
+
 		return *derived_cast;
 	}
 
+
+    //
+    //  *= 
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator*=(const T &x)
+	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator*=(T const &x)
 	{
-		return NamedSeriesMultiplySelector<T>::run(*derived_cast, x);
+		return NamedSeriesMultiplySelector<T>::run(*derived_cast, x); // select dependent on T
 	}
 
+
+    //
+    // divide by x and trim result
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Number>
-	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::divideNumberHelper(const Number &x)
+	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::divideNumberHelper(Number const &x)
 	{
 		derived_cast->baseDivideBy(x, argumentsTuple);
-		trim();
+		trim();  // remove unused sybols
+
 		return *derived_cast;
 	}
 
 
+    //
+    //    /=
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator/=(const T &x)
+	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator/=(T const &x)
 	{
 		return divideNumberHelper(x);
 	}
 
 
+    //
+    //  power(double) of series and trim
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::pow(const double x) const
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::pow(double const x) const
 	{
-		Derived retval(derived_const_cast->basePow(x, argumentsTuple));
+		Derived retval(derived_const_cast->basePow(x, argumentsTuple)); //power
 		retval.argumentsTuple = argumentsTuple;
-		retval.trim();
+		retval.trim();  // remove unused symbols
+
 		return retval;
 	}
 
 
+    //
+    //  power(rational) of series and trim
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::pow(const mp_rational &q) const
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::pow(mp_rational const &q) const
 	{
 		Derived retval(derived_const_cast->basePow(q, argumentsTuple));
 		retval.argumentsTuple = argumentsTuple;
-		retval.trim();
+		retval.trim(); // remove unused symbols
+
 		return retval;
 	}
 
 
+    //
+    // n-th root of series and trim
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::root(const int n) const
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::root(int const n) const
 	{
-		Derived retval(derived_const_cast->baseRoot(n, argumentsTuple));
+		Derived retval(derived_const_cast->baseRoot(n, argumentsTuple)); // root
 		retval.argumentsTuple = argumentsTuple;
-		retval.trim();
+		retval.trim(); // remove unused symbols
+
 		return retval;
 	}
 
 
-	/// Partial derivative with respect to a piranha::Psym.
+    //
+	// n-th Partial derivative with respect to name.
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::partial(std::string const &name, int const n) const
 	{
 		typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type PositionTupleType;
-		const Psym p(name);
-		const PositionTupleType positionTuple = psyms2pos(VectorPsym(1, p), argumentsTuple);
-		Derived retval(derived_const_cast->basePartial(n, positionTuple, argumentsTuple));
+		const PositionTupleType positionTuple = psyms2pos(VectorPsym(1, Psym(name)), argumentsTuple); // get position in argsTuple
+
+		Derived retval(derived_const_cast->basePartial(n, positionTuple, argumentsTuple)); // partial derivative on terms
 		retval.argumentsTuple = argumentsTuple;
-		retval.trim();
+		retval.trim(); // remove unused symbols
+
 		return retval;
 	}
 }

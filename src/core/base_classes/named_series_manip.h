@@ -564,7 +564,7 @@ namespace piranha
     //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class SubstitutionSeries>
-	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::substitute(const std::string &name, const SubstitutionSeries &series) const
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::substitute(std::string const &name, SubstitutionSeries const &series) const
 	{
 		typedef typename Derived::TermType::CfType::
 			template SubstitutionCacheSelector<SubstitutionSeries, typename Derived::TermType::KeyType::
@@ -596,7 +596,9 @@ namespace piranha
 		return retval;
 	}
 
-
+    //
+    // Split does what?
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::vector<std::vector<Derived> > NamedSeries<PIRANHA_NAMED_SERIES_TP>::split(const int n) const
 	{
@@ -607,6 +609,7 @@ namespace piranha
 
 		std::vector<std::vector<Derived> > retval;
 		derivedConstCast->baseSplit(retval, n, argumentsTuple);
+
 		std::size_t const size = retval.size();
 		for (std::size_t i = 0; i < size; ++i) 
 		{
@@ -635,10 +638,12 @@ namespace piranha
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::vector<Derived> NamedSeries<PIRANHA_NAMED_SERIES_TP>::flatten() const
 	{
-		const std::vector<typename Derived::TermType> tmp(derivedConstCast->flattenTerms(argumentsTuple));
+		std::vector<typename Derived::TermType> const tmp(derivedConstCast->flattenTerms(argumentsTuple));
 		std::vector<Derived> retval;
+
         typedef typename std::vector<typename Derived::TermType>::const_iterator Iterator;
 		Iterator const itEnd(tmp.end());
+
 		for  (Iterator it = tmp.begin(); it != itEnd; ++it) 
 		{
 			Derived tmpSeries;
