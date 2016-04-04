@@ -57,6 +57,21 @@ namespace piranha
 	 * ArgsDescr must be a boost::tuple of structures each one containing a static const string
 	 * called "name" naming the arguments of the series.
 	 */
+
+     //types for managing layouts of named series arguments. For details of layouts see named_series_manip.h
+     typedef std::pair<bool, std::size_t> LayoutElement;
+     typedef std::vector<LayoutElement> Layout;
+
+     template<class ArgsTuple>
+     class LayoutTuple
+     {
+        public:
+        typedef typename NTuple< Layout, boost::tuples::length<ArgsTuple>::value >::Type Type;   
+     };
+     //typedef typename NTuple< Layout, boost::tuples::length<ArgsTuple>::value >::Type LayoutTuple;
+
+
+
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	class NamedSeries
 	{

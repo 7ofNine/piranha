@@ -232,10 +232,10 @@ namespace piranha
 	 * All terms get swapped.
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSwap(Derived &ps2)
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSwap(Derived &series2)
 	{
-		PIRANHA_ASSERT(derived_cast != &ps2);
-		container.swap(ps2.container);
+		PIRANHA_ASSERT(derived_cast != &series2);
+		container.swap(series2.container);  // swap the series terms by swapping the terms container
 	}
 
 

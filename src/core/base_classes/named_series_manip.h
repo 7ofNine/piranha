@@ -48,93 +48,109 @@ namespace piranha
         	
         static void run(ArgsTuple &argsTuple1, ArgsTuple &argsTuple2)
         {
-			argsTuple1.get_head().swap(argsTuple2.get_head());
+			argsTuple1.get_head().swap(argsTuple2.get_head());   // swap the psym vector tuple elements
 
-			NamedSeriesSwap<typename ArgsTuple::tail_type>::run(argsTuple1.get_tail(), argsTuple2.get_tail());
+			NamedSeriesSwap<typename ArgsTuple::tail_type>::run(argsTuple1.get_tail(), argsTuple2.get_tail()); //recurse to the next tuple element
 		}
 	};
 
-
+    //terminate  recursion through tuple elements
 	template <>
 	class NamedSeriesSwap<boost::tuples::null_type>
     {
         public: 
 
-		static void run(const boost::tuples::null_type &, const boost::tuples::null_type &) {}
+		static void run(boost::tuples::null_type const &, boost::tuples::null_type const &) {}
 	};
 
 
-	/// Swap contents of series.
+	/// Swap contents of series. Avoids creation (performance!)
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::swap(Derived &series)
 	{
 		// Do something only if we are not swapping with self.
 		if (derivedCast != &series)
         {
-			NamedSeriesSwap<ArgsTupleType>::run(argumentsTuple, series.argumentsTuple);
-			derivedCast->baseSwap(series);
+			NamedSeriesSwap<ArgsTupleType>::run(argumentsTuple, series.argumentsTuple); // swap the argument tuples (named series only)
+			derivedCast->baseSwap(series); // swap the terms
 		}
 	}
 
 
 	// Meta-programming for appending an argument.
+    //
+    // append the symbol "arg" to the proper "argsTuple" element  given by the "argumentType" (poly, trig)
+    //
 	template <class ArgsDescr>
 	class NamedSeriesAppendArg
     {
+        
+        typedef typename NTuple<VectorPsym, boost::tuples::length<ArgsDescr>::value>::Type ArgsTupleType;
 
         public:
 
-		static void run(std::string const &s, typename NTuple<VectorPsym, boost::tuples::length<ArgsDescr>::value>::Type &argsTuple, Psym const &arg)
+		static void run(std::string const &argumentType, ArgsTupleType &argsTuple, Psym const &arg)
 		{
-			if (ArgsDescr::head_type::name == s) 
+			if (ArgsDescr::head_type::name == argumentType) 
 			{
 				// Check that the argument is not already present in this set.
 				for (VectorPsym::iterator it = argsTuple.get_head().begin(); it != argsTuple.get_head().end(); ++it) 
 				{
 					if (arg == (*it)) 
 					{
-						std::cout << "Error: " << s << " argument '" << it->getName() << "' already present in the set.\n";
+						std::cout << "Error: " << argumentType << " argument '" << it->getName() << "' already present in the set.\n";
 						return;
 					}
 				}
-				argsTuple.get_head().push_back(arg);
+				argsTuple.get_head().push_back(arg);  // add new symbol to the end (it is a vector)
 
 			} else 
 			{
-				NamedSeriesAppendArg<typename ArgsDescr::tail_type>::run(s, argsTuple.get_tail(), arg);
+                // try next tuple element
+				NamedSeriesAppendArg<typename ArgsDescr::tail_type>::run(argumentType, argsTuple.get_tail(), arg);
 			}
 		}
 	};
 
-
+    //terminate recursion for append argument
 	template <>
 	class NamedSeriesAppendArg<boost::tuples::null_type>
     {
 
         public: 
 
-		static void run(std::string const &s, boost::tuples::null_type const &, Psym const &) 
+		static void run(std::string const &argumentType, boost::tuples::null_type const &, Psym const &) 
 		{
-			std::cout << "Error: '" << s << "' arguments are not known." << std::endl;
+			std::cout << "Error: '" << argumentType << "' arguments are not known." << std::endl;
 		}
 	};
 
 
-	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::appendArg(std::string const &s, Psym const &arg)
+    //
+    // append argument/symbol by argument type (as defined in the argument descriptors) ("poly", "trig", ...)
+	//
+    // only to be done for an empty series i.e. during construction.
+    // This also means that arguments are added to the series before the terms are added
+    //
+    template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::appendArg(std::string const &argumentType, Psym const &arg)
 	{
-		PIRANHA_ASSERT(derivedConstCast->empty());
+		PIRANHA_ASSERT(derivedConstCast->empty());  // check empty series
 
-		NamedSeriesAppendArg<ArgumentsDescription>::run(s, argumentsTuple, arg);
+		NamedSeriesAppendArg<ArgumentsDescription>::run(argumentType, argumentsTuple, arg);
 	}
 
-
+    //
+    //apend argument/symbol by position N in the argumentsTuple. See Arguments descriptor
+    //
+    //only to be done for an empty series i.e. during construction.
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <int N>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::appendArg(Psym const &arg)
 	{
 		PIRANHA_STATIC_CHECK(N >= 0, "Trying to append argument with invalid index.");
-		PIRANHA_ASSERT(derivedConstCast->empty());
+		PIRANHA_ASSERT(derivedConstCast->empty());  // check empty series
 
 		// Check that the argument is not already present in this set.
 		for (VectorPsym::iterator it = argumentsTuple.template get<N>().begin(); it != argumentsTuple.template get<N>().end(); ++it) 
@@ -146,11 +162,16 @@ namespace piranha
 			}
 		}
 
-		argumentsTuple.template get<N>().push_back(arg);
+		argumentsTuple.template get<N>().push_back(arg); // insert new symbol into ntuple element at position N.
 	}
 
 
-
+    //
+    // combine two sets of arguments into one set
+    //
+    // the result is a modified argsTuple in *this that is the union from the
+    // *this and series2
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeArgs(Derived2 const &series2)
@@ -161,9 +182,9 @@ namespace piranha
 			return;
 		}
 
-		if (unlikely(!isArgsCompatible(series2))) 
+		if (unlikely(!isArgsCompatible(series2)))  // if they are compatible i.e. argsTuple2 are all contained in argsTuple1
 		{
-			mergeIncompatibleArgs(series2);
+			mergeIncompatibleArgs(series2);        // create union. Beware the sequence of symbols gets changed
 		}
 	}
 
@@ -188,37 +209,38 @@ namespace piranha
 	template <class ArgsTuple>
 	class NamedSeriesGetLayout
     {
-        public:
-        typedef std::pair<bool, std::size_t> LayoutElement;
-        typedef std::vector<LayoutElement> Layout;
-        typedef typename NTuple< Layout, boost::tuples::length<ArgsTuple>::value >::Type LayoutTuple;
+       public:
+       // typedef std::pair<bool, std::size_t> LayoutElement;
+       // typedef std::vector<LayoutElement> Layout;
+       // typedef typename NTuple< Layout, boost::tuples::length<ArgsTuple>::value >::Type LayoutTuple;
 
-		static void run(ArgsTuple const &argsTuple1, ArgsTuple const &argsTuple2, LayoutTuple &layoutTuple) 
+		static void run(ArgsTuple const &argsTuple1, ArgsTuple const &argsTuple2, typename LayoutTuple<ArgsTuple>::Type &layoutTuple) 
 		{
 			// Store frequently-used variables.
 			VectorPsym const &symbols1   = argsTuple1.get_head(); 
 			VectorPsym const &symbols2   = argsTuple2.get_head();
 			std::size_t const size1      = symbols1.size(); 
 			std::size_t const size2      = symbols2.size();
-			Layout &layout = layoutTuple.get_head();
+			Layout &layout               = layoutTuple.get_head();
+
 			// First we must construct symbols2's layout wrt to symbols1.
 			layout.resize(size2);
 			for (std::size_t i = 0; i < size2; ++i) 
             {
-				// Let's see if current symbols2's symbol is present in symbols1.
+				// Find current symbols2's symbol within symbols1.
 				const VectorPsym::const_iterator result = std::find(symbols1.begin(), symbols1.end(), symbols2[i]);
-				if (result == symbols1.end()) 
+				if (result == symbols1.end())  // not found
                 {
 					layout[i].first = false;
 				} else 
                 {
-					// If present, mark its position in symbols1
+					// Found, mark and store its position in symbols1
 					layout[i].first  = true;
 					layout[i].second = result - symbols1.begin();
 				}
 			}
 
-			// Now we must take care of those elements of symbols1 that are not represented in
+			// Handle those elements of symbols1 that are not yet present in
 			// the layout (i.e., they are not in symbols2)
 			for (std::size_t i = 0; i < size1; ++i) 
             {
@@ -243,11 +265,15 @@ namespace piranha
 				}
 			}
 
+            // recurse to next argsTuple element
 			NamedSeriesGetLayout<typename ArgsTuple::tail_type>::run(argsTuple1.get_tail(), argsTuple2.get_tail(), layoutTuple.get_tail());
 		}
 	};
 
 
+    //
+    // terminate recursion for determining layout
+    //
 	template <>
 	class NamedSeriesGetLayout<boost::tuples::null_type>
 	{
@@ -257,45 +283,49 @@ namespace piranha
 	};
 
 
-
+    //
 	// Template metaprogramming for applying a layout to a series.
+    // modify arguments for argsTuple1 with argsTuple2 according to the layout
+    // TODo: example
+    //
 	template <class ArgsTuple>
 	class NamedSeriesApplyLayoutToArgs
     {
         public:
 
-		static void run(ArgsTuple &argsTuple1, ArgsTuple const &argsTuple2, typename NTuple < std::vector<std::pair<bool, std::size_t> >,
-						boost::tuples::length<ArgsTuple>::value >::Type const &layout) 
+		static void run(ArgsTuple &argsTuple1, ArgsTuple const &argsTuple2, typename LayoutTuple<ArgsTuple>::Type const &layoutTuple) 
 		{
 			// Store frequently-used variables.
-			VectorPsym       &symbols1 = argsTuple1.get_head();
-			const VectorPsym &symbols2 = argsTuple2.get_head();
-			const std::vector<std::pair<bool, std::size_t> > &l = layout.get_head();
-			const std::size_t l_size = l.size();
-			// The layout must have at least all arguments in v1.
-			PIRANHA_ASSERT(l_size >= symbols1.size());
-			// Memorize the old vector.
-			const VectorPsym old(symbols1);
+			VectorPsym        &symbols1 = argsTuple1.get_head();
+			VectorPsym const  &symbols2 = argsTuple2.get_head();
+			Layout const      &layout   = layoutTuple.get_head();
+			std::size_t const  lSize    = layout.size();
+			
+            // The layout must have at least all arguments in symbols1.
+			PIRANHA_ASSERT(lSize >= symbols1.size());
+			
+            // Memorize the old vector.
+			const VectorPsym oldSymbols(symbols1);
 			// Make space.
-			symbols1.reserve(l_size);
+			symbols1.reserve(lSize);
 
-			for (std::size_t i = 0; i < l_size; ++i) 
+			for (std::size_t i = 0; i < lSize; ++i) 
             {
-				if (l[i].first) 
+				if (layout[i].first) 
                 {
 					// The argument was present in the old arguments sets. Copy it over.
-					PIRANHA_ASSERT(l[i].second < old.size());
+					PIRANHA_ASSERT(layout[i].second < oldSymbols.size());
 					if (i < symbols1.size())
 					{
-						symbols1[i] = old[l[i].second];
+						symbols1[i] = oldSymbols[layout[i].second];
 
 					} else 
 					{
-						symbols1.push_back(old[l[i].second]);
+						symbols1.push_back(oldSymbols[layout[i].second]);
 					}
 				} else 
                 {
-					// The argument was not present in the old arguments sets. Fetch it from a2.
+					// The argument was not present in the old arguments set (symbols1). Fetch it from symbols2.
 					PIRANHA_ASSERT(i < symbols2.size());
 					if (i < symbols1.size()) 
                     {
@@ -308,11 +338,14 @@ namespace piranha
 				}
 			}
 
-			NamedSeriesApplyLayoutToArgs<typename ArgsTuple::tail_type>::run(argsTuple1.get_tail(), argsTuple2.get_tail(), layout.get_tail());
+            // recurse into the next argsTuple element
+			NamedSeriesApplyLayoutToArgs<typename ArgsTuple::tail_type>::run(argsTuple1.get_tail(), argsTuple2.get_tail(), layoutTuple.get_tail());
 		}
 	};
 
 
+    //
+    // terminate recursion for applying layout to argsTuple
 	template <>
 	class NamedSeriesApplyLayoutToArgs<boost::tuples::null_type>
 	{
@@ -335,6 +368,9 @@ namespace piranha
     // series1 (= *this):  ("u", "x", "z")
     //               "x"        "y"         "z"        "u"
     // => layout ((true, 1), (false, 0), (true, 2), (true,0))
+    //
+    // here we create the union of the two argTuples and update *this acordingly
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeIncompatibleArgs(Derived2 const &series2)
@@ -345,7 +381,7 @@ namespace piranha
 
 		// Build layout tuple.
 		//typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type layout;
-        typename NamedSeriesGetLayout<ArgsTupleType>::LayoutTuple layoutTuple;
+        typename LayoutTuple<ArgsTupleType>::Type layoutTuple;
 		// Get the relative layouts of this wrt series2 and put the result into layout.
 		NamedSeriesGetLayout<ArgsTupleType>::run(retval.argumentsTuple, series2.arguments(), layoutTuple);
 		
@@ -355,30 +391,39 @@ namespace piranha
 		// Apply the layout to all terms of this, which will be inserted into retval.
 		derivedConstCast->applyLayoutToTerms(layoutTuple, retval, retval.argumentsTuple);
 		
-		// Finally, swap the contents of retval with this.
+		// Finally, swap the contents of retval with this. this is now a series with argumentTuple that combines this and series2
+        // i.e. operations like addition and multiplication can now be executed.
 		swap(retval);
 	}
 
-
+    //
+    // set up flags tuple for triming unneeded arguments
+    // tuple elements are vectors<bool> 
+    // false: remove  (argument is not present)
+    // true:  don't remove (argument is present)
+    //
 	template <class TrimFlags, class ArgsTuple>
 	class TrimFlagsInit
     {
         public:
 
-		static void run(TrimFlags &tf, const ArgsTuple &argsTuple)
+		static void run(TrimFlags &trimFlags, ArgsTuple const &argsTuple)
         {
-			const std::size_t size = argsTuple.get_head().size();
-			tf.get_head().resize(size);
+			std::size_t const size = argsTuple.get_head().size();
+			trimFlags.get_head().resize(size);
 			for (std::size_t i = 0; i < size; ++i) 
             {
-				tf.get_head()[i] = false;
+				trimFlags.get_head()[i] = false;
 			}
 
-			TrimFlagsInit<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(tf.get_tail(), argsTuple.get_tail());
+			TrimFlagsInit<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(trimFlags.get_tail(), argsTuple.get_tail());
 		}
 	};
 
 
+    //
+    // terminate trim flag tuple initialization
+    //
 	template <>
 	class TrimFlagsInit<boost::tuples::null_type, boost::tuples::null_type>
     {
@@ -393,49 +438,63 @@ namespace piranha
 		return false;
 	}
 
-
+    //
+    // check if there is something to trim from the arguments
+    // TrimFlags is a tuple of vector<bool> elements
+    //
 	template <class TrimFlags>
-	inline bool trimFlagsProceed(TrimFlags const &tf)
+	inline bool trimFlagsProceed(TrimFlags const &trimFlags)
 	{
-		std::size_t const size = tf.get_head().size();
+		std::size_t const size = trimFlags.get_head().size();
 
 		for (std::size_t i = 0; i < size; ++i) 
 		{
 			// If we find a flag that was never turned on, we have something to trim.
-			if (!tf.get_head()[i]) 
+			if (!trimFlags.get_head()[i]) 
 			{
 				return true;
 			}
 		}
 
-		return trimFlagsProceed(tf.get_tail());
+        // recurse to next tuple
+		return trimFlagsProceed(trimFlags.get_tail());
 	}
 
 
+    //
+    // trim argumentTuple by the arguments indicated by the trimflagsTuple
+    //
 	template <class TrimFlags, class ArgsTuple>
 	class TrimArguments 
 	{
         public:
 
-		static void run(const TrimFlags &tf, ArgsTuple &argsTuple) 
+		static void run(TrimFlags const &trimFlags, ArgsTuple &argsTuple) 
 		{
-			const std::size_t size = tf.get_head().size();
+			const std::size_t size = trimFlags.get_head().size();
+
 			PIRANHA_ASSERT(size == argsTuple.get_head().size());
-			VectorPsym new_vector;
+			
+            VectorPsym newSymbols;
 			for (std::size_t i = 0; i < size; ++i) 
 			{
-				if (tf.get_head()[i]) 
+				if (trimFlags.get_head()[i]) 
 				{
-					new_vector.push_back(argsTuple.get_head()[i]);
+					newSymbols.push_back(argsTuple.get_head()[i]);
 				}
 			}
 
-			new_vector.swap(argsTuple.get_head());
-			TrimArguments<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(tf.get_tail(), argsTuple.get_tail());
+			newSymbols.swap(argsTuple.get_head()); // exchange the old arguments with the new arguments (vector.swap())
+
+            // recurse to the next argumentsTuple element
+			TrimArguments<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(trimFlags.get_tail(), argsTuple.get_tail());
 		}
 	};
 
 
+    //
+    // terminate recursion for argument trimming
+    //
 	template <>
 	class TrimArguments<boost::tuples::null_type, boost::tuples::null_type> 
 	{
@@ -445,26 +504,31 @@ namespace piranha
 	};
 
 
+    //
+    // remove arguments from argumentTuple that are no longer needed (i.e. evaluate to zero or 1)
+    // and adjust *this accordingly
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::trim()
 	{
-		typedef typename NTuple<std::vector<char>, Derived::echelonLevel + 1>::Type TrimFlagsType;
+		typedef typename NTuple<std::vector<char>, Derived::echelonLevel + 1>::Type TrimFlagsType;  //TODO: vector<char> ? shouldn't we use vectot<bool>?
 		TrimFlagsType trimFlags;
 
 		TrimFlagsInit<TrimFlagsType, ArgsTupleType>::run(trimFlags, argumentsTuple);
 		
         derivedConstCast->trimTestTerms(trimFlags);
 
-		if (trimFlagsProceed(trimFlags)) 
+		if (trimFlagsProceed(trimFlags))   // something to trim
 		{
 			// First let's do the arguments.
 			TrimArguments<TrimFlagsType, ArgsTupleType>::run(trimFlags, argumentsTuple);
 			// Let's proceed to the terms now.
 			Derived tmpSeries;
 			derivedCast->trimTerms(trimFlags, tmpSeries, argumentsTuple);
-			derivedCast->baseSwap(tmpSeries);
+			derivedCast->baseSwap(tmpSeries);   // exchange trimmed contents with *this. i.e. update
 		}
 	}
+
 
     // Initialization functor for substitution cache
 	template <class SubCaches, class SubSeries, class ArgsTuple>

@@ -180,21 +180,23 @@ namespace piranha
 			}
 
 
-			/// Test if vector key can be trimmed.
+            //
+			// Test if vector key can be trimmed.
+            // 
 			template <class TrimFlags>
-			void trimTest(TrimFlags &tf) const
+			void trimTest(TrimFlags &trimFlags) const
 			{
 				// TODO: add checks on TrimFlags type.
 				const size_type size = container.size();
 				
-                PIRANHA_ASSERT(tf.template get<Position>().size() == size);
+                PIRANHA_ASSERT(trimFlags.template get<Position>().size() == size);
 
 				for (size_type i = 0; i < size; ++i) 
 				{
-					// If the element is different from zero, turn on the flag.
+					// If the element is different from zero, turn on the flag, don't trim it!
 					if (container[i] != 0) 
 					{
-						tf.template get<Position>()[i] = true;
+						trimFlags.template get<Position>()[i] = true;
 					}
 				}
 			}
