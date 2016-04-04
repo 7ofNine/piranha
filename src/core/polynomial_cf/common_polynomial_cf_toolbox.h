@@ -38,10 +38,11 @@ namespace piranha
 	{
 		public:
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
-			struct EiSubstitutionCacheSelector {
+			struct EiSubstitutionCacheSelector
+            {
 				typedef typename Derived::TermType::CfType::
 					template EiSubstitutionCacheSelector<SubSeries, typename Derived::TermType::KeyType::
-					template EiSubstitutionCacheSelector<SubSeries, SubCachesCons, ArgsTuple>::type, ArgsTuple>::type type;
+					template EiSubstitutionCacheSelector<SubSeries, SubCachesCons, ArgsTuple>::Type, ArgsTuple>::Type Type;
 			};
 
 

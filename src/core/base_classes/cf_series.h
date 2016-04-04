@@ -55,7 +55,7 @@ namespace piranha
             {
 				typedef typename Derived::TermType::CfType::
 					template SubstitutionCacheSelector<SubSeries, typename Derived::TermType::KeyType::
-					template SubstitutionCacheSelector<SubSeries, SubCachesCons, ArgsTuple>::type, ArgsTuple>::type Type;
+					template SubstitutionCacheSelector<SubSeries, SubCachesCons, ArgsTuple>::Type, ArgsTuple>::Type Type;
 			};
 
 			template <class ArgsTuple>

@@ -529,61 +529,68 @@ namespace piranha
 		}
 	}
 
-
-    // Initialization functor for substitution cache
-	template <class SubCaches, class SubSeries, class ArgsTuple>
-	class InitSubCaches
+    
+    //TODO: how does substitution work??
+    //
+    // Initialization functor for substitution caches
+	//
+    template <class SubstitutionCaches, class SubstitutionSeries, class ArgsTuple>
+	class InitSubstitutionCaches
 	{
         public:
 
-		static void run(SubCaches &sub_caches, SubSeries const &s, ArgsTuple const *argsTuple) 
+		static void run(SubstitutionCaches &substitutionCaches, SubstitutionSeries const &series, ArgsTuple const *argsTuple) 
 		{
-			sub_caches.get_head().setup(s, argsTuple);
-			InitSubCaches<typename SubCaches::tail_type, SubSeries,ArgsTuple>::run(sub_caches.get_tail(), s, argsTuple);
+			substitutionCaches.get_head().setup(series, argsTuple);
+			InitSubstitutionCaches<typename SubstitutionCaches::tail_type, SubstitutionSeries, ArgsTuple>::run(substitutionCaches.get_tail(), series, argsTuple);
 		}
 	};
 
 
-	template <class SubSeries, class ArgsTuple>
-	class InitSubCaches<boost::tuples::null_type, SubSeries, ArgsTuple>
+    //
+    // terminate recursion for substitution caches intitializtion
+    //
+	template <class SubstitutionSeries, class ArgsTuple>
+	class InitSubstitutionCaches<boost::tuples::null_type, SubstitutionSeries, ArgsTuple>
 	{
         public:
 
-		static void run(boost::tuples::null_type const &, SubSeries const &, ArgsTuple const *) {}
+		static void run(boost::tuples::null_type const &, SubstitutionSeries const &, ArgsTuple const *) {}
 	};
 
+
     //
-    // substitute series s for argument name name
+    // substitute series for argument with name 
     //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	template <class SubSeries>
-	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::sub(const std::string &name, const SubSeries &s) const
+	template <class SubstitutionSeries>
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::substitute(const std::string &name, const SubstitutionSeries &series) const
 	{
 		typedef typename Derived::TermType::CfType::
-			template SubstitutionCacheSelector<SubSeries, typename Derived::TermType::KeyType::
-			template SubstitutionCacheSelector<SubSeries, boost::tuples::null_type, ArgsTupleType>
-			::type, ArgsTupleType>::type    sub_caches_type;
+			template SubstitutionCacheSelector<SubstitutionSeries, typename Derived::TermType::KeyType::
+			template SubstitutionCacheSelector<SubstitutionSeries, boost::tuples::null_type, ArgsTupleType>::Type, ArgsTupleType>::Type    SubstitutionCaches;
 
-		typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type    pos_tuple_type;
+		typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type    PositionTuple;
 
-		PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
+		PIRANHA_STATIC_CHECK(boost::tuples::length<SubstitutionCaches>::value == boost::tuples::length<PositionTuple>::value,
 			"Size mismatch for position and cache tuples in series substitution.");
 
-		const Psym p(name);
-		sub_caches_type sub_caches;
-		Derived this_copy(*derivedConstCast);
-		SubSeries s_copy(s);
-		this_copy.mergeArgs(s_copy);
-		s_copy.mergeArgs(this_copy);
+		SubstitutionCaches substitutionCaches;
+
+		Derived original(*derivedConstCast);
+
+		SubstitutionSeries substitutionCopy(series);
+		original.mergeArgs(substitutionCopy);
+        substitutionCopy.mergeArgs(original);
 
 		// Init substitution caches using s_copy and this_copy.m_arguments.
-		InitSubCaches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.argumentsTuple);
+		InitSubstitutionCaches<SubstitutionCaches, SubstitutionSeries, ArgsTupleType>::run(substitutionCaches, substitutionCopy, &original.argumentsTuple);
 
-		const pos_tuple_type pos_tuple = psyms2pos(VectorPsym(1, p), this_copy.argumentsTuple);
+		PositionTuple const positionTuple = psyms2pos(VectorPsym(1, Psym(name)), original.argumentsTuple);
 
-		Derived retval(this_copy.template baseSub<Derived, typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.argumentsTuple));
+		Derived retval(original.template baseSub<Derived, typename Derived::SubstitutionFunctor>(positionTuple, substitutionCaches, original.argumentsTuple));
 
-		retval.argumentsTuple = this_copy.argumentsTuple;
+		retval.argumentsTuple = original.argumentsTuple;
 		retval.trim();
 
 		return retval;
@@ -595,7 +602,7 @@ namespace piranha
 	{
 		if (n < 0 || n >= boost::tuples::length<ArgsTupleType>::value) 
 		{
-			PIRANHA_THROW(value_error,"splitting level must be a non-negative integer less than the echelon level of the series");
+			PIRANHA_THROW(value_error, "Splitting level must be a non-negative integer less than the echelon level of the series");
 		}
 
 		std::vector<std::vector<Derived> > retval;

@@ -90,7 +90,7 @@ namespace piranha
 				typedef typename Derived::TermType::CfType::
 					template SubstitutionCacheSelector<SubSeries, typename Derived::TermType::KeyType::
 					template SubstitutionCacheSelector<SubSeries, boost::tuples::null_type, ArgsTupleType>
-					::type, ArgsTupleType>::Type sub_caches_type;
+					::Type, ArgsTupleType>::Type sub_caches_type;
 
 				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 					                 "Size mismatch for position and cache tuples in Poisson series substitution.");
@@ -112,10 +112,10 @@ namespace piranha
 				s_copy.mergeArgs(this_copy);
 				// Init sub caches using s and this_copy.m_arguments.
 				sub_caches_type sub_caches;
-				InitSubCaches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.arguments());
+				InitSubstitutionCaches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.arguments());
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1, p), this_copy.arguments());
 
-				Derived retval(this_copy.template baseSub<Derived, typename Derived::sub_functor>(pos_tuple, sub_caches, this_copy.arguments()));
+				Derived retval(this_copy.template baseSub<Derived, typename Derived::SubstitutionFunctor>(pos_tuple, sub_caches, this_copy.arguments()));
 				retval.setArguments(this_copy.arguments());
 				retval.trim();
 
@@ -131,7 +131,7 @@ namespace piranha
 				typedef typename Derived::TermType::CfType::
 					template EiSubstitutionCacheSelector<SubSeries, typename Derived::TermType::KeyType::
 					template EiSubstitutionCacheSelector<SubSeries, boost::tuples::null_type, ArgsTupleType>
-					::type,ArgsTupleType>::type sub_caches_type;
+					::Type, ArgsTupleType>::Type sub_caches_type;
 
 				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 					                 "Size mismatch for position and cache tuples in Poisson series ei substitution.");
@@ -141,7 +141,7 @@ namespace piranha
 				this_copy.mergeArgs(s_copy);
 				s_copy.mergeArgs(this_copy);
 				sub_caches_type sub_caches;
-				InitSubCaches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.arguments());
+				InitSubstitutionCaches<sub_caches_type, SubSeries, ArgsTupleType>::run(sub_caches, s_copy, &this_copy.arguments());
 
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1,p), this_copy.arguments());
 

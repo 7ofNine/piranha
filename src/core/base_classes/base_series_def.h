@@ -304,12 +304,14 @@ namespace piranha
             //@}
 
 			// Standard substitution functor. Will call sub() on coefficients and keys.
-			struct sub_functor {
-				template <class RetSeries, class Element, class PosTuple, class SubCaches, class ArgsTuple>
-				static RetSeries run(const Element &e, const PosTuple &pos_tuple,
-					SubCaches &sub_caches, const ArgsTuple &argsTuple)
+			class SubstitutionFunctor
+            {
+                public:
+
+				template <class RetSeries, class Element, class PositionTuple, class SubsitutionCaches, class ArgsTuple>
+				static RetSeries run(Element const &element, PositionTuple const &positionTuple, SubsitutionCaches &substitutionCaches, ArgsTuple const &argsTuple)
 				{
-					return e.template sub<RetSeries>(pos_tuple, sub_caches, argsTuple);
+					return element.template sub<RetSeries>(positionTuple, substitutionCaches, argsTuple);
 				}
 			};
 

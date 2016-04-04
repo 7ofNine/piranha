@@ -158,13 +158,13 @@ namespace piranha
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct SubstitutionCacheSelector 
 			{
-				typedef boost::tuples::cons<SubCache<SubSeries, ArgsTuple>, SubCachesCons> type;
+				typedef boost::tuples::cons<SubCache<SubSeries, ArgsTuple>, SubCachesCons> Type;
 			};
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
 			struct EiSubstitutionCacheSelector 
 			{
-				typedef boost::tuples::cons<EiSubCache<SubSeries, ArgsTuple>, SubCachesCons> type;
+				typedef boost::tuples::cons<EiSubCache<SubSeries, ArgsTuple>, SubCachesCons> Type;
 			};
 
 

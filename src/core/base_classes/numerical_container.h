@@ -82,13 +82,15 @@ namespace piranha
 			typedef T numerical_type;
 			
 			template <class, class SubCachesCons, class>
-			struct SubstitutionCacheSelector {
-				typedef SubCachesCons type;
+			struct SubstitutionCacheSelector
+            {
+				typedef SubCachesCons Type;
 			};
 
 			template <class, class SubCachesCons, class>
-			struct EiSubstitutionCacheSelector {
-				typedef SubCachesCons type;
+			struct EiSubstitutionCacheSelector
+            {
+				typedef SubCachesCons Type;
 			};
 
 			/// Default constructor, initialises internal value to 0.

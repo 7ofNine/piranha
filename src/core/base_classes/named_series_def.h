@@ -166,8 +166,8 @@ namespace piranha
 			Derived root(int const) const;
 			Derived partial(std::string const &, int const n = 1) const;
 
-			template <class SubSeries>
-			Derived sub(std::string const &, SubSeries const &) const;
+			template <class SubstitutionSeries>
+			Derived substitute(std::string const &, SubstitutionSeries const &) const;
 
 			template <class Key>
 			Derived seriesFromKey(Key const &) const;
