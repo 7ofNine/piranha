@@ -29,24 +29,30 @@ using namespace piranha;
 
 int main()
 {
-settings::set_debug(false);
+//settings::setMultiplicationAlgorithm(settings::ALGORITHM_VECTOR_CODED); // modify for different multiplication algorithms
+#ifdef DEBUG
+    settings::set_debug(false); // only present in debug mode
+#endif
 //settings::set_nthread(16); // temporary: remove
-try{
-	poly x(Psym("x")), y(Psym("y"));
-	poly res((x+y).pow(2).pow(10000));
-	if (res.length() != 20001) {
-		return 1;
-	}
-	std::cout << res.length() << '\n';
-	}catch(p_base_exception &pex)
+    try{
+	    poly x(Psym("x")), y(Psym("y"));
+        const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
+	    poly res((x+y).pow(2).pow(10000)); //original is 10000
+        std::cout << res.length() << std::endl;
+        std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() /1000.0 << " milli seconds" <<std::endl;
+	    if (res.length() != 20001)
+        {
+		    return 1;
+	    }
+	    // std::cout << res.length() << '\n';
+    }catch(p_base_exception &pex)
     {
-	    std::cout << pex.what() << std::endl;
-	    return -1;
-    }
-    catch(std::exception &ex)
+	        std::cout << pex.what() << std::endl;
+	        return -1;
+    }catch(std::exception &ex)
     {
-        std::cout << ex.what() << std::endl;
-        return -1;
+            std::cout << ex.what() << std::endl;
+            return -1;
     }
-	return 0;
+return 0;
 }

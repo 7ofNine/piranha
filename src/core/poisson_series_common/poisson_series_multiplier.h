@@ -259,7 +259,7 @@ namespace piranha
 								tmp_term.key.setFlavour(true);
 								// Canonicalise in-place, so that we don't need to make further copies in the
 								// main insertion function.
-								if (!tmp_term.is_canonical(argsTuple)) 
+								if (!tmp_term.isCanonical(argsTuple)) 
 								{
 									tmp_term.canonicalise(argsTuple);
 								}
@@ -276,7 +276,7 @@ namespace piranha
 								this->decode(vc_res_sin[i], i, tmp_term);
 								tmp_term.key.setFlavour(false);
 
-								if (!tmp_term.is_canonical(argsTuple)) 
+								if (!tmp_term.isCanonical(argsTuple)) 
 								{
 									tmp_term.canonicalise(argsTuple);
 								}
@@ -448,7 +448,7 @@ namespace piranha
 								(c_it->first).divideBy(2, argsTuple);
 								this->decode(c_it->first, c_it->second + 2 * this->m_fast_h.lower(), tmp_term);
 								tmp_term.key.setFlavour(true);
-								if (!tmp_term.is_canonical(argsTuple)) 
+								if (!tmp_term.isCanonical(argsTuple)) 
 								{
 									tmp_term.canonicalise(argsTuple);
 								}
@@ -462,7 +462,7 @@ namespace piranha
 								c_it->first.divideBy(2,argsTuple);
 								this->decode(c_it->first,c_it->second + 2 * this->m_fast_h.lower(),tmp_term);
 								tmp_term.key.setFlavour(false);
-								if (!tmp_term.is_canonical(argsTuple)) 
+								if (!tmp_term.isCanonical(argsTuple)) 
 								{
 									tmp_term.canonicalise(argsTuple);
 								}

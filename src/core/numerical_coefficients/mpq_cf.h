@@ -73,7 +73,7 @@ namespace piranha
 
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
-			bool is_ignorable(const ArgsTuple &) const 
+			bool isIgnorable(const ArgsTuple &) const 
             {
 				return (get_value() == 0);
 			}
@@ -130,7 +130,7 @@ namespace std
 
 			// Override this, hence avoiding to calculate norm.
 			template <class ArgsTuple>
-			bool is_ignorable(const ArgsTuple &) const {
+			bool isIgnorable(const ArgsTuple &) const {
 				return (get_value() == 0);
 			}
 	};

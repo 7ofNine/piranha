@@ -161,7 +161,19 @@ namespace piranha
 			 */
 			explicit Psym(std::string const &name)
 			{
-                connstructFromImpl(PsymImpl(name));
+                // this is not constructFromImpl!
+                PsymImpl pImpl(name);
+                const Iterator itFound = PsymManager::container.find(pImpl);
+				if (itFound == PsymManager::container.end()) 
+				{
+					std::pair<Iterator, bool> const res = PsymManager::container.insert(pImpl);
+					PIRANHA_ASSERT(res.second);
+					it = res.first;
+				} else 
+				{
+					it = itFound;
+				}
+
 			}
 
 
@@ -260,7 +272,7 @@ namespace piranha
 					it = res.first;
 				} else 
 				{
-					it->timeEval = p.timeEval; //overwrite time values
+					itFound->timeEval = p.timeEval; //overwrite time values
 					it = itFound;
 				}
 			}

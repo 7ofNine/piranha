@@ -33,7 +33,7 @@ namespace piranha
 	// Settings' static members.
 	std::size_t settings::m_memory_limit = 1500000000u; // ~ 1.5GByte
 	double settings::m_numerical_zero = 1E-80;
-	bool settings::m_debug = true;
+	bool settings::m_debug = false;
 	const std::string settings::m_version = "@PIRANHA_VERSION_STRING@";
 	const std::size_t settings::cache_size = _PIRANHA_CACHE_SIZE;
 	bool settings::blocker = false;

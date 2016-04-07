@@ -52,19 +52,19 @@ namespace piranha
 
 			/// Check if the term is canonical.
 			template <class ArgsTuple>
-			bool is_canonical(const ArgsTuple &) const 
+			bool isCanonical(const ArgsTuple &) const 
             {
 				return (ancestor::key.sign() > 0);
 			}
 
 
 			// TODO: check if it makes sense to skip the check here and assume canonicalise will be used iff
-			// is_canonical has already been tested.
+			// isCanonical has already been tested.
 			/// Canonicalise the term.
 			template <class ArgsTuple>
 			void canonicalise(const ArgsTuple &argsTuple) 
             {
-				if (!is_canonical(argsTuple)) 
+				if (!isCanonical(argsTuple)) 
                 {
 					invert_trig_args(argsTuple);
 				}

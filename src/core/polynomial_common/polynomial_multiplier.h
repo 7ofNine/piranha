@@ -217,7 +217,7 @@ struct PolynomialVectorFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTu
 	}
 
 
-	void blocksSetup(std::size_t currentIndexStart, std::size_t const blockSize, BlockSequence &indexVector1, BlockSequence &indexVector2)
+	void blocksSetup(std::size_t & currentIndexStart, std::size_t const blockSize, BlockSequence &indexVector1, BlockSequence &indexVector2)
 	{
 		if (currentIndexStart == 0)
 		{
@@ -438,7 +438,7 @@ struct polynomial_multiplier
 				//       so that we can use shifted codes directly as indices.
 				const std::size_t size1 = this->terms1.size();
 				const std::size_t size2 = this->terms2.size();
- std::cout << "sizes: " << size1 << ',' << size2 << '\n';
+ // sizes std::cout << "sizes: " << size1 << ',' << size2 << '\n';
 
 				PIRANHA_ASSERT(size1 && size2);
 
@@ -457,7 +457,7 @@ struct polynomial_multiplier
 //				const std::size_t nthread = settings::get_nthread();
 				//TODO:GUT corrected below. There are problems with the number of threads in several places. This is one.
 				const std::size_t nthread = std::min(settings::get_nthread(), std::min(size1, size2));
-                const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
+//  timing      const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 				
                 // Variables needed by the multiplier.
 				BlockSequence s1;
@@ -482,7 +482,7 @@ struct polynomial_multiplier
 					}
 					tg.join_all();
 				}
- std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
+ // timing     std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() << " micro seconds" <<std::endl;
 				PIRANHA_DEBUG(std::cout << "Done multiplying\n");
 
 				const MaxFastInt i_f = this->m_fast_h.upper();

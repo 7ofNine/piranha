@@ -105,7 +105,7 @@ struct BaseCodedFunctor
 	{}
 
 
-	void baseBlocksSetup(std::size_t currentIndex1Start, std::size_t const blockSize, BlockSequence &indexVector1, BlockSequence &indexVector2)
+	void baseBlocksSetup(std::size_t & currentIndex1Start, std::size_t const blockSize, BlockSequence &indexVector1, BlockSequence &indexVector2)
 	{
 //#ifdef _DEBUG
 //		std::cout << "BaseCodedFunctor::baseBlocksSetup" <<std::endl
@@ -485,21 +485,21 @@ struct BaseCodedFunctor
 
 				if (trunc.isEffective())
 				{
-					derived_cast->ll_perform_multiplication(trunc);
+					derived_cast->llPerformMultiplication(trunc);
 
 				} else
 				{
 					// Sort input series for better cache usage and multi-threaded implementation.
 					std::sort(derived_cast->terms1.begin(), derived_cast->terms1.end(), key_revlex_comparison());
 					std::sort(derived_cast->terms2.begin(), derived_cast->terms2.end(), key_revlex_comparison());
-					derived_cast->ll_perform_multiplication(NullTruncator::template GetType<Series1, Series2, typename Derived::ArgsTupleType>(
+					derived_cast->llPerformMultiplication(NullTruncator::template GetType<Series1, Series2, typename Derived::ArgsTupleType>(
 						                                                                     derived_cast->terms1, derived_cast->terms2, derived_cast->argsTuple));
 				}
 			}
 
 
 			template <class GenericTruncator>
-			void ll_perform_multiplication(const GenericTruncator &trunc)
+			void llPerformMultiplication(const GenericTruncator &trunc)
 			{
 				const settings::MultiplicationAlgorithm algo = settings::getMultiplicationAlgorithm();
 				
