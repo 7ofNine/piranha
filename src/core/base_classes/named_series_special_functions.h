@@ -38,7 +38,7 @@
 namespace piranha
 {
 	template <class Derived>
-	class named_series_special_functions
+	class NamedSeriesSpecialFunctions
 	{
 		public:
 

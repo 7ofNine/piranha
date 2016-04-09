@@ -21,10 +21,12 @@
 #ifndef PIRANHA_BASE_SERIES_SPECIAL_FUNCTIONS_H
 #define PIRANHA_BASE_SERIES_SPECIAL_FUNCTIONS_H
 
-#include <boost/numeric/conversion/cast.hpp>
+
 #include <cstddef>
 #include <string>
 #include <vector>
+
+#include <boost/numeric/conversion/cast.hpp>
 
 #include "../exceptions.h"
 #include "../math.h"
@@ -42,7 +44,7 @@ namespace piranha
 		public:
             // hypergeometric
 			template <class ArgsTuple>
-			Derived baseHyperF(const std::vector<mp_rational> &aList, const std::vector<mp_rational> &bList, const int &iterationLimit, const ArgsTuple &argsTuple) const
+			Derived baseHyperF(std::vector<mp_rational> const &aList, std::vector<mp_rational> const &bList,  int const iterationLimit, ArgsTuple const &argsTuple) const
 			{
 				Derived retval;
 				// If one of the elements in bList is a non-positive integer, a division by zero will occur.
@@ -92,9 +94,9 @@ namespace piranha
 
 					if (!minInt) 
 					{
-						PIRANHA_THROW(value_error, "could not establish a value for the series limit in hyperF: "
+						PIRANHA_THROW(value_error, "Could not establish a value for the series limit in hyperF: "
 							"no explicit limit was provided, the truncator failed to establish a limit and "
-							"no negative integer numbers were found in a_list");
+							"no negative integer numbers were found in aList");
 					}
 
 					PIRANHA_ASSERT(*minInt < 0);
@@ -181,7 +183,7 @@ namespace piranha
 			Derived baseBesselJ(const int order, const ArgsTuple &argsTuple) const 
 			{
 				Derived retval;
-				// Dispatch besselJ to coefficient if series consists of a single coefficient.
+				// Dispatch besselJ to coefficient if series consists of a single coefficient only.
 				if (derived_const_cast->isSingleCf()) 
 				{
 					typedef typename Derived::TermType termType;
@@ -307,7 +309,7 @@ namespace piranha
 				{
 					if (bList[i] <= 0 && bList[i].get_den() == 1) 
 					{
-						PIRANHA_THROW(zero_division_error, "b_list in hyperF contains a non-positive integer");
+						PIRANHA_THROW(zero_division_error, "bList in hyperF contains a non-positive integer");
 					}
 				}
 			}

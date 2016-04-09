@@ -21,11 +21,12 @@
 #ifndef PIRANHA_FOURIER_SERIES_H
 #define PIRANHA_FOURIER_SERIES_H
 
-#include <boost/operators.hpp>
-#include <boost/type_traits/integral_constant.hpp>
 #include <cmath>
 #include <complex>
 #include <memory> // For default allocator.
+
+#include <boost/operators.hpp>
+#include <boost/type_traits/integral_constant.hpp>
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
@@ -68,7 +69,7 @@ namespace piranha
 				public common_fourier_series< FOURIER_SERIES>,
 				public series_multiplication< FOURIER_SERIES, Multiplier, Truncator>,
 				public BaseSeriesSpecialFunctions< FOURIER_SERIES>,
-				public named_series_special_functions< FOURIER_SERIES>,
+				public NamedSeriesSpecialFunctions< FOURIER_SERIES>,
 				public jacobi_anger<0, FOURIER_SERIES>,
 				boost::ring_operators < FOURIER_SERIES,
 				boost::ring_operators < FOURIER_SERIES, double,
@@ -115,7 +116,7 @@ namespace std
 				public piranha::series_multiplication< COMPLEX_FOURIER_SERIES, Multiplier, Truncator>,
 				public piranha::common_fourier_series < COMPLEX_FOURIER_SERIES>,
 				public piranha::BaseSeriesSpecialFunctions< COMPLEX_FOURIER_SERIES>,
-				public piranha::named_series_special_functions< COMPLEX_FOURIER_SERIES>,
+				public piranha::NamedSeriesSpecialFunctions< COMPLEX_FOURIER_SERIES>,
 				public COMPLEX_FOURIER_SERIES_BINOMIAL_ANCESTOR,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES,
 				boost::ring_operators < COMPLEX_FOURIER_SERIES, double,

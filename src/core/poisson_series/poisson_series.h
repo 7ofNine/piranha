@@ -21,11 +21,12 @@
 #ifndef PIRANHA_POISSON_SERIES_H
 #define PIRANHA_POISSON_SERIES_H
 
-#include <boost/operators.hpp>
-#include <boost/type_traits/integral_constant.hpp>
 #include <cmath>
 #include <complex>
 #include <memory> // For default allocator.
+
+#include <boost/operators.hpp>
+#include <boost/type_traits/integral_constant.hpp>
 
 #include "../base_classes/base_series.h"
 #include "../base_classes/base_series_complex_toolbox.h"
@@ -71,7 +72,7 @@ namespace piranha
 				public BasePowerSeries<0, 0, POISSON_SERIES_DEGREE, POISSON_SERIES>,
 				public NamedPowerSeries< POISSON_SERIES_DEGREE, POISSON_SERIES>,
 				public BaseSeriesSpecialFunctions< POISSON_SERIES>,
-				public named_series_special_functions< POISSON_SERIES>,
+				public NamedSeriesSpecialFunctions< POISSON_SERIES>,
 				public celmec< POISSON_SERIES>,
 				boost::ring_operators < POISSON_SERIES,
 				boost::ring_operators < POISSON_SERIES, double,
@@ -119,7 +120,7 @@ namespace std
 				public piranha::BasePowerSeries<0, 0, COMPLEX_POISSON_SERIES_DEGREE, COMPLEX_POISSON_SERIES>,
 				public piranha::NamedPowerSeries< COMPLEX_POISSON_SERIES_DEGREE, COMPLEX_POISSON_SERIES>,
 				public piranha::BaseSeriesSpecialFunctions< COMPLEX_POISSON_SERIES>,
-				public piranha::named_series_special_functions< COMPLEX_POISSON_SERIES>,
+				public piranha::NamedSeriesSpecialFunctions< COMPLEX_POISSON_SERIES>,
 				boost::ring_operators < COMPLEX_POISSON_SERIES,
 				boost::ring_operators < COMPLEX_POISSON_SERIES, double,
 				boost::dividable      < COMPLEX_POISSON_SERIES, double,
