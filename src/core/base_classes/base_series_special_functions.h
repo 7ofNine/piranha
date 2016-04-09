@@ -72,7 +72,7 @@ namespace piranha
 				try {
 					// First we try to respect the given iterationLimit, if any,
 					// otherwise we call the truncator to see what it has to say.
-					iter = (iterationLimit >= 0) ? iterationLimit : derived_const_cast->psi_(0, 1, argsTuple);
+					iter = (iterationLimit >= 0) ? iterationLimit : derived_const_cast->psIterations(0, 1, argsTuple);
 
 				} catch (const value_error &) 
 				{
@@ -228,7 +228,7 @@ namespace piranha
 				// Get the expansion limit from the truncator.
 				std::size_t limit = 0;
 				try {
-					limit = derived_const_cast->psi_(orderNormalized - 1, 2, argsTuple);
+					limit = derived_const_cast->psIterations(orderNormalized - 1, 2, argsTuple);
 				} catch (const value_error &ve) 
 				{
 					PIRANHA_THROW(value_error,std::string("series is unsuitable as argument of the derivative of "

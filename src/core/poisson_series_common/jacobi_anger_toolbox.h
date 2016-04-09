@@ -82,7 +82,7 @@ namespace piranha
 					tmp_term.cf.setReal((*it)->cf, argsTuple);
 					tmp.insert(tmp_term, argsTuple);
 					try {
-						n_ = tmp.psi_(0 , 1, argsTuple);
+						n_ = tmp.psIterations(0 , 1, argsTuple);
 					} catch (const value_error &ve) 
 					{
 						PIRANHA_THROW(value_error,std::string("unable to determine the limit of the Jacobi-Anger development. "

@@ -100,11 +100,11 @@ namespace piranha
 				// Get the expansion limit from the truncator.
 				std::size_t n;
 				try {
-					n = x_a.psi_(0, 1, argsTuple);
+					n = x_a.psIterations(0, 1, argsTuple);
 
 				} catch (const value_error &ve) 
                 {
-					PIRANHA_THROW(value_error,std::string("series is unsuitable for exponentiation through binomial expansion."
+					PIRANHA_THROW(value_error, std::string("Series is unsuitable for exponentiation through binomial expansion."
 						"\nThe reported error is: ")
 						+ ve.what());
 				}
