@@ -34,29 +34,31 @@ namespace piranha
 {
 	// NOTE: this assumes that exponents are in position 0 of arguments tuple.
 	template <class Derived>
-	class common_polynomial_cf
+	class CommonPolynomialCf
 	{
 		public:
-			template <class SubSeries, class SubCachesCons, class ArgsTuple>
-			struct EiSubstitutionCacheSelector
+			template <class SubstitutionSeries, class SubCachesCons, class ArgsTuple>
+			class EiSubstitutionCacheSelector
             {
+                public:
+
 				typedef typename Derived::TermType::CfType::
-					template EiSubstitutionCacheSelector<SubSeries, typename Derived::TermType::KeyType::
-					template EiSubstitutionCacheSelector<SubSeries, SubCachesCons, ArgsTuple>::Type, ArgsTuple>::Type Type;
+					template EiSubstitutionCacheSelector<SubstitutionSeries, typename Derived::TermType::KeyType::
+					template EiSubstitutionCacheSelector<SubstitutionSeries, SubCachesCons, ArgsTuple>::Type, ArgsTuple>::Type Type;
 			};
 
 
-			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			RetSeries eiSub(const PosTuple &p, SubCaches &s, const ArgsTuple &argsTuple) const
+			template <class RetSeries, class PositionTuple, class SubstitutionCaches, class ArgsTuple>
+			RetSeries eiSubstitute(PositionTuple const &positionTuple, SubstitutionCaches &substitutionCaches, ArgsTuple const &argsTuple) const
 			{
-				return derived_const_cast->template baseSub<RetSeries, EiSubFunctor>(p, s, argsTuple);
+				return derived_const_cast->template baseSub<RetSeries, EiSubstitutionFunctor>(positionTuple, substitutionCaches, argsTuple);
 			}
 
 
-			template <class PosTuple, class ArgsTuple>
-			Derived integrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
+			template <class PositionTuple, class ArgsTuple>
+			Derived integrate(PositionTuple const &positionTuple, ArgsTuple const &argsTuple) const
 			{
-				return derived_const_cast->baseIntegrate(pos_tuple, argsTuple);
+				return derived_const_cast->baseIntegrate(positionTuple, argsTuple);
 			}
 	};
 }

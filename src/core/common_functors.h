@@ -84,12 +84,14 @@ namespace piranha
 	};
 
 
-	struct EiSubFunctor {
+	class EiSubstitutionFunctor
+    {
+        public:
 
-		template <class RetSeries, class Element, class PosTuple, class SubCaches, class ArgsTuple>
-		static RetSeries run(const Element &e, const PosTuple &posTuple, SubCaches &subCaches, const ArgsTuple &argsTuple)
+		template <class RetSeries, class Element, class PositionTuple, class SubstitutionCaches, class ArgsTuple>
+		static RetSeries run(Element const &element, PositionTuple const &positionTuple, SubstitutionCaches &substitutionCaches, ArgsTuple const &argsTuple)
         {
-			return e.template eiSub<RetSeries>(posTuple, subCaches, argsTuple);
+			return element.template eiSubstitute<RetSeries>(positionTuple, substitutionCaches, argsTuple);
 		}
 	};
 }

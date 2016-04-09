@@ -301,7 +301,7 @@ namespace pyranha
 	template <class T, class Series>
 	static inline T py_series_ei_sub_string_series(const T &series, const std::string &s, const Series &sub)
 	{
-		return series.template eiSub<Series>(s, sub);
+		return series.template eiSubstitute<Series>(s, sub);
 	}
 
 	template <class T, class Series>

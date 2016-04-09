@@ -124,7 +124,7 @@ namespace piranha
 
 
 			template <class SubSeries>
-			Derived eiSub(const std::string &name, const SubSeries &series) const
+			Derived eiSubstitute(const std::string &name, const SubSeries &series) const
 			{
 				typedef typename Derived::ArgsTupleType ArgsTupleType;
 				typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type pos_tuple_type;
@@ -145,7 +145,7 @@ namespace piranha
 
 				const pos_tuple_type pos_tuple = psyms2pos(std::vector<Psym>(1,p), this_copy.arguments());
 
-				Derived retval(this_copy.template baseSub<Derived, EiSubFunctor>(pos_tuple, sub_caches, this_copy.arguments()));
+				Derived retval(this_copy.template baseSub<Derived, EiSubstitutionFunctor>(pos_tuple, sub_caches, this_copy.arguments()));
 				retval.setArguments(this_copy.arguments());
 				retval.trim();
 				

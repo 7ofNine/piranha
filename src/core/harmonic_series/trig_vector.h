@@ -695,7 +695,7 @@ namespace piranha
 
 
 			template <class ResultSeries, class PosTuple, class SubCaches, class ArgsTuple>
-			ResultSeries eiSub(const PosTuple &pos_tuple, SubCaches &subCaches, const ArgsTuple &argsTuple) const
+			ResultSeries eiSubstitute(const PosTuple &pos_tuple, SubCaches &subCaches, const ArgsTuple &argsTuple) const
 			{
 				ResultSeries retval;
 				
