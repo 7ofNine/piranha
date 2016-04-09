@@ -61,7 +61,7 @@ namespace piranha
     //evaluate series for value t
 	template <__PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline typename TermEvalTypeDeterminer<Term>::type CfSeries<__PIRANHA_CF_SERIES_TP>::eval(const double t, const ArgsTuple &argsTuple) const
+	inline typename TermEvalTypeDeterminer<Term>::Type CfSeries<__PIRANHA_CF_SERIES_TP>::eval(const double t, const ArgsTuple &argsTuple) const
 	{
 		return (derived_const_cast->baseEval(t, argsTuple));
 	}

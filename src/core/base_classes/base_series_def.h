@@ -149,7 +149,7 @@ namespace piranha
 			 * Determined automatically at compile time. Will be double in case of series with scalar coefficients,
 			 * std::complex<double> in case of series with complex coefficients.
 			 */
-			typedef typename TermEvalTypeDeterminer<Term>::type EvalType;
+			typedef typename TermEvalTypeDeterminer<Term>::Type EvalType;
 
 			/// Term separator in textual series representation.
 			static const char separator = Separator;
@@ -211,8 +211,8 @@ namespace piranha
 			template <class ArgsTuple>
 			std::vector<TermType> flattenTerms(const ArgsTuple &) const;
 
-			template <class Layout, class ArgsTuple>
-			void applyLayoutToTerms(const Layout &, Derived &, const ArgsTuple &) const;
+			template <class LayoutTuple, class ArgsTuple>
+			void applyLayoutToTerms(LayoutTuple const &, ArgsTuple const &, Derived &) const;
 
 			template <class TrimFlags>
 			void trimTestTerms(TrimFlags &) const;

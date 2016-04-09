@@ -238,18 +238,20 @@ namespace piranha
 		container.swap(series2.container);  // swap the series terms by swapping the terms container
 	}
 
-
-	/// Apply an arguments layout to all terms and insert them into retval. What is a layout? still have to find out
+    //
+	// Apply an arguments layout to all terms and insert them into retval.
+    // for layout see named_series_manip.h
+    // 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	template <class Layout, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::applyLayoutToTerms(const Layout &l, Derived &retval, const ArgsTuple &argsTuple) const
+	template <class LayoutTuple, class ArgsTuple>
+	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::applyLayoutToTerms(LayoutTuple const &layoutTuple, ArgsTuple const &argsTuple, Derived &retval) const
 	{
-		const const_iterator itf = end();
-		for (const_iterator it = begin(); it != itf; ++it) 
+		const_iterator const itEnd = end();
+		for (const_iterator it = begin(); it != itEnd; ++it) 
 		{
 			TermType term(*it);
-			term.cf.applyLayout(l, argsTuple);
-			term.key.applyLayout(l, argsTuple);
+			term.cf.applyLayout( layoutTuple, argsTuple);
+			term.key.applyLayout(layoutTuple, argsTuple);
 
 			retval.insert(term, argsTuple);
 		}

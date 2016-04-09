@@ -21,11 +21,12 @@
 #ifndef PIRANHA_NAMED_SERIES_PROBE_H
 #define PIRANHA_NAMED_SERIES_PROBE_H
 
-#include <boost/tuple/tuple.hpp>
-#include <boost/tuple/tuple_comparison.hpp>
 #include <cstddef>
 #include <utility>
 #include <vector>
+
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 
 #include "../config.h" // For (un)likely
 #include "../mp.h"
@@ -38,31 +39,37 @@
 
 namespace piranha
 {
+    //
 	// TMP for arguments compatibility check.
+    //
 	template <class ArgsTuple>
-	inline bool named_series_is_args_compatible(const ArgsTuple & a1, const ArgsTuple & a2)
+	inline bool namedSeriesIsArgsCompatible(ArgsTuple const & argsTuple1, ArgsTuple const & argsTuple2)
 	{
-		const std::size_t w = a2.get_head().size();
+		const std::size_t w = argsTuple2.get_head().size();
 
-		if (unlikely(w > a1.get_head().size())) 
+		if (unlikely(w > argsTuple1.get_head().size())) 
 		{
 			return false;
 		}
 
 		for (std::size_t i = 0; i < w; ++i) 
 		{
-			if (unlikely(a1.get_head()[i] != a2.get_head()[i])) 
+			if (unlikely(argsTuple1.get_head()[i] != argsTuple2.get_head()[i]))  // same symbol in same position
 			{
 				return false;
 			}
 		}
 
-		return named_series_is_args_compatible(a1.get_tail(), a2.get_tail());
+        //recurse into argsTuple
+		return namedSeriesIsArgsCompatible(argsTuple1.get_tail(), argsTuple2.get_tail());
 	}
 
 
+    //
+    // terminate recursion fur argument compatibility
+    //
 	template <>
-	inline bool named_series_is_args_compatible<boost::tuples::null_type>(const boost::tuples::null_type &, const boost::tuples::null_type &)
+	inline bool namedSeriesIsArgsCompatible<boost::tuples::null_type>(boost::tuples::null_type const &, boost::tuples::null_type const &)
 	{
 		return true;
 	}
@@ -70,20 +77,22 @@ namespace piranha
 
 	/// Compatibility check for arguments.
 	/**
-	 * Test whether series' arguments are compatible with those from ps2. Compatibility
-	 * means that the number of arguments in all arguments sets are equal to or greater than ps2's, and
-	 * that arguments have the same positions as in ps2's.
-	 * @param[in] ps2 series compatibility is tested against.
+	 * Test whether series' arguments are compatible with those from series2. Compatibility
+	 * means that the number of arguments in all arguments sets/tuple elements are equal to or greater than series2's, and
+	 * that arguments have the same positions as in series2's.
+	 * @param[in] series2 series compatibility is tested against.
 	 */
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
-	inline bool NamedSeries<PIRANHA_NAMED_SERIES_TP>::isArgsCompatible(const Derived2 &ps2) const
+	inline bool NamedSeries<PIRANHA_NAMED_SERIES_TP>::isArgsCompatible(Derived2 const &series2) const
 	{
 		// Use getter in second place because we may be interacting with other series type.
-		return named_series_is_args_compatible(argumentsTuple, ps2.arguments());
+		return namedSeriesIsArgsCompatible(argumentsTuple, series2.arguments());
 	}
 
-
+    //
+    // norm() of the series. norm is what?
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline double NamedSeries<PIRANHA_NAMED_SERIES_TP>::norm() const
 	{
@@ -91,102 +100,133 @@ namespace piranha
 	}
 
 
+    //
+    //  eval() : evaluate series at time t
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename TermEvalTypeDeterminer<Term>::type
-	NamedSeries<PIRANHA_NAMED_SERIES_TP>::eval(const double &t) const
+	inline typename TermEvalTypeDeterminer<Term>::Type
+	NamedSeries<PIRANHA_NAMED_SERIES_TP>::eval(double const &t) const
 	{
 		return derived_const_cast->baseEval(t, argumentsTuple);
 	}
 
-	// TMP function for checking that evaluation dictionary has all the elements needed.
-	static inline bool check_eval_dict(const EvalDict &, const boost::tuples::null_type &)
-	{
-		return true;
-	}
 
+    //
+    // TMP function for checking that evaluation dictionary has all the elements needed.
+    //
 	template <class ArgsTuple>
-	static inline bool check_eval_dict(const EvalDict &d, const ArgsTuple &argsTuple)
+	static inline bool checkEvalDict(EvalDict const &dictionary, ArgsTuple const &argsTuple)
 	{
-		const std::size_t size = argsTuple.get_head().size();
-		const EvalDict::const_iterator it_f = d.end();
+		std::size_t const size = argsTuple.get_head().size();
+		EvalDict::const_iterator const itEnd = dictionary.end();
 
 		for (std::size_t i = 0; i < size; ++i)
         {
 			// If the dictionary does not contain the symbol's name, return false.
-			if (d.find(argsTuple.get_head()[i].getName()) == it_f)
+			if (dictionary.find(argsTuple.get_head()[i].getName()) == itEnd)
             {
 				return false;
 			}
 		}
 
-		// Check next tuple position.
-		return check_eval_dict(d, argsTuple.get_tail());
-	}
-
-	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline typename TermEvalTypeDeterminer<Term>::type
-	NamedSeries<PIRANHA_NAMED_SERIES_TP>::eval(const EvalDict &d) const
-	{
-		if (!check_eval_dict(d, argumentsTuple)) 
-		{
-			PIRANHA_THROW(value_error,"evaluation dictionary does not contain entries for all the symbols of the series");
-		}
-
-		// Vector of original time evaluation vectors, paired with the corresponding symbol.
-		// NOTE: here we allocate dynamically. This can be avoided by fixing a max number of items in time evaluation for psyms
-		// and using static vectors. We should test performance before bothering though.
-		std::vector<std::pair<Psym,std::vector<double> > > orig_eval;
-		orig_eval.reserve(d.size());
-		const EvalDict::const_iterator it_f(d.end());
-
-		for (EvalDict::const_iterator it = d.begin(); it != it_f; ++it)
-        {
-			orig_eval.push_back(std::make_pair(Psym(it->first), Psym(it->first).getTimeEval()));
-			Psym(it->first, it->second);
-		}
-
-		const typename TermEvalTypeDeterminer<Term>::type retval(eval(0));
-
-		// Restore original evaluation vectors.
-		// NOTE: here RAII here, to be exception safe?
-		for (std::size_t i = 0; i < orig_eval.size(); ++i)
-        {
-			orig_eval[i].first.setTimeEval(orig_eval[i].second);
-		}
-		return retval;
+		// recurse to next tuple position.
+		return checkEvalDict(dictionary, argsTuple.get_tail());
 	}
 
 
-	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::size_t NamedSeries<PIRANHA_NAMED_SERIES_TP>::psi(const int start, const int step) const
-	{
-		return derived_const_cast->psi_(start, step, argumentsTuple);
-	}
-
-
-	inline bool tuple_vector_same_sizes(const boost::tuples::null_type &, const boost::tuples::null_type &)
+    //
+	// TMP function for checking that evaluation dictionary has all the elements needed.
+	//
+    // terminate recursion
+    static inline bool checkEvalDict(EvalDict const &, boost::tuples::null_type const &)
 	{
 		return true;
 	}
 
 
-	template <class TupleVector1, class TupleVector2>
-	inline bool tuple_vector_same_sizes(const TupleVector1 &tv1, const TupleVector2 &tv2)
+    //
+    //
+    //
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline typename TermEvalTypeDeterminer<Term>::Type
+	NamedSeries<PIRANHA_NAMED_SERIES_TP>::eval(EvalDict const &dictionary) const
 	{
-		if (tv1.get_head().size() != tv2.get_head().size()) 
-        {
-			return false;
+		if (!checkEvalDict(dictionary, argumentsTuple)) 
+		{
+			PIRANHA_THROW(value_error, "Evaluation dictionary does not contain entries for all the symbols of the series");
 		}
-		return tuple_vector_same_sizes(tv1.get_tail(), tv2.get_tail());
+
+		// Vector of original time evaluation vectors, paired with the corresponding symbol.
+		// NOTE: here we allocate dynamically. This can be avoided by fixing a max number of items in time evaluation for psyms
+		// and using static vectors. We should test performance before bothering though.
+		std::vector<std::pair<Psym, std::vector<double> > > originalEval;
+		originalEval.reserve(dictionary.size());
+
+		const EvalDict::const_iterator itEnd(dictionary.end());
+
+		for (EvalDict::const_iterator it = dictionary.begin(); it != itEnd; ++it)
+        {
+			originalEval.push_back(std::make_pair(Psym(it->first), Psym(it->first).getTimeEval()));
+			Psym(it->first, it->second);
+		}
+
+		typename TermEvalTypeDeterminer<Term>::Type const retval(eval(0));
+
+		// Restore original evaluation vectors.
+		// NOTE: here RAII here, to be exception safe?
+		for (std::size_t i = 0; i < originalEval.size(); ++i)
+        {
+			originalEval[i].first.setTimeEval(originalEval[i].second);
+		}
+
+		return retval;
 	}
 
 
+    //
+    //  psi() determine power series iterations
+    //
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline std::size_t NamedSeries<PIRANHA_NAMED_SERIES_TP>::psi(int const start, int const step) const
+	{
+		return derived_const_cast->psi_(start, step, argumentsTuple);
+	}
+
+
+    //
+    // check if the tuple elements, which are vectors, are of the same size
+    //
+    // terminate recursion for the tuple Element size
+	inline bool tupleVectorSameSizes(boost::tuples::null_type const &, boost::tuples::null_type const&)
+	{
+		return true;
+	}
+
+
+    //
+    // check that the tuple elements are of same size (the elements are vectors)
+    //
+	template <class Tuple1, class Tuple2>
+	inline bool tupleVectorSameSizes(const Tuple1 &tuple1, const Tuple2 &tuple2)
+	{
+		if (tuple1.get_head().size() != tuple2.get_head().size())  // here we test the size. get_head gives the element (i.e. vector)
+        {
+			return false;
+		}
+
+		return tupleVectorSameSizes(tuple1.get_tail(), tuple2.get_tail());
+	}
+
+
+    //
+    // check on equality
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline bool NamedSeries<PIRANHA_NAMED_SERIES_TP>::isEqualTo(const T &other) const
+	inline bool NamedSeries<PIRANHA_NAMED_SERIES_TP>::isEqualTo(T const &other) const
 	{
-		// If the sizes of the arguments tuples do not coincide, series are different.
-		if (!tuple_vector_same_sizes(argumentsTuple, other.argumentsTuple)) 
+		// If the sizes of the arguments tuple elements do not coincide, series are different.
+		if (!tupleVectorSameSizes(argumentsTuple, other.argumentsTuple)) 
         {
 			return false;
 		}
@@ -198,23 +238,25 @@ namespace piranha
 			return derived_const_cast->baseEqualTo(other);
 		}
 
-		// If we have same sizes of arguments tuples but they are not identical, then we may have to do
-		// an arguments merge an see if the arguments are permutated or they are really different.
-		// NOTE: this check is repeated in baseEqualTo, but doing it here could save a lot of work below.
+        // different number of terms can not be equal
 		if (derived_const_cast->length() != other.length())
         {
 			return false;
 		}
 
+		// If we have same sizes of arguments tuples but they are not identical, then we may have to do
+		// an arguments merge an see if the arguments are permutations of each other or if they are really different.
+		// NOTE: this check is repeated in baseEqualTo, but doing it here could save a lot of work below.
 
 		// Build a tuple of layouts.
-		typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type layout;
+		//typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type layout;
+        LayoutTuple<typename Derived::ArgumentsDescription>::Type layoutTuple;
 		// Get the relative layouts of this wrt other and put the result into layout.
-		NamedSeriesGetLayout<ArgsTupleType>::run(argumentsTuple, other.arguments(), layout);
+		NamedSeriesGetLayout<ArgsTupleType>::run(argumentsTuple, other.arguments(), layoutTuple);
 
 		// If the layout is bigger than the current ags tuple, it means that it is not a permutation,
 		// there are different arguments in this and other. Hence we can return false.
-		if (!tuple_vector_same_sizes(argumentsTuple, layout)) 
+		if (!tupleVectorSameSizes(argumentsTuple, layoutTuple)) 
         {
 			return false;
 		}
@@ -226,27 +268,33 @@ namespace piranha
 		tmp.argumentsTuple = argumentsTuple;
 
 		// Apply the layout to the arguments tuple of retval.
-		NamedSeriesApplyLayoutToArgs<ArgsTupleType>::run(tmp.argumentsTuple, other.arguments(), layout);
+		NamedSeriesApplyLayoutToArgs<ArgsTupleType>::run(tmp.argumentsTuple, other.arguments(), layoutTuple);
 		
         // Apply the layout to all terms of this and insert them into tmp.
-		derived_const_cast->applyLayoutToTerms(layout, tmp, tmp.argumentsTuple);
+		derived_const_cast->applyLayoutToTerms(layoutTuple, tmp.argumentsTuple, tmp);
 		
         // Now we can perform the comparison between tmp and other.
 		return tmp.baseEqualTo(other);
 	}
 
 
+    //
+    //  compare ==
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline bool NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator==(const T &x) const
+	inline bool NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator==(T const &x) const
 	{
 		return NamedSeriesEqualitySelector<T>::run(*derived_const_cast, x);
 	}
 
 
+    //
+    //  compare  !=
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class T>
-	inline bool NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator!=(const T &x) const
+	inline bool NamedSeries<PIRANHA_NAMED_SERIES_TP>::operator!=(T const &x) const
 	{
 		return !(operator==(x));
 	}

@@ -58,13 +58,15 @@ namespace piranha
 		derived_cast->baseSwap(series2);
 	}
 
-
+    //
+    // apply a layout combining this with argsTuple
+    //
 	template <__PIRANHA_CF_SERIES_TP_DECL>
-	template <class Layout, class ArgsTuple>
-	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::applyLayout(const Layout &layout, const ArgsTuple &argsTuple)
+	template <class LayoutTuple, class ArgsTuple>
+	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::applyLayout(LayoutTuple const &layoutTuple, ArgsTuple const &argsTuple)
 	{
 		Derived retval;
-		derived_cast->applyLayoutToTerms(layout, retval, argsTuple);
+		derived_cast->applyLayoutToTerms(layoutTuple, argsTuple, retval);
 		derived_cast->baseSwap(retval);
 	}
 

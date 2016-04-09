@@ -132,8 +132,8 @@ namespace piranha
 			
             void swap(Derived &);
 			double norm() const;
-			typename TermEvalTypeDeterminer<Term>::type eval(double const &) const;
-			typename TermEvalTypeDeterminer<Term>::type eval(EvalDict const &) const;
+			typename TermEvalTypeDeterminer<Term>::Type eval(double const &) const;
+			typename TermEvalTypeDeterminer<Term>::Type eval(EvalDict const &) const;
 			
             std::size_t psi(int const start = 0, int const step = 1) const;
 			

@@ -389,7 +389,7 @@ namespace piranha
 		NamedSeriesApplyLayoutToArgs<ArgsTupleType>::run(retval.argumentsTuple, series2.arguments(), layoutTuple);
 		
 		// Apply the layout to all terms of this, which will be inserted into retval.
-		derivedConstCast->applyLayoutToTerms(layoutTuple, retval, retval.argumentsTuple);
+		derivedConstCast->applyLayoutToTerms(layoutTuple, retval.argumentsTuple, retval);
 		
 		// Finally, swap the contents of retval with this. this is now a series with argumentTuple that combines this and series2
         // i.e. operations like addition and multiplication can now be executed.

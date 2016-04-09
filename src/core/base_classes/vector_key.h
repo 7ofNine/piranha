@@ -21,15 +21,16 @@
 #ifndef PIRANHA_VECTOR_KEY_H
 #define PIRANHA_VECTOR_KEY_H
 
-#include <boost/functional/hash.hpp>
-#include <boost/numeric/conversion/cast.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <cstddef>
 #include <iostream>
 #include <memory>
 #include <utility>
 #include <vector>
+
+#include <boost/functional/hash.hpp>
+#include <boost/numeric/conversion/cast.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/type_traits/is_same.hpp>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -151,16 +152,18 @@ namespace piranha
 			}
 
 
-			/// Apply layout tuple.
-			/**
-			 * A layout tuple is a tuple of vectors of pairs bool,std::size_t.
-			 */
-			template <class Layout, class ArgsTuple>
-			void applyLayout(const Layout &l, const ArgsTuple &)
+            //
+			// Apply layout tuple.
+            // change the layout of the key according to the layoutTuple element in Position
+			// The position of the  elements in the container are reordered according to the corresponding layoutElement
+			// A layout tuple is a tuple of vectors of pairs bool, std::size_t.
+			//
+			template <class LayoutTuple, class ArgsTuple>
+			void applyLayout(LayoutTuple const &layoutTuple, ArgsTuple const &)
 			{
-				PIRANHA_STATIC_CHECK((boost::is_same<std::vector<std::pair<bool, std::size_t> >, typename boost::tuples::element<Position, Layout>::type>::value), "Wrong layout type.");
+				PIRANHA_STATIC_CHECK((boost::is_same<std::vector<std::pair<bool, std::size_t> >, typename boost::tuples::element<Position, LayoutTuple>::type>::value), "Wrong layout type.");
 				// TODO: add check about tuples length.
-				const size_type layoutSize = boost::numeric_cast<size_type>(l.template get<Position>().size());
+				const size_type layoutSize = boost::numeric_cast<size_type>(layoutTuple.template get<Position>().size());
 
 				// The layout must have at least all arguments in this.
 				PIRANHA_ASSERT(layoutSize >= container.size());
@@ -169,14 +172,14 @@ namespace piranha
 
 				for (size_type i = 0; i < layoutSize; ++i) 
 				{
-					if (l.template get<Position>()[i].first) 
+					if (layoutTuple.template get<Position>()[i].first) // layout effective on *this
 					{
-						PIRANHA_ASSERT(l.template get<Position>()[i].second < container.size());
-						newContainer[i] = container[boost::numeric_cast<size_type>(l.template get<Position>()[i].second)];
+						PIRANHA_ASSERT(layoutTuple.template get<Position>()[i].second < container.size());
+						newContainer[i] = container[boost::numeric_cast<size_type>(layoutTuple.template get<Position>()[i].second)];
 					}
 				}
 
-				newContainer.swap(container);
+				newContainer.swap(container); // replace 
 			}
 
 

@@ -39,10 +39,9 @@ namespace piranha
 		public:
 
 			template <class ArgsTuple>
-			std::size_t psi_(const int &start, const int &step, const ArgsTuple &argsTuple) const
+			std::size_t psi_(int const start, int const step, ArgsTuple const &argsTuple) const
 			{
-				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
-					Truncator>::truncator_type::powerSeriesIterations(*derived_const_cast, start, step, argsTuple);
+				return Multiplier::template get_type<Derived, Derived, ArgsTuple, Truncator>::truncator_type::powerSeriesIterations(*derived_const_cast, start, step, argsTuple);
 			}
 
 

@@ -35,42 +35,45 @@
 namespace piranha
 {
 	// Fwd declaration.
-	template <class Cf, class Key> class tetd_helper;
+	template <class Cf, class Key> class TermEvalTypeDeterminerHelper;
 
+    // templates for determining type  to which a term evaluates when a time value is used
 	template <class Term>
 	class TermEvalTypeDeterminer
 	{
 		public:
-			typedef typename tetd_helper<typename Term::CfType::EvalType, typename Term::KeyType::EvalType>::type type;
+			typedef typename TermEvalTypeDeterminerHelper<typename Term::CfType::EvalType, typename Term::KeyType::EvalType>::Type Type;
 	};
 
 	template <class CfEval, class KeyEval>
-	class tetd_helper
+	class TermEvalTypeDeterminerHelper
 	{
 		public:
-			typedef double type;
+			typedef double Type;
 	};
 
 	template <>
-	class tetd_helper<double,std::complex<double> >
+	class TermEvalTypeDeterminerHelper<double, std::complex<double> >
 	{
 		public:
-			typedef std::complex<double> type;
+			typedef std::complex<double> Type;
 	};
 
 	template <>
-	class tetd_helper<std::complex<double>,double>
+	class TermEvalTypeDeterminerHelper<std::complex<double> ,double>
 	{
 		public:
-			typedef std::complex<double> type;
+			typedef std::complex<double> Type;
 	};
 
 	template <>
-	class tetd_helper<std::complex<double>,std::complex<double> >
+	class TermEvalTypeDeterminerHelper<std::complex<double>, std::complex<double> >
 	{
 		public:
-			typedef std::complex<double> type;
+			typedef std::complex<double> Type;
 	};
+
+
 
 	/// Default type trait for exact ring operations.
 	/**
