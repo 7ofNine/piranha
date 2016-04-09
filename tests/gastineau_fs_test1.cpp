@@ -20,7 +20,8 @@
 
 #include <iostream>
 
-#include "../src/manipulators/dfs.h"
+//#include "../src/manipulators/dfs.h"
+#include "piranha.h"
 
 using namespace piranha;
 using namespace piranha::manipulators;
@@ -31,15 +32,36 @@ typedef dfs stype;
 
 int main()
 {
-	settings::set_debug(true);
+    int retval = 0;
+#ifdef DEBUG
+	settings::set_debug(false);
+#endif
+try{
 	stype elp3("elp3.dfs");
-	std::cout << "calculate pow 3"<<std::endl << std::flush;
-	elp3 = elp3.pow(3);
-	std::cout << "construct by copy"<<std::endl << std::flush;
+	std::cout << "input :" << " length: " << elp3.length() << " atoms: " << elp3.atoms() << std::endl;
+    retval +=(elp3.length() != 702)||(elp3.atoms() != 1404);
+    std::cout << "read: " << retval;
+
+    elp3 = elp3.pow(3);
 	stype elp3a(elp3);
-	std::cout << "square"<<std::endl << std::flush;
-	truncators::Norm::set(1.0E10);
-	elp3 * elp3a;
-	std::cout << elp3.length() << '\n';
-	std::cout << elp3a.length() << '\n';
+    std::cout << "copy construct :" << " length: " << elp3a.length() << " atoms: " << elp3a.atoms() << std::endl;
+    retval += (elp3a.length() != elp3.length())||(elp3a.length() != 60205);
+    std::cout << "copy construct : " << retval << std::endl;
+
+	dfs square  = elp3 * elp3a;
+    retval += ((square.length() != 980359)) || ((square.atoms() != 1960718));
+   	std::cout << "square : " << " length :" << square.length() << " atoms: " << square.atoms() << std::endl;
+	std::cout << "gastineau_fs_test1: " << retval<< std::endl;
+}catch(p_base_exception &pex)
+    {
+	    std::cout << pex.what() << std::endl;
+	    return -1;
+    }
+catch(std::exception &ex)
+    {
+        std::cout << ex.what() << std::endl;
+        return -1;
+    }
+
+    return retval;
 }

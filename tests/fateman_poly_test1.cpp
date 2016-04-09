@@ -18,7 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/dpoly.h"
+//#include "../src/manipulators/dpoly.h"
+#include "piranha.h"
 
 // Fateman's polynomial multiplication test number 1. Calculate:
 // s*(s+1)
@@ -30,8 +31,10 @@ typedef dpoly poly;
 
 int main()
 {
+#ifdef DEBUG
 settings::set_debug(false);
-settings::set_nthread(16);
+#endif
+//settings::set_nthread(16);
   Psym x("x"), y("y"), z("z"), t("t");
   poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(1) , b(a);
   a = a.pow(30);

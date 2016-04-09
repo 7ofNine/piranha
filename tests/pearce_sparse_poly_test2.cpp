@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/dpoly.h"
-
+//#include "../src/manipulators/dpoly.h"
+#include "piranha.h"
 // Pearce's sparse polynomial multiplication test 2. Calculate:
 // f^5*g^5
 // where 
@@ -31,23 +31,30 @@ typedef dpoly poly;
 
 int main()
 {
-  dpoly t1("pearce_sparse3.dpoly");
-  dpoly t2("pearce_sparse4.dpoly");
-  dpoly u1(t1);
-  dpoly u2(t2);
-  t1*=u1;
-  t1*=u1;
-  t1*=u1;
-  t1*=u1;
+  try{
 
-  t2*=u2;
-  t2*=u2;
-  t2*=u2;
-  t2*=u2;
+    dpoly t1("pearce_sparse3.dpoly");
+    dpoly t2("pearce_sparse4.dpoly");
+    dpoly u1(t1);
+    dpoly u2(t2);
+    t1*=u1;
+    t1*=u1;
+    t1*=u1;
+    t1*=u1;
 
-  t1*=t2;
+    t2*=u2;
+    t2*=u2;
+    t2*=u2;
+    t2*=u2;
 
-  std::cout << std::endl << t1.length() << std::endl;
+    t1*=t2;
+
+    std::cout << std::endl << t1.length() << std::endl;
+ } catch(std::exception ex)
+ {
+    std::cout << ex.what() << std::endl;
+    return 1;
+ } 
 
   return 0;
 }

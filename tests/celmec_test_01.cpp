@@ -18,7 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/qps.h"
+//#include "../src/manipulators/qps.h"
+#include "piranha.h"
 
 // Exercise celmec expansions, trigonometric functions, substitution and pow.
 

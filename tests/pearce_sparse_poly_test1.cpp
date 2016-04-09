@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/dpoly.h"
-
+//#include "../src/manipulators/dpoly.h"
+#include "piranha.h"
 // Pearce's sparse polynomial multiplication test 1. Calculate:
 // f*g
 // where 
@@ -33,14 +33,14 @@ using namespace piranha;
 int main()
 {
 //settings::set_debug(true);
-    settings::setMultiplicationAlgorithm(settings::ALGORITHM_PLAIN);
+//    settings::setMultiplicationAlgorithm(settings::ALGORITHM_PLAIN);
 	poly x(Psym("x")), y(Psym("y")), z(Psym("z")), t(Psym("t")), u(Psym("u"));
 	poly f = (x + y + z*z*2 + t*t*t*3 + u.pow(5)*5 + 1).pow(12);
 	poly g = (u + t + z*z*2 + y*y*y*3 + x.pow(5)*5 + 1).pow(12);
 	f *= g;
-	std::cout << f.length() << '\n';
-	if (f.length() != 5821335) {
-		return 1;
-	}
-	return 0;
+
+    int retval = f.length() != 5821335;
+	std::cout << "pearce_sprse_poly_test1. : " << " length: " << f.length() << " atoms: " << f.atoms() << std::endl;
+    std::cout << "retval: " << retval << std::endl;
+	return retval;
 }

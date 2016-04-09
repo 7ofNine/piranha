@@ -18,7 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/dpoly.h"
+//#include "../src/manipulators/dpoly.h"
+#include "piranha.h"
 
 // Calculate:
 // ((x+y)**2)*10000

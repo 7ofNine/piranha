@@ -18,8 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "../src/manipulators/qps.h"
-#include "../src/manipulators/zpoly.h"
+//#include "../src/manipulators/qps.h"
+//#include "../src/manipulators/zpoly.h"
+#include "piranha.h"
 
 // Exercise substitution.
 
@@ -41,5 +42,6 @@ int main()
 	retval += !(g.substitute("x", zpoly(x) + 1).substitute("x", zpoly(x) - 1) == g);
 	retval += (qps(x).cos().eiSub("x", qpsc(std::complex<double>(1, 0))) != 1);
 	retval += (qps(x).sin().eiSub("x", qpsc(std::complex<double>(1, 0))) != 0);
+    std::cout << retval << std::endl;
 	return retval;
 }
