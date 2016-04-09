@@ -182,7 +182,7 @@ namespace piranha
             {
 				std::cout << "Finished parsing " << argumentTypeName << " argument." << std::endl;
 				infile.seekg(currentPosition);
-				appendArg(line, Psym(name, timeEval));
+				appendArg(argumentTypeName, Psym(name, timeEval));
 				return;
 			}
 
