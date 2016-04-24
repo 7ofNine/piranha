@@ -6,7 +6,7 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2009-06-04 07:36:43 -0400 (Thu, 04 Jun 2009) $
+ * $Date$
  */
 
 
@@ -90,7 +90,7 @@ namespace date_time {
       uint64_t micros = winapi::file_time_to_microseconds(ft); // it will not wrap, since ft is the current time
                                                                // and cannot be before 1970-Jan-01
       std::time_t t = static_cast<std::time_t>(micros / 1000000UL); // seconds since epoch
-      // microseconds -- static casts supress warnings
+      // microseconds -- static casts suppress warnings
       boost::uint32_t sub_sec = static_cast<boost::uint32_t>(micros % 1000000UL);
 #else
 #error Internal Boost.DateTime error: BOOST_DATE_TIME_HAS_HIGH_PRECISION_CLOCK is defined, however neither gettimeofday nor FILETIME support is detected.
@@ -98,9 +98,9 @@ namespace date_time {
 
       std::tm curr;
       std::tm* curr_ptr = converter(&t, &curr);
-      date_type d(curr_ptr->tm_year + 1900,
-                  curr_ptr->tm_mon + 1,
-                  curr_ptr->tm_mday);
+      date_type d(static_cast< typename date_type::year_type::value_type >(curr_ptr->tm_year + 1900),
+                  static_cast< typename date_type::month_type::value_type >(curr_ptr->tm_mon + 1),
+                  static_cast< typename date_type::day_type::value_type >(curr_ptr->tm_mday));
 
       //The following line will adjust the fractional second tick in terms
       //of the current time system.  For example, if the time system
@@ -108,9 +108,9 @@ namespace date_time {
       //and all the fractional seconds return 0.
       int adjust = static_cast< int >(resolution_traits_type::res_adjust() / 1000000);
 
-      time_duration_type td(curr_ptr->tm_hour,
-                            curr_ptr->tm_min,
-                            curr_ptr->tm_sec,
+      time_duration_type td(static_cast< typename time_duration_type::hour_type >(curr_ptr->tm_hour),
+                            static_cast< typename time_duration_type::min_type >(curr_ptr->tm_min),
+                            static_cast< typename time_duration_type::sec_type >(curr_ptr->tm_sec),
                             sub_sec * adjust);
 
       return time_type(d,td);
