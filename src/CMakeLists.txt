@@ -17,8 +17,13 @@ IF(WIN32)
 	SET(SRC_LIST ${SRC_LIST}
 		boost_thread/win32/thread.cpp
 		boost_thread/win32/tss_dll.cpp
-		boost_thread/win32/tss_pe.cpp
+#		boost_thread/win32/tss_pe.cpp
 	)
+	SET(SRC_LIST_STATIC
+	    boost_thread/tss_null.cpp
+	    boost_system/error_code.cpp)
+	SET(SRC_LIST_DLL 
+	    boost_system/error_code.cpp)
 ELSE(WIN32)
 	SET(SRC_LIST ${SRC_LIST}
 		boost_thread/pthread/once.cpp
@@ -69,7 +74,7 @@ IF(BUILD_PYRANHA)
 ENDIF(BUILD_PYRANHA)
 
 IF(BUILD_MAIN OR BUILD_TESTS)
-	ADD_LIBRARY(piranha_static STATIC ${SRC_LIST})
+	ADD_LIBRARY(piranha_static STATIC ${SRC_LIST} ${SRC_LIST_STATIC})
 	SET_PROPERTY(TARGET piranha_static PROPERTY COMPILE_DEFINITIONS BOOST_THREAD_BUILD_LIB)
 	TARGET_LINK_LIBRARIES(piranha_static ${MANDATORY_LIBRARIES})
 	SET_TARGET_PROPERTIES(piranha_static PROPERTIES LINKER_LANGUAGE CXX)
