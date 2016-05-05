@@ -203,7 +203,8 @@ class coded_hash_table
 				<< sizes[m_size_policy][m_size_index] << '\n');
 			PIRANHA_DEBUG(std::cout << "On destruction, the load factor was: "
 				<< double(m_length) / (sizes[m_size_policy][m_size_index] * bucket_size) << '\n');
-			PIRANHA_ASSERT(sizes[m_size_policy][m_size_index] == m_container.size());
+// GUT: commented . throws inside a destructor
+//			PIRANHA_ASSERT(sizes[m_size_policy][m_size_index] == m_container.size());
 		}
 		/// Return an iterator to the first element of the table.
 		/**

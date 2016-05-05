@@ -23,7 +23,8 @@ IF(WIN32)
 	    boost_thread/tss_null.cpp
 	    boost_system/error_code.cpp)
 	SET(SRC_LIST_DLL 
-	    boost_system/error_code.cpp)
+	    boost_system/error_code.cpp
+		boost_chrono/chrono.cpp)
 ELSE(WIN32)
 	SET(SRC_LIST ${SRC_LIST}
 		boost_thread/pthread/once.cpp
@@ -63,7 +64,7 @@ IF(BUILD_PYRANHA)
 		boost_python/wrapper.cpp
 	)
 	ADD_DEFINITIONS(-D_PIRANHA_DLL_EXPORT_API -DBOOST_PYTHON_SOURCE)
-	ADD_LIBRARY(piranha SHARED ${SRC_LIST} ${SHARED_SRC_LIST})
+	ADD_LIBRARY(piranha SHARED ${SRC_LIST} ${SHARED_SRC_LIST} ${SRC_LIST_DLL})
 	SET_PROPERTY(TARGET piranha PROPERTY COMPILE_DEFINITIONS BOOST_THREAD_BUILD_DLL)
 	SET_TARGET_PROPERTIES(piranha PROPERTIES LINKER_LANGUAGE CXX)
 	TARGET_LINK_LIBRARIES(piranha ${MANDATORY_LIBRARIES} ${PYTHON_LIBRARY})
