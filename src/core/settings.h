@@ -98,7 +98,7 @@ namespace piranha
 			static bool blocker;
 			static std::size_t get_max_pretty_print_size();
 			static void set_max_pretty_print_size(int);
-			static unsigned get_nthread();
+			static std::size_t get_nthread();
 			static void set_nthread(const int &);
 
 			static MultiplicationAlgorithm getMultiplicationAlgorithm()

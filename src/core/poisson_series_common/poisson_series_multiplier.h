@@ -26,7 +26,6 @@
 #include <utility> // For std::pair.
 #include <vector>
 
-#include <boost/lambda/lambda.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -197,7 +196,7 @@ namespace piranha
                                                           std::vector<const TermType1 *> &t1,  std::vector<const TermType2 *> &t2,
                                                           const GenericTruncator &truncator)
 					{
-						stats::trace_stat("mult_st", std::size_t(0), boost::lambda::_1 + 1);
+						stats::trace_stat("mult_st", std::size_t(0), increment);
 						std::vector<CfType1, std_counting_allocator<CfType1> > vc_cos;
                         std::vector<CfType1, std_counting_allocator<CfType1> > vc_sin;
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
@@ -413,7 +412,7 @@ namespace piranha
                                                         std::vector<const TermType1 *> &t1,  std::vector<const TermType2 *> &t2,
                                                         GenericTruncator const &truncator)
 					{
-						stats::trace_stat("mult_st", std::size_t(0), boost::lambda::_1 + 1);
+						stats::trace_stat("mult_st", std::size_t(0), increment);
 
 						typedef coded_hash_table<CfType1, MaxFastInt, std_counting_allocator<char> > csht;
 						typedef typename csht::iterator c_iterator;

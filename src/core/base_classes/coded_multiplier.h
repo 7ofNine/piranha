@@ -25,7 +25,6 @@
 #include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/iterator/permutation_iterator.hpp>
-#include <boost/lambda/lambda.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
@@ -55,6 +54,10 @@
 // - use power of 2 coding for hash coded?
 // - cache usage: determine optimal size at runtime, e.g., inspecting the size of MP coefficients?
 // - numeric cast in coded functor & friends.
+
+namespace {
+    auto increment = [](const std::size_t x) -> std::size_t { return x + 1; }; // increment functor
+}
 
 namespace piranha
 {
@@ -418,7 +421,7 @@ struct BaseCodedFunctor
 					case MULTIPLICATION_HASH:
 						name = "multiplication_hash";
 				}
-				stats::trace_stat(name, std::size_t(0), boost::lambda::_1 + 1);
+				stats::trace_stat(name, std::size_t(0), increment);
 			}
 
 		public:
@@ -596,6 +599,8 @@ struct BaseCodedFunctor
 				// - m_mp_h's width must be within halft MaxFastInt's range (needed for 2*chi shifting).
 				// Use lexical cast for max interoperability between numerical types.
 				// NOTE: here probably we can reduce greatly the number of memory allocations...
+//                auto f = [](const std::size_t x) -> std::size_t { return x + 1; }; // increment functor
+
 				if (boost::numeric::subset(m_mp_h,boost::numeric::interval<mp_integer>(
 					boost::lexical_cast<mp_integer>(boost::integer_traits<MaxFastInt>::const_min),
 					boost::lexical_cast<mp_integer>(boost::integer_traits<MaxFastInt>::const_max))) &&
@@ -605,11 +610,10 @@ struct BaseCodedFunctor
 					// Mark representation as viable.
 					m_gr_is_viable = true;
 					// Log viability.
-					stats::trace_stat("mult_coded_feasible", std::size_t(0),boost::lambda::_1 + 1);
-
+                    stats::trace_stat("mult_coded_feasible", std::size_t(0), increment);
 				} else 
 				{
-					stats::trace_stat("mult_coded_unfeasible", std::size_t(0),boost::lambda::_1 + 1);
+					stats::trace_stat("mult_coded_unfeasible", std::size_t(0), increment);
 				}
 			}
 
