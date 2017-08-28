@@ -118,8 +118,8 @@ def __series_eval(self,arg):
 	if isinstance(arg,(float,int)):
 		return self.__eval__(arg)
 	if isinstance(arg,dict):
-		from pyranha.Core import eval_dict
-		d = eval_dict()
+		from pyranha.Core import EvalDict
+		d = EvalDict()
 		for t in arg:
 			# Check that all entries are of the right type.
 			if not isinstance(t,str) or not isinstance(arg[t],(float,int)):

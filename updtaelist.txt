@@ -1,0 +1,120 @@
+This is all meant to make the code readable and actually understandable
+
+a) remove underscores
+b) capitalize class names
+c) replace struct by class
+d) make names more descriptive
+e) add comments for documentation
+f) follow parameter sequence pattern input-> output
+
+
+
+				piranha.h
+				core/utils.h
+				core/type_traits.h
+				core/stats.h
+				core/settings.h
+xxx				core/Psym.h
+				core/power_cache.h
+				core/p_exceptions.h
+xxx				core/ntuple.h
+				core/mp.h
+				core/memory.h
+				core/math.h
+				core/integer_typedefs.h
+				core/exceptions.h
+				core/config.h
+				core/common_functors.h
+				core/coded_hash_table.h
+xxx				core/truncators/degree.h
+xxx				core/truncators/norm.h
+xxx				core/truncators/power_series.h
+xxx				core/truncators/truncators.h
+xxx				core/polynomial/polynomial.h
+xxx				core/polynomial/named_polynomial.h
+xxx				core/polynomial_common/base_polynomial.h
+xxx				core/polynomial_common/expo_vector.h
+				core/polynomial_common/expo_vector_mp.h
+				core/polynomial_common/monomial.h
+				core/polynomial_common/polynomial_multiplier.h
+xxx				core/polynomial_cf/common_polynomial_cf_toolbox.h
+				core/polynomial_cf/polynomial_cf.h
+				core/poisson_series_common/celmec_toolbox.h
+				core/poisson_series_common/common_poisson_series_toolbox.h
+				core/poisson_series_common/jacobi_anger_toolbox.h
+				core/poisson_series_common/poisson_series_multiplier.h
+				core/poisson_series/poisson_series.h
+				core/numerical_coefficients/double_cf.h
+				core/numerical_coefficients/mpf_cf.h
+				core/numerical_coefficients/mpq_cf.h
+				core/numerical_coefficients/mpz_cf.h
+				core/harmonic_series/base_harmonic_series.h
+				core/harmonic_series/named_harmonic_series.h
+XXX				core/harmonic_series/trig_vector.h
+xxx				core/harmonic_series/trig_vector_mp.h
+				core/fourier_series/base_fourier_series.h
+				core/fourier_series/common_fourier_series_toolbox.h
+				core/fourier_series/fourier_series.h
+				core/fourier_series/fourier_series_term.h
+				core/fourier_series/named_fourier_series.h
+				core/base_classes/base_counting_allocator.h
+xxx				core/base_classes/base_power_series.h
+xxx				core/base_classes/base_series.h
+xxx				core/base_classes/base_series_complex_toolbox.h
+xxx				core/base_classes/base_series_def.h
+xxx				core/base_classes/base_series_io.h
+xxx				core/base_classes/base_series_manip.h
+xxx				core/base_classes/base_series_math.h
+xxx				core/base_classes/base_series_mp.h
+xxx				core/base_classes/base_series_multiplier.h
+xxx				core/base_classes/base_series_multiplier_mp.h
+xxx				core/base_classes/base_series_probe.h
+xxx				core/base_classes/base_series_special_functions.h
+xxx				core/base_classes/base_series_tag.h
+xxx				core/base_classes/base_term.h
+xxx				core/base_classes/binomial_exponentiation_toolbox.h
+xxx				core/base_classes/cf_power_series.h
+xxx				core/base_classes/cf_series.h
+xxx				core/base_classes/cf_series_complex_toolbox.h
+xxx				core/base_classes/cf_series_io.h
+xxx				core/base_classes/cf_series_manip.h
+xxx				core/base_classes/cf_series_math.h
+xxx				core/base_classes/cf_series_probe.h
+xxx				core/base_classes/cf_series_special_functions.h
+				core/base_classes/coded_multiplier.h
+				core/base_classes/coded_multiplier_mp.h
+xxx				core/base_classes/common_args_descriptions.h
+xxx				core/base_classes/named_power_series.h
+xxx				core/base_classes/named_series.h
+				core/base_classes/named_series_complex_toolbox.h
+xxx				core/base_classes/named_series_def.h
+xxx				core/base_classes/named_series_io.h
+xxx				core/base_classes/named_series_manip.h
+xxx				core/base_classes/named_series_math.h
+xxx				core/base_classes/named_series_mp.h
+xxx				core/base_classes/named_series_probe.h
+				core/base_classes/named_series_special_functions.h
+xxx				core/base_classes/null_truncator.h
+				core/base_classes/numerical_container.h
+				core/base_classes/numerical_container_complex_toolbox.h
+				core/base_classes/numerical_container_mp.h
+				core/base_classes/numerical_container_tag.h
+				core/base_classes/series_multiplication.h
+				core/base_classes/series_multiplier.h
+xxx				core/base_classes/vector_key.h
+				core/atomic_counters/atomic_counter_gcc_41.h
+				core/atomic_counters/atomic_counter_generic.h
+				core/atomic_counters/atomic_counter_msvc_long.h
+				core/atomic_counters/atomic_counters.h
+				core/mp/complex_generic_mp_container.h
+				core/mp/mp_commons.h
+				core/mp/piranha_gmp.h
+				manipulators/dfs.h
+				manipulators/dpoly.h
+				manipulators/dps.h
+				manipulators/dqps.h
+				manipulators/qpoly.h
+				manipulators/qps.h
+				manipulators/qqpoly.h
+				manipulators/qqps.h
+				manipulators/zpoly.h

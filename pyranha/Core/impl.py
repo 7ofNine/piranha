@@ -19,8 +19,8 @@
 
 class __psyms(object):
 	def __repr__(self):
-		from pyranha.Core import psym
-		l = psym.list()
+		from pyranha.Core import Psym
+		l = Psym.list()
 		retval = ''
 		if not l:
 			return 'No symbols defined.'

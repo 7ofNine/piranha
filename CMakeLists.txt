@@ -37,6 +37,7 @@ CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_QQPS "Build rational coefficient - rational
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build PyQt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF)
 OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 
+   
 # Set default build type to "Release", change it in the GUI if you need to build with debug.
 IF(NOT CMAKE_BUILD_TYPE)
 	SET(CMAKE_BUILD_TYPE Release CACHE STRING
@@ -123,6 +124,11 @@ ENDIF(BUILD_MAIN)
 IF(BUILD_TESTS)
 	ADD_SUBDIRECTORY(tests)
 ENDIF(BUILD_TESTS)
+
+# Installation directory
+if(CMAKE_INSTALL_PREFIX_INTIALIZED_TO_DEFAULT)
+   set(CMAKE_INSTALL_PREFIX ${MY_PYRANHA_INSTALL} CACHE PATH "..." FORCE)
+endif()
 
 # Pyranha: piranha's python bindings
 IF(BUILD_PYRANHA)
