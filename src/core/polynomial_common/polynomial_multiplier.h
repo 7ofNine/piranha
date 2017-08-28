@@ -23,7 +23,6 @@
 
 #include <algorithm> // For std::max.
 #include <boost/integer_traits.hpp>
-#include <boost/lambda/lambda.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/thread/barrier.hpp>
 #include <boost/thread/thread.hpp>
@@ -467,13 +466,13 @@ struct polynomial_multiplier
 				// TODO: probably we need to rethink a bit this, taking into account also the number of threads. Also drop the truncation limitation.
 				if (trunc.isEffective() || (this->terms1.size() * this->terms2.size()) <= 400 || nthread == 1) 
                 {
-					stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
+					stats::trace_stat("mult_st", std::size_t(0), increment);
 					ThreadedBlockedMultiplier<VectorFunctorType> t(block_size, size1, size2, 0, 1, 0, cur_idx1_start, breakout, vm, s1, s2);
 					t();
 				} else 
                 {
 					PIRANHA_DEBUG(std::cout << "using " << nthread << " threads\n");
-					stats::trace_stat("mult_mt", std::size_t(0), boost::lambda::_1 + 1);
+					stats::trace_stat("mult_mt", std::size_t(0), increment);
 					boost::thread_group tg;
 					boost::barrier b(nthread);
 					for (std::size_t i = 0; i < nthread; ++i) 
@@ -515,7 +514,7 @@ struct polynomial_multiplier
 				typedef coded_hash_table<cf_type1, MaxFastInt, std_counting_allocator<char> > csht;
 
 				typedef typename csht::iterator c_iterator;
-				stats::trace_stat("mult_st",std::size_t(0),boost::lambda::_1 + 1);
+				stats::trace_stat("mult_st", std::size_t(0), increment);
 				// Let's find a sensible size hint.
 				const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);
 				const std::size_t size_hint = static_cast<std::size_t>(

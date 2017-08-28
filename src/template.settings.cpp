@@ -91,7 +91,7 @@ namespace piranha
 		m_nthread = boost::numeric_cast<unsigned>(n);
 	}
 
-	unsigned settings::get_nthread()
+	std::size_t settings::get_nthread()
 	{
 		return m_nthread;
 	}
