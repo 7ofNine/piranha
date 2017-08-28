@@ -239,7 +239,7 @@ namespace piranha
 				if (!m_value.get_num().fits_sint_p()) {
 					PIRANHA_THROW(std::overflow_error,"numerator is too large while converting rational to int");
 				}
-				return m_value.get_num().get_si();
+				return static_cast<int>(m_value.get_num().get_si());
 			}
 			/// Swap content.
 			/**
@@ -598,7 +598,7 @@ namespace piranha
 				if (!m_value.fits_sint_p()) {
 					PIRANHA_THROW(std::overflow_error,"multiprecision integer too big to be converted to int");
 				}
-				return m_value.get_si();
+				return static_cast<int>(m_value.get_si());
 			}
 			/// Swap content.
 			/**
