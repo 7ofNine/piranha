@@ -26,12 +26,13 @@
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <windows.h>
+#include "../config.h"
 
 /// Atomic counter class for Visual Studio C++.
 /**
  * Will use MSVC's atomic builtins.
  */
-class atomic_counter_msvc_long
+class PIRANHA_VISIBLE atomic_counter_msvc_long
 {
 	public:
 		/// Default constructor.

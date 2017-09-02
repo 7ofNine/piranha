@@ -44,10 +44,6 @@ CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build PyQt4 gui for pyranha." OFF "BUI
 #this also builds the static library. Should we have a specific option for the static library?
 OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 
-# control build of static library
-#IF(BUILD_PYRANHA)  # do we need the static library for PYRANHA?? 
-#        SET(BUILD_PIRANHA_STATIC TRUE)
-#ENDIF()
 
 # control build of load library (dll)        
 IF(BUILD_PYRANHA)
@@ -124,10 +120,12 @@ IF(BUILD_TESTS)
         ADD_SUBDIRECTORY(tests)
 ENDIF(BUILD_TESTS)
 
+# should be set form outside
+SET(MY_PIRANHA_INSTALL "D:\\temp for tests\\Piranha")
 # Installation directory
-            #$$if(CMAKE_INSTALL_PREFIX_INTIALIZED_TO_DEFAULT)
-            #$$   set(CMAKE_INSTALL_PREFIX ${MY_PYRANHA_INSTALL} CACHE PATH "..." FORCE)
-            #$$endif()
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+        SET(CMAKE_INSTALL_PREFIX ${MY_PIRANHA_INSTALL} CACHE PATH "..." FORCE)
+endif()
 
 # Pyranha: piranha's python bindings
 IF(BUILD_PYRANHA)

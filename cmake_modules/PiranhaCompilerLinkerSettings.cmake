@@ -19,72 +19,17 @@
 INCLUDE(CheckCXXCompilerFlag)
 
 SET(PIRANHA_EXTRA_LINK_FLAGS "")
-#$$IF(CMAKE_COMPILER_IS_GNUCXX)
-#$$	MESSAGE(STATUS "Detected GNU compiler")
-#$$	# Visibility checks.
-#$$	CHECK_CXX_COMPILER_FLAG(-fvisibility-inlines-hidden HAVE_VISIBILITY_INLINES_HIDDEN_FLAG)
-#$$	CHECK_CXX_COMPILER_FLAG(-fvisibility=hidden HAVE_VISIBILITY_HIDDEN_FLAG)
-#$$	IF(HAVE_VISIBILITY_INLINES_HIDDEN_FLAG AND HAVE_VISIBILITY_HIDDEN_FLAG AND NOT MINGW)
-#$$		MESSAGE(STATUS "GCC supports the visibility attributes")
-#$$		# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
-#$$		TRY_COMPILE(WORKING_VISIBILITY_INLINES_HIDDEN ${CMAKE_BINARY_DIR}/compile_tests/ ${CMAKE_SOURCE_DIR}/cmake_modules/simple_main.cpp COMPILE_DEFINITIONS -fvisibility-inlines-hidden)
-#$$		IF(WORKING_VISIBILITY_INLINES_HIDDEN)
-#$$			MESSAGE(STATUS "GCC version correctly supports the '-fvisibility-inlines-hidden' flag")
-#$$			# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden")
-#$$		ELSE(WORKING_VISIBILITY_INLINES_HIDDEN)
-#$$			MESSAGE(STATUS "Buggy GCC version, '-fvisibility-inlines-hidden' flag does not work")
-#$$		ENDIF(WORKING_VISIBILITY_INLINES_HIDDEN)
-#$$	ELSE(HAVE_VISIBILITY_INLINES_HIDDEN_FLAG AND HAVE_VISIBILITY_HIDDEN_FLAG AND NOT MINGW)
-#$$		MESSAGE(STATUS "GCC does not support the visibility attributes")
-#$$	ENDIF(HAVE_VISIBILITY_INLINES_HIDDEN_FLAG AND HAVE_VISIBILITY_HIDDEN_FLAG AND NOT MINGW)
-#$$	# Support for c++0x.
-#$$	CHECK_CXX_COMPILER_FLAG(-std=c++0x HAVE_CPP0X_SUPPORT)
-#$$	IF(HAVE_CPP0X_SUPPORT)
-#$$		MESSAGE(STATUS "Compiler supports c++0x features")
-#$$		#ADD_DEFINITIONS(-D_PIRANHA_CPP0X)
-#$$		#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-#$$	ENDIF(HAVE_CPP0X_SUPPORT)
-#$$	# Extra warnings for the GCC compiler.
-#$$	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fmessage-length=0 -Wdisabled-optimization")
-#$$	ADD_DEFINITIONS(-D_GNU_SOURCE -D_REENTRANT)
-#$$	# Atomic builtins for GCC.
-#$$	TRY_COMPILE(WORKING_ATOMIC_BUILTINS ${CMAKE_BINARY_DIR}/compile_tests/ ${CMAKE_SOURCE_DIR}/cmake_modules/gcc_atomic_builtins_test.cpp COMPILE_DEFINITIONS ${CMAKE_CCXX_FLAGS})
-#$$	IF(WORKING_ATOMIC_BUILTINS)
-#$$		MESSAGE(STATUS "GCC is correctly setup to support atomic builtins.")
-#$$		ADD_DEFINITIONS(-D_PIRANHA_GCC_ATOMIC_BUILTINS)
-#$$	ELSE(WORKING_ATOMIC_BUILTINS)
-#$$		MESSAGE(STATUS "Either this GCC version does not support atomic builtins or the CXXFLAGS are not properly set to enable them.")
-#$$		MESSAGE(STATUS "Please note that atomic builtins are supported from version 4.1.0 of GCC and need an appropriate '-march' flag (e.g., at least '-march=i486' on x86 architectures).")
-#$$	ENDIF(WORKING_ATOMIC_BUILTINS)
-#$$	# MinGW and UNIX specifics.
-#$$	IF(MINGW)
-#$$		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdata-sections -mno-cygwin")
-#$$		SET(PIRANHA_EXTRA_LINK_FLAGS "${PIRANHA_EXTRA_LINK_FLAGS} --enable-runtime-pseudo-reloc")
-#$$		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mthreads")
-#$$		#should be build type dependent
-#$$		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -abc")
-#$$	ELSE(MINGW)
-#$$		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-#$$	ENDIF(MINGW)
-#$$ELSEIF(MSVC)
-#$$	ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB)
-#$$#	ADD_DEFINITIONS(-DBOOST_HAS_STDINT_H)
-#$$#	ADD_DEFINITIONS(-D_HAS_CPP0X=0)
-#$$	ADD_DEFINITIONS(-DNOMINMAX)
-#$$	ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
-#$$ENDIF(CMAKE_COMPILER_IS_GNUCXX)
-#$$
-# Setup link flags.
 
 IF(MSVC)
-        ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB)
+        ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB) # don't include boost library versions as #pragma
 #        ADD_DEFINITIONS(-DBOOST_HAS_STDINT_H)
 #        ADD_DEFINITIONS(-D_HAS_CPP0X=0)
 	ADD_DEFINITIONS(-DNOMINMAX) # get rid of the min/mas macro MS defines
 	ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
-        ADD_DEFINITIONS(-DWIN32_LEAN_AND_MEAN)  # minimal windows 
-        ADD_DEFINITIONS(-D_PIRANHA_CPP0X)
-ENDIF()
+#        ADD_DEFINITIONS(-DWIN32_LEAN_AND_MEAN)  # minimal windows 
+        ADD_DEFINITIONS(-D_PIRANHA_CPP0X)       # enable piranha CPP0X TODO: remove. we won;t support anything without it
+ENDIF()        
+        
 
 
 IF(PIRANHA_EXTRA_LINK_FLAGS)
