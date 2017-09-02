@@ -3,6 +3,7 @@
 
 # Copyright (c) 2006, Laurent Montel, <montel@kde.org>
 # Copyright (c) 2007, 2008 Francesco Biscani, <bluescarni@gmail.com>
+# COpyright (c) 2017 Hartmuth Gutsche
 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -28,35 +29,41 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------------------
 
-# Try to find the GMP librairies:
-# GMP_FOUND - System has GMP lib
-# GMP_INCLUDE_DIR - The GMP include directory
-# GMP_LIBRARIES - Libraries needed to use GMP
-# GMPXX_INCLUDE_DIR - The GMP C++ interface include directory
-# GMPXX_LIBRARIES - Libraries needed to use GMP's C++ interface
 
-IF(GMP_INCLUDE_DIR AND GMP_LIBRARIES AND GMPXX_INCLUDE_DIR AND GMPXX_LIBRARIES)
+# Try to find the MPIR librairies:
+# MPIR_FOUND        - System has MPIR lib
+# MPIR_INCLUDE_DIR  - The MPIR include directory
+# MPIR_LIBRARIES    - Libraries needed to use MPIR and its C++ interface
+#
+# for MSVC we use the MPIR, and windows MPFR implementations of GMP/MPFR
+# see git@github.com:wbhart/mpir.git and https://github.com/BrianGladman/mpfr.git
+# i.e. all names are changed to MPIR, originally this was Gnu GMP
+# 
+
+
+IF(MPIR_INCLUDE_DIR AND MPIR_LIBRARIES)
 	# Already in cache, be silent
-	SET(GMP_FIND_QUIETLY TRUE)
-ENDIF(GMP_INCLUDE_DIR AND GMP_LIBRARIES AND GMPXX_INCLUDE_DIR AND GMPXX_LIBRARIES)
+	SET(MPIR_FIND_QUIETLY TRUE)
+ENDIF(MPIR_INCLUDE_DIR AND MPIR_LIBRARIES)
 
-FIND_PATH(GMP_INCLUDE_DIR NAMES gmp.h)
-FIND_LIBRARY(GMP_LIBRARIES NAMES gmp)
-FIND_PATH(GMPXX_INCLUDE_DIR NAMES gmpxx.h)
-FIND_LIBRARY(GMPXX_LIBRARIES NAMES gmpxx)
+# We are only looking for the DLL version. The dll version should also include the C++ interface
+# It gets linked via the *.lib stub
+# we also only want the 64 Bit versions
+FIND_PATH(MPIR_INCLUDE_DIR NAMES mpir.h PATHS D:\\Dev\\mpir\\dll\\x64\\Release) # we don't use this file but thats where gmp.h, gmpxx.h are, too
+FIND_LIBRARY(MPIR_LIBRARIES NAMES mpir.lib PATHS D:\\Dev\\mpir\\dll\\x64\\Release)
 
-IF(GMP_INCLUDE_DIR AND GMP_LIBRARIES AND GMPXX_INCLUDE_DIR AND GMPXX_LIBRARIES)
-	SET(GMP_FOUND TRUE)
-ENDIF(GMP_INCLUDE_DIR AND GMP_LIBRARIES AND GMPXX_INCLUDE_DIR AND GMPXX_LIBRARIES)
+IF(MPIR_INCLUDE_DIR AND MPIR_LIBRARIES)
+	SET(MPIR_FOUND TRUE)
+ENDIF(MPIR_INCLUDE_DIR AND MPIR_LIBRARIES)
 
-IF(GMP_FOUND)
-	IF(NOT GMP_FIND_QUIETLY)
-		MESSAGE(STATUS "Found GMP: ${GMP_LIBRARIES}, ${GMPXX_LIBRARIES}")
-	ENDIF(NOT GMP_FIND_QUIETLY)
-ELSE(GMP_FOUND)
-	IF(GMP_FIND_REQUIRED)
-		MESSAGE(FATAL_ERROR "Could NOT find GMP")
-	ENDIF(GMP_FIND_REQUIRED)
-ENDIF(GMP_FOUND)
+IF(MPIR_FOUND)
+	IF(NOT MPIR_FIND_QUIETLY)
+		MESSAGE(STATUS "Found MPIR: ${MPIR_LIBRARIES}")
+	ENDIF(NOT MPIR_FIND_QUIETLY)
+ELSE(MPIR_FOUND)
+	IF(MPIR_FIND_REQUIRED)
+		MESSAGE(SEND_ERROR "Could NOT find MPIR")
+	ENDIF(MPIR_FIND_REQUIRED)
+ENDIF(MPIR_FOUND)
 
-MARK_AS_ADVANCED(GMP_INCLUDE_DIR GMP_LIBRARIES GMPXX_INCLUDE_DIR GMPXX_LIBRARIES)
+MARK_AS_ADVANCED(MPIR_INCLUDE_DIR MPIR_LIBRARIES)

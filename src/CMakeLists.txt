@@ -1,16 +1,27 @@
 SET(SRC_LIST "")
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/template.settings.cpp ${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/template.settings.cpp ${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp) # generate the settings.cpp file from the detected paramters
 
-SET(SRC_LIST ${SRC_LIST}
-	degree_truncator.cpp
-	norm_truncator.cpp
-	math.cpp
-	memory.cpp
-	settings.cpp
-	Psym.cpp
-	stats.cpp
+SET(SRC_LIST ${SRC_LIST} degree_truncator.cpp
+                         norm_truncator.cpp
+                         math.cpp
+                         memory.cpp
+                         settings.cpp
+                         Psym.cpp
+                         stats.cpp
 )
+
+SET(SRC_LIST_HEADERS core/mp.h core/psym.h core/truncators/degree.h
+                     core/exceptions.h core/settings.h core/truncators/norm.h
+                     core/exceptions.h core/mp.h
+                     core/atomic_counters/atomic_counters.h core/base_classes/base_counting_allocator.h
+                     core/config.h core/exceptions.h core/memory.h core/settings.h
+                     core/Psym.h
+                     core/stats.h
+)
+
+SET(SRC_LIST ${SRC_LIST} ${SRC_LIST_HEADERS})  # combine src and headers for MSVC projects
+
 
 #ADD_DEFINITIONS(-DBOOST_THREAD_BUILD_LIB)
 IF(WIN32)
@@ -19,12 +30,14 @@ IF(WIN32)
 		boost_thread/win32/tss_dll.cpp
 #		boost_thread/win32/tss_pe.cpp
 	)
+        
 	SET(SRC_LIST_STATIC
 	    boost_thread/tss_null.cpp
 	    boost_system/error_code.cpp)
-	SET(SRC_LIST_DLL 
+	
+        SET(SRC_LIST_DLL 
 	    boost_system/error_code.cpp
-		boost_chrono/chrono.cpp)
+	    boost_chrono/chrono.cpp)
 ELSE(WIN32)
 	SET(SRC_LIST ${SRC_LIST}
 		boost_thread/pthread/once.cpp
@@ -32,7 +45,7 @@ ELSE(WIN32)
 	)
 ENDIF(WIN32)
 
-IF(BUILD_PYRANHA)
+IF(BUILD_PYRANHA)  # then we build the piranha.dll
 	SET(SHARED_SRC_LIST
 		boost_python/converter/arg_to_python_base.cpp
 		boost_python/converter/builtin_converters.cpp
@@ -63,7 +76,9 @@ IF(BUILD_PYRANHA)
 		boost_python/tuple.cpp
 		boost_python/wrapper.cpp
 	)
+        
 	ADD_DEFINITIONS(-D_PIRANHA_DLL_EXPORT_API -DBOOST_PYTHON_SOURCE)
+        INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
 	ADD_LIBRARY(piranha SHARED ${SRC_LIST} ${SHARED_SRC_LIST} ${SRC_LIST_DLL})
 	SET_PROPERTY(TARGET piranha PROPERTY COMPILE_DEFINITIONS BOOST_THREAD_BUILD_DLL)
 	SET_TARGET_PROPERTIES(piranha PROPERTIES LINKER_LANGUAGE CXX)
@@ -74,12 +89,13 @@ IF(BUILD_PYRANHA)
 	)
 ENDIF(BUILD_PYRANHA)
 
-IF(BUILD_MAIN OR BUILD_TESTS)
-	ADD_LIBRARY(piranha_static STATIC ${SRC_LIST} ${SRC_LIST_STATIC})
+IF(BUILD_PIRANHA_STATIC)
+	ADD_LIBRARY(piranha_static STATIC ${SRC_LIST} ${SRC_LIST_STATIC}) # define target piranha_static.lib
+        
 	SET_PROPERTY(TARGET piranha_static PROPERTY COMPILE_DEFINITIONS BOOST_THREAD_BUILD_LIB)
 	TARGET_LINK_LIBRARIES(piranha_static ${MANDATORY_LIBRARIES})
 	SET_TARGET_PROPERTIES(piranha_static PROPERTIES LINKER_LANGUAGE CXX)
-ENDIF(BUILD_MAIN OR BUILD_TESTS)
+ENDIF()
 
 #FILE(GLOB_RECURSE INCS "*.h")
 
@@ -204,4 +220,4 @@ SET(INCS
 				../pyranha/stl_containers.h
 				)
 				
-ADD_CUSTOM_TARGET(Headers SOURCES ${INCS})
+ADD_CUSTOM_TARGET(Headers SOURCES ${INCS}) # Make all the headers visible in the project view.

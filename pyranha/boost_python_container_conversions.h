@@ -218,7 +218,7 @@ derivative works thereof, in binary and source code form.
         return 0;
       }
       if (ConversionPolicy::check_convertibility_per_element()) {
-        int obj_size = PyObject_Length(obj_ptr);
+        auto obj_size = PyObject_Length(obj_ptr);
         if (obj_size < 0) { // must be a measurable sequence
           PyErr_Clear();
           return 0;
