@@ -365,8 +365,8 @@ struct BaseCodedFunctor
 	class CodedMultiplier
 	{
 			// Some static checks.
-			PIRANHA_STATIC_CHECK(Series1::echelonLevel == Series2::echelonLevel, "");
-			PIRANHA_STATIC_CHECK(boost::tuples::length<OpTuple>::value == Series1::echelonLevel + 1, "");
+        static_assert(Series1::echelonLevel == Series2::echelonLevel, "");
+        static_assert(boost::tuples::length<OpTuple>::value == Series1::echelonLevel + 1, "");
 			// Main typedefs, for internal use.
 			// min/max type for input series.
 			typedef typename cm_tuple<Series1>::type_minmax minmax_type;
@@ -383,8 +383,8 @@ struct BaseCodedFunctor
 			typedef typename cm_tuple<Series1>::type_decoding_tuple decoding_tuple_type;
 			// These static checks makes sure that the two series have compatible types in the echelon
 			// hierarchy, apart from the numerical coefficients.
-			PIRANHA_STATIC_CHECK((boost::is_same<minmax_type, typename cm_tuple<Series2>::type_minmax>::value), "");
-			PIRANHA_STATIC_CHECK((boost::is_same<value_handler_type, typename cm_tuple<Series2>::type_value_handler>::value), "");
+            static_assert((boost::is_same<minmax_type, typename cm_tuple<Series2>::type_minmax>::value), "");
+            static_assert((boost::is_same<value_handler_type, typename cm_tuple<Series2>::type_value_handler>::value), "");
 			
 			// Generalised reverse lexicographic comparison.
 			class key_revlex_comparison

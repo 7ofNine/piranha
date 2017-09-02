@@ -91,7 +91,7 @@ namespace piranha
 	class SeriesFlattener
 	{
 		public:
-			PIRANHA_STATIC_CHECK(N > 0, "");
+            static_assert(N > 0, "");
 
 			template <class CfSeries, class Term, class ArgsTuple>
 			static void run(CfSeries &cfSeries, Term &term, std::vector<Term> &out, const ArgsTuple &argsTuple)

@@ -32,7 +32,7 @@ namespace piranha
 	template <class T, int N>
 	struct NTuple
 	{
-		PIRANHA_STATIC_CHECK(N > 0, "");
+        static_assert(N > 0, "");
 
 		typedef boost::tuples::cons < T, typename NTuple < T, N - 1 >::Type > Type;
 	};

@@ -92,7 +92,7 @@ namespace piranha
 					template SubstitutionCacheSelector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 					::Type, ArgsTupleType>::Type sub_caches_type;
 
-				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
+                static_assert(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 					                 "Size mismatch for position and cache tuples in Poisson series substitution.");
 				const Psym p(name);
 				Derived this_copy(*derived_const_cast);
@@ -133,7 +133,7 @@ namespace piranha
 					template EiSubstitutionCacheSelector<SubSeries, boost::tuples::null_type, ArgsTupleType>
 					::Type, ArgsTupleType>::Type sub_caches_type;
 
-				PIRANHA_STATIC_CHECK(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
+                static_assert(boost::tuples::length<sub_caches_type>::value == boost::tuples::length<pos_tuple_type>::value,
 					                 "Size mismatch for position and cache tuples in Poisson series ei substitution.");
 				const Psym p(name);
 				Derived this_copy(*derived_const_cast);
@@ -214,7 +214,7 @@ namespace piranha
 			template <typename PosTuple, typename ArgsTuple>
 			Derived baseIntegrate(const PosTuple &pos_tuple, const ArgsTuple &argsTuple) const
 			{
-				PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
+                static_assert(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in Poisson series integration.");
 
 				typedef typename Derived::const_iterator                     const_iterator;

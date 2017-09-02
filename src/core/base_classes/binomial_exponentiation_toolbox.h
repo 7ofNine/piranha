@@ -118,7 +118,7 @@ namespace piranha
 			{
 				typedef typename Derived::TermType TermType;
 
-				PIRANHA_STATIC_CHECK((boost::is_same<Term, typename Derived::TermType>::value), "Term type mismatch in binomial expansion.");
+                static_assert((boost::is_same<Term, typename Derived::TermType>::value), "Term type mismatch in binomial expansion.");
 
 				// Start the binomial expansion.
 				TermType tmpTerm;

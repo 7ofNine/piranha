@@ -94,7 +94,7 @@ namespace piranha
 			static const std::string &get_version();
 			/// Cache size in kilobytes.
 			static const std::size_t cache_size;// = _PIRANHA_CACHE_SIZE;
-//			PIRANHA_STATIC_CHECK(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
+//			static_assert(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
 			static bool blocker;
 			static std::size_t get_max_pretty_print_size();
 			static void set_max_pretty_print_size(int);

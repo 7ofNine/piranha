@@ -59,7 +59,7 @@ namespace piranha
 			// Alias for term type of second input series.
 			typedef typename Series2::TermType TermType2;
 
-			PIRANHA_STATIC_CHECK((boost::is_same<typename TermType1::KeyType, typename TermType2::KeyType>::value), "Key type mismatch in base multiplier.");
+            static_assert((boost::is_same<typename TermType1::KeyType, typename TermType2::KeyType>::value), "Key type mismatch in base multiplier.");
 
 			/// Compute block size for multiplication.
 			/**
@@ -72,7 +72,7 @@ namespace piranha
 			{
 				// NOTE: this function is used typically considering only the output storage requirements, since storage of input series
 				//       will be a small fraction of storage for the output series.
-				PIRANHA_STATIC_CHECK(N > 0, "");
+                static_assert(N > 0, "");
 
 				const std::size_t shift = boost::numeric_cast<std::size_t>(
 					        std::log(std::max<double>(16., std::sqrt(static_cast<double>((settings::cache_size * 1024) / N)))) / std::log(2.) - 1

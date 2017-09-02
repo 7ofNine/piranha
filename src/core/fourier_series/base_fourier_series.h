@@ -40,7 +40,7 @@ namespace piranha
 	template <int N, class Derived>
 	class BaseFourierSeries
 	{
-			PIRANHA_STATIC_CHECK(N >= 0, "Invalid arguments position in base Fourier series toolbox.");
+        static_assert(N >= 0, "Invalid arguments position in base Fourier series toolbox.");
 
 		//protected:
 		public:
@@ -49,7 +49,7 @@ namespace piranha
 			template <typename PosTuple, typename ArgsTuple>
 			Derived baseIntegrate(const PosTuple &posTuple, const ArgsTuple &argsTuple) const
 			{
-				PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
+                static_assert(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					                 "Size mismatch between args tuple and pos tuple in Fourier series integration.");
 
 				typedef typename Derived::const_iterator const_iterator;

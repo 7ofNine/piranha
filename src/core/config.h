@@ -21,25 +21,6 @@
 #ifndef PIRANHA_CONFIG_H
 #define PIRANHA_CONFIG_H
 
-#ifdef __GNUC__
-#define GCC_VERSION (__GNUC__ * 100000 \
-	 + __GNUC_MINOR__ * 1000 \
-	 + __GNUC_PATCHLEVEL__ * 10)
-#if GCC_VERSION < 304000
-#error "The minimum GCC version required is 3.4"
-#endif
-
-// Useful macros.
-#define likely(exp)   __builtin_expect(exp,1)
-#define unlikely(exp) __builtin_expect(exp,0)
-
-#else
-
-#define likely(exp)   exp
-#define unlikely(exp) exp
-
-#endif
-
 // Platform switches.
 #ifdef _PIRANHA_WIN32
 #ifdef _PIRANHA_DLL_EXPORT_API
@@ -53,14 +34,7 @@
 #define PIRANHA_VISIBLE __attribute__ ((visibility("default")))
 #endif
 
-// C++0x support.
-#ifdef _PIRANHA_CPP0X
-#define PIRANHA_STATIC_CHECK(expr,descr) static_assert(expr,descr)
-#else
-#include <boost/static_assert.hpp>
-#define PIRANHA_STATIC_CHECK(expr,descr) BOOST_STATIC_ASSERT(expr)
-#endif
-
 #define __PIRANHA_MAX_ECHELON_LEVEL (4)
+
 
 #endif

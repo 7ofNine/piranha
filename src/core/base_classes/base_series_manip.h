@@ -93,7 +93,7 @@ namespace piranha
 		PIRANHA_ASSERT(convertedTerm.result.cf.isInsertable(argsTuple) && convertedTerm.result.key.isInsertable(argsTuple));
 
 		TermType *newTerm(0); //NULL pointer
-		if (unlikely(convertedTerm.result.cf.needsPadding(argsTuple) || convertedTerm.result.key.needsPadding(argsTuple))) 
+		if (convertedTerm.result.cf.needsPadding(argsTuple) || convertedTerm.result.key.needsPadding(argsTuple)) 
 		{
 			newTerm = TermType::allocator.allocate(1);
 			TermType::allocator.construct(newTerm, convertedTerm.result); /// Shouldn't we just overload new???
@@ -296,7 +296,7 @@ namespace piranha
 	template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
 	inline RetSeries BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSub(const PosTuple &posTuple, SubCaches &subCaches, const ArgsTuple &argsTuple) const
 	{
-		PIRANHA_STATIC_CHECK((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value), "Positional and arguments' tuples' lengths do not match.");
+        static_assert((boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value), "Positional and arguments' tuples' lengths do not match.");
 
 		RetSeries retval;
 		const const_iterator itf = end();

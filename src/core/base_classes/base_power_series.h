@@ -35,7 +35,7 @@ namespace piranha
 	template <int ExpoArgsPosition, int ExpoTermPosition, class Degree, class Derived>
 	class BasePowerSeries
 	{
-			PIRANHA_STATIC_CHECK(ExpoArgsPosition >= 0, "Invalid exponent argument position.");
+        static_assert(ExpoArgsPosition >= 0, "Invalid exponent argument position.");
 
 
             //compare functor for the total exponential degree

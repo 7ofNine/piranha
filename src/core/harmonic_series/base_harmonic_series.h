@@ -37,7 +37,7 @@ namespace piranha
 	template <int HarmonicArgsPosition, int HarmonicTermPosition, class HarmonicDegree, class Derived>
 	class BaseHarmonicSeries
 	{
-			PIRANHA_STATIC_CHECK(HarmonicArgsPosition >= 0, "Invalid harmonic args position.");
+        static_assert(HarmonicArgsPosition >= 0, "Invalid harmonic args position.");
 
             
 			template <class Term>

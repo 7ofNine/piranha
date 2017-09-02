@@ -47,14 +47,14 @@ namespace piranha
 	{
 		const std::size_t w = argsTuple2.get_head().size();
 
-		if (unlikely(w > argsTuple1.get_head().size())) 
+		if (w > argsTuple1.get_head().size()) 
 		{
 			return false;
 		}
 
 		for (std::size_t i = 0; i < w; ++i) 
 		{
-			if (unlikely(argsTuple1.get_head()[i] != argsTuple2.get_head()[i]))  // same symbol in same position
+			if (argsTuple1.get_head()[i] != argsTuple2.get_head()[i])  // same symbol in same position
 			{
 				return false;
 			}

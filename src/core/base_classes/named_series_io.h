@@ -350,7 +350,7 @@ namespace piranha
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline NamedSeries<PIRANHA_NAMED_SERIES_TP>::~NamedSeries()
 	{
-		PIRANHA_STATIC_CHECK(boost::tuples::length<ArgumentsDescription>::value == Derived::echelonLevel + 1, "");
+		static_assert(boost::tuples::length<ArgumentsDescription>::value == Derived::echelonLevel + 1, "");
 	}
 
 

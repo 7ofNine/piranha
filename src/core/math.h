@@ -42,7 +42,7 @@ namespace piranha
 	 */
 	template <int N>
 	struct lg {
-		PIRANHA_STATIC_CHECK(N > 0 && (N % 2) == 0, "N is not a power of 2.");
+        static_assert(N > 0 && (N % 2) == 0, "N is not a power of 2.");
 		/// Value of the base-2 logarithm of N.
 		static const std::size_t value = lg < (N >> 1) >::value + 1;
 	};
@@ -55,7 +55,7 @@ namespace piranha
 	// Integer base-2 logarithm. Like lg, but won't error out if N is not a power of 2.
 	template <int N>
 	struct ilg {
-		PIRANHA_STATIC_CHECK(N > 0, "N must be positive.");
+        static_assert(N > 0, "N must be positive.");
 		static const std::size_t value = ilg < (N >> 1) >::value + 1;
 	};
 
@@ -81,9 +81,9 @@ namespace piranha
 	// (Newton's method).
 	template <long int N>
 	struct isqrt {
-		PIRANHA_STATIC_CHECK(N > 0, "Invalid value for isqrt.");
+        static_assert(N > 0, "Invalid value for isqrt.");
 		static const long int value_ = isqrt_impl<N,N,false>::value;
-		PIRANHA_STATIC_CHECK(value_ >= 0, "Invalid result for isqrt.");
+        static_assert(value_ >= 0, "Invalid result for isqrt.");
 		static const std::size_t value = static_cast<std::size_t>(value_);
 	};
 

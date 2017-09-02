@@ -47,7 +47,7 @@ namespace piranha
 	template <int EchelonLevel>
 	struct PoissonSeriesMultiplierOperationSelector
 	{
-		PIRANHA_STATIC_CHECK(EchelonLevel == 0, "");
+        static_assert(EchelonLevel == 0, "");
 
 		typedef boost::tuple<boost::false_type> Type;
 	};

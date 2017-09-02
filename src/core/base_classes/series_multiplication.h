@@ -49,7 +49,7 @@ namespace piranha
 			std::vector<typename Series::TermType const *> get_sorted_series(const ArgsTuple &argsTuple) const
 			{
 				static const bool check = boost::is_same<Series, Derived>::value;
-				PIRANHA_STATIC_CHECK(check, "");
+                static_assert(check, "");
 
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple,
 					Truncator>::truncator_type::template getSortedPointerVector<Series, ArgsTuple>(*derived_const_cast, argsTuple);

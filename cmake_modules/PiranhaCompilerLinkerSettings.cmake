@@ -24,16 +24,15 @@ IF(MSVC)
         ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB) # don't include boost library versions as #pragma
 #        ADD_DEFINITIONS(-DBOOST_HAS_STDINT_H)
 #        ADD_DEFINITIONS(-D_HAS_CPP0X=0)
-	ADD_DEFINITIONS(-DNOMINMAX) # get rid of the min/mas macro MS defines
-	ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
-#        ADD_DEFINITIONS(-DWIN32_LEAN_AND_MEAN)  # minimal windows 
-        ADD_DEFINITIONS(-D_PIRANHA_CPP0X)       # enable piranha CPP0X TODO: remove. we won;t support anything without it
-ENDIF()        
-        
+        ADD_DEFINITIONS(-DNOMINMAX) # get rid of the min/mas macro MS defines
+        ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
+#        ADD_DEFINITIONS(-DWIN32_LEAN_AND_MEAN)  # minimal windows
+ENDIF()
+
 
 
 IF(PIRANHA_EXTRA_LINK_FLAGS)
-	MESSAGE(STATUS "Extra link flags: ${PIRANHA_EXTRA_LINK_FLAGS}")
+        MESSAGE(STATUS "Extra link flags: ${PIRANHA_EXTRA_LINK_FLAGS}")
 ENDIF(PIRANHA_EXTRA_LINK_FLAGS)
 
 SET(CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}    ${PIRANHA_EXTRA_LINK_FLAGS}")

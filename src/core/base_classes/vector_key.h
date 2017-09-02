@@ -50,7 +50,7 @@ namespace piranha
 	template <class T, int Position, class Derived>
 	class VectorKey
 	{
-			PIRANHA_STATIC_CHECK(Position >= 0, "Wrong position.");
+        static_assert(Position >= 0, "Wrong position.");
 
 			typedef std::vector<T, CountingAllocator<T, std::allocator<T> > > ContainerType;
 
@@ -161,7 +161,7 @@ namespace piranha
 			template <class LayoutTuple, class ArgsTuple>
 			void applyLayout(LayoutTuple const &layoutTuple, ArgsTuple const &)
 			{
-				PIRANHA_STATIC_CHECK((boost::is_same<std::vector<std::pair<bool, std::size_t> >, typename boost::tuples::element<Position, LayoutTuple>::type>::value), "Wrong layout type.");
+                static_assert((boost::is_same<std::vector<std::pair<bool, std::size_t> >, typename boost::tuples::element<Position, LayoutTuple>::type>::value), "Wrong layout type.");
 				// TODO: add check about tuples length.
 				const size_type layoutSize = boost::numeric_cast<size_type>(layoutTuple.template get<Position>().size());
 

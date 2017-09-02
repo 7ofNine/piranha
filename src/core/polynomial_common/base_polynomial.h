@@ -42,7 +42,7 @@ namespace piranha
 	template <int N, class Derived>
 	class BasePolynomial
 	{
-			PIRANHA_STATIC_CHECK(N >= 0, "Invalid arguments position in base polynomial toolbox.");
+        static_assert(N >= 0, "Invalid arguments position in base polynomial toolbox.");
 		//protected:
 		public:
 
@@ -50,7 +50,7 @@ namespace piranha
 			template <typename PositionTuple, typename ArgsTuple>
 			Derived baseIntegrate(PositionTuple const &positionTuple, ArgsTuple const &argsTuple) const
 			{
-				PIRANHA_STATIC_CHECK(boost::tuples::length<PositionTuple>::value == boost::tuples::length<ArgsTuple>::value,
+                static_assert(boost::tuples::length<PositionTuple>::value == boost::tuples::length<ArgsTuple>::value,
 					"Size mismatch between args tuple and pos tuple in polynomial integration.");
 			
 				typedef typename Derived::const_iterator Iterator;

@@ -32,7 +32,6 @@
 
 #include "atomic_counters/atomic_counters.h" // For counting allocator.
 #include "base_classes/base_counting_allocator.h"
-#include "config.h" // For unlikely().
 #include "exceptions.h"
 #include "integer_typedefs.h"
 #include "settings.h"
@@ -51,7 +50,7 @@ namespace piranha
 			template <class U, class Allocator2>
 			friend class CountingAllocator;
 			typedef typename Allocator::template rebind<T>::other alloc;
-			PIRANHA_STATIC_CHECK((boost::is_same<T,typename alloc::value_type>::value), "Type mismatch in counting allocator.");
+			static_assert((boost::is_same<T,typename alloc::value_type>::value), "Type mismatch in counting allocator.");
 		public:
 			typedef typename alloc::size_type size_type;
 			typedef typename alloc::difference_type difference_type;
@@ -83,7 +82,8 @@ namespace piranha
 					l = settings::get_memory_limit();
 				// Formulate in this way in order to avoid bogus values when doing l - add
 				// (which is unsigned arithmetic).
-				if (unlikely(add > l || cur > l - add)) {
+				if (add > l || cur > l - add)
+                {
 					PIRANHA_THROW(memory_error,"memory limit reached");
 				}
 				pointer retval = m_alloc.allocate(n,hint);
@@ -155,7 +155,7 @@ namespace piranha
 	template <class T, int Alignment>
 	class align_mallocator {
 
-			PIRANHA_STATIC_CHECK(Alignment >= 0 && Alignment < 256,"Invalid alignment value requested.");
+			static_assert(Alignment >= 0 && Alignment < 256, "Invalid alignment value requested.");
 
 		public:
 
@@ -168,7 +168,7 @@ namespace piranha
 			typedef T		value_type;
 			template <class U>
 			struct rebind {
-				typedef align_mallocator<U,Alignment> other;
+				typedef align_mallocator<U, Alignment> other;
 			};
 
 			align_mallocator() {}
@@ -176,7 +176,7 @@ namespace piranha
 			align_mallocator(const align_mallocator&) {}
 
 			template <class U>
-			align_mallocator(const align_mallocator<U,Alignment> &) {}
+			align_mallocator(const align_mallocator<U, Alignment> &) {}
 
 			~align_mallocator() {}
 
@@ -193,11 +193,11 @@ namespace piranha
 			pointer allocate(const size_type &n, const void * = 0)
 			{
 				// Just return 0 if no space is required.
-				if (unlikely(!n)) 
+				if (!n) 
                 {
 					return pointer(0);
 				}
-				if (unlikely(n > max_size())) 
+				if (n > max_size()) 
                 {
 					throw std::bad_alloc();
 				}
@@ -244,7 +244,7 @@ namespace piranha
 			void deallocate(pointer p, const size_type &)
 			{
 				// Take care of zero allocation.
-				if (unlikely(!p)) 
+				if (!p) 
                 {
 					return;
 				}

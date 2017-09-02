@@ -116,8 +116,8 @@ namespace truncators {
                             :terms1(terms1), terms2(terms2), argsTuple(argsTuple)
 					{
 						// Some static checks.
-						PIRANHA_STATIC_CHECK(Series1::exponentArgsPosition == Series2::exponentArgsPosition, "");
-						PIRANHA_STATIC_CHECK(Series1::exponentTermPosition == Series2::exponentTermPosition, "");
+                        static_assert(Series1::exponentArgsPosition == Series2::exponentArgsPosition, "");
+                        static_assert(Series1::exponentTermPosition == Series2::exponentTermPosition, "");
 
 						// Convert psyms vector into position tuple only if we are truncating to partial degree.
 						if (truncationMode == TRUNCATION_PARTIAL_DEGREE) 

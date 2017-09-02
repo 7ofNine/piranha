@@ -70,7 +70,7 @@ namespace piranha
 	template <int N>
 	struct MultDivCoefficientsHelper
 	{
-		PIRANHA_STATIC_CHECK(N == 0, "N must be either 0 or 1."); // this checks on 0 , 1 is differetn specialisation. see below. Why aN if we only support 0 and 1?
+        static_assert(N == 0, "N must be either 0 or 1."); // this checks on 0 , 1 is differetn specialisation. see below. Why aN if we only support 0 and 1?
 
 		template <class Cf, class T, class ArgsTuple>
 		static void run(Cf &cf, const T &x, const ArgsTuple &argsTuple) 
@@ -253,7 +253,7 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseDivideBy(const T &x, const ArgsTuple &argsTuple)
 	{
-		PIRANHA_STATIC_CHECK((!boost::is_base_of<BaseSeriesTag,T>::value), "Cannot divide by another series.");
+        static_assert((!boost::is_base_of<BaseSeriesTag,T>::value), "Cannot divide by another series.");
 
 		return divideCoefficientsBy(x, argsTuple);
 	}
@@ -264,7 +264,7 @@ namespace piranha
 	template <class Series, class PosTuple, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(const Derived &in, Series &out, const PosTuple &posTuple, const ArgsTuple &argsTuple)
 	{
-		PIRANHA_STATIC_CHECK(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
+        static_assert(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 			                 "Size mismatch between args tuple and pos tuple in partial derivative.");
 
 		PIRANHA_ASSERT(out.empty());

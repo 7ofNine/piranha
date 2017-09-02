@@ -149,7 +149,7 @@ namespace piranha
 	template <int N>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::appendArg(Psym const &arg)
 	{
-		PIRANHA_STATIC_CHECK(N >= 0, "Trying to append argument with invalid index.");
+        static_assert(N >= 0, "Trying to append argument with invalid index.");
 		PIRANHA_ASSERT(derivedConstCast->empty());  // check empty series
 
 		// Check that the argument is not already present in this set.
@@ -182,7 +182,7 @@ namespace piranha
 			return;
 		}
 
-		if (unlikely(!isArgsCompatible(series2)))  // if they are compatible i.e. argsTuple2 are all contained in argsTuple1
+		if (!isArgsCompatible(series2))  // if they are compatible i.e. argsTuple2 are all contained in argsTuple1
 		{
 			mergeIncompatibleArgs(series2);        // create union. Beware the sequence of symbols gets changed
 		}
@@ -572,7 +572,7 @@ namespace piranha
 
 		typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type    PositionTuple;
 
-		PIRANHA_STATIC_CHECK(boost::tuples::length<SubstitutionCaches>::value == boost::tuples::length<PositionTuple>::value,
+        static_assert(boost::tuples::length<SubstitutionCaches>::value == boost::tuples::length<PositionTuple>::value,
 			"Size mismatch for position and cache tuples in series substitution.");
 
 		SubstitutionCaches substitutionCaches;

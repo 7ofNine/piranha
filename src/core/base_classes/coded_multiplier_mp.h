@@ -107,12 +107,12 @@ namespace piranha {
 	struct cm_value_handler
 	{
 		// Make really sure we use this only with integral types.
-		PIRANHA_STATIC_CHECK(boost::is_integral<T>::value,"");
+        static_assert(boost::is_integral<T>::value,"");
 		// Assign to the minmax vector the values in the array key.
 		template <class Key>
 		void assign(std::vector<boost::numeric::interval<T> > &minmax, const Key &key)
 		{
-			PIRANHA_STATIC_CHECK((boost::is_same<T, typename Key::value_type>::value), "");
+            static_assert((boost::is_same<T, typename Key::value_type>::value), "");
 
 			typedef typename Key::size_type size_type;
 			const size_type size = key.size();
@@ -130,7 +130,7 @@ namespace piranha {
 		template <class Key>
 		void test(std::vector<boost::numeric::interval<T> > &minmax, const Key &key)
 		{
-			PIRANHA_STATIC_CHECK((boost::is_same<T,typename Key::value_type>::value),"");
+            static_assert((boost::is_same<T,typename Key::value_type>::value),"");
 			typedef typename Key::size_type size_type;
 			const size_type size = key.size();
 			PIRANHA_ASSERT(size <= minmax.size());
@@ -181,7 +181,7 @@ namespace piranha {
 		template <class Key>
 		void assign(std::vector<boost::numeric::interval<mp_rational> > &minmax, const Key &key)
 		{
-			PIRANHA_STATIC_CHECK((boost::is_same<mp_rational,typename Key::value_type>::value),"");
+            static_assert((boost::is_same<mp_rational,typename Key::value_type>::value),"");
 			typedef typename Key::size_type size_type;
 			const size_type size = key.size();
 			
@@ -202,7 +202,7 @@ namespace piranha {
 		template <class Key>
 		void test(std::vector<boost::numeric::interval<mp_rational> > &minmax, const Key &key)
 		{
-			PIRANHA_STATIC_CHECK((boost::is_same<mp_rational,typename Key::value_type>::value),"");
+            static_assert((boost::is_same<mp_rational,typename Key::value_type>::value),"");
 			typedef typename Key::size_type size_type;
 			const size_type size = key.size();
 			PIRANHA_ASSERT(size <= minmax.size());
@@ -280,7 +280,7 @@ namespace piranha {
 	// Define a type to hold the min/max values of array keys in series.
 	template <class Series, int N>
 	struct cm_tuple_impl {
-		PIRANHA_STATIC_CHECK(N > 0,"");
+        static_assert(N > 0,"");
 		// minmax type, to be used for limits of input series.
 		typedef typename Series::TermType::KeyType::value_type value_type;
 		typedef boost::tuples::cons<std::vector<boost::numeric::interval<value_type> >,
@@ -351,7 +351,7 @@ namespace piranha {
 	template <class Series, class Tuple, class ArgsTuple>
 	inline void cm_init_vector_tuple(Tuple &t, const ArgsTuple &argsTuple)
 	{
-		PIRANHA_STATIC_CHECK(boost::tuples::length<Tuple>::value == Series::echelonLevel + 1, "");
+        static_assert(boost::tuples::length<Tuple>::value == Series::echelonLevel + 1, "");
 
 		cm_init_vector_tuples_impl<Series, Tuple>::run(argsTuple, t);
 	}
@@ -362,7 +362,7 @@ namespace piranha {
 		template <class Series, class ValueHandlerTuple>
 		static void run_init(const Series &s, MinMaxTuple &minmax_tuple, ValueHandlerTuple &vh_tuple)
 		{
-			PIRANHA_STATIC_CHECK(boost::tuples::length<MinMaxTuple>::value == boost::tuples::length<ValueHandlerTuple>::value, "");
+            static_assert(boost::tuples::length<MinMaxTuple>::value == boost::tuples::length<ValueHandlerTuple>::value, "");
 			PIRANHA_ASSERT(s.length() == 1);
 			// NOTE: here key size could be less than the size of the vector in this tuple position,
 			// hence the importance of having the vector default-initialised to zero. This happens because
@@ -396,7 +396,7 @@ namespace piranha {
 		template <class Term, class ValueHandlerTuple>
 		static void run_init(const Term &term, MinMaxTuple &minmax_tuple, ValueHandlerTuple &vh_tuple)
 		{
-			PIRANHA_STATIC_CHECK(boost::tuples::length<MinMaxTuple>::value == boost::tuples::length<ValueHandlerTuple>::value, "");
+            static_assert(boost::tuples::length<MinMaxTuple>::value == boost::tuples::length<ValueHandlerTuple>::value, "");
 			vh_tuple.get_head().assign(minmax_tuple.get_head(), term.key);
 			cm_minmax2<typename MinMaxTuple::tail_type>::run_init(term.cf, minmax_tuple.get_tail(), vh_tuple.get_tail());
 		}
@@ -422,9 +422,9 @@ namespace piranha {
 			MpMinMaxTuple &global_minmax)
 		{
 			// Make sure sizes are consistent.
-			PIRANHA_STATIC_CHECK(boost::tuples::length<OpTuple>::value == boost::tuples::length<MinMaxTuple>::value,"");
-			PIRANHA_STATIC_CHECK(boost::tuples::length<OpTuple>::value == boost::tuples::length<MpMinMaxTuple>::value,"");
-			PIRANHA_STATIC_CHECK(boost::tuples::length<OpTuple>::value == boost::tuples::length<ValueHandlerTuple>::value,"");
+            static_assert(boost::tuples::length<OpTuple>::value == boost::tuples::length<MinMaxTuple>::value,"");
+            static_assert(boost::tuples::length<OpTuple>::value == boost::tuples::length<MpMinMaxTuple>::value,"");
+            static_assert(boost::tuples::length<OpTuple>::value == boost::tuples::length<ValueHandlerTuple>::value,"");
 			typedef typename MinMaxTuple::head_type::size_type size_type;
 			PIRANHA_ASSERT(minmax1.get_head().size() == minmax2.get_head().size() && 
 				global_minmax.get_head().size() == minmax2.get_head().size());
@@ -497,14 +497,14 @@ namespace piranha {
 	template <class MpCt, class MpMinMaxTuple>
 	void compute_mp_coding_tuple(MpCt &mp_ct, const MpMinMaxTuple &mp_gt)
 	{
-		PIRANHA_STATIC_CHECK(boost::tuples::length<MpCt>::value == boost::tuples::length<MpMinMaxTuple>::value,"");
+        static_assert(boost::tuples::length<MpCt>::value == boost::tuples::length<MpMinMaxTuple>::value,"");
 		mp_integer prev_value(1);
 		cm_mp_ct_impl<MpCt>::run(&prev_value,mp_ct,mp_gt);
 	}
 
 	template <class Tuple1, class Tuple2>
 	struct tuple_vector_dot_impl {
-		PIRANHA_STATIC_CHECK(boost::tuples::length<Tuple1>::value == boost::tuples::length<Tuple2>::value,"");
+        static_assert(boost::tuples::length<Tuple1>::value == boost::tuples::length<Tuple2>::value,"");
 		typedef typename Tuple1::head_type::value_type value_type;
 		typedef typename Tuple1::head_type::size_type size_type;
 		static void run(const Tuple1 &t1, const Tuple2 &t2, value_type &retval)
@@ -592,7 +592,7 @@ namespace piranha {
 		template <class CodingTuple, class Cf, class VhTuple>
 		static void run(const CodingTuple &ct, const Cf &cf, const VhTuple &vh_tuple, MaxFastInt &retval1, MaxFastInt &retval2)
 		{
-			PIRANHA_STATIC_CHECK((boost::is_same<typename CodingTuple::head_type::value_type,MaxFastInt>::value),"");
+            static_assert((boost::is_same<typename CodingTuple::head_type::value_type,MaxFastInt>::value),"");
 			PIRANHA_ASSERT(cf.length() == 1);
 
 			typedef typename Cf::TermType::KeyType::size_type size_type;
@@ -630,7 +630,7 @@ namespace piranha {
 		template <class CodingTuple, class Term, class VhTuple>
 		static void run(const CodingTuple &ct, const Term &term, const VhTuple &vh_tuple, MaxFastInt &retval1, MaxFastInt &retval2)
 		{
-			PIRANHA_STATIC_CHECK((boost::is_same<typename CodingTuple::head_type::value_type,MaxFastInt>::value),"");
+            static_assert((boost::is_same<typename CodingTuple::head_type::value_type,MaxFastInt>::value),"");
 			PIRANHA_ASSERT(term.key.size() <= ct.get_head().size());
 
 			static const bool sub_requested = op_has_sub<OpTuple>::value;
@@ -655,8 +655,8 @@ namespace piranha {
 	template <class OpTuple, class CodingTuple, class Term, class VhTuple>
 	inline void cm_code(const CodingTuple &ct, const Term &term, const VhTuple &vh_tuple, MaxFastInt &retval1, MaxFastInt &retval2)
 	{
-		PIRANHA_STATIC_CHECK(boost::tuples::length<OpTuple>::value == boost::tuples::length<CodingTuple>::value,"");
-		PIRANHA_STATIC_CHECK(boost::tuples::length<OpTuple>::value == boost::tuples::length<VhTuple>::value,"");
+        static_assert(boost::tuples::length<OpTuple>::value == boost::tuples::length<CodingTuple>::value,"");
+        static_assert(boost::tuples::length<OpTuple>::value == boost::tuples::length<VhTuple>::value,"");
 		// Initialise return values.
 		retval1 = 0;
 		retval2 = 0;
@@ -689,7 +689,7 @@ namespace piranha {
 	template <class DecodingTuple, class MinMaxTuple>
 	inline void cm_build_decoding_tuple(DecodingTuple &dt, const MinMaxTuple &minmax)
 	{
-		PIRANHA_STATIC_CHECK(boost::tuples::length<DecodingTuple>::value == boost::tuples::length<MinMaxTuple>::value,"");
+        static_assert(boost::tuples::length<DecodingTuple>::value == boost::tuples::length<MinMaxTuple>::value,"");
 		MaxFastInt prev_range = 1;
 		cm_build_decoding_tuple_impl<DecodingTuple>::run(&prev_range,dt,minmax);
 	}
@@ -701,7 +701,7 @@ namespace piranha {
 		static void run(const FinalCf &final_cf, const DecodingTuple &dt, const MinMaxTuple &gr, Cf &cf,
 			const VhTuple &vh_tuple, const MaxFastInt &code, const ArgsTuple &argsTuple)
 		{
-			PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag,Cf>::value),"");
+            static_assert((boost::is_base_of<BaseSeriesTag,Cf>::value),"");
 			typedef typename Cf::TermType term_type;
 			typedef typename term_type::KeyType::size_type size_type;
 			
@@ -771,8 +771,8 @@ namespace piranha {
 	inline void cm_decode(const FinalCf &final_cf, const DecodingTuple &dt, const MinMaxTuple &gr, Term &term, const VhTuple &vh_tuple,
 		const MaxFastInt &code, const MaxFastInt &min_code, const ArgsTuple &argsTuple)
 	{
-		PIRANHA_STATIC_CHECK(boost::tuples::length<DecodingTuple>::value == boost::tuples::length<VhTuple>::value,"");
-		PIRANHA_STATIC_CHECK(boost::tuples::length<DecodingTuple>::value == boost::tuples::length<MinMaxTuple>::value,"");
+        static_assert(boost::tuples::length<DecodingTuple>::value == boost::tuples::length<VhTuple>::value,"");
+        static_assert(boost::tuples::length<DecodingTuple>::value == boost::tuples::length<MinMaxTuple>::value,"");
 		cm_decode_impl1<DecodingTuple>::run(final_cf,dt,gr,term,vh_tuple,code - min_code,argsTuple);
 	}
 }

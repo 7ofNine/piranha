@@ -254,7 +254,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline BaseSeries<__PIRANHA_BASE_SERIES_TP>::~BaseSeries()
 	{
-		PIRANHA_STATIC_CHECK((boost::is_base_of<BaseSeriesTag, Derived>::value), "Final series class must derive from BaseSeries class.");
+        static_assert((boost::is_base_of<BaseSeriesTag, Derived>::value), "Final series class must derive from BaseSeries class.");
 	}
 }
 
