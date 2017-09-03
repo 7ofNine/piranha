@@ -78,23 +78,27 @@ namespace piranha
 			pointer allocate(const size_type &n, const void *hint = 0)
 			{
 				// TODO: guard overflow here?
-				const std::size_t add = n * sizeof(value_type), cur = m_counter.get_value(),
-					l = settings::get_memory_limit();
+				const std::size_t add = n * sizeof(value_type);
+                std::size_t       cur = m_counter.get_value();
+				std::size_t     	l = settings::get_memory_limit();
 				// Formulate in this way in order to avoid bogus values when doing l - add
 				// (which is unsigned arithmetic).
 				if (add > l || cur > l - add)
                 {
-					PIRANHA_THROW(memory_error,"memory limit reached");
+					PIRANHA_THROW(memory_error, "memory limit reached");
 				}
+
 				pointer retval = m_alloc.allocate(n,hint);
 				m_counter += add;
 				return retval;
 			}
+
 			void deallocate(pointer p, const size_type &n)
 			{
-				m_alloc.deallocate(p,n);
+				m_alloc.deallocate(p, n);
 				m_counter -= n * sizeof(value_type);
 			}
+
 			size_type max_size() const
 			{
 				return m_alloc.max_size();

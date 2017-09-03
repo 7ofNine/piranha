@@ -759,7 +759,7 @@ namespace piranha {
 			for (size_type i = 0; i < size; ++i) {
 				const MaxFastInt tmp = (code % dt.get_head()[i].first) / dt.get_head()[i].second +
 					gr.get_head()[i].lower();
-				vh_tuple.get_head().post_decode(term.key[i],tmp);
+				vh_tuple.get_head().post_decode(term.key[i], tmp);
 			}
 			cm_decode_impl2<typename DecodingTuple::tail_type>::run(final_cf,dt.get_tail(),gr.get_tail(),term.cf,
 				vh_tuple.get_tail(),code,argsTuple);

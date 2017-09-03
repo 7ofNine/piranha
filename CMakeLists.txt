@@ -86,9 +86,7 @@ IF(MSVC)
         IF(MSVC_VERSION LESS 1910)
              MESSAGE(STATUS "This version ${MSVC_VERSION} of MSVC is not tested. It may work or not")
         ENDIF()
-        SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_PIRANHA_WIN32)
         SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D__GMP_LIBGMP_DLL)                # i.e. it has to be the dll of MPIR
-        SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_PIRANHA_MSVC_ATOMIC_BUILTINS)   # TODO: remove the other cases from the code and dump this define
         
         SET(LIB_INSTALL_PATH .)
         SET(PIRANHA_INSTALL_PREFIX "${PIRANHA_INSTALL_PREFIX} ${PIRANHA_VERSION}")

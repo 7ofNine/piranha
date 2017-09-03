@@ -31,6 +31,8 @@
 /// Atomic counter class for Visual Studio C++.
 /**
  * Will use MSVC's atomic builtins.
+ * Don't use the *64 functions. With _WIN64 set std::size_t is __uint64 and the Interlocked* methods are also enabled for 64 bit.
+ * This doesn't seem to be documented anywhere except in the corresponding header WinBase.h
  */
 class PIRANHA_VISIBLE atomic_counter_msvc_long
 {
@@ -107,7 +109,7 @@ class PIRANHA_VISIBLE atomic_counter_msvc_long
 			return atomic_counter_msvc_long(InterlockedExchangeAdd(&m_value,-1));
 		}
 		/// Get copy of internal value.
-		long get_value() const
+		std::size_t get_value() const
 		{
 			return InterlockedExchangeAdd(&m_value,0);
 		}
@@ -119,7 +121,7 @@ class PIRANHA_VISIBLE atomic_counter_msvc_long
 		 * Declared mutable because atomic_counter_msvc_long::get_value needs to perform the operation
 		 * this + 0 in order to fetch safely the current m_value with MSVC's atomic builtins.
 		 */
-		mutable long m_value;
+		mutable std::size_t m_value;
 };
 
 #endif

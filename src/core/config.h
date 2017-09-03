@@ -22,7 +22,7 @@
 #define PIRANHA_CONFIG_H
 
 // Platform switches.
-#ifdef _PIRANHA_WIN32
+//#ifdef _PIRANHA_WIN32
 #ifdef _PIRANHA_DLL_EXPORT_API
 #define PIRANHA_VISIBLE __declspec(dllexport)
 #elif defined ( _PIRANHA_DLL_IMPORT_API )
@@ -30,9 +30,9 @@
 #else
 #define PIRANHA_VISIBLE
 #endif
-#else
-#define PIRANHA_VISIBLE __attribute__ ((visibility("default")))
-#endif
+//#else
+//#define PIRANHA_VISIBLE __attribute__ ((visibility("default")))
+//#endif
 
 #define __PIRANHA_MAX_ECHELON_LEVEL (4)
 

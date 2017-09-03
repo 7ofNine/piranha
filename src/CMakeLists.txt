@@ -194,8 +194,6 @@ SET(INCS
 				core/base_classes/series_multiplication.h
 				core/base_classes/series_multiplier.h
 				core/base_classes/vector_key.h
-				core/atomic_counters/atomic_counter_gcc_41.h
-				core/atomic_counters/atomic_counter_generic.h
 				core/atomic_counters/atomic_counter_msvc_long.h
 				core/atomic_counters/atomic_counters.h
 				core/mp/complex_generic_mp_container.h
