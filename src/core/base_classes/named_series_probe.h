@@ -187,7 +187,7 @@ namespace piranha
     //  psi() determine power series iterations
     //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
-	inline std::size_t NamedSeries<PIRANHA_NAMED_SERIES_TP>::psi(int const start, int const step) const
+	inline int NamedSeries<PIRANHA_NAMED_SERIES_TP>::psi(int const start, int const step) const
 	{
 		return derived_const_cast->psIterations(start, step, argumentsTuple);
 	}

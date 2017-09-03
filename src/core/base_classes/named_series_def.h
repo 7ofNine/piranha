@@ -135,7 +135,7 @@ namespace piranha
 			typename TermEvalTypeDeterminer<Term>::Type eval(double const &) const;
 			typename TermEvalTypeDeterminer<Term>::Type eval(EvalDict const &) const;
 			
-            std::size_t psi(int const start = 0, int const step = 1) const;
+            int psi(int const start = 0, int const step = 1) const;
 			
             const ArgsTupleType &arguments() const;
 			

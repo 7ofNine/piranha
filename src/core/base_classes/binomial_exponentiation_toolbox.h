@@ -98,7 +98,7 @@ namespace piranha
 				// Now let's compute X/A.
 				x_a.baseMultBy(aInv, argsTuple);
 				// Get the expansion limit from the truncator.
-				std::size_t n;
+				int n;
 				try {
 					n = x_a.psIterations(0, 1, argsTuple);
 

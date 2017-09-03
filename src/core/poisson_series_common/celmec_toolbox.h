@@ -48,9 +48,9 @@ namespace piranha
 				retval += 1;
 				// Let's find out the upper limit of the r_a development, according to the truncation limits
 				// set in the truncator.
-				const std::size_t n = e_series.psi();
+				const int n = e_series.psi();
 				Derived tmp;
-				for (std::size_t i = 1; i <= n; ++i) 
+				for (int i = 1; i <= n; ++i) 
                 {
 					Derived expansion_term(e_series);
 					expansion_term *= boost::numeric_cast<int>(i);
@@ -90,9 +90,9 @@ namespace piranha
 				// First let's build 1/2 e.
 				Derived retval(e_series);
 				retval /= 2;
-				const std::size_t n = e_series.psi();
+				const int n = e_series.psi();
 				Derived tmp;
-				for (std::size_t i = 1; i <= n; ++i) 
+				for (int i = 1; i <= n; ++i) 
                 {
 					Derived expansion_term(e_series);
 					expansion_term *= boost::numeric_cast<int>(i);
@@ -114,9 +114,9 @@ namespace piranha
 
 			static Derived sin_E(const Derived &e_series, const Derived &M_series) 
             {
-				const std::size_t n = e_series.psi();
+				const int n = e_series.psi();
 				Derived retval;
-				for (std::size_t i = 1; i <= n; ++i) 
+				for (int i = 1; i <= n; ++i) 
                 {
 					Derived expansion_term(e_series);
 					expansion_term *= boost::numeric_cast<int>(i);
@@ -141,10 +141,10 @@ namespace piranha
 				tmp = tmp.root(2);
 				tmp *= 2;
 				Derived retval;
-				const std::size_t n = e_series.psi();
+				const int n = e_series.psi();
 				// Regarding range here: we must perform n iterations for the power series, so starting
 				// from i = 1 we must reach n included.
-				for (std::size_t i = 1; i <= n; ++i) 
+				for (int i = 1; i <= n; ++i) 
                 {
 					Derived expansion_term(e_series);
 					expansion_term *= boost::numeric_cast<int>(i);
@@ -168,9 +168,9 @@ namespace piranha
 				tmp = 1 - tmp;
 				tmp *= 2;
 				Derived retval;
-				const std::size_t n = e_series.psi();
+				const int n = e_series.psi();
 				// See above.
-				for (std::size_t i = 1; i <= n; ++i) 
+				for (int i = 1; i <= n; ++i) 
                 {
 					Derived expansion_term(e_series);
 					expansion_term *= boost::numeric_cast<int>(i);
@@ -192,9 +192,9 @@ namespace piranha
 			static Derived EE(const Derived &e_series, const Derived &M_series) 
             {
 				Derived retval(M_series);
-				const std::size_t n = e_series.psi(1);
+				const int n = e_series.psi(1);
 				Derived tmp;
-				for (std::size_t i = 1; i <= n; ++i) 
+				for (int i = 1; i <= n; ++i) 
                 {
 					Derived expansion_term((e_series * i).besselJ(i));
 					expansion_term /= boost::numeric_cast<int>(i);

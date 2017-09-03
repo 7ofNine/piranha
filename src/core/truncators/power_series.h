@@ -83,7 +83,7 @@ namespace truncators
 
 
 					template <class Series, class ArgsTuple2>
-					static std::size_t powerSeriesIterations(const Series &series, const int &start, const int &stepSize, const ArgsTuple2 &argsTuple2) 
+					static int powerSeriesIterations(const Series &series, const int &start, const int &stepSize, const ArgsTuple2 &argsTuple2) 
 					{
 						std::string msg("No useful truncation limit for a power series expansion could be "
 							            "established by the power series truncator. The reported errors were:\n");

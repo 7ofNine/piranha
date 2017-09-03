@@ -342,7 +342,7 @@ namespace pyranha
 	}
 
 #define __celmec_inst(arg) \
-	inst.def(#arg,&T::arg,arg##_docstring) \
+	inst.def(#arg, &T::arg, arg##_docstring) \
 	.staticmethod(#arg);
 
 	template <class T>

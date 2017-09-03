@@ -96,7 +96,7 @@ namespace truncators {
 					// magnitude of the last term of the expansion with respect to x's magnitudes is m_truncation_level
 					// times smaller.
 					template <class Series, class ArgsTuple2>
-					static std::size_t powerSeriesIterations(Series const &series,  int const start, int const stepSize,  ArgsTuple2 const &argsTuple)
+					static int powerSeriesIterations(Series const &series,  int const start, int const stepSize,  ArgsTuple2 const &argsTuple)
 					{
 						// NOTE: share this check in some kind of base truncator class?
 						if (stepSize < 1) 

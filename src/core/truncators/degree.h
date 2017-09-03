@@ -152,7 +152,7 @@ namespace truncators {
 					// NOTE: if start is negative, it is assumed that negative powers of the input series
 					// have a minimum degree which is proportional to the input series' and with its sign changed.
 					template <class PowerSeries, class ArgsTuple2>
-					static std::size_t powerSeriesIterations(PowerSeries const &s, int const start, int const stepSize, ArgsTuple2 const &argsTuple2)
+					static int powerSeriesIterations(PowerSeries const &s, int const start, int const stepSize, ArgsTuple2 const &argsTuple2)
 					{
 						if (stepSize < 1) 
 						{

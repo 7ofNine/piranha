@@ -70,7 +70,7 @@ namespace piranha
 				}
 
 				// Establish series limit, using the following strategy...
-				std::size_t iter;
+				int iter;
 				try {
 					// First we try to respect the given iterationLimit, if any,
 					// otherwise we call the truncator to see what it has to say.
@@ -228,7 +228,7 @@ namespace piranha
 				}
 
 				// Get the expansion limit from the truncator.
-				std::size_t limit = 0;
+				int limit = 0;
 				try {
 					limit = derived_const_cast->psIterations(orderNormalized - 1, 2, argsTuple);
 				} catch (const value_error &ve) 
