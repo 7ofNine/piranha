@@ -31,9 +31,9 @@ namespace piranha
 	/**
 	 * Assumed to be the smallest signed integer type as wide as a pointer.
 	 */
-	typedef boost::int_t<sizeof(void *) * 8>::least MaxFastInt;
+	typedef boost::int_t<sizeof(void *) * CHAR_BIT>::least MaxFastInt;
 	/// Unsigned interger type as wide as a pointer.
-	typedef boost::uint_t<sizeof(void *) * 8>::least ptr_uint_t;
+	typedef boost::uint_t<sizeof(void *) * CHAR_BIT>::least ptr_uint_t;
 }
 
 #endif

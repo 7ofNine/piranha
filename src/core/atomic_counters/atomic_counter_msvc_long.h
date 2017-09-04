@@ -36,93 +36,92 @@
  */
 class PIRANHA_VISIBLE atomic_counter_msvc_long
 {
-	public:
-		/// Default constructor.
-		/**
-		 * It will initialise the internal value to zero.
-		 */
-		atomic_counter_msvc_long():m_value(0) {}
-		/// Constructor from generic integer type.
-		/**
-		 * IntType2 must be able to be used to construct long.
-		 * @throws boost::numeric::bad_numeric_cast if long and IntType2 are not the same type
-		 * and conversion from IntType2 to long results in loss of information.
-		 */
-		template <class IntType2>
-		atomic_counter_msvc_long(const IntType2 &n):m_value(n)
-		{
-			BOOST_STATIC_ASSERT(boost::is_integral<IntType2>::value);
-			if (!boost::is_same<long,IntType2>::value) {
-				long tmp(boost::numeric_cast<long>(n));
-				(void)tmp;
-			}
-		}
-		/// Copy constructor.
-		/**
-		 * Operation is atomic with respect to input argument a.
-		 */
-		atomic_counter_msvc_long(const atomic_counter_msvc_long &a):m_value(a.get_value()) {}
-		/// Assignment operator.
-		/**
-		 * This operation acquires atomically the internal value of a, but the assignment
-		 * to this is not atomic.
-		 */
-		atomic_counter_msvc_long &operator=(const atomic_counter_msvc_long &a)
-		{
-			if (this != &a) {
-				m_value = a.get_value();
-			}
-			return *this;
-		}
-		/// In-place addition.
-		atomic_counter_msvc_long &operator+=(const long &n)
-		{
-			InterlockedExchangeAdd(&m_value,n);
-			return *this;
-		}
-		/// In-place subtraction.
-		atomic_counter_msvc_long &operator-=(const long &n)
-		{
-			InterlockedExchangeAdd(&m_value,-n);
-			return *this;
-		}
-		/// Prefix increment.
-		atomic_counter_msvc_long &operator++()
-		{
-			InterlockedIncrement(&m_value);
-			return *this;
-		}
-		/// Prefix decrement.
-		atomic_counter_msvc_long &operator--()
-		{
-			InterlockedDecrement(&m_value);
-			return *this;
-		}
-		/// Postfix increment.
-		atomic_counter_msvc_long operator++(int)
-		{
-			return atomic_counter_msvc_long(InterlockedExchangeAdd(&m_value,1));
-		}
-		/// Postfix decrement.
-		atomic_counter_msvc_long operator--(int)
-		{
-			return atomic_counter_msvc_long(InterlockedExchangeAdd(&m_value,-1));
-		}
-		/// Get copy of internal value.
-		std::size_t get_value() const
-		{
-			return InterlockedExchangeAdd(&m_value,0);
-		}
-		/// Fast type-trait.
-		static const bool is_fast = true;
-	private:
-		/// Internal value.
-		/**
-		 * Declared mutable because atomic_counter_msvc_long::get_value needs to perform the operation
-		 * this + 0 in order to fetch safely the current m_value with MSVC's atomic builtins.
-		 */
-		mutable std::size_t m_value;
+        public:
+                /// Default constructor.
+                /**
+                 * It will initialise the internal value to zero.
+                 */
+                atomic_counter_msvc_long():m_value(0) {}
+                /// Constructor from generic integer type.
+                /**
+                 * IntType2 must be able to be used to construct long.
+                 * @throws boost::numeric::bad_numeric_cast if long and IntType2 are not the same type
+                 * and conversion from IntType2 to long results in loss of information.
+                 */
+                template <class IntType2>
+                atomic_counter_msvc_long(const IntType2 &n):m_value(n)
+                {
+                        BOOST_STATIC_ASSERT(boost::is_integral<IntType2>::value);
+                        if (!boost::is_same<long,IntType2>::value) {
+                                long tmp(boost::numeric_cast<long>(n));
+                                (void)tmp;
+                        }
+                }
+                /// Copy constructor.
+                /**
+                 * Operation is atomic with respect to input argument a.
+                 */
+                atomic_counter_msvc_long(const atomic_counter_msvc_long &a):m_value(a.get_value()) {}
+                /// Assignment operator.
+                /**
+                 * This operation acquires atomically the internal value of a, but the assignment
+                 * to this is not atomic.
+                 */
+                atomic_counter_msvc_long &operator=(const atomic_counter_msvc_long &a)
+                {
+                        if (this != &a) {
+                                m_value = a.get_value();
+                        }
+                        return *this;
+                }
+                /// In-place addition.
+                atomic_counter_msvc_long &operator+=(std::size_t const &n)
+                {
+                        InterlockedExchangeAdd(&m_value, n);
+                        return *this;
+                }
+                /// In-place subtraction.
+                atomic_counter_msvc_long &operator-=(std::size_t const &n)
+                {
+                        InterlockedExchangeSubtract(&m_value, n);
+                        return *this;
+                }
+                /// Prefix increment.
+                atomic_counter_msvc_long &operator++()
+                {
+                        InterlockedIncrement(&m_value);
+                        return *this;
+                }
+                /// Prefix decrement.
+                atomic_counter_msvc_long &operator--()
+                {
+                        InterlockedDecrement(&m_value);
+                        return *this;
+                }
+                /// Postfix increment.
+                atomic_counter_msvc_long operator++(int)
+                {
+                        return atomic_counter_msvc_long(InterlockedExchangeAdd(&m_value,1));
+                }
+                /// Postfix decrement.
+                atomic_counter_msvc_long operator--(int)
+                {
+                        return atomic_counter_msvc_long(InterlockedExchangeAdd(&m_value,-1));
+                }
+                /// Get copy of internal value.
+                std::size_t get_value() const
+                {
+                        return InterlockedExchangeAdd(&m_value,0);
+                }
+                /// Fast type-trait.
+                static const bool is_fast = true;
+        private:
+                /// Internal value.
+                /**
+                 * Declared mutable because atomic_counter_msvc_long::get_value needs to perform the operation
+                 * this + 0 in order to fetch safely the current m_value with MSVC's atomic builtins.
+                 */
+                mutable std::size_t m_value;
 };
 
 #endif
- 

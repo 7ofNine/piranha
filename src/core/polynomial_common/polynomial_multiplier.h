@@ -474,7 +474,7 @@ struct polynomial_multiplier
 					PIRANHA_DEBUG(std::cout << "using " << nthread << " threads\n");
 					stats::trace_stat("mult_mt", std::size_t(0), increment);
 					boost::thread_group tg;
-					boost::barrier b(nthread);
+					boost::barrier b(static_cast<unsigned int>(nthread));
 					for (std::size_t i = 0; i < nthread; ++i) 
 					{
 						tg.create_thread(ThreadedBlockedMultiplier<VectorFunctorType>(block_size, size1, size2, i, nthread, &b, cur_idx1_start, breakout, vm, s1, s2));
