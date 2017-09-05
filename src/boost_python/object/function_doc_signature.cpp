@@ -284,7 +284,7 @@ namespace boost { namespace python { namespace objects {
                 {
                     str func_doc = str((*fi)->doc());
                     
-                    int doc_len = len(func_doc);
+                    Py_ssize_t doc_len = len(func_doc);
 
                     bool show_py_signature = doc_len >= int(sizeof(detail::py_signature_tag)/sizeof(char)-1)
                                             && str(detail::py_signature_tag) == func_doc.slice(0, int(sizeof(detail::py_signature_tag)/sizeof(char))-1);

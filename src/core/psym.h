@@ -41,11 +41,11 @@
 namespace piranha
 {
 	// the global "dictionary" of Psym(s)
-	struct PIRANHA_VISIBLE PsymManager
+	struct  PsymManager
     {
 
         //implementation of a Psym stored in the PsymManager
-		class PIRANHA_VISIBLE PsymImpl
+		class  PsymImpl
         {
             friend class Psym;
 
