@@ -65,7 +65,7 @@ namespace piranha
 				typedef typename Derived::const_iterator const_iterator;
 				typedef typename Derived::TermType term_type;
 				PIRANHA_DEBUG(std::cout << "Input lengths for series multiplication: " << derived_const_cast->length() << ','
-					<< s2.length() << '\n');
+					<< s2.length() << std::endl);
 				// Don't do anything if this is empty.
 				if (derived_const_cast->empty()) 
 				{
