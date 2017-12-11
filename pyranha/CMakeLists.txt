@@ -1,4 +1,5 @@
 SET(PYRANHA_INSTALL_PATH ${PYTHON_MODULES_PATH}/pyranha)
+ADD_COMPILE_OPTIONS(/bigobj)
 ADD_DEFINITIONS(-D_PIRANHA_DLL_IMPORT_API)  # here we import piranha.dll
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})  # everything under here needs the python declarations
 
