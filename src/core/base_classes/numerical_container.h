@@ -75,6 +75,7 @@ namespace piranha
 			friend struct numerical_container_print_pretty_selector;
 
 		public:
+            typedef Derived TermType;
 
 			/// Typedef for evaluation type.
 			typedef typename numerical_container_eval_type_determiner<T>::type EvalType;

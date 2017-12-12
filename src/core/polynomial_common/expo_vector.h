@@ -179,6 +179,18 @@ namespace piranha
 				this->printElements(outStream);
 			}
 
+			template <class ArgsTuple>
+			void printPlainSorted(std::ofstream & outStream, std::vector<std::pair<bool, std::size_t> > positions, ArgsTuple const & argsTuple) const
+			{
+				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
+				(void)argsTuple;
+
+				this->printElementsSorted(outStream, positions);
+
+			}
+
+
+
 
 			template <class ArgsTuple>
 			void printPretty(std::ostream &outStream, const ArgsTuple &argsTuple) const
@@ -301,9 +313,18 @@ namespace piranha
 
 
 			/// Return the total degree of the exponents array, i.e. sum over all the exponent values
-			DegreeType degree() const
+			DegreeType degree(VectorPsym const & symbols) const
 			{
-				return std::accumulate(this->begin(), this->end(), DegreeType(0));
+				PIRANHA_ASSERT(symbols.size() == size());
+
+				DegreeType degree(0);
+				for (VectorPsym::size_type i = 0; i < size(); ++i)
+				{
+					degree += symbols[i].order() * (*this)[i];
+				}
+				return degree;
+
+				//return std::accumulate(this->begin(), this->end(), DegreeType(0));
 			}
 
 
@@ -338,9 +359,9 @@ namespace piranha
 			/**
 			 * Provided for use within the power series toolbox, and defined to be equivalent to degree().
 			 */
-			DegreeType order() const
+			DegreeType order(VectorPsym const & symbols) const
 			{
-				return degree();
+				return degree(symbols);
 			}
 
 

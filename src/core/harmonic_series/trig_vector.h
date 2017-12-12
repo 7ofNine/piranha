@@ -307,6 +307,16 @@ namespace piranha
 				}
 			}
 
+			template <class ArgsTuple>
+			void printPlainSorted(std::ofstream & outStream, std::vector<std::pair<bool, std::size_t> > positions, ArgsTuple const & argsTuple) const
+			{
+				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
+				(void)argsTuple;
+
+				this->printElementsSorted(outStream, positions);
+				outStream << (flavour ? 'c' : 's');
+
+			}
 
 			template <class ArgsTuple>
 			void printPretty(std::ostream &outStream, const ArgsTuple &argsTuple) const

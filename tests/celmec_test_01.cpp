@@ -49,7 +49,7 @@ int main()
 
 
 	Psym e("e"), M("M");
-	truncators::Degree::set(401);
+	truncators::Degree::set(10);
     std::vector< ps > flattened;
     boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
     ps res(ps::r_a(ps(e), ps(M)));
@@ -60,6 +60,10 @@ int main()
     
     std::cout<< "test 1: " << retval << '\n';
    
+	//todo for testing new fuction
+//	VectorPsym trigSymbols = { M };
+//	VectorPsym expSymbols = { e };
+//	res.printToSorted("test.txt", expSymbols, trigSymbols);
 //    Psym ep("e'"),Mp("M'");
 //    ps resp(ps::a_r(ps(ep), ps(Mp)));
 //    ps retp = res*resp;

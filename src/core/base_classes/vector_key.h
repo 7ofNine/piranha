@@ -391,6 +391,19 @@ namespace piranha
 				}
 			}
 
+			void printElementsSorted(std::ostream &outStream, std::vector<std::pair<bool, std::size_t> > positions) const
+			{
+				const size_type size = this->size();
+				PIRANHA_ASSERT(size == positions.size());
+				for (size_type i = 0; i < size; ++i)
+				{
+					if (positions[i].first)
+					{
+						outStream << std::setw(6) << std::right << container[positions[i].second] << " ";
+					}
+				}
+
+			}
 
 			/// Test for zero elements.
 			/**

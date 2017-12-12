@@ -121,6 +121,7 @@ namespace piranha
 			// Alias for the parent class.
 			typedef NumericalContainer<double, double_cf> ancestor;
 		public:
+           
 			// Ctors.
 			explicit double_cf(): ancestor() {}
 			template <class T, class ArgsTuple>

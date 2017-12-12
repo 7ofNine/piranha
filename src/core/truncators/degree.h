@@ -58,17 +58,20 @@ namespace truncators {
 			class CompareOrder
 			{
                 public: 
+					explicit CompareOrder(VectorPsym const & symbols) :symbols(symbols) {}
 
 				template <class Term>
 				bool operator()(Term const * const t1, Term const * const t2) const
 				{
 					typedef typename Term::template Component<ExpoTermPos>::Type::DegreeType DegreeType;
 
-					DegreeType const md1(t1->template get<ExpoTermPos>().order());
-                    DegreeType const md2(t2->template get<ExpoTermPos>().order());
+					DegreeType const md1(t1->template get<ExpoTermPos>().order(symbols));
+                    DegreeType const md2(t2->template get<ExpoTermPos>().order(symbols));
 
 					return md1 < md2;
 				}
+
+				VectorPsym const & symbols;
 			};
 
 
@@ -134,9 +137,10 @@ namespace truncators {
 
 					bool skip(TermType1 const **t1, TermType2 const **t2) const
 					{
+						VectorPsym const symbols = argsTuple.get<exponentArgsPosition>(); //GUT temp test
 						switch (truncationMode)
                         {
-							case TRUNCATION_DEGREE:         return   ((*t1)->template get<exponentTermPosition>().order() + (*t2)->template get<exponentTermPosition>().order() >= degreeLimit);
+							case TRUNCATION_DEGREE:         return   ((*t1)->template get<exponentTermPosition>().order(symbols) + (*t2)->template get<exponentTermPosition>().order(symbols) >= degreeLimit);
 
 							case TRUNCATION_PARTIAL_DEGREE: return   ((*t1)->template get<exponentTermPosition>().partialOrder(positionTuple) 
                                                                     + (*t2)->template get<exponentTermPosition>().partialOrder(positionTuple) >= degreeLimit);
@@ -176,7 +180,7 @@ namespace truncators {
 
 						switch (truncationMode)
                         {
-							case TRUNCATION_DEGREE:         order = s.order();
+							case TRUNCATION_DEGREE:         order = s.order(argsTuple2.get<exponentArgsPosition>()); // GUT: for truncation order on psym level
 								                            break;
 
 							case TRUNCATION_PARTIAL_DEGREE: order = s.basePartialOrder(psyms2pos(psyms, argsTuple2));
@@ -242,7 +246,7 @@ namespace truncators {
 
 						switch (truncationMode)
                         {
-							case TRUNCATION_DEGREE:         std::sort(retval.begin(), retval.end(), CompareOrder<Series::exponentTermPosition>());
+							case TRUNCATION_DEGREE:         std::sort(retval.begin(), retval.end(), CompareOrder<Series::exponentTermPosition>(argsTuple2.get<Series::exponentArgsPosition>()));
 								                            break;
 
 							case TRUNCATION_PARTIAL_DEGREE:	{
@@ -293,8 +297,10 @@ namespace truncators {
 					{
 						switch (truncationMode)
                         {
-							case TRUNCATION_DEGREE:         std::sort(terms1.begin(), terms1.end(), CompareOrder<exponentTermPosition>());
-								                            std::sort(terms2.begin(), terms2.end(), CompareOrder<exponentTermPosition>());
+							//VectorPsym const & symbols = argsTuple2.get<Series::exponentArgsPosition>();
+
+							case TRUNCATION_DEGREE:         std::sort(terms1.begin(), terms1.end(), CompareOrder<exponentTermPosition>(argsTuple.get<exponentArgsPosition>()));
+								                            std::sort(terms2.begin(), terms2.end(), CompareOrder<exponentTermPosition>(argsTuple.get<exponentArgsPosition>()));
 								                            break;
 
 							case TRUNCATION_PARTIAL_DEGREE:	// We need to do the sorting only if the position tuple

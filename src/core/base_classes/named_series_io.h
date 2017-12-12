@@ -21,6 +21,7 @@
 #ifndef PIRANHA_NAMED_SERIES_IO_H
 #define PIRANHA_NAMED_SERIES_IO_H
 
+#include <algorithm>
 #include <complex>
 #include <cstddef>
 #include <iostream>
@@ -106,7 +107,193 @@ namespace piranha
 		printPretty(outStream);
 	}
 
+	// print series in a sortet and structured format
+	//
+	// expSymbols: a vector of Psyms that are exponential variables. The index gives the sorting for printing it
+	// trigSymbols: a vector of Psyms that are trigonometric variables. The index gives the sorting for printing it
+	// in general the sorting is done according to trigonometric first and then according to exponential
+	// this is how they are typically printed in publications but there is no canonical form one can use. It is 
+	// all personal preference
+	// we have to do multiple sorting. first on the trigonometric arguments and then on the exponential arguments
+	// 
+	// the printed file is not intended to be read back into piranha for that putpose use save to.
+	//
+	template<PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void  NamedSeries<PIRANHA_NAMED_SERIES_TP>::printToSorted(std::string const & fileName, VectorPsym const & expSymbols, VectorPsym const & trigSymbols) const
+	{
+		std::ofstream outfile(fileName.c_str(), std::ios_base::trunc);
+		if (outfile.fail())
+		{
+			std::cout << "Error printing series to file " << fileName << "." << std::endl;
+			outfile.close();
+			return;
+		}
+		// write header
+		outfile << std::setw(6) << "TermId" << " " << std::setw(30) << std::right << "Coefficient" << " ";
+		for (std::size_t i = 0; i < expSymbols.size(); ++i)
+		{
+			outfile << std::setw(6) << std::right << expSymbols[i].getName() << " ";
+		}
 
+		for (std::size_t i = 0; i < trigSymbols.size(); ++i)
+		{
+			outfile << std::setw(6) << std::right << trigSymbols[i].getName() << " ";
+		}
+		outfile << std::endl;
+
+		auto positionTuple = psyms2pos(trigSymbols, argumentsTuple); // get a tuple for where the symbols are in the terms
+		// get rigonometric positions first
+		auto const positions = positionTuple.get<1>();                     // TODO: how to get to the trig and exponential ones separately (ie. where is the position hidden in the class)
+		                                                             // we should be able to get that from the args descriptor 
+		                                                             // this is a vector of pairs fist: true/false = present; second: index into vector 
+		auto terms = getTrigSortedTerms(positions);                  // a vector of pointer to the sorted terms
+		
+		//now we are sorted by trigonometric argument
+		// next we have to sort the coefficient by exponents
+		// and then finaly print it
+		printToSorted(outfile, terms, expSymbols, positions);
+		//printPlain(outfile);
+		outfile.close();
+	}
+
+	template<PIRANHA_NAMED_SERIES_TP_DECL>
+	inline void  NamedSeries<PIRANHA_NAMED_SERIES_TP>::printToSorted(std::ofstream & outfile, std::vector<Term const*> trigSortedTerms, VectorPsym const & expSymbols,
+		                                                             std::vector<std::pair<bool, std::size_t> > const & trigPositions) const
+	{
+		typename Term::CfType check;
+		typedef std::vector<Term const*>::size_type Index;
+		//get positions of exponent arguments
+		auto const positionTuple = psyms2pos(expSymbols, argumentsTuple);
+		auto const expPositions = positionTuple.get<0>();
+		int termId = 0;
+		for (Index i = 0; i < trigSortedTerms.size(); ++i)
+		{
+			typename Term::CfType coeff = trigSortedTerms[i]->get<0>();
+
+			auto terms = getExpoSortedCoefficient(coeff, expPositions); // these are paointers to the single terms as they are in the coefficient split out and sorted according to exponent and position
+			for (std::size_t j = 0; j < terms.size(); ++j)
+			{
+				outfile << std::setw(6) << (++termId) << " ";
+				outfile << std::setw(30) << std::right << terms[j]->get<0>();
+				outfile << " ";
+				//outfile << setw(5) << right;
+				terms[j]->get<1>().printPlainSorted(outfile, expPositions, argumentsTuple);
+				trigSortedTerms[i]->get<1>().printPlainSorted(outfile, trigPositions, argumentsTuple);
+				outfile << std::endl;
+			}
+			outfile << std::endl;
+		}
+	}
+
+	template<PIRANHA_NAMED_SERIES_TP_DECL>
+	inline std::vector<typename Term::CfType::TermType const*>  NamedSeries<PIRANHA_NAMED_SERIES_TP>::getExpoSortedCoefficient(typename Term::CfType const & coeff, std::vector<std::pair<bool, size_t> > const & positions) const
+	{
+
+		class CompareExpo
+		{
+		public:
+			explicit CompareExpo(std::vector<std::pair<bool, std::size_t> > const & positions):positions(positions) {}
+
+			bool operator()(typename Term::CfType::TermType const * const t1, typename Term::CfType::TermType const * const t2) const
+			{
+				auto const expoKey1 = t1->get<1>();
+				auto const expoKey2 = t2->get<1>();
+				PIRANHA_ASSERT(positions.size() == expoKey1.size());
+				PIRANHA_ASSERT(positions.size() == expoKey2.size());
+				for (std::size_t i = 0; i < positions.size(); ++i)
+				{
+					if (positions[i].first)
+					{
+						std::size_t currentIndex = positions[i].second;
+						
+						if (expoKey1[currentIndex] < expoKey2[currentIndex])
+						{
+							return true;
+						} else if (expoKey1[currentIndex] > expoKey2[currentIndex])
+						{
+							return false;
+						}
+					}
+				}
+				return false;
+			}
+
+		private:
+			std::vector<std::pair<bool, std::size_t> > const & positions;
+		};
+		
+
+		// first create the vector of pointers
+		typedef std::vector<typename Term::CfType::TermType const*> RetValType;
+		RetValType retval;
+
+		// create vector of pointers to the series terms in the retval vector
+		// the _1 means the first parameter of the functional operator (boost::lambda). The expresion determines the address (&) of the series term
+		// iterated through (series.begin()..series.end() and this address is inserted (insert_iterator) into the retval vector starting at retval.begin() 
+		std::transform(coeff.begin(), coeff.end(), std::insert_iterator< RetValType >(retval, retval.begin()), &boost::lambda::_1);
+		std::sort(retval.begin(), retval.end(), CompareExpo(positions));
+
+		// the ultimate result
+		return retval;
+
+	}
+
+	//
+
+	template <PIRANHA_NAMED_SERIES_TP_DECL>
+	inline std::vector<Term const *>  NamedSeries<PIRANHA_NAMED_SERIES_TP>::getTrigSortedTerms(std::vector<std::pair<bool, std::size_t> > const &positions) const 
+	{
+		//TODO: move it out and properly template it
+		class CompareTrig 
+		{
+		public: 
+			explicit CompareTrig(std::vector<std::pair<bool, std::size_t> > const & positions) :positions(positions) {}
+
+			bool operator()(Term const * const t1, Term const * const t2) const
+			{
+				//TODO: flavour?? cosine before sine which makes constants appear at the top
+				auto const trigkey1 = t1->get<1>();  //TODO: make this actually safe // a vector of exponents
+				auto const trigkey2 = t2->get<1>();  // 1: should be the trig arguments
+				PIRANHA_ASSERT(positions.size() == trigkey1.size());
+				PIRANHA_ASSERT(positions.size() == trigkey2.size());
+				for(std::size_t i = 0; i < positions.size(); ++i)
+				{
+					if (positions[i].first)
+					{
+						std::size_t currentIndex = positions[i].second;
+						if (trigkey1[currentIndex] < trigkey2[currentIndex])
+						{
+							return true;
+						} else if(trigkey1[currentIndex] > trigkey2[currentIndex])
+						{
+							return false;
+						}
+						// they are equal, check the next one
+					}
+				}
+				return false; // all where the same
+			}
+
+
+		private:
+			std::vector<std::pair<bool, std::size_t> > const & positions;
+		};
+
+		// first create the vector of pointers
+		typedef std::vector<Term const *> RetValType;
+		RetValType retval;
+
+		// create vector of pointers to the series terms in the retval vector
+		// the _1 means the first parameter of the functional operator (boost::lambda). The expresion determines the address (&) of the series term
+		// iterated through (series.begin()..series.end() and this address is inserted (insert_iterator) into the retval vector starting at retval.begin() 
+		std::transform(derived_const_cast->begin(), derived_const_cast->end(), std::insert_iterator< RetValType >(retval, retval.begin()), &boost::lambda::_1);
+		std::sort(retval.begin(), retval.end(), CompareTrig(positions));
+
+		// the ultimate result
+		return retval;
+	}
+
+	//
 	/// Construct from file.
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::constructFromFile(std::string const &fileName)

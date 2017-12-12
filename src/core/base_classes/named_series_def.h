@@ -125,6 +125,7 @@ namespace piranha
 			void printTex(std::ostream &) const;
 
 			void saveTo(const std::string &) const;
+			void printToSorted(std::string const & fileName, VectorPsym const & expSymbols, VectorPsym const & trigSymbols) const;
 
 //		    Rework this.
 // 			template <class Filter>
@@ -227,6 +228,10 @@ namespace piranha
 
 			template <bool, class Derived2>
 			Derived & mergeWithSeries(Derived2 const &);
+
+			std::vector<Term const*> getTrigSortedTerms(std::vector<std::pair<bool, std::size_t> > const & positions) const; // for printing
+			void printToSorted(std::ofstream & outfile, std::vector<Term const*> trigSortedTerms, VectorPsym const & expSymbols, std::vector<std::pair<bool, std::size_t> > const & trigPositions) const; //for printing
+			std::vector<typename Term::CfType::TermType const*> getExpoSortedCoefficient(typename Term::CfType const & coeff, std::vector<std::pair<bool, size_t> > const & expSymbols) const;//for printing return type??
 
 		protected:
 

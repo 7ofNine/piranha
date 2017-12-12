@@ -43,10 +43,15 @@ namespace piranha
 			class CompareDegree
 			{
                 public:
+				explicit CompareDegree(VectorPsym const & symbols) :symbols(symbols) {}
+
 				bool operator()(Term const &term1, Term const &term2) const 
                 {
-					return (term1.template get<ExpoTermPosition>().degree() < term2.template get<ExpoTermPosition>().degree());
+					return (term1.template get<ExpoTermPosition>().degree(symbols) < term2.template get<ExpoTermPosition>().degree(symbols));
 				}
+
+				private:
+					VectorPsym const & symbols;
 			};
 
 
@@ -54,12 +59,16 @@ namespace piranha
 			template <class Term>
 			class CompareOrder
 			{
-                public:
+				public:
+					explicit CompareOrder(VectorPsym const & symbols) :symbols(symbols) {}
 
-				bool operator()(Term const &term1, Term const &term2) const 
-                {
-					return (term1.template get<ExpoTermPosition>().order() < term2.template get<ExpoTermPosition>().order());
-				}
+					bool operator()(Term const &term1, Term const &term2) const 
+					{
+						return (term1.template get<ExpoTermPosition>().order(symbols) < term2.template get<ExpoTermPosition>().order(symbols));
+					}
+
+				private:
+					VectorPsym const & symbols;
 			};
 
             // comparison functor for partial degree. Only arguments that are marked by the positionTuple are considered
@@ -106,16 +115,16 @@ namespace piranha
 			typedef Degree DegreeType;
 
 			/// Get the degree of the power series. degree is the maximum degree of the exponent vector
-			Degree degree() const 
+			Degree degree(VectorPsym const & symbols) const
             {
 				if (derived_const_cast->empty()) 
                 {
 					return Degree(0);
 				}
 
-				const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(), CompareDegree<typename Derived::TermType>() ));
+				const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(), CompareDegree<typename Derived::TermType>(symbols) ));
 
-				return result->template get<ExpoTermPosition>().degree();
+				return result->template get<ExpoTermPosition>().degree(symbols);
 			}
 
 
@@ -123,15 +132,15 @@ namespace piranha
 			/**
 			 * The order is defined as the minimum degree of the terms composing the series.
 			 */
-			Degree order() const 
+			Degree order(VectorPsym const & symbols) const 
             {
 				if (derived_const_cast->empty()) 
                 {
 					return Degree(0);
 				}
 
-				const typename Derived::const_iterator result(std::min_element(derived_const_cast->begin(), derived_const_cast->end(), CompareOrder<typename Derived::TermType>() ));
-				return result->template get<ExpoTermPosition>().order();
+				const typename Derived::const_iterator result(std::min_element(derived_const_cast->begin(), derived_const_cast->end(), CompareOrder<typename Derived::TermType>(symbols) ));
+				return result->template get<ExpoTermPosition>().order(symbols);
 			}
 
 		//protected:

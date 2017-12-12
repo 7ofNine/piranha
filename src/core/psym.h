@@ -51,8 +51,12 @@ namespace piranha
 
             public:
 
-			PsymImpl(std::string const &name, std::vector<double> const &timeEval = std::vector<double>())
-                    : name(name), timeEval(timeEval) {}
+			PsymImpl(std::string const &name, std::vector<double> const &timeEval = std::vector<double>(), int order = 1)
+                    : name(name), timeEval(timeEval), order(order) {}
+			
+			// construct internal Pymbol of order order
+			PsymImpl(std::string const &name, const int order)
+				    :name(name), timeEval(std::vector<double>()), order(order) {}
 
 			// Print to stream.
 			void print(std::ostream &outStream) const
@@ -92,12 +96,19 @@ namespace piranha
 				return retval;
 			}
 
+			void setOrder(const int order)
+			{
+				this->order = order;
+			}
+
             private:
            
 			const std::string		    name;     // the symbol name
 			                                      // Mutable because we want to be able to freely change it in the Psym manager.
 			mutable std::vector<double>	timeEval; // the time evolution polynomial. The order is the index into the vector 
-            
+
+			int order;                            // the order of the symbol. Used for truncations. to make truncations specific to the symbol
+                                                  // do we have to save it? 
             static const std::string	separator; // separator between timeValue elements. Leave in this position for readability during debug
 			
 		};
@@ -127,7 +138,7 @@ namespace piranha
 	class PIRANHA_VISIBLE Psym
     {
 
-			typedef PsymManager::ContainerType::const_iterator Iterator;
+			typedef PsymManager::ContainerType::iterator Iterator;
 			typedef PsymManager::PsymImpl                      PsymImpl;
 
 			struct PushBackTo 
@@ -148,9 +159,9 @@ namespace piranha
 		public:
 
 			/// Constructor from name and time evaluation in string form.
-			Psym(std::string const &name, std::string const &timeEval)
+			Psym(std::string const &name, std::string const &timeEval, int order = 1)
 			{
-				connstructFromImpl(PsymImpl(name, utils::str_to_vector<double>(timeEval, PsymImpl::separator)));
+				connstructFromImpl(PsymImpl(name, utils::str_to_vector<double>(timeEval, PsymImpl::separator), order));
 			}
 
 
@@ -158,11 +169,12 @@ namespace piranha
 			/**
 			 * If the symbol is already present in the Psym manager then use it, otherwise initialise
 			 * a new Psym with the given name and an empty time evaluation vector.
+			 * possiby give an order of the name (used for truncation)
 			 */
-			explicit Psym(std::string const &name)
+			explicit Psym(std::string const &name, const int order = 1)
 			{
                 // this is not constructFromImpl!
-                PsymImpl pImpl(name);
+                PsymImpl pImpl(name, order);
                 const Iterator itFound = PsymManager::container.find(pImpl);
 				if (itFound == PsymManager::container.end()) 
 				{
@@ -247,6 +259,17 @@ namespace piranha
 				return it->timeEval;
 			}
 
+			// get order of the symbol
+			int order() const
+			{
+				return it->order;
+			}
+
+			// set order to a new value
+			void setOrder(const int order)
+			{
+				it->order;
+			}
 
 			/// Time evaluation vector setter.
 			void setTimeEval(std::vector<double> const &t) const
@@ -359,10 +382,12 @@ namespace piranha
 
 		// First we want to make sure that the vector of symbols does not contain duplicate elements.
 		std::set<Psym> const uniquesSet(vectorPsym.begin(), vectorPsym.end());
-		VectorPsym     const uniquesVector(uniquesSet.begin(), uniquesSet.end());
+		//set is on;y used to check on uniqueness. we don't want to destroy the sorting of the incomming symols. This is used e.g. during printing
+		PIRANHA_ASSERT(uniquesSet.size() == vectorPsym.size());
+		//VectorPsym     const uniquesVector(uniquesSet.begin(), uniquesSet.end());
 		PositionTupleType retval;
 
-		Psyms2posImpl<ArgsTuple>::run(uniquesVector, retval, argsTuple);
+		Psyms2posImpl<ArgsTuple>::run(vectorPsym, retval, argsTuple);
 
 		return retval;
 	}
