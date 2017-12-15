@@ -49,7 +49,7 @@ int main()
 
 
 	Psym e("e"), M("M");
-	truncators::Degree::set(10);
+	truncators::Degree::set(401);
     std::vector< ps > flattened;
     boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
     ps res(ps::r_a(ps(e), ps(M)));
