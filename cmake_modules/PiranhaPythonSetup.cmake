@@ -42,8 +42,8 @@ MACRO(PIRANHA_PYTHON_SETUP)
         SET(PYTHON_MODULES_PATH .)
 	MESSAGE(STATUS "Python library version:      " ${PYTHON_LIBRARY_VERSION})
 	
-	IF(${PYTHON_LIBRARY_VERSION} LESS 25 AND WIN32)
-		MESSAGE(FATAL_ERROR STATUS "Python < 2.5 detected on WIN32 platform. This is not supported")
+	IF(${PYTHON_LIBRARY_VERSION} LESS 27 AND WIN32)
+		MESSAGE(FATAL_ERROR STATUS "Python < 2.7 detected on WIN32 platform. This is not supported")
 	ENDIF()
         
 	MESSAGE(STATUS "Python modules install path: " "${PYTHON_MODULES_PATH}")
