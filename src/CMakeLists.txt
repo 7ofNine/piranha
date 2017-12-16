@@ -26,15 +26,15 @@ SET(SRC_LIST ${SRC_LIST} ${SRC_LIST_HEADERS})  # combine src and headers for MSV
 #ADD_DEFINITIONS(-DBOOST_THREAD_BUILD_LIB)
 IF(WIN32)
 	SET(SRC_LIST ${SRC_LIST}
-		boost_thread/win32/thread.cpp
-		boost_thread/win32/tss_dll.cpp
+#		boost_thread/win32/thread.cpp
+#		boost_thread/win32/tss_dll.cpp
 #		boost_thread/win32/tss_pe.cpp
 	)
         
 	SET(SRC_LIST_STATIC
-	    boost_thread/tss_null.cpp
-	    boost_system/error_code.cpp)
-	
+#	    boost_thread/tss_null.cpp
+#	    boost_system/error_code.cpp)
+)	
         SET(SRC_LIST_DLL 
 	    boost_system/error_code.cpp
 	    boost_chrono/chrono.cpp)
@@ -90,11 +90,22 @@ IF(BUILD_PYRANHA)  # then we build the piranha.dll
 ENDIF(BUILD_PYRANHA)
 
 IF(BUILD_PIRANHA_STATIC)
-	ADD_LIBRARY(piranha_static STATIC ${SRC_LIST} ${SRC_LIST_STATIC}) # define target piranha_static.lib
+# Don't let the user link the dependencies. Everything through one interface
+	ADD_LIBRARY(mpir OBJECT IMPORTED)
+	SET_TARGET_PROPERTIES(mpir PROPERTIES IMPORTED_OBJECTS ${MANDATORY_LIBRARIES})
+	ADD_LIBRARY(system OBJECT IMPORTED)
+	SET_TARGET_PROPERTIES(system PROPERTIES IMPORTED_OBJECTS ${Boost_SYSTEM_LIBRARY_RELEASE})
+	ADD_LIBRARY(thread OBJECT IMPORTED)
+	SET_TARGET_PROPERTIES(thread PROPERTIES IMPORTED_OBJECTS ${Boost_THREAD_LIBRARY_RELEASE})
+	ADD_LIBRARY(chrono OBJECT IMPORTED)
+	SET_TARGET_PROPERTIES(chrono PROPERTIES IMPORTED_OBJECTS ${Boost_CHRONO_LIBRARY_RELEASE})
+	SET(PIRANHA_STATIC_LIBS $<TARGET_OBJECTS:mpir> $<TARGET_OBJECTS:system> $<TARGET_OBJECTS:thread> $<TARGET_OBJECTS:chrono>)
+	
+	ADD_LIBRARY(piranha_static STATIC ${SRC_LIST} ${SRC_LIST_STATIC} ${PIRANHA_STATIC_LIBS}) # define target piranha_static.lib
         
-	SET_PROPERTY(TARGET piranha_static PROPERTY COMPILE_DEFINITIONS BOOST_THREAD_BUILD_LIB)
-	TARGET_LINK_LIBRARIES(piranha_static ${MANDATORY_LIBRARIES})
-	SET_TARGET_PROPERTIES(piranha_static PROPERTIES LINKER_LANGUAGE CXX)
+	TARGET_INCLUDE_DIRECTORIES(piranha_static BEFORE PUBLIC ${Boost_INCLUDE_DIR})	# temporary
+	MESSAGE(STATUS "MANDATORY libraries are:" ${MANDATORY_LIBRARIES})
+	SET_TARGET_PROPERTIES(piranha_static PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 11)
 ENDIF()
 
 #FILE(GLOB_RECURSE INCS "*.h")

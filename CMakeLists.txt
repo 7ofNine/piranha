@@ -2,7 +2,7 @@ PROJECT(Piranha)
 
 # Modified to only support MSVC >=2017 any longer and nothing else.
 # The CMAKE is kept to keep some of the generations/installations easier
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.9.0)
 
 # This syntax was introduced by CMake 2.6 to handle backwards compatibility.
 IF(COMMAND cmake_policy)
@@ -23,7 +23,7 @@ INCLUDE(PiranhaVersionSetup)
 INCLUDE(PiranhaCPackSetup)
 
 
-INCLUDE_DIRECTORIES("external_headers") # do we need them if we replace Boost with an external version??
+#INCLUDE_DIRECTORIES("external_headers") # do we need them if we replace Boost with an external version??
 
 # Main build options
 OPTION(BUILD_ENABLE_ASSERTS "Enable asserts in code, for debugging." ON)
@@ -53,7 +53,7 @@ IF(BUILD_PYRANHA)
 ENDIF()  
 
 IF(BUILD_TESTS)
-        SET(BUILD_PIRANHA_STATIC TRUE)
+        SET(BUILD_PIRANHA_STATIC TRUE) # build the static library for tests. Might be used for other applications, too
 ENDIF()      
    
 # Set default build type to "Release", change it in the GUI if you need to build with debug.
@@ -86,7 +86,7 @@ IF(MSVC)
         IF(MSVC_VERSION LESS 1910)
              MESSAGE(STATUS "This version ${MSVC_VERSION} of MSVC is not tested. It may work or not")
         ENDIF()
-        SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D__GMP_LIBGMP_DLL)                # i.e. it has to be the dll of MPIR
+        SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D__GMP_LIBGMP_DLL)                # i.e. it has to be the dll of MPIR, do we really need that?
         
         SET(LIB_INSTALL_PATH .)
         SET(PIRANHA_INSTALL_PREFIX "${PIRANHA_INSTALL_PREFIX} ${PIRANHA_VERSION}")
@@ -96,6 +96,11 @@ ENDIF(MSVC)
 
 # Find MPIR, the Windows incarnation of GMP/MPFR. The C and CXX are combined into the same dll and use the same header
 FIND_PACKAGE(MPIR MODULE REQUIRED) # we have findMPIR in our local cmake script folder
+
+# find boost
+SET(Boost_USE_STATIC_LIBS ON)
+FIND_PACKAGE(Boost REQUIRED COMPONENTS thread system chrono)
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}) # should be do that per target would keep it clean
 
 # Note: the order seems important here, at least in MinGW.
 SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${MPIR_LIBRARIES})
@@ -111,9 +116,10 @@ ENDIF()
 
 ADD_DEFINITIONS(${PIRANHA_DEFINITIONS})
 
-# Add library directory
+# Add libraries (static and DLL)
 ADD_SUBDIRECTORY(src)
 
+# Add the tests
 IF(BUILD_TESTS)
         ADD_SUBDIRECTORY(tests)
 ENDIF(BUILD_TESTS)
@@ -230,7 +236,7 @@ IF(BUILD_PYRANHA)
             #$$	ENDIF(WIN32)
             
 # Mandatory linking.
-        SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha)
+        SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha) # the piranha.dll is needed
         ADD_SUBDIRECTORY(pyranha)
 ENDIF(BUILD_PYRANHA)
 
