@@ -23,72 +23,16 @@ SET(SRC_LIST_HEADERS core/mp.h core/psym.h core/truncators/degree.h
 SET(SRC_LIST ${SRC_LIST} ${SRC_LIST_HEADERS})  # combine src and headers for MSVC projects
 
 
-#ADD_DEFINITIONS(-DBOOST_THREAD_BUILD_LIB)
-#IF(WIN32)
-#	SET(SRC_LIST ${SRC_LIST}
-#		boost_thread/win32/thread.cpp
-#		boost_thread/win32/tss_dll.cpp
-#		boost_thread/win32/tss_pe.cpp
-#	)
-        
-#	SET(SRC_LIST_STATIC
-#	    boost_thread/tss_null.cpp
-#	    boost_system/error_code.cpp)
-#)	
-#        SET(SRC_LIST_DLL 
-#	    boost_system/error_code.cpp
-#	    boost_chrono/chrono.cpp
-#)
-#ELSE(WIN32)
-#	SET(SRC_LIST ${SRC_LIST}
-#		boost_thread/pthread/once.cpp
-#		boost_thread/pthread/thread.cpp
-#	)
-#ENDIF(WIN32)
 
 IF(BUILD_PYRANHA)  # then we build the piranha.dll
-  SET(Boost_USE_STATIC_LIBS OFF)
-  FIND_PACKAGE(Boost REQUIRED COMPONENTS thread python)
-  SET(PIRANHA_BOOST_DYNAMIC_LIBS ${BOOST_LIBRARIES})
-#  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}) # should be do that per target would keep it clean
-
-#	SET(SHARED_SRC_LIST
-#		boost_python/converter/arg_to_python_base.cpp
-#		boost_python/converter/builtin_converters.cpp
-#		boost_python/converter/from_python.cpp
-#		boost_python/converter/registry.cpp
-#		boost_python/converter/type_id.cpp
-#		boost_python/object/class.cpp
-#		boost_python/object/enum.cpp
-#		boost_python/object/function.cpp
-#		boost_python/object/function_doc_signature.cpp
-#		boost_python/object/inheritance.cpp
-#		boost_python/object/iterator.cpp
-#		boost_python/object/life_support.cpp
-#		boost_python/object/pickle_support.cpp
-#		boost_python/object/stl_iterator.cpp
-#		boost_python/dict.cpp
-#		boost_python/errors.cpp
-#		boost_python/exec.cpp
-#		boost_python/import.cpp
-#		boost_python/list.cpp
-#		boost_python/long.cpp
-#		boost_python/module.cpp
-#		boost_python/numeric.cpp
-#		boost_python/object_operators.cpp
-#		boost_python/object_protocol.cpp
-#		boost_python/slice.cpp
-#		boost_python/str.cpp
-#		boost_python/tuple.cpp
-#		boost_python/wrapper.cpp
-#	)
-        
+	SET(Boost_USE_STATIC_LIBS OFF)
+	FIND_PACKAGE(Boost REQUIRED COMPONENTS thread python)
+	SET(PIRANHA_BOOST_DYNAMIC_LIBS ${BOOST_LIBRARIES})
 	ADD_LIBRARY(piranha SHARED ${SRC_LIST} ${SRC_LIST_HEADERS}) # define target piranha.dll
         
     TARGET_INCLUDE_DIRECTORIES(piranha PRIVATE ${PYTHON_INCLUDE_DIR} ${Boost_INCLUDE_DIR}) 
 	SET_PROPERTY(TARGET piranha PROPERTY COMPILE_DEFINITIONS _PIRANHA_DLL_EXPORT_API)
 	SET_TARGET_PROPERTIES(piranha PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 11)
-#	TARGET_LINK_LIBRARIES(piranha ${MANDATORY_LIBRARIES} ${PYTHON_LIBRARY} ${PIRANHA_BOOST_DYNAMIC_LIBS})
 	TARGET_LINK_LIBRARIES(piranha ${MANDATORY_LIBRARIES} ${PYTHON_LIBRARY} Boost::thread Boost::python)
 #	INSTALL(TARGETS piranha
 #		RUNTIME DESTINATION ${LIB_INSTALL_PATH}
@@ -98,9 +42,8 @@ ENDIF(BUILD_PYRANHA)
 
 IF(BUILD_PIRANHA_STATIC)
 # Don't let the user link the dependencies. Everything through one interface
-  SET(Boost_USE_STATIC_LIBS ON)
-  FIND_PACKAGE(Boost REQUIRED COMPONENTS thread)
-  
+	SET(Boost_USE_STATIC_LIBS ON)
+	FIND_PACKAGE(Boost REQUIRED COMPONENTS thread)
 	ADD_LIBRARY(mpir OBJECT IMPORTED)
 	SET_TARGET_PROPERTIES(mpir PROPERTIES IMPORTED_OBJECTS ${MANDATORY_LIBRARIES})
 	ADD_LIBRARY(system OBJECT IMPORTED)
@@ -113,13 +56,9 @@ IF(BUILD_PIRANHA_STATIC)
 	
 	ADD_LIBRARY(piranha_static STATIC ${SRC_LIST} ${PIRANHA_STATIC_LIBS}) # define target piranha_static.lib
      
-	MESSAGE(STATUS "BUILD STATIC" ${Boost_INCLUDE_DIR})
-	TARGET_INCLUDE_DIRECTORIES(piranha_static BEFORE PRIVATE ${Boost_INCLUDE_DIR})
-	MESSAGE(STATUS "MANDATORY libraries are:" ${MANDATORY_LIBRARIES})
+	TARGET_INCLUDE_DIRECTORIES(piranha_static PRIVATE ${Boost_INCLUDE_DIR})
 	SET_TARGET_PROPERTIES(piranha_static PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 11)
 ENDIF()
-
-#FILE(GLOB_RECURSE INCS "*.h")
 
 #ADD_CUSTOM_TARGET(Headers SOURCES ${INCS})
 SET(INCS

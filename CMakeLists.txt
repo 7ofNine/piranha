@@ -19,7 +19,6 @@ IF(MSVC)
 		# Check for 64 bit support via pointer size.
 		IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 			MESSAGE(STATUS "64 bit support detected")
-			ADD_DEFINITIONS(-D_PIRANHA_64BIT)	# TODO remove from code, not needed if only 64 Bit is suppported
 		ELSE()
 			MESSAGE(FATAL_ERROR "No 64 bit support detected")
 		ENDIF()
@@ -38,14 +37,11 @@ ENABLE_TESTING()
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules) # Our own CMAKE scripts
 INCLUDE(CMakeDependentOption)
 INCLUDE(PiranhaCompilerLinkerSettings)
-#INCLUDE(PiranhaPythonSetup)
-
 INCLUDE(PiranhaVersionSetup)
+
 # Place this after having determined the version number.
 INCLUDE(PiranhaCPackSetup)
 
-
-#INCLUDE_DIRECTORIES("external_headers") # do we need them if we replace Boost with an external version??
 
 # Main build options
 OPTION(BUILD_ENABLE_ASSERTS "Enable asserts in code, for debugging." ON)
@@ -68,7 +64,6 @@ OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 
 # control build of load library (dll)        
 IF(BUILD_PYRANHA)
-#        SET(BUILD_PIRANHA_DLL TRUE) # Needed naywhere
         INCLUDE(PiranhaPythonSetup)  # we need the python includes for piranha.dll
         PIRANHA_PYTHON_SETUP()
 ENDIF()  
@@ -100,14 +95,10 @@ MESSAGE(STATUS "Source directory: ${CMAKE_SOURCE_DIR}")
 # Find MPIR, the Windows incarnation of GMP/MPFR. The C and CXX are combined into the same dll and use the same header
 FIND_PACKAGE(MPIR MODULE REQUIRED) # we have findMPIR in our local cmake script folder
 
-# find boost
-#SET(Boost_USE_STATIC_LIBS ON)
-#FIND_PACKAGE(Boost REQUIRED COMPONENTS thread python)
-#INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}) # should be do that per target would keep it clean
 
 # Note: the order seems important here, at least in MinGW.
 SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${MPIR_LIBRARIES})
-INCLUDE_DIRECTORIES(${MPIR_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${MPIR_INCLUDE_DIR}) # MPIR is probably needed evwerywhere
 
 # Common stuff
 SET(THEORIES_INSTALL_PATH "theories")
@@ -136,8 +127,9 @@ endif()
 
 # Pyranha: piranha's python bindings
 IF(BUILD_PYRANHA)
-#SET(Boost_USE_STATIC_LIBS OFF)
-#FIND_PACKAGE(Boost REQUIRED COMPONENTS python)
+	SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha) # the piranha.dll is needed
+    ADD_SUBDIRECTORY(pyranha)
+
             #$$	IF(WIN32)
             #$$		SET(WIN_PKG_ROOT ${CMAKE_SOURCE_DIR}/windows_package)
             #$$		SET(WIN_PKG_FILES
@@ -239,10 +231,6 @@ IF(BUILD_PYRANHA)
             #$$
             #$$	
             #$$	ENDIF(WIN32)
-            
-# Mandatory linking.
-        SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha) # the piranha.dll is needed
-        ADD_SUBDIRECTORY(pyranha)
 ENDIF(BUILD_PYRANHA)
 
             #$$# Install theories of motion and examples.

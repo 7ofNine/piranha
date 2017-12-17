@@ -91,12 +91,7 @@ class coded_hash_table
                 /// Maximum number of buckets probed outside the native bucket.
                 static const std::size_t probe_size             = 100;
                 // Configuration options end here.
-                static const std::size_t sizes_size =
-#ifdef _PIRANHA_64BIT
-                        40;
-#else
-                        32;
-#endif
+                static const std::size_t sizes_size             = 40;           
                 /// List of available sizes for the hash table.
                 /**
                  * The number of available sizes depends on the architecture.
@@ -495,9 +490,7 @@ const std::size_t coded_hash_table<Cf,Code,Allocator>::sizes[2][coded_hash_table
         268435456ull,
         536870912ull,
         1073741824ull,
-        2147483648ull
-#ifdef _PIRANHA_64BIT
-        ,
+        2147483648ull,
         4294967296ull,
         8589934592ull,
         17179869184ull,
@@ -506,7 +499,6 @@ const std::size_t coded_hash_table<Cf,Code,Allocator>::sizes[2][coded_hash_table
         137438953472ull,
         274877906944ull,
         549755813888ull
-#endif
 }, {
         1ull,
         3ull,
@@ -539,9 +531,7 @@ const std::size_t coded_hash_table<Cf,Code,Allocator>::sizes[2][coded_hash_table
         402653189ull,
         805306457ull,
         1610612741ull,
-        3221225473ull
-#ifdef _PIRANHA_64BIT
-        ,
+        3221225473ull,
         6442450939ull,
         12884901893ull,
         25769803799ull,
@@ -550,7 +540,6 @@ const std::size_t coded_hash_table<Cf,Code,Allocator>::sizes[2][coded_hash_table
         206158430209ull,
         412316860441ull,
         824633720831ull
-#endif
 } };
 }
 
