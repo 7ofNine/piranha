@@ -1,5 +1,6 @@
 SET(PYRANHA_INSTALL_PATH ${PYTHON_MODULES_PATH}/pyranha)
-ADD_COMPILE_OPTIONS(/bigobj)
+ADD_COMPILE_OPTIONS(/bigobj) 
+ADD_COMPILE_OPTIONS(/wd4244) # Boost python shows a lot of size warnings with 64 bit compilation. Boost should fix that
 ADD_DEFINITIONS(-D_PIRANHA_DLL_IMPORT_API)  # here we import piranha.dll
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})  # everything under here needs the python declarations
 
@@ -35,7 +36,6 @@ MACRO(PYRANHA_MANIPULATOR arg1)
 ENDMACRO(PYRANHA_MANIPULATOR)
 
 #MESSAGE(STATUS ${CMAKE_SOURCE_DIR} )
-#SET(GUT_PYRANHA_ADDED_SRC ${CMAKE_SOURCE_DIR}/src/boost_system/error_code.cpp)
 # Mandatory targets.
 ADD_SUBDIRECTORY(Core)
 SET(MODULE_LIST \ \"Core\",\ )
