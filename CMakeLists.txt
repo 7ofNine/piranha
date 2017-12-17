@@ -1,19 +1,41 @@
-PROJECT(Piranha)
-
 # Modified to only support MSVC >=2017 any longer and nothing else.
 # The CMAKE is kept to keep some of the generations/installations easier
-CMAKE_MINIMUM_REQUIRED(VERSION 3.9.0)
+#
+CMAKE_MINIMUM_REQUIRED(VERSION 3.9.0 FATAL_ERROR)
+
+PROJECT(Piranha CXX)
 
 # This syntax was introduced by CMake 2.6 to handle backwards compatibility.
 IF(COMMAND cmake_policy)
 	CMAKE_POLICY(VERSION 2.6)
 ENDIF(COMMAND cmake_policy)
 
-ENABLE_LANGUAGE(CXX)
+# we only support MSVC >=2017 and 64 Bit
+IF(MSVC) 
+        IF(MSVC_VERSION LESS 1910)
+             MESSAGE(STATUS "This version ${MSVC_VERSION} of MSVC is not tested. It may work or not")
+        ENDIF()
+		
+		# Check for 64 bit support via pointer size.
+		IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+			MESSAGE(STATUS "64 bit support detected")
+			ADD_DEFINITIONS(-D_PIRANHA_64BIT)	# TODO remove from code, not needed if only 64 Bit is suppported
+		ELSE()
+			MESSAGE(FATAL_ERROR "No 64 bit support detected")
+		ENDIF()
+
+#        SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D__GMP_LIBGMP_DLL)                # i.e. it has to be the dll of MPIR, do we really need that?
+        
+#        SET(LIB_INSTALL_PATH .)
+#        SET(PIRANHA_INSTALL_PREFIX "${PIRANHA_INSTALL_PREFIX} ${PIRANHA_VERSION}")
+ELSE(MSVC)
+        MESSAGE(FATAL_ERROR "Only Microsoft Visual Studio >= 15 (2017) is supported")
+ENDIF(MSVC)
+
+
 ENABLE_TESTING()
 
-
-SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules) # Our own CMAKE scripts
 INCLUDE(CMakeDependentOption)
 INCLUDE(PiranhaCompilerLinkerSettings)
 #INCLUDE(PiranhaPythonSetup)
@@ -41,13 +63,12 @@ CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DQPS "Build double coefficient - rational e
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_QQPS "Build rational coefficient - rational exponents Poisson series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build PyQt4 gui for pyranha." OFF "BUILD_PYRANHA" OFF) # TODO:?? upgrade to qt5??
 
-#this also builds the static library. Should we have a specific option for the static library?
 OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 
 
 # control build of load library (dll)        
 IF(BUILD_PYRANHA)
-        SET(BUILD_PIRANHA_DLL TRUE)
+#        SET(BUILD_PIRANHA_DLL TRUE) # Needed naywhere
         INCLUDE(PiranhaPythonSetup)  # we need the python includes for piranha.dll
         PIRANHA_PYTHON_SETUP()
 ENDIF()  
@@ -64,13 +85,6 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 SET(MANDATORY_LIBRARIES "")
 SET(PIRANHA_DEFINITIONS "")
 
-# Check for 64 bit support via pointer size.
-IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
-        MESSAGE(STATUS "64 bit support detected")
-        ADD_DEFINITIONS(-D_PIRANHA_64BIT)
-ELSE()
-        MESSAGE(FATAL_ERROR "No 64 bit support detected")
-ENDIF()
 
 #Cache size.
 SET(CACHE_SIZE 512 CACHE STRING "Cache size in kilobytes.")
@@ -80,27 +94,16 @@ MARK_AS_ADVANCED(CACHE_SIZE)
 MESSAGE(STATUS "Source directory: ${CMAKE_SOURCE_DIR}")
 
 # Platform switches.
-SET(PIRANHA_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+#SET(PIRANHA_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 
-IF(MSVC) 
-        IF(MSVC_VERSION LESS 1910)
-             MESSAGE(STATUS "This version ${MSVC_VERSION} of MSVC is not tested. It may work or not")
-        ENDIF()
-        SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D__GMP_LIBGMP_DLL)                # i.e. it has to be the dll of MPIR, do we really need that?
-        
-        SET(LIB_INSTALL_PATH .)
-        SET(PIRANHA_INSTALL_PREFIX "${PIRANHA_INSTALL_PREFIX} ${PIRANHA_VERSION}")
-ELSE(MSVC)
-        MESSAGE(FATAL_ERROR "Only Microsoft Visual Studio >= 15 (2017) is supported")
-ENDIF(MSVC)
 
 # Find MPIR, the Windows incarnation of GMP/MPFR. The C and CXX are combined into the same dll and use the same header
 FIND_PACKAGE(MPIR MODULE REQUIRED) # we have findMPIR in our local cmake script folder
 
 # find boost
-SET(Boost_USE_STATIC_LIBS ON)
-FIND_PACKAGE(Boost REQUIRED COMPONENTS thread system chrono)
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}) # should be do that per target would keep it clean
+#SET(Boost_USE_STATIC_LIBS ON)
+#FIND_PACKAGE(Boost REQUIRED COMPONENTS thread python)
+#INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}) # should be do that per target would keep it clean
 
 # Note: the order seems important here, at least in MinGW.
 SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${MPIR_LIBRARIES})
@@ -133,6 +136,8 @@ endif()
 
 # Pyranha: piranha's python bindings
 IF(BUILD_PYRANHA)
+#SET(Boost_USE_STATIC_LIBS OFF)
+#FIND_PACKAGE(Boost REQUIRED COMPONENTS python)
             #$$	IF(WIN32)
             #$$		SET(WIN_PKG_ROOT ${CMAKE_SOURCE_DIR}/windows_package)
             #$$		SET(WIN_PKG_FILES
