@@ -1,6 +1,6 @@
 SET(SRC_LIST "")
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/template.settings.cpp ${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp) # generate the settings.cpp file from the detected paramters
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp.template ${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp) # generate the settings.cpp file from the detected paramters
 
 SET(SRC_LIST ${SRC_LIST} degree_truncator.cpp
                          norm_truncator.cpp
@@ -9,6 +9,7 @@ SET(SRC_LIST ${SRC_LIST} degree_truncator.cpp
                          settings.cpp
                          Psym.cpp
                          stats.cpp
+                         settings.cpp.template
 )
 
 SET(SRC_LIST_HEADERS core/mp.h core/psym.h core/truncators/degree.h
@@ -179,7 +180,8 @@ SET(INCS
                 ../pyranha/series_instantiations.h
                 ../pyranha/stl_containers.h
                 )
-SOURCE_GROUP(TREE ${CMAKE_SOURCE_DIR} PREFIX "Header Files FILES" FILES ${INCS})
+SOURCE_GROUP(TREE ${CMAKE_SOURCE_DIR} PREFIX "Header Files" FILES ${INCS})
 ADD_LIBRARY(Headers STATIC ${INCS})
+TARGET_INCLUDE_DIRECTORIES(Headers PRIVATE ${Boost_INCLUDE_DIR})
 SET_TARGET_PROPERTIES(Headers PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 11)
 #ADD_CUSTOM_TARGET(Headers SOURCES ${INCS}) # Make all the headers visible in the project view.#
