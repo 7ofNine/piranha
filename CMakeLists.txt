@@ -119,48 +119,40 @@ IF(BUILD_TESTS)
 ENDIF(BUILD_TESTS)
 
 # should be set form outside
-SET(MY_PIRANHA_INSTALL "D:\\temp for tests\\Piranha")
+SET(MY_PIRANHA_INSTALL "D:\\temp for tests\\${CMAKE_PROJECT_NAME}")
 # Installation directory
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-        SET(CMAKE_INSTALL_PREFIX ${MY_PIRANHA_INSTALL} CACHE PATH "..." FORCE)
+        SET(CMAKE_INSTALL_PREFIX ${MY_PIRANHA_INSTALL} CACHE PATH "Path to the PYRANHA installation" FORCE)
 endif()
 
 # Pyranha: piranha's python bindings
 IF(BUILD_PYRANHA)
     SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha) # the piranha.dll is needed
     ADD_SUBDIRECTORY(pyranha)
+	
+	# installation of PYRANHA
+	SET(WIN_PKG_ROOT ${CMAKE_SOURCE_DIR}/WinPackage)
+	#CONFIGURE_FILE(${WIN_PKG_ROOT}/template.console.xml ${WIN_PKG_ROOT}/generated.console.xml)  #TODO: one day
+	
+    SET(WIN_PKG_FILES
+						${WIN_PKG_ROOT}/Console.exe
+						${WIN_PKG_ROOT}/ConsoleHook.dll
+						${WIN_PKG_ROOT}/FreeImagePlus.dll
+            #$$         ${WIN_PKG_ROOT}/console.chm   # TODO: get it from somewhere or build it
+						${WIN_PKG_ROOT}/console.xml
+            #            ${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
+                        ${CMAKE_SOURCE_DIR}/extras/matplotlibrc
+		)
+		
+	SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${MPIR_INCLUDE_DIR}/mpir.dll) # header in library for mpir are in the same folder
+		
+    INSTALL(FILES ${WIN_PKG_FILES} DESTINATION .)
+	
+	INSTALL(FILES  ${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py  DESTINATION .ipython/profile_pyranha/startup) # install pyranha startup for ipython
 
-            #$$ IF(WIN32)
-            #$$     SET(WIN_PKG_ROOT ${CMAKE_SOURCE_DIR}/windows_package)
-            #$$     SET(WIN_PKG_FILES
-            #$$         ${WIN_PKG_ROOT}/Console.exe
-            #$$         ${WIN_PKG_ROOT}/ConsoleHook.dll
-            #$$         ${WIN_PKG_ROOT}/FreeImage.dll
-            #$$         ${WIN_PKG_ROOT}/FreeImagePlus.dll
-            #$$         ${WIN_PKG_ROOT}/console.chm
-            #$$         ${WIN_PKG_ROOT}/console.xml
-            #$$         ${WIN_PKG_ROOT}/msvcp71.dll
-            #$$         ${WIN_PKG_ROOT}/msvcr71.dll
-            #$$#            ${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
-            #$$#            ${CMAKE_SOURCE_DIR}/extras/matplotlibrc
-            #$$     )
-            #$$     IF(MINGW)
-            #$$         SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${WIN_PKG_ROOT}/libgmp-3.dll ${WIN_PKG_ROOT}/libgmpxx-4.dll)
-            #$$     ELSE(MINGW)
-            #$$         SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${WIN_PKG_ROOT}/mpir.dll)
-            #$$     ENDIF(MINGW)
-            #$$     IF(NOT MINGW)
-            #$$         SET(WIN_MSVC_DLL_PATH ${CMAKE_SOURCE_DIR}/windows_package/Microsoft.VC90.CRT)
-            #$$         SET(WIN_MSVC_DLL_FILES
-            #$$             ${WIN_MSVC_DLL_PATH}/Microsoft.VC90.CRT.manifest
-            #$$             ${WIN_MSVC_DLL_PATH}/msvcm90.dll
-            #$$             ${WIN_MSVC_DLL_PATH}/msvcp90.dll
-            #$$             ${WIN_MSVC_DLL_PATH}/msvcr90.dll
-            #$$         )
-            #$$         INSTALL(FILES ${WIN_MSVC_DLL_FILES} DESTINATION Microsoft.VC90.CRT)
-            #$$     ENDIF(NOT MINGW)
-            #$$     INSTALL(FILES ${WIN_PKG_FILES} DESTINATION .)
-            #$$     # Now let's setup npp.
+	
+	## TODO: npp. we have it installed. should find it and not reinstall whatever outdated version of it
+            #$$     # Now let's setup npp. TODO: do we need that?
             #$$     INSTALL(FILES
             #$$         ${WIN_PKG_ROOT}/npp/config.model.xml
             #$$         ${WIN_PKG_ROOT}/npp/notepad++.exe

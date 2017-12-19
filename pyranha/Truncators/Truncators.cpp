@@ -23,6 +23,7 @@
 #include <boost/python/class.hpp>
 #include <boost/python/def.hpp>
 #include <boost/python/module.hpp>
+#include <boost/python/docstring_options.hpp>
 
 
 #include "../../src/core/truncators/degree.h"
@@ -39,6 +40,7 @@ using namespace pyranha;
 // Instantiate the pyranha Truncators module.
 BOOST_PYTHON_MODULE(_Truncators)
 {
+    docstring_options docOptions(true, false, false);
 	translate_exceptions();
 
 	typedef void (*deg_set)(const int);

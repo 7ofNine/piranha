@@ -21,7 +21,7 @@ from detail import __check_uniform_type
 
 def r_a(e,M):
 	"""
-	Calculate the elliptic expansion of r/a in terms of e and M.
+	Calculate the elliptic expansion of r/a in terms of excentricity e and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -31,7 +31,7 @@ def r_a(e,M):
 
 def a_r(e,M):
 	"""
-	Calculate the elliptic expansion of a/r in terms of e and M.
+	Calculate the elliptic expansion of a/r in terms of excentricity e and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -41,7 +41,7 @@ def a_r(e,M):
 
 def cos_f(e,M):
 	"""
-	Calculate the elliptic expansion of cos(f) in terms of e and M.
+	Calculate the elliptic expansion of cos(f) (f: true anomaly) in terms of excentricity e and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -51,7 +51,7 @@ def cos_f(e,M):
 
 def sin_f(e,M):
 	"""
-	Calculate the elliptic expansion of sin(f) in terms of e and M.
+	Calculate the elliptic expansion of sin(f) (f: true anomaly) in terms of excentricity e and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -61,7 +61,7 @@ def sin_f(e,M):
 
 def cos_E(e,M):
 	"""
-	Calculate the elliptic expansion of cos(E) in terms of e and M.
+	Calculate the elliptic expansion of cos(E) (E: excentric anomaly) in terms of excentricity e and and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -71,7 +71,7 @@ def cos_E(e,M):
 
 def sin_E(e,M):
 	"""
-	Calculate the elliptic expansion of sin(E) in terms of e and M.
+	Calculate the elliptic expansion of sin(E) (E:: excentric anomaly) in terms of excentricity e and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -407,7 +407,7 @@ def is_canonical(new_p,new_q,p_list,q_list):
 				return False
 	return True
 
-def lieL(gen,arg,p_list,q_list,n = 1):
+def lieL(gen,arg, p_list, q_list,n = 1):
 	"""
 	Lie derivative of order n on argument arg with generator gen, using p_list and q_list
 	as lists of names of the canonical momenta and coordinates.

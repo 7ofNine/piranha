@@ -20,6 +20,7 @@
 
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
+#include <boost/python/docstring_options.hpp>
 #include <string>
 
 #include "../../src/manipulators/qps.h"
@@ -33,6 +34,7 @@ using namespace pyranha;
 
 BOOST_PYTHON_MODULE(_Qps)
 {
+    docstring_options docOptions(true, false, false);
 	translate_exceptions();
 
 	class_<qps> inst(series_basic_instantiation<qps>(std::string("qps"),

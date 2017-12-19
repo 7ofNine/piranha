@@ -17,8 +17,8 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-__all__ = [ "Core", "Math", "Celmec", "Test", "Truncators", "Gui", "Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
-__manipulators__ = ["Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
+__all__ = [@MODULE_LIST@]
+__manipulators__ = [@MANIPULATOR_LIST@]
 
 print "Pyranha initializing..."
 print "Available manipulators: ", __manipulators__

@@ -20,6 +20,7 @@
 
 #include <boost/python/class.hpp>
 #include <boost/python/module.hpp>
+#include <boost/python/docstring_options.hpp>
 #include <string>
 
 #include "../../src/manipulators/dfs.h"
@@ -34,6 +35,7 @@ using namespace pyranha;
 
 BOOST_PYTHON_MODULE(_Dps)
 {
+    docstring_options docOptions(true, false, false);
 	translate_exceptions();
 
 	class_<dps> inst = series_basic_instantiation<dps>(std::string("dps"),

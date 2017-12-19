@@ -26,6 +26,7 @@
 #include <boost/python/make_function.hpp>
 #include <boost/python/module.hpp>
 #include <boost/python/operators.hpp>
+#include <boost/python/docstring_options.hpp>
 #include <cstddef>
 #include <sstream>
 #include <string>
@@ -79,7 +80,8 @@ static inline std::string py_stats_dump(const stats &)
 
 // Instantiate the pyranha Core module.
 BOOST_PYTHON_MODULE(_Core)
-{
+{   
+    docstring_options docOptions(true, false, false);
 	translate_exceptions();
 
 	// Interop between vectors of some types and Python tuples/lists.
@@ -103,17 +105,18 @@ BOOST_PYTHON_MODULE(_Core)
 	expose_argsTuples<__PIRANHA_MAX_ECHELON_LEVEL>();
 
 	// MP classes.
-	class_<mp_rational> mpr(expose_real_mp_class<mp_rational>("rational","Multi-precision rational number."));
+	class_<mp_rational> mpr(expose_real_mp_class<mp_rational>("rational", "Multi-precision rational number."));
 	mpr.def(init<const int &, const int &>());
 	mpr.def(init<const mp_integer &, const mp_integer &>());
-	mpr.add_property("num",&mp_rational::get_num);
-	mpr.add_property("den",&mp_rational::get_den);
+	mpr.add_property("num", &mp_rational::get_num, "Numerator of the rational number");
+	mpr.add_property("den", &mp_rational::get_den, "Denominator of the ratonal Number");
 	mpr.def("choose", &mp_rational::choose, "Binomial coefficient (choose function).");
-	class_<mp_integer> mpz(expose_real_mp_class<mp_integer>("integer","Multi-precision integer number."));
+
+	class_<mp_integer> mpz(expose_real_mp_class<mp_integer>("integer", "Multi-precision integer number."));
 	mpz.def(init<const mp_rational &>());
 	mpz.def("factorial", &mp_integer::factorial, "Factorial.");
-	mpz.def("choose", &mp_integer::choose, "Binomial coefficient (choose function).");
-	mpz.def("lcm", &mp_integer::lcm, "Set self to the least common multiplier of input arguments.");
+	mpz.def("choose",    &mp_integer::choose,    "Binomial coefficient (choose function).");
+	mpz.def("lcm",       &mp_integer::lcm,       "Set self to the least common multiplier of input arguments.");
 	mpz.def(boost::python::self %= mp_integer());
 	mpz.def(boost::python::self %= int());
 	mpz.def(boost::python::self % mp_integer());
@@ -128,10 +131,10 @@ BOOST_PYTHON_MODULE(_Core)
 	class_setm.add_static_property("multiplication_algorithm",     &settings::getMultiplicationAlgorithm, &settings::setMultiplicationAlgorithm);
 
 	enum_<settings::MultiplicationAlgorithm>("multiplication_algorithm")
-		.value("automatic", settings::ALGORITHM_AUTOMATIC)
-		.value("plain", settings::ALGORITHM_PLAIN)
+		.value("automatic",    settings::ALGORITHM_AUTOMATIC)
+		.value("plain",        settings::ALGORITHM_PLAIN)
 		.value("vector_coded", settings::ALGORITHM_VECTOR_CODED)
-		.value("hash_coded", settings::ALGORITHM_HASH_CODED)
+		.value("hash_coded",   settings::ALGORITHM_HASH_CODED)
 		.export_values();
 
 	// Psym.
@@ -142,8 +145,8 @@ BOOST_PYTHON_MODULE(_Core)
 		.def("__hash__", &py_psym_hash)
 		.def("__repr__", &py_psym_repr)
 		.def("eval", &Psym::eval)
-		.add_property("name", make_function(&Psym::getName,return_value_policy<copy_const_reference>()))
-		.add_property("time_eval", make_function(&Psym::getTimeEval,return_value_policy<copy_const_reference>()),
+		.add_property("name",      make_function(&Psym::getName,     return_value_policy<copy_const_reference>()))
+		.add_property("time_eval", make_function(&Psym::getTimeEval, return_value_policy<copy_const_reference>()),
 			&Psym::setTimeEval)
 		.def("list", &Psym::list, "Get list of global psyms").staticmethod("list")
 		.def(self == self)
@@ -151,5 +154,5 @@ BOOST_PYTHON_MODULE(_Core)
 
 	// Stats class.
 	class_<stats>("__stats", "Stats class.", init<>())
-		.def("__repr__",&py_stats_dump);
+		.def("__repr__", &py_stats_dump);
 }

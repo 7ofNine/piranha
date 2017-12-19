@@ -21,6 +21,7 @@
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/python/def.hpp>
 #include <boost/python/module.hpp>
+#include <boost/python/docstring_options.hpp>
 #include <complex>
 
 #include "../../src/core/math.h"
@@ -33,6 +34,7 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE(_Math)
 {
+    docstring_options docOptions(true, false, false);
 	translate_exceptions();
 	typedef std::complex<double> (*jn_complex)(const int &, const std::complex<double> &);
 	typedef double (*jn_real)(const int &, const double &);

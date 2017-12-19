@@ -9,7 +9,7 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 #ADD_CUSTOM_TARGET(RUN_TEST_PREPARE COMMAND ${CMAKE_CTEST_COMMAND})
 #
 # automatic test ecution using ctest unde VS doesn't seem to work properly
-# we have to copy somehoe the mpir.dll and mpfr.dll into the DEBUG/RELEASE directories for the tests to run. Automate!
+# we have to copy somehow the mpir.dll and mpfr.dll into the DEBUG/RELEASE directories for the tests to run. Automate!
 #
 ADD_EXECUTABLE(test_fateman_1 fateman_poly_test1.cpp)
 TARGET_INCLUDE_DIRECTORIES(test_fateman_1 PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
