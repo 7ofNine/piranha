@@ -116,7 +116,7 @@ namespace piranha
 	// all personal preference
 	// we have to do multiple sorting. first on the trigonometric arguments and then on the exponential arguments
 	// 
-	// the printed file is not intended to be read back into piranha for that putpose use save to.
+	// the printed file is not intended to be read back into piranha. For that purpose use saveTo.
 	//
 	template<PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void  NamedSeries<PIRANHA_NAMED_SERIES_TP>::printToSorted(std::string const & fileName, VectorPsym const & expSymbols, VectorPsym const & trigSymbols) const
@@ -128,43 +128,79 @@ namespace piranha
 			outfile.close();
 			return;
 		}
-		// write header
-		outfile << std::setw(6) << "TermId" << " " << std::setw(30) << std::right << "Coefficient" << " ";
-		for (std::size_t i = 0; i < expSymbols.size(); ++i)
-		{
-			outfile << std::setw(6) << std::right << expSymbols[i].getName() << " ";
-		}
 
-		for (std::size_t i = 0; i < trigSymbols.size(); ++i)
-		{
-			outfile << std::setw(6) << std::right << trigSymbols[i].getName() << " ";
-		}
-		outfile << std::endl;
+		// write header of file. 
+		//outfile << std::setw(6) << "TermId" << " " << std::setw(30) << std::right << "Coefficient" << " ";
+		//for (std::size_t i = 0; i < expSymbols.size(); ++i)
+		//{
+		//	outfile << std::setw(6) << std::right << expSymbols[i].getName() << " ";
+		//}
+        //
+		//for (std::size_t i = 0; i < trigSymbols.size(); ++i)
+		//{
+		//	outfile << std::setw(6) << std::right << trigSymbols[i].getName() << " ";
+		//}
+		//outfile << std::endl;
+
 
 		auto positionTuple = psyms2pos(trigSymbols, argumentsTuple); // get a tuple for where the symbols are in the terms
-		// get rigonometric positions first
-		auto const positions = positionTuple.get<1>();                     // TODO: how to get to the trig and exponential ones separately (ie. where is the position hidden in the class)
+		// get trigonometric positions first
+		auto const positions = positionTuple.get<1>();               // TODO: how to get to the trig and exponential ones separately (ie. where is the position hidden in the class)
 		                                                             // we should be able to get that from the args descriptor 
 		                                                             // this is a vector of pairs fist: true/false = present; second: index into vector 
-		auto terms = getTrigSortedTerms(positions);                  // a vector of pointer to the sorted terms
+		auto terms = getTrigSortedTerms(positions);                  // a vector of pointers to the terms sorted by trigonometric argument
 		
-		//now we are sorted by trigonometric argument
+		// now we are sorted by trigonometric argument
 		// next we have to sort the coefficient by exponents
 		// and then finaly print it
-		printToSorted(outfile, terms, expSymbols, positions);
+		printToSorted(outfile, terms, expSymbols, trigSymbols, positions);
 		//printPlain(outfile);
 		outfile.close();
 	}
 
 	template<PIRANHA_NAMED_SERIES_TP_DECL>
-	inline void  NamedSeries<PIRANHA_NAMED_SERIES_TP>::printToSorted(std::ofstream & outfile, std::vector<Term const*> trigSortedTerms, VectorPsym const & expSymbols,
-		                                                             std::vector<std::pair<bool, std::size_t> > const & trigPositions) const
+	inline void  NamedSeries<PIRANHA_NAMED_SERIES_TP>::printToSorted(std::ofstream & outfile, std::vector<Term const*> trigSortedTerms, VectorPsym const & expSymbols, 
+                                                                     VectorPsym const & trigSymbols, std::vector<std::pair<bool, std::size_t> > const & trigPositions) const
 	{
 		typename Term::CfType check;
 		typedef std::vector<Term const*>::size_type Index;
 		//get positions of exponent arguments
 		auto const positionTuple = psyms2pos(expSymbols, argumentsTuple);
 		auto const expPositions = positionTuple.get<0>();
+
+        // determine the max print length of the coefficient, to make it look pretty.
+        // should be done more efficiently, and not by scanning the series twice
+        std::size_t maxCoeffLength = 0;
+        for (Index i = 0; i < trigSortedTerms.size(); ++i)
+        {
+            typename Term::CfType coeff = trigSortedTerms[i]->get<0>();
+            auto terms = getExpoSortedCoefficient(coeff, expPositions);
+            for (std::size_t j = 0; j < terms.size(); ++j)
+            {
+                maxCoeffLength = std::max(maxCoeffLength, (terms[j]->get<0>()).printLength());
+            }
+        }
+
+        static std::string const coefficientText("Coefficient");
+        static std::string const termIdText("TermId");
+        std::size_t const printCoeffWidth = std::max(coefficientText.length() + 2 + 2, maxCoeffLength); // length of word 'Coefficient' and 2 leading and trailing blanks each.
+
+        // write header of file. 
+        outfile << std::setw(termIdText.length()) << termIdText << " " << std::setw(printCoeffWidth) << std::right << coefficientText << " ";
+        for (std::size_t i = 0; i < expSymbols.size(); ++i)
+        {
+            outfile << std::setw(6) << std::right << expSymbols[i].getName() << " ";
+        }
+
+        outfile << "  |  ";
+
+        for (std::size_t i = 0; i < trigSymbols.size(); ++i)
+        {
+            outfile << std::setw(6) << std::right << trigSymbols[i].getName() << " ";
+        }
+        outfile << std::endl;
+
+
 		int termId = 0;
 		for (Index i = 0; i < trigSortedTerms.size(); ++i)
 		{
@@ -173,11 +209,13 @@ namespace piranha
 			auto terms = getExpoSortedCoefficient(coeff, expPositions); // these are paointers to the single terms as they are in the coefficient split out and sorted according to exponent and position
 			for (std::size_t j = 0; j < terms.size(); ++j)
 			{
+
 				outfile << std::setw(6) << (++termId) << " ";
-				outfile << std::setw(30) << std::right << terms[j]->get<0>();
+				outfile << std::setw(printCoeffWidth) << std::right << terms[j]->get<0>(); // the coefficient
 				outfile << " ";
 				//outfile << setw(5) << right;
 				terms[j]->get<1>().printPlainSorted(outfile, expPositions, argumentsTuple);
+                outfile << "  |  ";
 				trigSortedTerms[i]->get<1>().printPlainSorted(outfile, trigPositions, argumentsTuple);
 				outfile << std::endl;
 			}
@@ -292,6 +330,22 @@ namespace piranha
 		// the ultimate result
 		return retval;
 	}
+
+    template <PIRANHA_NAMED_SERIES_TP_DECL>
+    void NamedSeries<PIRANHA_NAMED_SERIES_TP>::printToSequenced(std::string const & fileName, VectorPsym const & expSymbols, VectorPsym const & trigSymbols, PrintSequenceType const & sequence) const
+    {
+
+    }
+
+    // sort terms according to a pre-given sequence (mainly for comparison with printed results to avois long searches)
+    // the idea is to give a sequence of trigonmetric keys and return the series with the terms in that sequence and the remaining terms sorted as usual
+    // This should make it easier to comapre historic printed results with a new derivation of the result. This is slow and should be rarely used
+    template <PIRANHA_NAMED_SERIES_TP_DECL>
+    inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::getTrigSequencedTerms(std::vector<std::pair<bool, std::size_t> > const &positions, std::vector<typename Term::KeyType> const & sequence) const
+    {
+
+    }
+
 
 	//
 	/// Construct from file.

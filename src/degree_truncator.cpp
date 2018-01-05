@@ -76,7 +76,7 @@ namespace piranha
 	{
 		if (!vs.size())
         {
-			set(n);
+			set(n); // TODO: that can not work. What would be the relation between name/psym and the degree level n, different sumbols at different fegrees?
 			return;
 		}
 

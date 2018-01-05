@@ -140,10 +140,10 @@ namespace truncators {
 						VectorPsym const symbols = argsTuple.get<exponentArgsPosition>(); //GUT temp test
 						switch (truncationMode)
                         {
-							case TRUNCATION_DEGREE:         return   ((*t1)->template get<exponentTermPosition>().order(symbols) + (*t2)->template get<exponentTermPosition>().order(symbols) >= degreeLimit);
+							case TRUNCATION_DEGREE:         return   ((*t1)->template get<exponentTermPosition>().order(symbols) + (*t2)->template get<exponentTermPosition>().order(symbols) > degreeLimit);
 
 							case TRUNCATION_PARTIAL_DEGREE: return   ((*t1)->template get<exponentTermPosition>().partialOrder(positionTuple) 
-                                                                    + (*t2)->template get<exponentTermPosition>().partialOrder(positionTuple) >= degreeLimit);
+                                                                    + (*t2)->template get<exponentTermPosition>().partialOrder(positionTuple) > degreeLimit);
 
 							case TRUNCATION_INACTIVE:       PIRANHA_ASSERT(false); // We should never get there.
 				 	    }

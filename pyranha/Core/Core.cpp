@@ -149,6 +149,7 @@ BOOST_PYTHON_MODULE(_Core)
 		.add_property("time_eval", make_function(&Psym::getTimeEval, return_value_policy<copy_const_reference>()),
 			&Psym::setTimeEval)
 		.def("list", &Psym::list, "Get list of global psyms").staticmethod("list")
+        .add_property("Order", &Psym::order, &Psym::setOrder, "Get/set the order of the symbol for truncation (default: 1)")
 		.def(self == self)
 		.def(self != self);
 

@@ -127,6 +127,10 @@ namespace piranha
 			void saveTo(const std::string &) const;
 			void printToSorted(std::string const & fileName, VectorPsym const & expSymbols, VectorPsym const & trigSymbols) const;
 
+
+            typedef std::vector<typename Term::KeyType> PrintSequenceType;
+            void printToSequenced(std::string const & fileName, VectorPsym const & expSymbols, VectorPsym const & trigSymbols, PrintSequenceType const & sequence) const;
+
 //		    Rework this.
 // 			template <class Filter>
 // 			Derived filter(const Filter &) const;
@@ -230,8 +234,10 @@ namespace piranha
 			Derived & mergeWithSeries(Derived2 const &);
 
 			std::vector<Term const*> getTrigSortedTerms(std::vector<std::pair<bool, std::size_t> > const & positions) const; // for printing
-			void printToSorted(std::ofstream & outfile, std::vector<Term const*> trigSortedTerms, VectorPsym const & expSymbols, std::vector<std::pair<bool, std::size_t> > const & trigPositions) const; //for printing
+			void printToSorted(std::ofstream & outfile, std::vector<Term const*> trigSortedTerms, VectorPsym const & expSymbols, VectorPsym const & trigSymbols, std::vector<std::pair<bool, std::size_t> > const & trigPositions) const; //for printing
 			std::vector<typename Term::CfType::TermType const*> getExpoSortedCoefficient(typename Term::CfType const & coeff, std::vector<std::pair<bool, size_t> > const & expSymbols) const;//for printing return type??
+            void getTrigSequencedTerms(std::vector<std::pair<bool, std::size_t> > const &positions, PrintSequenceType const & sequence) const;
+
 
 		protected:
 

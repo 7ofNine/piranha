@@ -38,6 +38,7 @@ SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules) # Our own CMAKE
 INCLUDE(CMakeDependentOption)
 INCLUDE(PiranhaCompilerLinkerSettings)
 INCLUDE(PiranhaVersionSetup)
+#INCLUDE(PiranhaFindBoost) doesn't work for Boost 1.66 either. wait for proper CMAKE update
 
 # Place this after having determined the version number.
 INCLUDE(PiranhaCPackSetup)

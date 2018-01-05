@@ -40,6 +40,7 @@ namespace pyranha
 		inst.def(boost::python::self != x);
 		inst.def(x == boost::python::self);
 		inst.def(x != boost::python::self);
+
 		// Addition and subtraction.
 		inst.def(boost::python::self += x);
 		inst.def(boost::python::self + x);
@@ -47,10 +48,12 @@ namespace pyranha
 		inst.def(boost::python::self -= x);
 		inst.def(boost::python::self - x);
 		inst.def(x - boost::python::self);
+
 		// Multiplication.
 		inst.def(boost::python::self *= x);
 		inst.def(boost::python::self * x);
 		inst.def(x * boost::python::self);
+
 		// Division.
 		inst.def(boost::python::self /= x);
 		inst.def(boost::python::self / x);
@@ -66,20 +69,23 @@ namespace pyranha
 		inst.def(boost::python::init<const std::string &>());
 		inst.def(boost::python::init<const piranha::mp_rational &>());
 		inst.def(boost::python::init<const piranha::mp_integer &>());
+
 		// Some special methods.
-		inst.def("__abs__", &T::abs, "Absolute value.");
+		inst.def("__abs__",  &T::abs, "Absolute value.");
 		inst.def("__copy__", &py_copy<T>);
 		inst.def(boost::python::self_ns::repr(boost::python::self));
+
 		// Negation.
 		inst.def(-boost::python::self);
+
 		// Exponentiation & friends.
 		typedef T (T::*pow_double)(const double &) const;
 		typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
-		inst.def("__pow__", (pow_double)&T::pow, "Exponentiation.");
-		inst.def("__pow__", (pow_rational)&T::pow, "Exponentiation.");
+		inst.def("__pow__", (pow_double)&T::pow,        "Exponentiation.");
+		inst.def("__pow__", (pow_rational)&T::pow,      "Exponentiation.");
 		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
-		inst.def("root",&T::root,"N-th root.");
-		inst.def("__hash__",&T::hash,"Hash value.");
+		inst.def("root",    &T::root,                   "N-th root.");
+		inst.def("__hash__",&T::hash,                   "Hash value.");
 	}
 
 	template <class T, class U>
@@ -103,7 +109,7 @@ namespace pyranha
 		common_mp_methods(inst);
 		// Conversions.
 		inst.def("__float__", &T::to_double, "Convert to floating point.");
-		inst.def("__int__", &T::to_int, "Convert to integer.");
+		inst.def("__int__",   &T::to_int,    "Convert to integer.");
 	}
 
 	template <class T>

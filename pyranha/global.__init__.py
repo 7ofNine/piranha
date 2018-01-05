@@ -17,7 +17,7 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-__all__ = [ "Core", "Math", "Celmec", "Test", "Truncators", "Gui", "Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
+__all__ = [ "Core", "Math", "Celmec", "Test", "Truncators", "Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
 __manipulators__ = ["Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
 
 print "Pyranha initializing..."

@@ -302,6 +302,18 @@ namespace piranha
 				m_value = value;
 			}
 
+            /// get as string
+
+            inline std::string toString() const
+            {
+                return boost::lexical_cast<std::string>(m_value);
+            }
+
+            inline std::size_t printLength() const
+            {
+                return toString().length();
+            }
+
 		private:
 
 			template <class Number, class ArgsTuple>
@@ -336,6 +348,13 @@ namespace piranha
 		os << boost::lexical_cast<std::string>(nc.get_value());
 		return os;
 	}
+
+ //   template <class T, class Derived>
+ //   inline std::size_t printLength(NumericalContainer<T, Derived> const &nc)
+ //   {
+ //       return boost::lexical_cast<std::string>(nc.get_value()).size();
+ //   }
+
 }
 
 #undef derived_const_cast

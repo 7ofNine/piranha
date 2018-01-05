@@ -21,7 +21,7 @@ from detail import __check_uniform_type
 
 def r_a(e,M):
 	"""
-	Calculate the elliptic expansion of r/a in terms of excentricity e and mean anomaly M.
+	Calculate the elliptic expansion of r/a in terms of eccentricity e and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -31,7 +31,7 @@ def r_a(e,M):
 
 def a_r(e,M):
 	"""
-	Calculate the elliptic expansion of a/r in terms of excentricity e and mean anomaly M.
+	Calculate the elliptic expansion of a/r in terms of eccentricity e and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -41,7 +41,7 @@ def a_r(e,M):
 
 def cos_f(e,M):
 	"""
-	Calculate the elliptic expansion of cos(f) (f: true anomaly) in terms of excentricity e and mean anomaly M.
+	Calculate the elliptic expansion of cos(f) (f: true anomaly) in terms of eccentricity e and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -51,7 +51,7 @@ def cos_f(e,M):
 
 def sin_f(e,M):
 	"""
-	Calculate the elliptic expansion of sin(f) (f: true anomaly) in terms of excentricity e and mean anomaly M.
+	Calculate the elliptic expansion of sin(f) (f: true anomaly) in terms of eccentricity e and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -61,7 +61,7 @@ def sin_f(e,M):
 
 def cos_E(e,M):
 	"""
-	Calculate the elliptic expansion of cos(E) (E: excentric anomaly) in terms of excentricity e and and mean anomaly M.
+	Calculate the elliptic expansion of cos(E) (E: eccentric anomaly) in terms of eccentricity e and and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -71,7 +71,7 @@ def cos_E(e,M):
 
 def sin_E(e,M):
 	"""
-	Calculate the elliptic expansion of sin(E) (E:: excentric anomaly) in terms of excentricity e and mean anomaly M.
+	Calculate the elliptic expansion of sin(E) (E:: eccentric anomaly) in terms of eccentricity e and mean anomaly M.
 	"""
 	__check_uniform_type(e,M)
 	try:
@@ -82,7 +82,7 @@ def sin_E(e,M):
 def EE(e,M):
 	"""
 	Calculate the elliptic expansion of E in terms of e and M.
-	Excentric Anomaly expressed in excentricity and Mean Anomaly
+	Eccentric Anomaly expressed in eccentricity and Mean Anomaly
 	"""
 	__check_uniform_type(e,M)
 	try:
