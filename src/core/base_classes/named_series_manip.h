@@ -169,9 +169,9 @@ namespace piranha
     //
     // combine two sets of arguments into one set
     //
-    // the result is a modified argsTuple in *this that is the union from the
-    // *this and series2
-    //
+    // the result is a modified argsTuple in *this that is the a sequenced union from the
+    // *this and series2. The sequence of the resulting arguments is different from the sequences of the incoming arguments.
+    // Also the result is dependent on which series is first, i.e. the result is non commutative
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeArgs(Derived2 const &series2)
@@ -182,7 +182,8 @@ namespace piranha
 			return;
 		}
 
-		if (!isArgsCompatible(series2))  // if they are compatible i.e. argsTuple2 are all contained in argsTuple1
+        // the same symbols have to be in the same location, if not they are not compatible
+		if (!isArgsCompatible(series2))  // if they are compatible i.e. argsTuple2 are all contained in argsTuple1. 
 		{
 			mergeIncompatibleArgs(series2);        // create union. Beware the sequence of symbols gets changed
 		}
@@ -360,7 +361,7 @@ namespace piranha
     // The elements of the tuple are vectors of pairs of (bool, int).
     // The layout is determined by starting in series2. If the symbol is present in series2 but not in series1 the
     // bool flag is set to false. The index int is not used (typically 0). The index of the pair in the vector determines which index into the 
-    // argumentsTuple Psym vector it corresponds to (this could be changed to make it homogenous, see below)
+    // argumentsTuple Psym vector of series 2 it corresponds to (this could be changed to make it homogenous, see below)
     // If the symbol is present in series1 the bool is set to true and the index integer is set to the index in the argsTuple psym vector of series1.
     // The same is done for symbols that are present in series1 but not in series2.
     // e.g.
@@ -371,6 +372,9 @@ namespace piranha
     //
     // here we create the union of the two argTuples and update *this acordingly
     //
+    // note that the merged arguments start with the arguments in sequence as they derive from series 2(!) followed in sequence by the still missing arguments from series 1.
+    // This is explicitly used in the code for multiplication/division etc. I.e. within the code, series 1 and series 2 (and its terms ) don't commute!. This way terms of series 2 can 
+    // be directly merged into the resulting series, their arguments are the starting sequence of the resulting arguments sequence.
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeIncompatibleArgs(Derived2 const &series2)

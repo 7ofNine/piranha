@@ -140,8 +140,8 @@ namespace piranha
 			// Multiplication.
             // multiply this ExpoVector with expoVector into result
             // result is allocated externally
-            // the exponants have to represent the same symbol in order to make sense. This
-            // has to asserted before one can use this method
+            // the exponents have to represent the same symbol in order to make sense. This
+            // has to asserted before one can use this method. See merge arguments
 			template <class ResultType>
 			void multiply(const ExpoVector &expoVector, ResultType &result) const
 			{
@@ -162,6 +162,7 @@ namespace piranha
 				}
 
                 //i comes from previous for loop and starts with i == minw
+                // Here it is where the merge of different length expo vectors is happening.
 				for (; i < maxw; ++i) 
                 {
 					result[i] = (*this)[i]; 
@@ -315,8 +316,10 @@ namespace piranha
 			/// Return the total degree of the exponents array, i.e. sum over all the exponent values
 			DegreeType degree(VectorPsym const & symbols) const
 			{
-				PIRANHA_ASSERT(symbols.size() == size());
-
+                // the lenthe of the symbols can be >= the size of the current vector.
+                // this happens during merge of arguments in multiplication and addition.
+                // The positions have to correspond to the correct symbols, but this can not be verified here
+                PIRANHA_ASSERT(symbols.size() >= size())
 				DegreeType degree(0);
 				for (VectorPsym::size_type i = 0; i < size(); ++i)
 				{

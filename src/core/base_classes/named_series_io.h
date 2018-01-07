@@ -39,6 +39,23 @@
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast       static_cast<Derived *>(this)
 
+namespace {
+    bool createFile(std::string const & fileName, std::ofstream & outfile)
+    {
+        outfile = std::ofstream(fileName.c_str(), std::ios_base::trunc);
+        if (outfile.fail())
+        {
+            std::cout << "Error printing series to file " << fileName << "." << std::endl;
+            outfile.close();
+            return false;
+        }else
+        {
+            return true;
+        }
+
+    }
+}
+
 namespace piranha
 {
 	// TODO: move out in static method? Where is this used?
@@ -118,29 +135,15 @@ namespace piranha
 	// 
 	// the printed file is not intended to be read back into piranha. For that purpose use saveTo.
 	//
+
 	template<PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void  NamedSeries<PIRANHA_NAMED_SERIES_TP>::printToSorted(std::string const & fileName, VectorPsym const & expSymbols, VectorPsym const & trigSymbols) const
 	{
-		std::ofstream outfile(fileName.c_str(), std::ios_base::trunc);
-		if (outfile.fail())
-		{
-			std::cout << "Error printing series to file " << fileName << "." << std::endl;
-			outfile.close();
-			return;
-		}
-
-		// write header of file. 
-		//outfile << std::setw(6) << "TermId" << " " << std::setw(30) << std::right << "Coefficient" << " ";
-		//for (std::size_t i = 0; i < expSymbols.size(); ++i)
-		//{
-		//	outfile << std::setw(6) << std::right << expSymbols[i].getName() << " ";
-		//}
-        //
-		//for (std::size_t i = 0; i < trigSymbols.size(); ++i)
-		//{
-		//	outfile << std::setw(6) << std::right << trigSymbols[i].getName() << " ";
-		//}
-		//outfile << std::endl;
+        std::ofstream outfile;
+        if (!createFile(fileName, outfile))
+        {
+            return;
+        }
 
 
 		auto positionTuple = psyms2pos(trigSymbols, argumentsTuple); // get a tuple for where the symbols are in the terms
@@ -155,7 +158,7 @@ namespace piranha
 		// and then finaly print it
 		printToSorted(outfile, terms, expSymbols, trigSymbols, positions);
 		//printPlain(outfile);
-		outfile.close();
+		outfile.close(); 
 	}
 
 	template<PIRANHA_NAMED_SERIES_TP_DECL>
@@ -290,7 +293,7 @@ namespace piranha
 			bool operator()(Term const * const t1, Term const * const t2) const
 			{
 				//TODO: flavour?? cosine before sine which makes constants appear at the top
-				auto const trigkey1 = t1->get<1>();  //TODO: make this actually safe // a vector of exponents
+				auto const trigkey1 = t1->get<1>();  //TODO: make this actually safe // a vector of exponents How do we make sure it is the trig arguments we want, Template parameter?
 				auto const trigkey2 = t2->get<1>();  // 1: should be the trig arguments
 				PIRANHA_ASSERT(positions.size() == trigkey1.size());
 				PIRANHA_ASSERT(positions.size() == trigkey2.size());
@@ -334,15 +337,125 @@ namespace piranha
     template <PIRANHA_NAMED_SERIES_TP_DECL>
     void NamedSeries<PIRANHA_NAMED_SERIES_TP>::printToSequenced(std::string const & fileName, VectorPsym const & expSymbols, VectorPsym const & trigSymbols, PrintSequenceType const & sequence) const
     {
+        std::ofstream outfile;
+        if (!createFile(fileName, outfile))
+        {
+            return;
+        }
+
+        auto positionTuple = psyms2pos(trigSymbols, argumentsTuple); // get a tuple for where the symbols are in the terms
+                                                                     // get trigonometric positions first
+        auto const positions = positionTuple.get<1>();               // TODO: how to get to the trig and exponential ones separately (ie. where is the position hidden in the class)
+                                                                     // we should be able to get that from the args descriptor 
+                                                                     // this is a vector of pairs fist: true/false = present; second: index into vector 
+        auto terms = getTrigSequencedTerms(positions, sequence);     // a vector of pointers to the terms sorted by trigonometric argument
+
+                                                                     // now we are sorted by trigonometric argument
+                                                                     // next we have to sort the coefficient by exponents
+                                                                     // and then finaly print it
+        printToSorted(outfile, terms, expSymbols, trigSymbols, positions);
+        //printPlain(outfile);
+        outfile.close(); // bad programing outfile is hidden in createFile
+
+
 
     }
 
-    // sort terms according to a pre-given sequence (mainly for comparison with printed results to avois long searches)
+    // sort terms according to a pre-given sequence (mainly for comparison with printed results to avoid long manual searches)
     // the idea is to give a sequence of trigonmetric keys and return the series with the terms in that sequence and the remaining terms sorted as usual
     // This should make it easier to comapre historic printed results with a new derivation of the result. This is slow and should be rarely used
     template <PIRANHA_NAMED_SERIES_TP_DECL>
-    inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::getTrigSequencedTerms(std::vector<std::pair<bool, std::size_t> > const &positions, std::vector<typename Term::KeyType> const & sequence) const
+    inline std::vector<Term const *>   NamedSeries<PIRANHA_NAMED_SERIES_TP>::getTrigSequencedTerms(std::vector<std::pair<bool, std::size_t> > const &positions, PrintSequenceType const & sequence) const
     {
+
+        class CompareTrig
+        {
+        public:
+            explicit CompareTrig(std::vector<std::pair<bool, std::size_t> > const & positions) :positions(positions) {}
+
+            bool operator()(Term const * const t1, Term const * const t2) const
+            {
+                //TODO: flavour?? cosine before sine which makes constants appear at the top
+                auto const trigkey1 = t1->get<1>();  //TODO: make this actually safe // a vector of exponents How do we make sure it is the trig arguments we want, Template parameter?
+                auto const trigkey2 = t2->get<1>();  // 1: should be the trig arguments
+                PIRANHA_ASSERT(positions.size() == trigkey1.size());
+                PIRANHA_ASSERT(positions.size() == trigkey2.size());
+                for (std::size_t i = 0; i < positions.size(); ++i)
+                {
+                    if (positions[i].first)
+                    {
+                        std::size_t currentIndex = positions[i].second;
+                        if (trigkey1[currentIndex] < trigkey2[currentIndex])
+                        {
+                            return true;
+                        }
+                        else if (trigkey1[currentIndex] > trigkey2[currentIndex])
+                        {
+                            return false;
+                        }
+                        // they are equal, check the next one
+                    }
+                }
+                return false; // all where the same
+            }
+
+
+        private:
+            std::vector<std::pair<bool, std::size_t> > const & positions;
+        };
+
+
+        // first: morph all the input sequence terms into the proper sequence according to position
+        PrintSequenceType normalSequence;
+        std::transform(sequence.begin(), sequence.end(), std::insert_iterator< PrintSequenceType >(normalSequence, normalSequence.begin()),
+                       [&positions](typename Term::KeyType const & trigKey) -> typename Term::KeyType 
+                       {    
+                            Term::KeyType newKey;
+                            PIRANHA_ASSERT(positions.size() == trigKey.size())
+                            newKey.resize(trigKey.size());
+                                for (int i = 0; i < positions.size(); ++i)
+                                {
+                                    if (positions[i].first)
+                                    {
+                                        newKey[positions[i].second] = trigKey[i];
+                                    }
+                                }
+                            newKey.setFlavour(trigKey.getFlavour());
+                            return newKey;
+                       });
+
+        // first create the vector of pointers
+        typedef std::vector<Term const *> RetValType;
+
+        // we don't want to destroy the original series and we work with pointers to the terms anyways
+        RetValType tempResult;
+        std::transform(derived_const_cast->begin(), derived_const_cast->end(), std::insert_iterator< RetValType >(tempResult, tempResult.begin()), &boost::lambda::_1);
+        
+        RetValType retval;
+        // now find all the elements given by the sequence. By definition a trigKey uniquely identifies an element of the series (echelon level 1)
+        // if nor found put it in a temporaryresult that will get standard sorted
+        for (Term::KeyType t : normalSequence)
+        {
+            decltype(tempResult.end()) it;
+            it = std::find_if(tempResult.begin(), tempResult.end(),
+                              [&t](RetValType::value_type const &st)->bool
+                              {
+                                  auto const s = st->get<1>();
+                                  return (s == t) || (-s == t);
+                              } 
+                              );
+            // found the sought for element. It doesn't necessarily exist 
+            if (it != tempResult.end())
+            {
+                retval.push_back(*it);
+                tempResult.erase(it);
+            }
+        }
+
+        std::sort(tempResult.begin(), tempResult.end(), CompareTrig(positions));// sort the remainder i.e. those elemenst that are not in the sequence
+        retval.insert(retval.end(), tempResult.begin(), tempResult.end());
+
+        return retval;
 
     }
 

@@ -382,7 +382,7 @@ namespace piranha
 
 		// First we want to make sure that the vector of symbols does not contain duplicate elements.
 		std::set<Psym> const uniquesSet(vectorPsym.begin(), vectorPsym.end());
-		//set is on;y used to check on uniqueness. we don't want to destroy the sorting of the incomming symols. This is used e.g. during printing
+		//set is only used to check on uniqueness. we don't want to destroy the sorting of the incomming symbols. This is used e.g. during printing
 		PIRANHA_ASSERT(uniquesSet.size() == vectorPsym.size());
 		//VectorPsym     const uniquesVector(uniquesSet.begin(), uniquesSet.end());
 		PositionTupleType retval;
