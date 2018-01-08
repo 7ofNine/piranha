@@ -113,6 +113,43 @@ namespace piranha
 				const Derived &series;
 			};
 
+            class CompareTrig
+            {
+            public:
+                explicit CompareTrig(std::vector<std::pair<bool, std::size_t> > const & positions) :positions(positions) {}
+
+                bool operator()(Term const * const t1, Term const * const t2) const
+                {
+                    //TODO: flavour?? cosine before sine which makes constants appear at the top
+                    auto const trigkey1 = t1->get<1>();  //TODO: make this actually safe // a vector of exponents How do we make sure it is the trig arguments we want, Template parameter?
+                    auto const trigkey2 = t2->get<1>();  // 1: should be the trig arguments
+                    PIRANHA_ASSERT(positions.size() == trigkey1.size());
+                    PIRANHA_ASSERT(positions.size() == trigkey2.size());
+                    for (decltype(positions.size()) i = 0, e = positions.size(); i < e; ++i)
+                    {
+                        if (positions[i].first)
+                        {
+                            auto const currentIndex = positions[i].second;
+                            if (trigkey1[currentIndex] < trigkey2[currentIndex])
+                            {
+                                return true;
+                            }
+                            else if (trigkey1[currentIndex] > trigkey2[currentIndex])
+                            {
+                                return false;
+                            }
+                            // they are equal, check the next one
+                        }
+                    }
+                    return false; // all where the same
+                }
+
+
+            private:
+                std::vector<std::pair<bool, std::size_t> > const & positions;
+            };
+
+
 		public:
 
 			typedef boost::transform_iterator<SeriesIteratorGenerator, typename SeriesContainer<Term>::Type::const_iterator> SeriesIterator;

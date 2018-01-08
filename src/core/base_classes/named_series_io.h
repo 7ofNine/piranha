@@ -209,8 +209,9 @@ namespace piranha
 		{
 			typename Term::CfType coeff = trigSortedTerms[i]->get<0>();
 
+            outfile << i <<":" << endl;
 			auto terms = getExpoSortedCoefficient(coeff, expPositions); // these are paointers to the single terms as they are in the coefficient split out and sorted according to exponent and position
-			for (std::size_t j = 0; j < terms.size(); ++j)
+			for (decltype(terms.size()) j = 0, e = terms.size(); j < e; ++j)
 			{
 
 				outfile << std::setw(6) << (++termId) << " ";
@@ -241,11 +242,11 @@ namespace piranha
 				auto const expoKey2 = t2->get<1>();
 				PIRANHA_ASSERT(positions.size() == expoKey1.size());
 				PIRANHA_ASSERT(positions.size() == expoKey2.size());
-				for (std::size_t i = 0; i < positions.size(); ++i)
+				for (decltype(positions.size()) i = 0, e = positions.size(); i < e; ++i)
 				{
 					if (positions[i].first)
 					{
-						std::size_t currentIndex = positions[i].second;
+						auto currentIndex = positions[i].second;
 						
 						if (expoKey1[currentIndex] < expoKey2[currentIndex])
 						{
@@ -284,43 +285,7 @@ namespace piranha
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline std::vector<Term const *>  NamedSeries<PIRANHA_NAMED_SERIES_TP>::getTrigSortedTerms(std::vector<std::pair<bool, std::size_t> > const &positions) const 
 	{
-		//TODO: move it out and properly template it
-		class CompareTrig 
-		{
-		public: 
-			explicit CompareTrig(std::vector<std::pair<bool, std::size_t> > const & positions) :positions(positions) {}
-
-			bool operator()(Term const * const t1, Term const * const t2) const
-			{
-				//TODO: flavour?? cosine before sine which makes constants appear at the top
-				auto const trigkey1 = t1->get<1>();  //TODO: make this actually safe // a vector of exponents How do we make sure it is the trig arguments we want, Template parameter?
-				auto const trigkey2 = t2->get<1>();  // 1: should be the trig arguments
-				PIRANHA_ASSERT(positions.size() == trigkey1.size());
-				PIRANHA_ASSERT(positions.size() == trigkey2.size());
-				for(std::size_t i = 0; i < positions.size(); ++i)
-				{
-					if (positions[i].first)
-					{
-						std::size_t currentIndex = positions[i].second;
-						if (trigkey1[currentIndex] < trigkey2[currentIndex])
-						{
-							return true;
-						} else if(trigkey1[currentIndex] > trigkey2[currentIndex])
-						{
-							return false;
-						}
-						// they are equal, check the next one
-					}
-				}
-				return false; // all where the same
-			}
-
-
-		private:
-			std::vector<std::pair<bool, std::size_t> > const & positions;
-		};
-
-		// first create the vector of pointers
+    	// first create the vector of pointers
 		typedef std::vector<Term const *> RetValType;
 		RetValType retval;
 
@@ -356,10 +321,8 @@ namespace piranha
         printToSorted(outfile, terms, expSymbols, trigSymbols, positions);
         //printPlain(outfile);
         outfile.close(); // bad programing outfile is hidden in createFile
-
-
-
     }
+
 
     // sort terms according to a pre-given sequence (mainly for comparison with printed results to avoid long manual searches)
     // the idea is to give a sequence of trigonmetric keys and return the series with the terms in that sequence and the remaining terms sorted as usual
@@ -367,44 +330,7 @@ namespace piranha
     template <PIRANHA_NAMED_SERIES_TP_DECL>
     inline std::vector<Term const *>   NamedSeries<PIRANHA_NAMED_SERIES_TP>::getTrigSequencedTerms(std::vector<std::pair<bool, std::size_t> > const &positions, PrintSequenceType const & sequence) const
     {
-
-        class CompareTrig
-        {
-        public:
-            explicit CompareTrig(std::vector<std::pair<bool, std::size_t> > const & positions) :positions(positions) {}
-
-            bool operator()(Term const * const t1, Term const * const t2) const
-            {
-                //TODO: flavour?? cosine before sine which makes constants appear at the top
-                auto const trigkey1 = t1->get<1>();  //TODO: make this actually safe // a vector of exponents How do we make sure it is the trig arguments we want, Template parameter?
-                auto const trigkey2 = t2->get<1>();  // 1: should be the trig arguments
-                PIRANHA_ASSERT(positions.size() == trigkey1.size());
-                PIRANHA_ASSERT(positions.size() == trigkey2.size());
-                for (std::size_t i = 0; i < positions.size(); ++i)
-                {
-                    if (positions[i].first)
-                    {
-                        std::size_t currentIndex = positions[i].second;
-                        if (trigkey1[currentIndex] < trigkey2[currentIndex])
-                        {
-                            return true;
-                        }
-                        else if (trigkey1[currentIndex] > trigkey2[currentIndex])
-                        {
-                            return false;
-                        }
-                        // they are equal, check the next one
-                    }
-                }
-                return false; // all where the same
-            }
-
-
-        private:
-            std::vector<std::pair<bool, std::size_t> > const & positions;
-        };
-
-
+    
         // first: morph all the input sequence terms into the proper sequence according to position
         PrintSequenceType normalSequence;
         std::transform(sequence.begin(), sequence.end(), std::insert_iterator< PrintSequenceType >(normalSequence, normalSequence.begin()),
@@ -413,7 +339,7 @@ namespace piranha
                             Term::KeyType newKey;
                             PIRANHA_ASSERT(positions.size() == trigKey.size())
                             newKey.resize(trigKey.size());
-                                for (int i = 0; i < positions.size(); ++i)
+                                for (decltype(positions.size()) i = 0, e = positions.size(); i < e; ++i)
                                 {
                                     if (positions[i].first)
                                     {
@@ -456,8 +382,7 @@ namespace piranha
         retval.insert(retval.end(), tempResult.begin(), tempResult.end());
 
         return retval;
-
-    }
+            }
 
 
 	//
