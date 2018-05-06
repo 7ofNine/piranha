@@ -1,7 +1,7 @@
 # Modified to only support MSVC >=2017 any longer and nothing else.
 # The CMAKE is kept to keep some of the generations/installations easier
 #
-CMAKE_MINIMUM_REQUIRED(VERSION 3.9.0 FATAL_ERROR)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10.0 FATAL_ERROR)
 
 PROJECT(Piranha CXX)
 
@@ -38,7 +38,6 @@ SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules) # Our own CMAKE
 INCLUDE(CMakeDependentOption)
 INCLUDE(PiranhaCompilerLinkerSettings)
 INCLUDE(PiranhaVersionSetup)
-#INCLUDE(PiranhaFindBoost) doesn't work for Boost 1.66 either. wait for proper CMAKE update
 
 # Place this after having determined the version number.
 INCLUDE(PiranhaCPackSetup)
@@ -48,7 +47,6 @@ INCLUDE(PiranhaCPackSetup)
 OPTION(BUILD_ENABLE_ASSERTS "Enable asserts in code, for debugging." ON)
 
 OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
-OPTION(BUILD_PIRANHA_STATIC "Build static Piranha library." OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DFS "Build double coefficient Fourier series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DPOLY "Build double coefficient multivariate polynomial manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_ZPOLY "Build arbitrary-size integer coefficient multivariate polynomial manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
@@ -67,10 +65,6 @@ OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 IF(BUILD_PYRANHA)
         INCLUDE(PiranhaPythonSetup)  # we need the python includes for piranha.dll
         PIRANHA_PYTHON_SETUP()
-ENDIF()
-
-IF(BUILD_TESTS)
-        SET(BUILD_PIRANHA_STATIC TRUE) # build the static library for tests. Might be used for other applications, too
 ENDIF()
 
 # Set default build type to "Release", change it in the GUI if you need to build with debug.

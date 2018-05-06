@@ -209,7 +209,7 @@ namespace piranha
 		{
 			typename Term::CfType coeff = trigSortedTerms[i]->get<0>();
 
-            outfile << i <<":" << endl;
+            outfile << i + 1 <<":" << endl; // group index, makes it easier to find in the listing
 			auto terms = getExpoSortedCoefficient(coeff, expPositions); // these are paointers to the single terms as they are in the coefficient split out and sorted according to exponent and position
 			for (decltype(terms.size()) j = 0, e = terms.size(); j < e; ++j)
 			{

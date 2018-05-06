@@ -216,6 +216,39 @@ namespace piranha
 			}
 
 
+            // only use if you know what you are doing. there is no check on the sizes
+            // can we get the argsTuple somehow in here without being a parameter?
+            explicit TrigVector(const std::string &s) : Ancestor(), flavour(true)
+            {
+                std::vector<std::string> sd;
+                boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
+                const size_type w = boost::numeric_cast<size_type>(sd.size());
+                if (w == 0)
+                {
+                    // Flavour is already set to true.
+                    return;
+                }
+
+                // Now we know  w >= 1.
+                this->resize(w - 1);
+                for (size_type i = 0; i < w - 1; ++i)
+                {
+                    (*this)[i] = boost::lexical_cast<value_type>(boost::algorithm::trim_left_copy(sd[i]));
+                }
+
+                // Take care of flavour.
+                if (*sd.back().c_str() == 's')
+                {
+                    flavour = false;
+
+                }
+                else if (*sd.back().c_str() != 'c')
+                {
+                    PIRANHA_THROW(value_error, "unknown flavour");
+                }
+            }
+
+
 			template <class ArgsTuple>
 			explicit TrigVector(const Psym &p, const int n, const ArgsTuple &a): Ancestor(p, n, a), flavour(true) {}
 
