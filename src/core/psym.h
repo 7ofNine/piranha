@@ -195,6 +195,12 @@ namespace piranha
 				connstructFromImpl(PsymImpl(name, timeEval));
 			}
 
+			/// Constructor from name and time values and order.
+			Psym(std::string const &name, std::vector<double> const &timeEval, unsigned int const order )
+			{
+				connstructFromImpl(PsymImpl(name, timeEval, order));
+			}
+
 
 			/// Constructor from name and constant value.
 			Psym(std::string const &name, double const &value)
@@ -312,7 +318,7 @@ namespace piranha
     // The index for vectorPsym elemet corresponds to the index in the vector in positionTuple. Elements of the vector in position
     // tuple are pairs (bool, int). 
     // (false , d) : not present in the argsTuple 
-    // (true,   j) : preent in the argsTuple vector at index j;
+    // (true,   j) : present in the argsTuple vector at index j;
     //
 
 	template <class ArgsTuple>

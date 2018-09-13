@@ -42,14 +42,15 @@ namespace piranha
 			/// Lexical converter.
 			/**
 			 * Convert a string to type T using boost::lexical_cast. If the operation is unsuccessful
-			 * a default-constructed value is returned.
+			 * a default-constructed value is returned. Leading and trailing white spaces are removed
+			 * before it is attemped to transform the string
 			 * @param[in] s std::string to be converted.
 			 */
 			template <class T> static T lexical_converter(const std::string &s) 
 			{
 				T retval;
 				try {
-					retval = boost::lexical_cast<T>(s);
+					retval = boost::lexical_cast<T>(boost::algorithm::trim_copy(s));
 				} catch (boost::bad_lexical_cast &) 
 				{
 					std::cout << "Error in lexical_converter, returning default-constructed object." << '\n';
@@ -81,7 +82,9 @@ namespace piranha
 			}
 
 
-			/// Convert a string into a vector of numerical values.
+			/// Convert a string into a vector of numerical values separated by separator.
+			/// leading and trailng white spaces are removed from the single strings between the separators as well as the ;eading
+			/// or trailing string component
 			/**
 			 * @param[in] str std::string to be converted.
 			 */
@@ -136,12 +139,14 @@ namespace piranha
 			 */
 			static bool is_valid(const std::string &str) 
 			{
-				if (str.empty() || str[0] == '#') 
-				{
-					return false;
-				}
+				return !str.empty() && str[0] != '#';
 
-				return true;
+				//if (str.empty() || str[0] == '#') 
+				//{
+				//	return false;
+				//}
+
+				//return true;
 			}
 	};
 

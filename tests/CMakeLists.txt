@@ -3,6 +3,7 @@ SET(PIRANHA_TESTS_DIRECTORY ${CMAKE_HOME_DIRECTORY}/tests)
 ADD_COMPILE_OPTIONS(/bigobj)
 ADD_DEFINITIONS(-D_PIRANHA_DLL_IMPORT_API) # we import piranha.dll
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+list(APPEND testincludePath "${CMAKE_HOME_DIRECTORY}/src" "${CMAKE_HOME_DIRECTORY}/src/core")
 #
 #
 #
@@ -58,6 +59,12 @@ TARGET_LINK_LIBRARIES(test_dfs1 piranha)
 ADD_EXECUTABLE(test_dfs2 dfs_mult_02.cpp)
 TARGET_INCLUDE_DIRECTORIES(test_dfs2 PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
 TARGET_LINK_LIBRARIES(test_dfs2 piranha)
+
+## new boost tests
+ADD_EXECUTABLE(test_psym test_psym.cpp)
+TARGET_INCLUDE_DIRECTORIES(test_psym PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
+TARGET_LINK_LIBRARIES(test_psym piranha)
+ADD_TEST(test_psym test_psym)
 
 # doesn't work . Possibly only for VS express
 #set_target_properties( test_fateman_1 PROPERTIES FOLDER TESTS)
