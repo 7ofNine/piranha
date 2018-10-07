@@ -52,6 +52,8 @@ namespace piranha
 	{
         static_assert(Position >= 0, "Wrong position.");
 
+			// The index into the vector is the same as into the argDescr. This is how the the symbols get
+		    // connected to the related numeric factors/exponents
 			typedef std::vector<T, CountingAllocator<T, std::allocator<T> > > ContainerType;
 
 		public:

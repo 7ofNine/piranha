@@ -54,7 +54,7 @@ namespace piranha
 			PsymImpl(std::string const &name, std::vector<double> const &timeEval = std::vector<double>(), int order = 1)
                     : name(name), timeEval(timeEval), order(order) {}
 			
-			// construct internal Pymbol of order order
+			// construct internal Psymbol of order order
 			PsymImpl(std::string const &name, const int order)
 				    :name(name), timeEval(std::vector<double>()), order(order) {}
 
@@ -65,7 +65,7 @@ namespace piranha
 
 				for (std::size_t j = 0; j < timeEval.size(); ++j) 
 				{
-					outStream << boost::lexical_cast<std::string>(timeEval[j]);
+					outStream << boost::lexical_cast<std::string>(timeEval[j]);  // IS that really a good idea??? It creates funny digits
 					if (j != timeEval.size() - 1) 
 					{
 						outStream << separator;
@@ -73,9 +73,10 @@ namespace piranha
 				}
 
 				outStream << '\n';
+				outStream << "order=" << order << "\n";
 			}
 
-
+			// This is needed for storing them in a set. The set is sorted by name
 			bool operator<(PsymImpl const &other) const
 			{
 				return (name < other.name);
@@ -103,18 +104,19 @@ namespace piranha
 
             private:
            
+            // must not be changeable. The sorting of the set relies on it 
 			const std::string		    name;     // the symbol name
 			                                      // Mutable because we want to be able to freely change it in the Psym manager.
 			mutable std::vector<double>	timeEval; // the time evolution polynomial. The order is the index into the vector 
 
-			int order;                            // the order of the symbol. Used for truncations. to make truncations specific to the symbol
+			mutable int order;                    // the order of the symbol. Used for truncations. to make truncations specific to the symbol
                                                   // do we have to save it? 
             static const std::string	separator; // separator between timeValue elements. Leave in this position for readability during debug
 			
 		};
 
 		// PsymManager global storage variable
-		typedef std::set<PsymImpl>  ContainerType;
+		typedef std::set<PsymImpl>  ContainerType; // the set is sorted by name in the PsymImpl
 		static ContainerType        container;
 	};
 
@@ -161,7 +163,7 @@ namespace piranha
 			/// Constructor from name and time evaluation in string form.
 			Psym(std::string const &name, std::string const &timeEval, int order = 1)
 			{
-				connstructFromImpl(PsymImpl(name, utils::str_to_vector<double>(timeEval, PsymImpl::separator), order));
+				constructFromImpl(PsymImpl(name, utils::str_to_vector<double>(timeEval, PsymImpl::separator), order));
 			}
 
 
@@ -173,18 +175,21 @@ namespace piranha
 			 */
 			explicit Psym(std::string const &name, const int order = 1)
 			{
-                // this is not constructFromImpl!
-                PsymImpl pImpl(name, order);
-                const Iterator itFound = PsymManager::container.find(pImpl);
-				if (itFound == PsymManager::container.end()) 
-				{
-					std::pair<Iterator, bool> const res = PsymManager::container.insert(pImpl);
-					PIRANHA_ASSERT(res.second);
-					it = res.first;
-				} else 
-				{
-					it = itFound;
-				}
+				constructFromImpl(PsymImpl(name, order));
+    //            // this is not constructFromImpl!
+    //            PsymImpl pImpl(name, order);
+    //            const Iterator itFound = PsymManager::container.find(pImpl);
+				//if (itFound == PsymManager::container.end()) 
+				//{
+				//	std::pair<Iterator, bool> const res = PsymManager::container.insert(pImpl);
+				//	PIRANHA_ASSERT(res.second);
+				//	it = res.first;
+				//} else 
+				//{
+				//	itFound->timeEval.
+				//	itFound->order    = order;
+				//	it = itFound;
+				//}
 
 			}
 
@@ -192,20 +197,20 @@ namespace piranha
 			/// Constructor from name and time value.
 			Psym(std::string const &name, std::vector<double> const &timeEval)
 			{
-				connstructFromImpl(PsymImpl(name, timeEval));
+				constructFromImpl(PsymImpl(name, timeEval));
 			}
 
 			/// Constructor from name and time values and order.
 			Psym(std::string const &name, std::vector<double> const &timeEval, unsigned int const order )
 			{
-				connstructFromImpl(PsymImpl(name, timeEval, order));
+				constructFromImpl(PsymImpl(name, timeEval, order));
 			}
 
 
 			/// Constructor from name and constant value.
 			Psym(std::string const &name, double const &value)
 			{
-				connstructFromImpl(PsymImpl(name, std::vector<double>(std::size_t(1), value)));
+				constructFromImpl(PsymImpl(name, std::vector<double>(std::size_t(1), value)));
 			}
 
 
@@ -272,12 +277,15 @@ namespace piranha
 			}
 
 			// set order to a new value
-			void setOrder(const int order)
+			// The underlying element is mutable. The set is not affected because it is sorted by name
+			void setOrder(int const order)
 			{
-				it->order;
+				it->order = order;
 			}
 
 			/// Time evaluation vector setter.
+			// How is this possible without messing up the set.
+			// the underlying field in the set element is mutable. The set is not affected because the set is ordered by name
 			void setTimeEval(std::vector<double> const &t) const
 			{
 				it->timeEval = t;
@@ -291,7 +299,7 @@ namespace piranha
 
 		private:
 
-			void connstructFromImpl(PsymImpl const &p)
+			void constructFromImpl(PsymImpl const &p)
 			{
 				const Iterator itFound = PsymManager::container.find(p);
 				if (itFound == PsymManager::container.end()) 
@@ -302,6 +310,7 @@ namespace piranha
 				} else 
 				{
 					itFound->timeEval = p.timeEval; //overwrite time values
+					itFound->order = p.order;       // overwrite order   
 					it = itFound;
 				}
 			}
@@ -312,13 +321,19 @@ namespace piranha
 			Iterator it;
 	};
 
+	/////////////////////////////////////////////////////////////
+	// the following methods are global in the piranha namespace
+	/////////////////////////////////////////////////////////////
+
     // 
     // from a given vector of psyms return a vector of indicators where and if the elemnt in the vectorPsym is present in the
-    // corresponding argsTuple component.
-    // The index for vectorPsym elemet corresponds to the index in the vector in positionTuple. Elements of the vector in position
+    // corresponding argsTuple component. ArgsTuple is a tuple of VectorPsyms, one vector per descriptortype (typ.: poly, trig -> 2-tuple)
+	// for each descriptor in argsTuple a vector of pairs is returned.
+	// -The size of the returned vectors is the size of the vector 'VectoPsym' entered.
+    // -The index for vectorPsym element corresponds to the index in the vector in positionTuple. Elements of the vector in position
     // tuple are pairs (bool, int). 
     // (false , d) : not present in the argsTuple 
-    // (true,   j) : present in the argsTuple vector at index j;
+    // (true,   j) : present in the argsTuple vector at index j of the corresponding descriptor;
     //
 
 	template <class ArgsTuple>
@@ -385,6 +400,7 @@ namespace piranha
         // I think the solution is that there is no reference back again to the original symbols. Only the position is of interest for further use, i.e. this would work
         // but is rather dangerous without documentation
         //
+		// the field 'second' is only valid if 'first' is set to true. If set to 'false', 'second' is set to 0 wich would be a valid value
 
 		// First we want to make sure that the vector of symbols does not contain duplicate elements.
 		std::set<Psym> const uniquesSet(vectorPsym.begin(), vectorPsym.end());

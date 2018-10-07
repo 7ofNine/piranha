@@ -46,21 +46,18 @@
 #include "../type_traits.h"
 #include "trig_vector_mp.h"
 
-#define __PIRANHA_TRIG_VECTOR_TP_DECL class T, int Pos
-#define __PIRANHA_TRIG_VECTOR_TP T,Pos
-
 namespace piranha
 {
 	/// Trigonometric vector.
-	template < __PIRANHA_TRIG_VECTOR_TP_DECL >
-	class TrigVector: public VectorKey<__PIRANHA_TRIG_VECTOR_TP, TrigVector<__PIRANHA_TRIG_VECTOR_TP> >
+	template < class T, int Pos >
+	class TrigVector: public VectorKey<T, Pos, TrigVector<T, Pos> >
 	{
-			typedef VectorKey<__PIRANHA_TRIG_VECTOR_TP, TrigVector<__PIRANHA_TRIG_VECTOR_TP> > Ancestor;
+			using Base =  VectorKey<T, Pos, TrigVector<T, Pos> >;
 
 			template <class SubSeries, class ArgsTuple>
 			class SubCache: public PowerCache<std::complex<SubSeries>, T, BaseSeriesArithmetics<std::complex<SubSeries>, ArgsTuple> >
 			{
-					typedef PowerCache<std::complex<SubSeries>, T, BaseSeriesArithmetics<std::complex<SubSeries>, ArgsTuple> > Ancestor;
+					typedef PowerCache<std::complex<SubSeries>, T, BaseSeriesArithmetics<std::complex<SubSeries>, ArgsTuple> > Base;
 
                     //what is that good for?
 					enum Status {
@@ -71,7 +68,7 @@ namespace piranha
 
 				public:
 
-					SubCache():Ancestor(), status(zero), errmsg() {}
+					SubCache():status(zero), errmsg() {}
 
 
 					void setup(const SubSeries &s, const ArgsTuple *argsTuple)
@@ -117,7 +114,7 @@ namespace piranha
 							default:
 								;
 						}
-						return Ancestor::operator[](n);
+						return Base::operator[](n);
 					}
 
 				private:
@@ -130,11 +127,11 @@ namespace piranha
 			template <class SubSeries, class ArgsTuple>
 			class EiSubCache: public PowerCache<SubSeries, T, BaseSeriesArithmetics<SubSeries, ArgsTuple> >
 			{
-					typedef PowerCache<SubSeries, T, BaseSeriesArithmetics<SubSeries, ArgsTuple> > Ancestor;
+					typedef PowerCache<SubSeries, T, BaseSeriesArithmetics<SubSeries, ArgsTuple> > Base;
 
 				public:
 
-					EiSubCache():Ancestor() {}
+					EiSubCache() {}
 
 
 					// NOTE: here we assume that s has absolute value equal to one, which lets us calculate its
@@ -150,9 +147,9 @@ namespace piranha
 
 		public:
 
-			typedef typename Ancestor::value_type value_type;
+			typedef typename Base::value_type value_type;
 			typedef value_type                    HarmonicDegreeType;
-			typedef typename Ancestor::size_type  size_type;
+			typedef typename Base::size_type  size_type;
 			typedef double                        EvalType;
 
 			template <class SubSeries, class SubCachesCons, class ArgsTuple>
@@ -170,12 +167,12 @@ namespace piranha
 
 			// Ctors.
 			/// Default ctor.
-			TrigVector(): Ancestor(), flavour(true) {}
+			TrigVector(): flavour(true) {}
 
 
 			/// Copy ctor from different position.
 			template <int Position2>
-			TrigVector(const TrigVector<T, Position2> &trigVector): Ancestor(), flavour(trigVector.getFlavour())
+			TrigVector(const TrigVector<T, Position2> &trigVector): flavour(trigVector.getFlavour())
 			{
 				this->resize(trigVector.size());
 				std::copy(trigVector.begin(), trigVector.end() ,this->begin());
@@ -184,7 +181,7 @@ namespace piranha
 
 			/// Ctor from string.
 			template <class ArgsTuple>
-			explicit TrigVector(const std::string &s, const ArgsTuple & argsTuple): Ancestor(), flavour(true)
+			explicit TrigVector(const std::string &s, const ArgsTuple & argsTuple): flavour(true)
 			{
                 auto trigTuple = argsTuple.get<position>();
 				std::vector<std::string> sd;
@@ -218,7 +215,7 @@ namespace piranha
 
             // only use if you know what you are doing. there is no check on the sizes
             // can we get the argsTuple somehow in here without being a parameter?
-            explicit TrigVector(const std::string &s) : Ancestor(), flavour(true)
+            explicit TrigVector(const std::string &s) : flavour(true)
             {
                 std::vector<std::string> sd;
                 boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
@@ -250,7 +247,7 @@ namespace piranha
 
 
 			template <class ArgsTuple>
-			explicit TrigVector(const Psym &p, const int n, const ArgsTuple &a): Ancestor(p, n, a), flavour(true) {}
+			explicit TrigVector(const Psym &p, const int n, const ArgsTuple &a): Base(p, n, a), flavour(true) {}
 
 
 			// Math.
@@ -322,7 +319,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void printPlain(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
+				PIRANHA_ASSERT(argsTuple.template get<Base::position>().size() == this->size());
 				(void)argsTuple;
 
 				this->printElements(outStream);
@@ -345,7 +342,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void printPlainSorted(std::ofstream & outStream, std::vector<std::pair<bool, std::size_t> > positions, ArgsTuple const & argsTuple) const
 			{
-				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
+				PIRANHA_ASSERT(argsTuple.template get<Basee::position>().size() == this->size());
 				(void)argsTuple;
 
 				this->printElementsSorted(outStream, positions);
@@ -356,7 +353,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void printPretty(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
+				PIRANHA_ASSERT(argsTuple.template get<Base::position>().size() == this->size());
 
 				if (flavour) 
 				{
@@ -390,7 +387,7 @@ namespace piranha
 						{
 							outStream << n << '*';
 						}
-						outStream << argsTuple.template get<Ancestor::position>()[i].getName();
+						outStream << argsTuple.template get<Base::position>()[i].getName();
 						printedSomething = true;
 					}
 				}
@@ -402,7 +399,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void printTex(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
-				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
+				PIRANHA_ASSERT(argsTuple.template get<Base::position>().size() == this->size());
 				if (flavour) 
 				{
 					outStream << "\\cos\\left(";
@@ -435,7 +432,7 @@ namespace piranha
 						{
 							trigVectorPrintElementTEX(outStream,n);
 						}
-						outStream << argsTuple.template get<Ancestor::position>()[i].getName();
+						outStream << argsTuple.template get<Base::position>()[i].getName();
 						printedSomething = true;
 					}
 				}
@@ -467,7 +464,7 @@ namespace piranha
 			template <class PosTuple>
 			HarmonicDegreeType partialHarmonicDegree(const PosTuple &posTuple) const
 			{
-				const std::vector<std::pair<bool, std::size_t> > &pos = posTuple.template get<Ancestor::position>();
+				const std::vector<std::pair<bool, std::size_t> > &pos = posTuple.template get<Base::position>();
 				const size_type w = this->size();
                 const size_type posSize = boost::numeric_cast<size_type>(pos.size());
 				HarmonicDegreeType retval(0);
@@ -513,7 +510,7 @@ namespace piranha
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &argsTuple) const
 			{
-				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() >= this->size());
+				PIRANHA_ASSERT(argsTuple.template get<Base::position>().size() >= this->size());
 				(void)argsTuple;
 				return 1.;
 			}
@@ -529,14 +526,14 @@ namespace piranha
 			double eval(const double t, const ArgsTuple &argsTuple) const
 			{
 				const size_type w = this->size();
-				PIRANHA_ASSERT(w <= argsTuple.template get<Ancestor::position>().size());
+				PIRANHA_ASSERT(w <= argsTuple.template get<Base::position>().size());
 
 				double retval = 0.;
 				for (size_type i = 0; i < w; ++i) 
 				{
 					if ((*this)[i] != 0) 
 					{
-						retval += trigVectorEvalElement((*this)[i]) * argsTuple.template get<Ancestor::position>()[i].eval(t);
+						retval += trigVectorEvalElement((*this)[i]) * argsTuple.template get<Base::position>()[i].eval(t);
 					}
 				}
 
@@ -577,7 +574,7 @@ namespace piranha
 			// Re-implement swap and trim to take into account the flavour.
 			void swap(TrigVector &trigVector)
 			{
-				Ancestor::swap(trigVector);
+				Base::swap(trigVector);
 				std::swap(flavour, trigVector.flavour);
 			}
 
@@ -585,7 +582,7 @@ namespace piranha
 			template <class TrimFlags, class ArgsTuple>
 			TrigVector trim(const TrimFlags &trimFlags, const ArgsTuple &argsTuple) const
 			{
-				TrigVector retval(Ancestor::trim(trimFlags, argsTuple));
+				TrigVector retval(Base::trim(trimFlags, argsTuple));
 				retval.flavour = flavour;
 				return retval;
 			}
@@ -654,12 +651,12 @@ namespace piranha
 				// Do something only if the argument of the partial derivation is present in the trigonometric vector.
 				// Otherwise the above retval will return, and it will deliver a zero integer multiplier to be
 				// multiplied by the coefficient in the partial derivation of the whole term.
-				PIRANHA_ASSERT(posTuple.template get<Ancestor::position>().size() == 1);
+				PIRANHA_ASSERT(posTuple.template get<Base::position>().size() == 1);
 
-				if (posTuple.template get<Ancestor::position>()[0].first) 
+				if (posTuple.template get<Base::position>()[0].first) 
 				{
 					TrigVector copy(*this);
-					const size_type pos = boost::numeric_cast<size_type>(posTuple.template get<Ancestor::position>()[0].second);
+					const size_type pos = boost::numeric_cast<size_type>(posTuple.template get<Base::position>()[0].second);
 					// Change the flavour of the resulting key.
 					copy.flavour = !flavour;
 
@@ -700,15 +697,15 @@ namespace piranha
 				// If the argument is not present here, the return series will have one term consisting
 				// of a unitary coefficient and this very TrigVector.
 				// NOTE: for now we can substitute one symbol at a time.
-				PIRANHA_ASSERT(posTuple.template get<Ancestor::position>().size() == 1);
+				PIRANHA_ASSERT(posTuple.template get<Base::position>().size() == 1);
 
-				if (!posTuple.template get<Ancestor::position>()[0].first) 
+				if (!posTuple.template get<Base::position>()[0].first) 
 				{
 					retval = ResultSeries::baseSeriesFromKey(*this, argsTuple);
 
 				} else 
 				{
-					const size_type pos = boost::numeric_cast<size_type>(posTuple.template get<Ancestor::position>()[0].second);
+					const size_type pos = boost::numeric_cast<size_type>(posTuple.template get<Base::position>()[0].second);
 					const value_type &power = (*this)[pos];
 
 					PIRANHA_ASSERT(pos < this->size());
@@ -731,15 +728,15 @@ namespace piranha
                     if (this->getFlavour()) 
 					{
 						retval.baseAdd(originalCos, argsTuple);
-						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseReal(argsTuple), argsTuple);
-						originalSin.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseImag(argsTuple), argsTuple);
+						retval.baseMultBy(subCaches.template get<Base::position>()[power].baseReal(argsTuple), argsTuple);
+						originalSin.baseMultBy(subCaches.template get<Base::position>()[power].baseImag(argsTuple), argsTuple);
 						retval.baseSubtract(originalSin, argsTuple);
 
 					} else 
 					{
 						retval.baseAdd(originalSin, argsTuple);
-						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseReal(argsTuple), argsTuple);
-						originalCos.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseImag(argsTuple), argsTuple);
+						retval.baseMultBy(subCaches.template get<Base::position>()[power].baseReal(argsTuple), argsTuple);
+						originalCos.baseMultBy(subCaches.template get<Base::position>()[power].baseImag(argsTuple), argsTuple);
 						// NOTE: series multadd here (and multiply by -1 to do subtraction too)?
 						// Below too...
 						retval.baseAdd(originalCos, argsTuple);
@@ -754,15 +751,15 @@ namespace piranha
 			{
 				ResultSeries retval;
 				
-                PIRANHA_ASSERT(pos_tuple.template get<Ancestor::position>().size() == 1);
+                PIRANHA_ASSERT(pos_tuple.template get<Base::position>().size() == 1);
 
-				if (!pos_tuple.template get<Ancestor::position>()[0].first) 
+				if (!pos_tuple.template get<Base::position>()[0].first) 
 				{
 					retval = ResultSeries::baseSeriesFromKey(*this, argsTuple);
 
 				} else 
 				{
-					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<Ancestor::position>()[0].second);
+					const size_type pos = boost::numeric_cast<size_type>(pos_tuple.template get<Base::position>()[0].second);
 					const value_type &power = (*this)[pos];
 
 					PIRANHA_ASSERT(pos < this->size());
@@ -779,14 +776,14 @@ namespace piranha
                     if (flavour) 
 					{
 						retval.baseAdd(originalCos, argsTuple);
-						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseReal(argsTuple), argsTuple);
-						originalSin.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseImag(argsTuple), argsTuple);
+						retval.baseMultBy(subCaches.template get<Base::position>()[power].baseReal(argsTuple), argsTuple);
+						originalSin.baseMultBy(subCaches.template get<Base::position>()[power].baseImag(argsTuple), argsTuple);
 						retval.baseSubtract(originalSin, argsTuple);
 					} else 
 					{
 						retval.baseAdd(originalSin, argsTuple);
-						retval.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseReal(argsTuple), argsTuple);
-						originalCos.baseMultBy(subCaches.template get<Ancestor::position>()[power].baseImag(argsTuple), argsTuple);
+						retval.baseMultBy(subCaches.template get<Base::position>()[power].baseReal(argsTuple), argsTuple);
+						originalCos.baseMultBy(subCaches.template get<Base::position>()[power].baseImag(argsTuple), argsTuple);
 						retval.baseAdd(originalCos, argsTuple);
 					}
 				}
@@ -845,16 +842,13 @@ namespace piranha
 
 
 	/// is_ring_exact type trait specialisation for TrigVector.
-	template <__PIRANHA_TRIG_VECTOR_TP_DECL>
-	struct is_ring_exact<TrigVector<__PIRANHA_TRIG_VECTOR_TP> >: boost::true_type {};
+	template <class T, int Pos>
+	struct is_ring_exact<TrigVector<T, Pos> >: boost::true_type {};
 
 
 	/// is_trig_exact type trait specialisation for TrigVector.
-	template <__PIRANHA_TRIG_VECTOR_TP_DECL>
-	struct is_trig_exact<TrigVector<__PIRANHA_TRIG_VECTOR_TP> >: boost::true_type {};
+	template <class T, int Pos>
+	struct is_trig_exact<TrigVector<T, Pos> >: boost::true_type {};
 }
-
-#undef __PIRANHA_TRIG_VECTOR_TP_DECL
-#undef __PIRANHA_TRIG_VECTOR_TP
 
 #endif
