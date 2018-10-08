@@ -10,6 +10,9 @@ IF(COMMAND cmake_policy)
     CMAKE_POLICY(VERSION 2.6)
 ENDIF(COMMAND cmake_policy)
 
+# we want to organize projects in folders
+SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
+
 # we only support MSVC >=2017 and 64 Bit
 IF(MSVC)
         IF(MSVC_VERSION LESS 1910)

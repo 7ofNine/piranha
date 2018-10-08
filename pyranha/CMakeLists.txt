@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})  # everything under here needs the py
 MACRO(PYTHON_CPPMODULE arg1)
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES PREFIX "")
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES SUFFIX ".pyd")
+	SET_TARGET_PROPERTIES(${arg1} PROPERTIES FOLDER "Pyranha") # we want to put these projects into a Pyranha folder in VS
 	TARGET_LINK_LIBRARIES(${arg1} ${MANDATORY_LIBRARIES} ${PYTHON_LIBRARIES} ${ARGN})
 	STRING(REGEX REPLACE "^_" "" DIR_ARG ${arg1})
 #	MESSAGE(STATUS "Install files: ${arg1}")
