@@ -160,7 +160,7 @@ namespace piranha
 
 		public:
 
-			/// Constructor from name and time evaluation in string form.
+			/// Constructor from name and time evaluation in string form and order
 			Psym(std::string const &name, std::string const &timeEval, int order = 1)
 			{
 				constructFromImpl(PsymImpl(name, utils::str_to_vector<double>(timeEval, PsymImpl::separator), order));
@@ -168,39 +168,64 @@ namespace piranha
 
 
 			/// Constructor from name.
+			// add a plain name construction with the old behaviour
+			//
+			// If the symbol is already present in the Psym manager then use it, otherwise initialise
+			// a new Psym with the given name and an empty time evaluation vector and order 1.
+			//
+			// TODO: SHould that be replaced by a getPsym (name) method? It  is somewhat strange concept. What about the pointers/iterators? should that be something smart so distruction 
+			// doesn't destroy anything
+
+			explicit Psym(std::string name)
+			{
+				PsymImpl pImpl(name, 1);
+				const Iterator itFound = PsymManager::container.find(pImpl);
+				if (itFound == PsymManager::container.end())
+				{
+					std::pair<Iterator, bool> const res = PsymManager::container.insert(pImpl);
+					PIRANHA_ASSERT(res.second);
+					it = res.first;
+				}
+				else
+				{
+					it = itFound;
+				}
+
+			}
+
 			/**
 			 * If the symbol is already present in the Psym manager then use it, otherwise initialise
-			 * a new Psym with the given name and an empty time evaluation vector.
+			 * a new Psym with the given name and an empty time evaluation vector and order is create.
 			 * possiby give an order of the name (used for truncation)
 			 */
-			explicit Psym(std::string const &name, const int order = 1)
+			Psym(std::string const &name, const int order)
 			{
-				constructFromImpl(PsymImpl(name, order));
-    //            // this is not constructFromImpl!
-    //            PsymImpl pImpl(name, order);
-    //            const Iterator itFound = PsymManager::container.find(pImpl);
-				//if (itFound == PsymManager::container.end()) 
-				//{
-				//	std::pair<Iterator, bool> const res = PsymManager::container.insert(pImpl);
-				//	PIRANHA_ASSERT(res.second);
-				//	it = res.first;
-				//} else 
-				//{
-				//	itFound->timeEval.
-				//	itFound->order    = order;
-				//	it = itFound;
-				//}
+				// this is not constructFromImpl!
+                PsymImpl pImpl(name, order);
+                const Iterator itFound = PsymManager::container.find(pImpl);
+				if (itFound == PsymManager::container.end()) 
+				{
+					std::pair<Iterator, bool> const res = PsymManager::container.insert(pImpl);
+					PIRANHA_ASSERT(res.second);
+					it = res.first;
+				} else 
+				{
+					itFound->order = order;
+					it = itFound;
+				}
 
 			}
 
 
 			/// Constructor from name and time value.
+			// If name already exists the new timeEval value overwrites the previous one and order is reset to 1
 			Psym(std::string const &name, std::vector<double> const &timeEval)
 			{
 				constructFromImpl(PsymImpl(name, timeEval));
 			}
 
 			/// Constructor from name and time values and order.
+			// If name already exists the new timeEval value and order overwrites the previous one
 			Psym(std::string const &name, std::vector<double> const &timeEval, unsigned int const order )
 			{
 				constructFromImpl(PsymImpl(name, timeEval, order));
@@ -208,6 +233,8 @@ namespace piranha
 
 
 			/// Constructor from name and constant value.
+			// If name already exists the new timeEval value overwrites the previous one and order is reset to 1
+			// creates a timeEval with constant (order 0) element value
 			Psym(std::string const &name, double const &value)
 			{
 				constructFromImpl(PsymImpl(name, std::vector<double>(std::size_t(1), value)));

@@ -222,6 +222,7 @@ namespace piranha
 	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::partial(std::string const &name, int const n) const
 	{
 		typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type PositionTupleType;
+		// IS that correct. Doesn't Psym(Name) overwright the original settings if the name already exists??
 		const PositionTupleType positionTuple = psyms2pos(VectorPsym(1, Psym(name)), argumentsTuple); // get position in argsTuple
 
 		Derived retval(derived_const_cast->basePartial(n, positionTuple, argumentsTuple)); // partial derivative on terms

@@ -25,6 +25,7 @@ IF(MSVC)
         ADD_DEFINITIONS(-DNOMINMAX) # get rid of the min/mas macro MS defines
         ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
         ADD_DEFINITIONS(-DWIN32_LEAN_AND_MEAN)  # minimal windows
+		ADD_COMPILE_OPTIONS( /std:c++14)
 ENDIF()
 
 

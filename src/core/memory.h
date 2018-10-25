@@ -255,7 +255,7 @@ namespace piranha
 				// Aligned pointer.
 				boost::uint8_t *ptr = (boost::uint8_t *)p;
 				// *(ptr - 1) holds the offset to the real allocated block
-				// we sub that offset os we free the real pointer.
+				// we subtract that offset os we free the real pointer.
 				ptr -= *(ptr - 1);
 				// Free the memory.
 				std::free(ptr);

@@ -406,6 +406,8 @@ namespace piranha
     // false: remove  (argument is not present)
     // true:  don't remove (argument is present)
     //
+	// this is just a complicated way to set all the needed flags in there appropriate vectors in the tuples to false
+
 	template <class TrimFlags, class ArgsTuple>
 	class TrimFlagsInit
     {

@@ -95,6 +95,10 @@ namespace piranha
 			/// Ctor from Psym.
 			/**
 			 * If the position matches input integer n, then resize to one element and set it to one.
+			 * 
+			 * This description can not be right. 
+			 * It ads a value of 1 to the vector if the psoitions are corrct. where would that be usefull
+			 * only if the psym correspondes to the entry in the argstuple and no other symbol is present
 			 */
 			template <class ArgsTuple>
 			VectorKey(const Psym &p, const int &n, const ArgsTuple &argsTuple): container()
@@ -160,6 +164,12 @@ namespace piranha
 			// The position of the  elements in the container are reordered according to the corresponding layoutElement
 			// A layout tuple is a tuple of vectors of pairs bool, std::size_t.
 			//
+			// ArgsTuple is not really used anywhere so why is it here.
+			// the index into the layout determines where it goes in the modified key
+			// the value in the pair of the layout (second) determines where it comes from (i.e. the source)
+			// the boolean in the pair says if it is actually done at this index. If they are all false the new container contents will be an empty container
+			// all values will be 0(or wahtever the initialization value of the used type is)
+			//
 			template <class LayoutTuple, class ArgsTuple>
 			void applyLayout(LayoutTuple const &layoutTuple, ArgsTuple const &)
 			{
@@ -208,6 +218,7 @@ namespace piranha
 
 
 			/// Return trimmed version of this.
+			// ArgsTuple is not used. Why is it here?
 			template <class TrimFlags, class ArgsTuple>
 			Derived trim(const TrimFlags &tf, const ArgsTuple &) const
 			{
@@ -346,7 +357,7 @@ namespace piranha
 				}
 
 				const value_type *ptr1 = &container[0];
-                const value_ype  *ptr2 = &(v2.container[0]);
+                const value_type  *ptr2 = &(v2.container[0]);
 				for (size_type i = 0; i < size; ++i)
 				{
 					if (ptr1[i] < ptr2[i]) 
@@ -393,6 +404,8 @@ namespace piranha
 				}
 			}
 
+			// the bool means we are actually printing it, the index in the pair mean which elemnt of the key we are actually printing
+			// no separator is printed, the width is fixed to 6. we can improve here
 			void printElementsSorted(std::ostream &outStream, std::vector<std::pair<bool, std::size_t> > positions) const
 			{
 				const size_type size = this->size();

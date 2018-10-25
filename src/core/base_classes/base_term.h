@@ -178,7 +178,7 @@ namespace piranha
 			template <int N>
 			typename BaseTermGetHelper<N, BaseTerm>::Type &get() 
 			{
-				BOOST_STATIC_ASSERT(N == 0 or N == 1);
+				BOOST_STATIC_ASSERT(N == 0 || N == 1);
 				return BaseTermGetHelper<N, BaseTerm>::run(*this);
 			}
 

@@ -116,22 +116,30 @@ namespace piranha
 			ExpoVector(): Ancestor() {}
 
 
-			/// Ctor from string.
+			/// Ctor from string of exponent values.
+			// what is the ArgsTuple good for. The association between argstuple and acutal value is done by the using class
+			// the created vector of exponents has the length of different detected values in the string 's' and is not related to ArgsTuple
+			// construct an expo vector from a string of numeric values. The relation between symbol and position of the 
+			// (index) of the numerical value is up to the user.
+			// Is this actually used anywhere?
 			template <class ArgsTuple>
 			explicit ExpoVector(const std::string &s, const ArgsTuple &): Ancestor()
 			{
+				PIRANHA_ASSERT(!s.empty());
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
 				const size_type w = boost::numeric_cast<size_type>(sd.size());
 
 				for (size_type i = 0; i < w; ++i)
 				{
-					this->container.push_back(boost::lexical_cast<value_type>(sd[i]));
+					this->container.push_back(boost::lexical_cast<value_type>(boost::algorithm::trim_copy(sd[i])));
 				}
 			}
 
 
 			/// Ctor from Psym.
+			// construct an expoVector from a Psym. There will only be one element in te vector
+			// n is the position of the key in the key hierarchy (echelon level)
 			template <class ArgsTuple>
 			explicit ExpoVector(const Psym &p, const int n, const ArgsTuple &a): Ancestor(p, n, a) {}
 
@@ -142,6 +150,9 @@ namespace piranha
             // result is allocated externally
             // the exponents have to represent the same symbol in order to make sense. This
             // has to asserted before one can use this method. See merge arguments
+			// This is asymmetric. The size odf this  has to be bigger than the size of
+			// the input expoVector.
+			// Should that be made symmetric?
 			template <class ResultType>
 			void multiply(const ExpoVector &expoVector, ResultType &result) const
 			{
@@ -181,7 +192,7 @@ namespace piranha
 			}
 
 			template <class ArgsTuple>
-			void printPlainSorted(std::ofstream & outStream, std::vector<std::pair<bool, std::size_t> > positions, ArgsTuple const & argsTuple) const
+			void printPlainSorted(std::ostream & outStream, std::vector<std::pair<bool, std::size_t> > positions, ArgsTuple const & argsTuple) const
 			{
 				PIRANHA_ASSERT(argsTuple.template get<Ancestor::position>().size() == this->size());
 				(void)argsTuple;
@@ -192,7 +203,10 @@ namespace piranha
 
 
 
-
+			// index in argsTuple and ExpoVector are already assumed to be the same i.e.
+			// they correspond!
+			// what about negative exponents
+			// rational are handled by expoVectorPrintElementPretty
 			template <class ArgsTuple>
 			void printPretty(std::ostream &outStream, const ArgsTuple &argsTuple) const
 			{
@@ -251,6 +265,11 @@ namespace piranha
 				}
 			}
 
+			// just what we expect. The numerical evaluation of the exponential vector 
+			// respecting the parameters time dependency
+			// the value is 1 if no exponent present
+			// the index of the exponent vector and the argsTuple have to be coordinated externally
+			// the number of parameters in the ExpoVector has to be smaller or equal to the the number in the argsTuple
 
 			template <class ArgsTuple>
 			double eval(const double t, const ArgsTuple &argsTuple) const
@@ -261,7 +280,7 @@ namespace piranha
 				double retval = 1.0;
 				for (size_type i = 0; i < w; ++i) 
                 {
-                    //get the numerical value for the parameter (may be time depeden) and calculate its pwoer according to this ExpoVector
+                    //get the numerical value for the parameter (may be time dependent) and calculate its power according to this ExpoVector
 					retval *= std::pow(argsTuple.template get<Ancestor::position>()[i].eval(t), (*this)[i]);
 				}
 
@@ -316,7 +335,7 @@ namespace piranha
 			/// Return the total degree of the exponents array, i.e. sum over all the exponent values
 			DegreeType degree(VectorPsym const & symbols) const
 			{
-                // the lenthe of the symbols can be >= the size of the current vector.
+                // the length of the symbols can be >= the size of the current vector.
                 // this happens during merge of arguments in multiplication and addition.
                 // The positions have to correspond to the correct symbols, but this can not be verified here
                 PIRANHA_ASSERT(symbols.size() >= size())
@@ -380,6 +399,18 @@ namespace piranha
 
 
 			/// Calculate partial derivative.
+			// where does Series and PosTuple actually come from.
+			// Series is at least a BaseSeries, while PosTuple is only generated in NamedSeries
+			// is this a good idea to transport this to this layer?
+			// PosTuple may be as a defined class (not a parameter). SHould this tuple not actually be an array?
+			// PosTuple pair (bool,int): bool indicates if the originally indicated name is present
+			//                           int: indicates the index into the vector of the corresponding element in the ArgsTuple
+			// Note : PosTuple is provided from the outside, the resolution from name/psym is already done
+
+			// SHould that be 0 if postuple contains no found element??
+			// mathematically yes and I haven't found surrounding usage thaat would would correct for that
+			// Guess it just hasn't happened or somehwere is a check to interpret an empty series as 0.
+			// That is not nice becasue we would not be homogenous!! and consistent i.e. two ways of representing 0.
 			template <class Series, class PosTuple, class ArgsTuple>
 			Series partial(const PosTuple &posTuple, const ArgsTuple &argsTuple) const
 			{
@@ -405,6 +436,10 @@ namespace piranha
 			}
 
 
+			//ArgsTuple is nowhere used. Why is it here???
+			// which combinations do we allow. rational exponents, double exponents?
+			//
+			// control over the parameter y should probably better
 			template <class ArgsTuple>
 			ExpoVector pow(const double &y, const ArgsTuple &) const
 			{
@@ -424,7 +459,10 @@ namespace piranha
 				return ExpoVectorPowRational<value_type>::run(*this, q);
 			}
 
-
+			// Again a good idea to have that here. Series is a much higher object than an ExpoVector
+			// substituting what?? Something from the SubCache
+			// ALlows for a single element in position tuple . Position tuple has to come from the outside
+			//
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries sub(const PosTuple &posTuple, SubCaches &subCaches, const ArgsTuple &argsTuple) const
 			{
@@ -459,7 +497,8 @@ namespace piranha
 				return retval;
 			}
 
-
+			// IS that actually complete and or used anywhere ?  It just creates a sereis from the key
+			// PosTuple is not used, Subcaches is not used
 			template <class RetSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries eiSubstitute(const PosTuple &, SubCaches &, const ArgsTuple &argsTuple) const
 			{

@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(construction_test)
 	BOOST_TEST(symbol5.order() == DEFAULT_ORDER);
 
 
-	//construct with name and time evaluation string and order
+	////construct with name and time evaluation string and order
 	Psym symbol6(name6, timeEvalString, testOrder);
 	BOOST_TEST(symbol6.getName() == name6);
 	BOOST_TEST(symbol6.getTimeEval() == timeEval);
@@ -93,20 +93,22 @@ BOOST_AUTO_TEST_CASE(construction_test)
 	BOOST_TEST(symbolx.getName() == symbol8.getName());
 	BOOST_TEST(symbolx.getTimeEval() == symbol8.getTimeEval());
 	BOOST_TEST(symbolx.order() == symbol8.order());
+	BOOST_TEST((symbolx == symbol8));
 	// symbol list size should not have changed
 	BOOST_TEST(Psym::list().size() == oldSize);
 
-	// do double name just with name
-	Psym symboly(name8);
-	BOOST_TEST(symboly.getName() == name8);
-	BOOST_TEST(symboly.getTimeEval().empty());
-	BOOST_TEST(symboly.order() == DEFAULT_ORDER);
-	BOOST_TEST(Psym::list().size() == oldSize);
+	// create with same name (other parameters are kept)
+	// the original behaviour
+	Psym symbolu(name8);
+	BOOST_TEST((symbolu == symbol8));
+	BOOST_TEST((symbolu.getTimeEval() == symbol8.getTimeEval()));
+	BOOST_TEST((symbolu.order() == symbol8.order()));
+
 
 	// do double with name and order
 	Psym symbolz(name8, 3);
 	BOOST_TEST(symbolz.getName() == name8);
-	BOOST_TEST(symbolz.getTimeEval().empty());
+	BOOST_TEST((symbolz.getTimeEval() == symbol8.getTimeEval()));
 	BOOST_TEST(symbolz.order() == 3);
 	BOOST_TEST(Psym::list().size() == oldSize);
 
@@ -115,7 +117,7 @@ BOOST_AUTO_TEST_CASE(construction_test)
 	BOOST_TEST(symbol9.getName() == name9);
 	BOOST_TEST(symbol9.getTimeEval().size() == 1);
 	BOOST_TEST(symbol9.getTimeEval()[0] == 1.5);
-	BOOST_TEST(symboly.order() == DEFAULT_ORDER);
+	BOOST_TEST(symbol9.order() == DEFAULT_ORDER);
 }
 
 BOOST_AUTO_TEST_CASE(operator_test)

@@ -82,6 +82,7 @@ namespace piranha
 			// We have to specialise this in order to prepare the arguments tuple for the fact
 			// that poly args of s may be added as trig args (as s will be used as argument for sines
 			// and/or cosines).
+			// substitute name (Psym? with given SubSeries) 
 			template <class SubSeries>
 			Derived sub(const std::string &name, const SubSeries &series) const
 			{

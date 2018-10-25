@@ -51,7 +51,7 @@ namespace piranha
 	template <class Series1, class Series2, class ArgsTuple, class Truncator, class Derived>
 	class BaseSeriesMultiplier
 	{
-			friend class base_insert_multiplication_result;
+	//		friend class base_insert_multiplication_result;
 
 		protected:
 			// Alias for term type of first input series and return value series.
