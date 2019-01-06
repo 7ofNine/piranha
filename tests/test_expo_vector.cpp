@@ -11,8 +11,8 @@ using namespace::manipulators;
 using boost::test_tools::output_test_stream;
 namespace {
 
-	using KeyType = ExpoVector<short int, 0>;// 0 is the position of the key 9i.e. echelon level
-	using KeyRational = ExpoVector<mp_rational, 0>; // rational exponents are possible. when are they actually really used
+	using KeyType = ExpoVector<short int, 0>;// 0 is the position of the key i.e. echelon level
+	using KeyRational = ExpoVector<mp_rational, 0>; // rational exponents are possible. when are they actually really used?
 }
 
 BOOST_AUTO_TEST_CASE(simple_construction)

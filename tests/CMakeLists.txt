@@ -39,9 +39,9 @@ list(APPEND testincludePath "${CMAKE_HOME_DIRECTORY}/src" "${CMAKE_HOME_DIRECTOR
 #TARGET_INCLUDE_DIRECTORIES(test_pearce_2 PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
 #TARGET_LINK_LIBRARIES(test_pearce_2 piranha)
 
-#ADD_EXECUTABLE(test_celmec celmec_test_01.cpp)
-#TARGET_INCLUDE_DIRECTORIES(test_celmec PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
-#TARGET_LINK_LIBRARIES(test_celmec piranha)
+ADD_EXECUTABLE(test_celmec celmec_test_01.cpp)
+TARGET_INCLUDE_DIRECTORIES(test_celmec PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
+TARGET_LINK_LIBRARIES(test_celmec piranha)
 
 #ADD_EXECUTABLE(test_binomial binomial_20000.cpp)
 #TARGET_INCLUDE_DIRECTORIES(test_binomial PRIVATE ${CMAKE_HOME_DIRECTORY}/src)

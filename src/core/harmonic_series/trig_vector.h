@@ -180,6 +180,8 @@ namespace piranha
 
 
 			/// Ctor from string.
+            // construct a TrigVector form a string "s" and ArgsTuple "a" given.
+            // the string and a have to agree in length. USed when reading a series from a file
 			template <class ArgsTuple>
 			explicit TrigVector(const std::string &s, const ArgsTuple & argsTuple): flavour(true)
 			{
@@ -245,7 +247,11 @@ namespace piranha
                 }
             }
 
-
+            // this is a very restricted constructor. Where is it used? Possibly only internal then there is no need for being public
+            // n has to agree with the echelon level of this TrigVector
+            // a only contains one argument
+            // p has to agree with the argument in a
+            // pushes a 1 in the next position in container. No connection between p at its position. Must be controlled on the outside! 
 			template <class ArgsTuple>
 			explicit TrigVector(const Psym &p, const int n, const ArgsTuple &a): Base(p, n, a), flavour(true) {}
 

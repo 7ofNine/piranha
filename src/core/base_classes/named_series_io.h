@@ -461,7 +461,7 @@ namespace piranha
             {
 				std::cout << "Finished parsing " << argumentTypeName << " argument." << std::endl;
 				infile.seekg(currentPosition);
-				appendArg(argumentTypeName, Psym(name, timeEval));
+				appendArg(argumentTypeName, Psym(name, timeEval)); // TODO: No protection against empty name ???
 				return;
 			}
 

@@ -141,7 +141,7 @@ namespace piranha
 	}
 
     //
-    //apend argument/symbol by position N in the argumentsTuple. See Arguments descriptor
+    //apend argument/symbol at ecehelon level N in the argumentsTuple. See Arguments descriptor
     //
     //only to be done for an empty series i.e. during construction.
     //

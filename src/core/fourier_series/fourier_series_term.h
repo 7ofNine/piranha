@@ -31,7 +31,7 @@ namespace piranha
 	// Cf:   coefficients for series term e.g. double_cf, polynomial_cf
 	// Trig: trigonometric key i.e. te linear constituents and their coefficients and cos/sin (flavour), e.g. TrigVector<boost::int16_t, 0>, TrigVector<boost::int16_t, 1>,
 	//       last template parameter is actually the echelon level.
-	// Separataor: print/read separator between coefficient and key, e.g.:  '|'
+	// Separator: print/read separator between coefficient and key, e.g.:  '|'
 	// Allocator: specific allocator e.g. for statistics or performance improvements. but typicall std::allocator<char>
 	template <class Cf, class Trig, char Separator, class Allocator>
 	class FourierSeriesTerm: public BaseTerm<Cf, Trig, Separator, Allocator, FourierSeriesTerm<Cf, Trig, Separator, Allocator> >
@@ -62,7 +62,7 @@ namespace piranha
 			// isCanonical has already been tested.
 			/// Canonicalise the term.
 			template <class ArgsTuple>
-			void canonicalise(const ArgsTuple &argsTuple) 
+			void canonicalise(ArgsTuple const &argsTuple) 
             {
 				if (!isCanonical(argsTuple)) 
                 {
@@ -76,9 +76,7 @@ namespace piranha
 			 * NOTE: the result of multiplication here _must_ be canonical.
 			 */
 			template <class Term1, class Term2, class ArgsTuple>
-			static void multiply(const Term1 &t1,
-								 const Term2 &t2,
-								 multiplication_result &res, const ArgsTuple &argsTuple) 
+			static void multiply(const Term1 &t1, const Term2 &t2, multiplication_result & res, const ArgsTuple &argsTuple) 
             {
 				// Perform the trigonometric multiplication.
 				t1.key.multiply(t2.key, res.template get<0>().key, res.template get<1>().key);

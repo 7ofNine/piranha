@@ -49,7 +49,7 @@ if(BUILD_TESTS)
 # CMAKE still doesn't support copying runtime dependencies properly to the targets. It's a pain
 get_filename_component(BASE_NAME_THREAD ${Boost_THREAD_LIBRARY_RELEASE} NAME_WE)
 get_filename_component(BASE_NAME_PYTHON ${Boost_PYTHON27_LIBRARY_RELEASE} NAME_WE)
-get_filename_component(BASE_NAME_SYSTEM ${Boost_SYSTEM_LIBRARY_RELEASE} NAME_WE)
+#get_filename_component(BASE_NAME_SYSTEM ${Boost_SYSTEM_LIBRARY_RELEASE} NAME_WE)
 
 	add_custom_command(TARGET piranha POST_BUILD
 						COMMAND ${CMAKE_COMMAND} -E copy_if_different 
@@ -63,10 +63,11 @@ get_filename_component(BASE_NAME_SYSTEM ${Boost_SYSTEM_LIBRARY_RELEASE} NAME_WE)
 						COMMAND ${CMAKE_COMMAND} -E copy_if_different 
 								"${Boost_LIBRARY_DIR_RELEASE}/${BASE_NAME_PYTHON}.dll"
 								"${CMAKE_BINARY_DIR}/tests/$<CONFIG>/${BASE_NAME_PYTHON}.dll"
-						COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-								"${Boost_LIBRARY_DIR_RELEASE}/${BASE_NAME_SYSTEM}.dll"
-								"${CMAKE_BINARY_DIR}/tests/$<CONFIG>/${BASE_NAME_SYSTEM}.dll"			
-								
+								# boost:system is no longer a dll in Boost >= 1.69
+#						COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+#								"${Boost_LIBRARY_DIR_RELEASE}/${BASE_NAME_SYSTEM}.dll"
+#								"${CMAKE_BINARY_DIR}/tests/$<CONFIG>/${BASE_NAME_SYSTEM}.dll"			
+#								
 					  )	
 endif()
 

@@ -14,7 +14,7 @@ using namespace piranha;
 // Separator: for writing and reading purposes (typical '|')
 // Allocator: typical std::allocator but we can use diffrent ones e.g. CountingAllocator
 namespace {
-	using SimpleFourierTerm   = FourierSeriesTerm<double, TrigVector<short, 0>, '|', std::allocator<char>>;// I an create the type but would that work??
+	using SimpleFourierTerm   = FourierSeriesTerm<double, TrigVector<short, 0>, '|', std::allocator<char>>;// I can create the type but would that work??
 	using SimpleCfFourierTerm = FourierSeriesTerm<double_cf, TrigVector<short, 0>, '|', std::allocator<char>>;
 }
 
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(construction_test)
 
 }
 
-BOOST_AUTO_TEST_CASE(test_nultiply)
+BOOST_AUTO_TEST_CASE(test_multiply)
 {
 	// doesn't compile, yet where is the problem??
 	//Psym t1("t1");

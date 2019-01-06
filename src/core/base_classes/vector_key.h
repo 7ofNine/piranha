@@ -94,18 +94,19 @@ namespace piranha
 
 			/// Ctor from Psym.
 			/**
-			 * If the position matches input integer n, then resize to one element and set it to one.
+			 * If the echelon level matches input integer n.
+             * and the argstuple has one element and this element is the same as p given 
+             * then push a 1 onto the container.
 			 * 
-			 * This description can not be right. 
-			 * It ads a value of 1 to the vector if the psoitions are corrct. where would that be usefull
-			 * only if the psym correspondes to the entry in the argstuple and no other symbol is present
+             * this is so complicated. WHen is that construction actually used? Can we simplify it and make it more general?
+             * Warning! there is no real verifyable relation from p to where the entry (1) is pushed onto the container!
 			 */
 			template <class ArgsTuple>
 			VectorKey(const Psym &p, const int &n, const ArgsTuple &argsTuple): container()
 			{
 				(void)p;
 				(void)argsTuple;
-				// Construct only if the positions match.
+				// Construct only if the echelon level matches.
 				if (n == Position) 
 				{
 					PIRANHA_ASSERT(argsTuple.template get<Position>().size() == 1 && argsTuple.template get<Position>()[0] == p);

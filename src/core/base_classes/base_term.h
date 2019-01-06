@@ -80,11 +80,11 @@ namespace piranha
 	// Simple composition of coefficient and key classes.
 	//
 	// Cf:   coefficients for series term e.g. double_cf, polynomial_cf
-	// Key:  key i.e. e.g. TrigVector<boost::int16_t, 0>, TrigVector<boost::int16_t, 1>,
+	// Key:  key i.e. e.g. ExpoVector<boost::int16_t, 0>, TrigVector<boost::int16_t, 1>,
 	//       last template parameter is actually the echelon level.
 	// Separator: print/read separator between coefficiemt and key e.g.:  '|'
 	// Allocator: specific allocator e.g. for statistics or performance improvements. but typicall std::allocator<char>
-	// Derived: CRTP pattern, typically the derived class e.g. FourierSeriesTerm<Cf, Trig, Separator, Allocator>, 
+	// Derived: CRTP pattern, typically the derived class e.g. FourierSeriesTerm<Cf, Trig, Separator, Allocator>, or Monomial0
 
 	// Concepts for Cf:  Cf(std::string, ArgsTuple) //constructor
 	//                   Cf(cf2,         ArgsTuple) // constructor from another coefficient of a different kind)

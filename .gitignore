@@ -17,3 +17,4 @@ windows_package/mpir.dll
 tests/testxxxx.qps
 .vs
 updtaelist.txt
+/tests/Release
