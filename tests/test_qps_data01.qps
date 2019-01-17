@@ -1,0 +1,17 @@
+# test series for test_qps_series
+
+[poly_arg]
+name=e1
+time_eval=
+[poly_arg]
+name=e2
+time_eval=
+[trig_arg]
+name=t1
+time_eval=
+[trig_arg]
+name=t2
+time_eval=
+[terms]
+81/280!1;8?-27/160!1;6?27/1280!3;6|1;-6;c
+-2/9!4;4|4;-4;s

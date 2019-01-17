@@ -134,7 +134,7 @@ namespace piranha
 			template <class ArgsTuple>
 			void printTex(std::ostream &outStream, const ArgsTuple &) const 
 			{
-				numerical_container_print_tex_selector<T>::run(m_value,outStream);
+				numerical_container_print_tex_selector<T>::run(m_value, outStream);
 			}
 			
 			/// Swap content using std::swap.

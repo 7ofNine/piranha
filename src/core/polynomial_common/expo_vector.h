@@ -408,7 +408,7 @@ namespace piranha
 			// Note : PosTuple is provided from the outside, the resolution from name/psym is already done
 
 			// SHould that be 0 if postuple contains no found element??
-			// mathematically yes and I haven't found surrounding usage thaat would would correct for that
+			// mathematically yes and I haven't found surrounding usage that would would correct for that
 			// Guess it just hasn't happened or somehwere is a check to interpret an empty series as 0.
 			// That is not nice becasue we would not be homogenous!! and consistent i.e. two ways of representing 0.
 			template <class Series, class PosTuple, class ArgsTuple>

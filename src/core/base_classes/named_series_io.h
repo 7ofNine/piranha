@@ -391,7 +391,8 @@ namespace piranha
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::constructFromFile(std::string const &fileName)
 	{
 		std::ifstream infile;
-		infile.open(fileName.c_str(), std::ios::in | std::ios::binary);
+        infile.open(fileName.c_str());;
+		//infile.open(fileName.c_str(), std::ios::in | std::ios::binary);
 		if (infile.fail()) 
         {
 			PIRANHA_THROW(std::runtime_error, "Unable to open file " + fileName);

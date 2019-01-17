@@ -49,6 +49,7 @@
 namespace piranha
 {
 	/// Trigonometric vector.
+
 	template < class T, int Pos >
 	class TrigVector: public VectorKey<T, Pos, TrigVector<T, Pos> >
 	{
@@ -171,6 +172,7 @@ namespace piranha
 
 
 			/// Copy ctor from different position.
+            // IS that used anywhere ?? ExpoVector doesn't have it!!
 			template <int Position2>
 			TrigVector(const TrigVector<T, Position2> &trigVector): flavour(trigVector.getFlavour())
 			{
@@ -182,6 +184,9 @@ namespace piranha
 			/// Ctor from string.
             // construct a TrigVector form a string "s" and ArgsTuple "a" given.
             // the string and a have to agree in length. USed when reading a series from a file
+            // argsTuple is only used to get trigTuple i.e. the tuple describing this echelon level
+            // and of that only the size is used nothing else, i.e. there is no real connection to the psyms!
+            // do we need argstuple??
 			template <class ArgsTuple>
 			explicit TrigVector(const std::string &s, const ArgsTuple & argsTuple): flavour(true)
 			{
@@ -203,20 +208,22 @@ namespace piranha
 					(*this)[i] = boost::lexical_cast<value_type>(boost::algorithm::trim_left_copy(sd[i]));
 				}
 
+                std::string testFlavour(boost::algorithm::trim_copy(sd.back()));
 				// Take care of flavour.
-				if (*sd.back().c_str() == 's') 
+				if (testFlavour == "s") 
 				{
 					flavour = false;
 
-				} else if (*sd.back().c_str() != 'c') 
+				} else if (testFlavour != "c") 
 				{
-					PIRANHA_THROW(value_error,"unknown flavour");
+					PIRANHA_THROW(value_error, "unknown flavour");
 				}
 			}
 
 
             // only use if you know what you are doing. there is no check on the sizes
             // can we get the argsTuple somehow in here without being a parameter?
+            // do we actually need argsTuple?? the check should maybe done outside
             explicit TrigVector(const std::string &s) : flavour(true)
             {
                 std::vector<std::string> sd;
@@ -236,12 +243,13 @@ namespace piranha
                 }
 
                 // Take care of flavour.
-                if (*sd.back().c_str() == 's')
+                std::string const testFlavour(boost::algorithm::trim_copy(sd.back()));
+                if (testFlavour == "s")
                 {
                     flavour = false;
 
                 }
-                else if (*sd.back().c_str() != 'c')
+                else if (testFlavour != "c")
                 {
                     PIRANHA_THROW(value_error, "unknown flavour");
                 }
@@ -269,11 +277,17 @@ namespace piranha
 			 * and the likes. Notice that in the first return value always goes the \f$ \alpha - \beta \f$ term
 			 * and in the second one always goes \f$ \alpha + \beta \f$ one.
 			 * Please also note that no assumptions are made with respect to return values' content
+             * i.e. incomimg values are not overwritten, which can be used to accumultae values
+             * results are also not cleaned up being 0 or one. Also notize there is no handling of flavour here either
 			 * (e.g., it is not guaranteed that return values are empty).
 			 * @param[in] t2 factor.
 			 * @param[out] ret1 first return value.
 			 * @param[out] ret2 second return value.
 			 */
+            // back to argstuple! one notices that argsTuple are not used here!!
+            // see the code below. It assumes that the merge and as such the size adjustment for the size has arleady been done outside
+            // of this method!!!
+            // be aware that 
 			void multiply(const TrigVector &trigVector, TrigVector &result1, TrigVector &result2) const
 			// NOTE: we are not using here a general version of vector addition/subtraction
 			// because this way we can do two operations (+ and -) every cycle. This is a performance
@@ -346,9 +360,9 @@ namespace piranha
 			}
 
 			template <class ArgsTuple>
-			void printPlainSorted(std::ofstream & outStream, std::vector<std::pair<bool, std::size_t> > positions, ArgsTuple const & argsTuple) const
+			void printPlainSorted(std::ostream & outStream, std::vector<std::pair<bool, std::size_t> > positions, ArgsTuple const & argsTuple) const
 			{
-				PIRANHA_ASSERT(argsTuple.template get<Basee::position>().size() == this->size());
+				PIRANHA_ASSERT(argsTuple.template get<Base::position>().size() == this->size());
 				(void)argsTuple;
 
 				this->printElementsSorted(outStream, positions);
@@ -466,6 +480,7 @@ namespace piranha
 			/// Harmonic degree of the variables at specified positions pos.
 			/**
 			 * pos_tuple must be a tuple of vectors of (bool,std::size_t) pairs.
+             * calculate the harmonic degree os the selected (posTuple) factors
 			 */
 			template <class PosTuple>
 			HarmonicDegreeType partialHarmonicDegree(const PosTuple &posTuple) const
@@ -513,6 +528,7 @@ namespace piranha
 			/**
 			 * The norm of a trigonometric part is always one.
 			 */
+            // what is the ArgsTuple good for? Just a verification???
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &argsTuple) const
 			{
@@ -595,6 +611,7 @@ namespace piranha
 
 
 			/// All multipliers are zero and flavour is sine.
+            // ArgsTuple is nowhere used!!!
 			template <class ArgsTuple>
 			bool isIgnorable(const ArgsTuple &) const
 			{
@@ -650,6 +667,9 @@ namespace piranha
 
 
 			/// Partial derivative.
+            // I don't think this belongs here. Why should we know anything about a series in this place
+            // i.e. we have a dependency on a series type in the TrigVector definition!!!!
+            // a trigvector should be a plain primitive that just returns the derived version of it
 			template <class Series, class PosTuple, class ArgsTuple>
 			Series partial(const PosTuple &posTuple, const ArgsTuple &argsTuple) const
 			{
@@ -668,7 +688,10 @@ namespace piranha
 
 					PIRANHA_ASSERT(pos < this->size());
 					
-                    retval = Series::baseSeriesFromKey(copy, argsTuple);
+                    retval = Series::baseSeriesFromKey(copy, argsTuple);  // this makes no sense why are we introducing the series here???
+                                                                          // at maximum we are going up to a term because we have to multiply
+                                                                          // partial should return a modified trigVector (only flavour) and the 
+                                                                          // appropriate multiplier which than should be handled by the defining term 
 					if (flavour) 
 					{
 						retval.baseMultBy(-1, argsTuple);

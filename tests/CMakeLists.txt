@@ -63,6 +63,10 @@ TARGET_LINK_LIBRARIES(test_sub piranha)
 #TARGET_INCLUDE_DIRECTORIES(test_dfs2 PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
 #TARGET_LINK_LIBRARIES(test_dfs2 piranha)
 
+ADD_EXECUTABLE(test_read test_read.cpp)
+TARGET_INCLUDE_DIRECTORIES(test_read PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
+TARGET_LINK_LIBRARIES(test_read piranha)
+
 
 MACRO(CREATE_BOOST_TEST arg1)
 	ADD_EXECUTABLE(${arg1} ${arg1}.cpp)
@@ -111,6 +115,7 @@ CREATE_BOOST_TEST(test_NamedSeries)
 CREATE_BOOST_TEST(test_FourierSeriesTerm)
 CREATE_BOOST_TEST(test_FourierSeries)
 CREATE_BOOST_TEST(test_PoissonSeries)
+CREATE_BOOST_TEST(test_qps_series)
 # and several more we don't know yet. How to test the specific instantiation qps, dps etc.
 
 

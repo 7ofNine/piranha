@@ -19,6 +19,7 @@ namespace {
 		Intermediate() = default;
 		Intermediate(Intermediate const &) = default;
 		Intermediate(Intermediate &&) = default;
+
 		Intermediate & operator=(Intermediate const &) = default;
 		Intermediate & operator=(Intermediate &&) = default;
 
@@ -93,10 +94,11 @@ BOOST_AUTO_TEST_CASE(construct_with_psym)
 
 }
 
-// how to test that?
+// how to test that tested through derived class TrigVector
+// does not exist fro ExpoVector. Is that really needed??
 BOOST_AUTO_TEST_CASE(construct_from_different_position)
 {
-	//KeyType1 temp1;
+	//KeyType1 temp1;  
 	//temp1.resize(3);
 
 	//KeyType  tmp(temp1);
