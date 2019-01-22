@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE expo_vector Test
+#define BOOST_TEST_MODULE Expo vector Test
 #include "boost/test/included/unit_test.hpp"
 #include "boost/test/output_test_stream.hpp"
 
@@ -741,7 +741,7 @@ BOOST_AUTO_TEST_CASE(power)
 	BOOST_TEST(newTemp[2] == 0);
 }
 
-BOOST_AUTO_TEST_CASE(substitute)
+BOOST_AUTO_TEST_CASE(A_substitute)
 {
 	// how to implement a test? requires a series
 	//should we wait until we understand where it is used and how to actually test it
@@ -751,7 +751,7 @@ BOOST_AUTO_TEST_CASE(substitute)
 	BOOST_FAIL("Needs investigation to implement");
 }
 
-BOOST_AUTO_TEST_CASE(eiSubstitute)
+BOOST_AUTO_TEST_CASE(A_eiSubstitute)
 {
 	// is that actually anywhere used and functional??
 	//should we wait until we understand where it is used and how to actually test it

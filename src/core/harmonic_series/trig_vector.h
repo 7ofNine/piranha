@@ -703,19 +703,26 @@ namespace piranha
 
 
 			/// Exponentiation.
+            // TODO: only unit elements have a result i.e. cos(0) everything else excepts
+            // what does that actually do??? IS the whole pow actually used ??
+            // what an effort for nothing. Why is that even here?
+            // Is that really usefull somehow.
+            // the only thing that does anything is for cos(0) and/or y ==0, everything else borks
 			template <class ArgsTuple>
 			TrigVector pow(const double y, const ArgsTuple &) const
 			{
 				return powNumber(y);
 			}
 
-
+            // what does this actually do on a trigVector
 			template <class ArgsTuple>
 			TrigVector pow(const mp_rational &q, const ArgsTuple &) const
 			{
 				return powNumber(q);
 			}
 
+
+            // TODO: does this belong here ? or somewhere to a series??
 
 			// NOTE: here argsTuple must be the merge of the series undergoing the substitution and
 			// the series used for the substitution.
@@ -774,7 +781,9 @@ namespace piranha
 				return retval;
 			}
 
-
+            // TODO: does this belong here ? or somewhere to a series?? It also has the substitution cache explicitly. where does that come from??
+            // it is used (probably) only in a few places. Analyse!!!!
+            // The caches are also series reslted. SHould it go there somewhere????
 			template <class ResultSeries, class PosTuple, class SubCaches, class ArgsTuple>
 			ResultSeries eiSubstitute(const PosTuple &pos_tuple, SubCaches &subCaches, const ArgsTuple &argsTuple) const
 			{

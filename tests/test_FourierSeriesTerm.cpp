@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(construction_test)
 
 
 
-	//BOOST_TEST_FAIL("No test implemented");
+	BOOST_TEST_FAIL("No test implemented");
 
 }
 
@@ -94,4 +94,5 @@ BOOST_AUTO_TEST_CASE(test_multiply)
 	////cos * sin
 	//SimpleCfFourierTerm::multiply(factor2, factor3, result3, argsFactor1);
 
+    BOOST_TEST_FAIL("No test implemented");
 }

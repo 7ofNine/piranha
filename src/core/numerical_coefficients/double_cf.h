@@ -125,7 +125,7 @@ namespace piranha
 			// Ctors.
 			explicit double_cf(): ancestor() {}
 			template <class T, class ArgsTuple>
-			explicit double_cf(const T &x, const ArgsTuple &argsTuple): ancestor(x,argsTuple) {}
+			explicit double_cf(const T &x, const ArgsTuple &argsTuple): ancestor(x,argsTuple) {} // this covers copy constructor and construction from string
 			template <class ArgsTuple>
 			explicit double_cf(const mp_rational &q, const ArgsTuple &argsTuple): ancestor(q.to_double(),argsTuple) {}
 			template <class ArgsTuple>
@@ -152,6 +152,8 @@ namespace piranha
 	};
 }
 
+
+// most complex operations come from std::complex
 namespace std
 {
 	template <>
@@ -186,6 +188,9 @@ namespace piranha
 {
 	// Place it here, since double_cf is not a template class and hence this definition
 	// relies on the complex specialization for double_cf being already available.
+    // 
+    // e**(i*value)
+    // i.e. create the complex unit with argument (angle) value
 	template <class ArgsTuple>
 	inline std::complex<double_cf> double_cf::ei(const ArgsTuple &) const
 	{

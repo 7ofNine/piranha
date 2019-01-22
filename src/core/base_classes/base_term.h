@@ -261,6 +261,7 @@ namespace piranha
 			}
 
 			/// Check if the term is canonical.
+            // TODO: why is this on the BAseTerm level???
 			/**
 			 * Will always return true, re-implement in derived term if necessary.
 			 */
@@ -271,6 +272,7 @@ namespace piranha
 			}
 
 			/// Canonicalise the term.
+            // TODO: why is this on the BAseTerm level???
 			/**
 			 * Won't do anything, re-implement in derived term if necessary.
 			 */

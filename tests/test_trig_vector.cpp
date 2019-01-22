@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE trig_vector Test
+#define BOOST_TEST_MODULE Trig vector Test
 #include "boost/test/included/unit_test.hpp"
 #include "boost/test/output_test_stream.hpp"
 
@@ -596,7 +596,51 @@ BOOST_AUTO_TEST_CASE(swap_test)
 
 BOOST_AUTO_TEST_CASE(trim_test)
 {
-	BOOST_TEST_FAIL("No test implemented");
+
+    boost::tuple<VectorPsym, VectorPsym> polyTrigArgs; // ArgsTuple is not really used for anything, why is it here?
+
+    using TrimFlagsType = NTuple<std::vector<bool>, 2>::Type;
+    BaseTrigVector temp;
+    temp.resize(3);
+    temp[0] = 1;
+    temp[1] = 0;
+    temp[2] = 3;
+
+    TrimFlagsType trimFlags;
+    trimFlags.get<1>() = std::vector<bool>(temp.size(), false); // look for the position 1 because the way BAseTrigVector is defined
+    // create the proper flags, uses another tested function
+    temp.trimTest(trimFlags);
+
+    // trim one out
+    BaseTrigVector trimmed;
+    trimmed = temp.trim(trimFlags, polyTrigArgs);
+    BOOST_TEST(trimmed.size() == 2);
+    BOOST_TEST(trimmed[0] = 1);
+    BOOST_TEST(trimmed[1] = 3);
+    BOOST_TEST(trimmed.getFlavour() == true);
+
+    // check for flavour
+    BaseTrigVector temp1;
+    temp1.resize(3);
+    temp1[0] = 3;
+    temp1[1] = 0;
+    temp1[2] = 1;
+    temp1.setFlavour(false);
+
+    trimmed = temp1.trim(trimFlags, polyTrigArgs);
+    BOOST_TEST(trimmed.size() == 2);
+    BOOST_TEST(trimmed[0] = 3);
+    BOOST_TEST(trimmed[1] = 1);
+    BOOST_TEST(trimmed.getFlavour() == false);
+
+    // unequal size
+    trimFlags.get<1>() = std::vector<bool>(4, false);
+    // bigger
+    BOOST_CHECK_THROW(BaseTrigVector trimmed = temp.trim(trimFlags, polyTrigArgs), assertion_error);
+    //smaller
+    trimFlags.get<1>() = std::vector<bool>(2, false);
+    BOOST_CHECK_THROW(BaseTrigVector trimmed = temp.trim(trimFlags, polyTrigArgs), assertion_error);
+
 }
 
 BOOST_AUTO_TEST_CASE(ignorable_test)
@@ -830,20 +874,97 @@ BOOST_AUTO_TEST_CASE(partialDerivative_test)
 
 BOOST_AUTO_TEST_CASE(power_test)
 {
-	BOOST_TEST_FAIL("No test implemented");
+    // not clear if this is actually used anywhere and why would one power a trigonometric argument??
+    // and again agrsTuple. it is used but really necessary??
+    Psym t1("t1");
+    Psym t2("t2");
+    Psym t3("t3");
+    VectorPsym trigSym{ t1,t2,t3 };
+    VectorPsym noSym;
+    boost::tuple<VectorPsym, VectorPsym> argsTuple{ noSym, trigSym };
+
+    BaseTrigVector temp;
+    temp.resize(3);
+    temp[0] = 0;
+    temp[1] = 0;
+    temp[2] = 0;
+    
+    mp_rational rat("1/2");
+
+    BaseTrigVector result;
+    // test with double (int))
+    BOOST_CHECK_NO_THROW(result = temp.pow(2, argsTuple));
+    BOOST_TEST(result.isUnity() == true);
+
+    BOOST_CHECK_NO_THROW(result = temp.pow(-2, argsTuple));
+    BOOST_TEST(result.isUnity() == true);
+
+    BOOST_CHECK_NO_THROW(result = temp.pow(rat, argsTuple));
+    BOOST_TEST(result.isUnity() == true);
+
+    BOOST_CHECK_NO_THROW(result = temp.pow(-rat, argsTuple));
+    BOOST_TEST(result.isUnity() == true);
+
+    temp[0] = 1;
+    temp.setFlavour(true);
+    BOOST_CHECK_THROW(temp.pow(2, argsTuple), value_error);
+    temp[0] = 1;
+    temp.setFlavour(false);
+    BOOST_CHECK_THROW(temp.pow(2, argsTuple), value_error);
+
+    temp[0] = 0;
+    temp.setFlavour(false);
+    BOOST_CHECK_NO_THROW(result = temp.pow(2, argsTuple));
+    BOOST_TEST(result.isIgnorable(argsTuple) == true);
+    BOOST_CHECK_NO_THROW(result = temp.pow(rat, argsTuple));
+    BOOST_TEST(result.isIgnorable(argsTuple) == true);
+
+    temp[0] = 0;
+    temp.setFlavour(true);
+    BOOST_CHECK_NO_THROW(result = temp.pow(0, argsTuple));
+    BOOST_TEST(result.isUnity() == true);
+    temp[0] = 0;
+    temp.setFlavour(false);
+    BOOST_CHECK_NO_THROW(result = temp.pow(0, argsTuple));
+    BOOST_TEST(result.isUnity() == true);
+    temp[0] = 1;
+    temp.setFlavour(true);
+    BOOST_CHECK_NO_THROW(result = temp.pow(0, argsTuple));
+    BOOST_TEST(result.isUnity() == true);
+    temp[0] = 1;
+    temp.setFlavour(false);
+    BOOST_CHECK_NO_THROW(result = temp.pow(0, argsTuple));
+    BOOST_TEST(result.isUnity() == true);
+
+    temp[0] = 0;
+    temp.setFlavour(false);
+    BOOST_CHECK_THROW(temp.pow(-2, argsTuple), zero_division_error);
+    BOOST_CHECK_THROW(temp.pow(-rat, argsTuple), zero_division_error);
+
+    temp[0] = 1;
+    temp.setFlavour(true);
+    BOOST_CHECK_THROW(temp.pow(-2, argsTuple), value_error);
+    BOOST_CHECK_THROW(temp.pow(-rat, argsTuple), value_error);
+
+    temp[0] = 1;
+    temp.setFlavour(false);
+    BOOST_CHECK_THROW(temp.pow(-2, argsTuple), value_error);
+    BOOST_CHECK_THROW(temp.pow(-rat, argsTuple), value_error);
 }
 
-BOOST_AUTO_TEST_CASE(substitution_test)
+BOOST_AUTO_TEST_CASE(A_substitution_test)
 {
-	BOOST_TEST_FAIL("No test implemented");
+    // TODO: does this belong here ? or somewhere to a series?? seems to be out of place, it uses series
+	BOOST_TEST_FAIL("No test implemented. Needs more analysis where to put it");
 }
 
-BOOST_AUTO_TEST_CASE(eiSubstitution_test)
+BOOST_AUTO_TEST_CASE(A_eiSubstitution_test)
 {
-	BOOST_TEST_FAIL("No test implemented");
+    // TODO: does this belong here ? or somewhere to a series?? seems to be out of place, it uses series
+	BOOST_TEST_FAIL("No test implemented. Needs more analysis where to put it");
 }
 
 BOOST_AUTO_TEST_CASE(eval_test)
 {
-    BOOST_TEST_FAIL("No test implemented");
+   BOOST_TEST_FAIL("No test implemented");
 }
