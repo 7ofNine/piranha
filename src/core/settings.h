@@ -21,6 +21,8 @@
 #ifndef PIRANHA_SETTINGS_H
 #define PIRANHA_SETTINGS_H
 
+
+
 #include <cstddef>
 #include <string>
 
@@ -29,6 +31,8 @@
 #include "exceptions.h"
 #include "math.h" // For static base-2 logarithm.
 
+#pragma warning (push)
+#pragma warning (disable: 4251)
 namespace piranha
 {
 	/// Manager class for piranha-specific settings.
@@ -91,7 +95,7 @@ namespace piranha
 
 
 			/// Get Piranha version.
-			static const std::string &get_version();
+			static const char *get_version(); // no stl interface over dll border
 			/// Cache size in kilobytes.
 			static const std::size_t cache_size;// = _PIRANHA_CACHE_SIZE;
 //			static_assert(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
@@ -138,7 +142,7 @@ namespace piranha
 	};
 }
 
-
+#pragma warning (pop)
 // Debug mode.
 #ifndef NDEBUG
 #define PIRANHA_DEBUG(statement) {if (settings::get_debug()) {statement;}}

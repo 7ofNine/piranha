@@ -70,9 +70,9 @@ namespace piranha
         }
 
         /// Get version.
-        const std::string &settings::get_version()
+        const char *settings::get_version()
         {
-                return m_version;
+                return m_version.c_str();
         }
 
         std::size_t settings::get_max_pretty_print_size()

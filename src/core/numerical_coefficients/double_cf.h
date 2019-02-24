@@ -124,29 +124,37 @@ namespace piranha
            
 			// Ctors.
 			explicit double_cf(): ancestor() {}
+
 			template <class T, class ArgsTuple>
 			explicit double_cf(const T &x, const ArgsTuple &argsTuple): ancestor(x,argsTuple) {} // this covers copy constructor and construction from string
+
 			template <class ArgsTuple>
 			explicit double_cf(const mp_rational &q, const ArgsTuple &argsTuple): ancestor(q.to_double(),argsTuple) {}
+
 			template <class ArgsTuple>
 			explicit double_cf(const mp_integer &z, const ArgsTuple &argsTuple): ancestor(z.to_double(),argsTuple) {}
+
 			template <class ArgsTuple>
 			explicit double_cf(const Psym &p, const int &n, const ArgsTuple &a): ancestor(p,n,a) {}
+
 			template <class ArgsTuple>
 			double eval(const double &, const ArgsTuple &) const {
 				return get_value();
 			}
+
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &) const
 			{
 				return std::abs(get_value());
 			}
+
 			int to_int() const {
 				if (!is_integer(get_value())) {
 					PIRANHA_THROW(value_error,"cannot convert double coefficient to integer");
 				}
 				return (int)get_value();
 			}
+
 			template <class ArgsTuple>
 			std::complex<double_cf> ei(const ArgsTuple &) const;
 	};
@@ -158,8 +166,8 @@ namespace std
 {
 	template <>
 	class complex<piranha::double_cf>:
-	public piranha::NumericalContainer<complex<double>, complex<piranha::double_cf> >,
-		public piranha::NumericalContainerComplexToolbox<piranha::double_cf>
+	    public piranha::NumericalContainer<complex<double>, complex<piranha::double_cf> >, 	
+               piranha::NumericalContainerComplexToolbox<piranha::double_cf>
 	{
 			typedef piranha::NumericalContainer<complex<double>, complex<piranha::double_cf> > ancestor;
 			typedef piranha::NumericalContainerComplexToolbox<piranha::double_cf> complex_toolbox;

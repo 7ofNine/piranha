@@ -21,6 +21,7 @@
 #ifndef PIRANHA_DEGREE_TRUNCATOR_H
 #define PIRANHA_DEGREE_TRUNCATOR_H
 
+
 #include <algorithm> // For sorting.
 #include <cmath> // For std::ceil.
 #include <cstddef>
@@ -39,6 +40,8 @@
 #include "../Psym.h"
 #include "../settings.h" // For debug messages.
 
+#pragma warning (push)
+#pragma warning (disable: 4251)     // be aware that we have to compile coreectly , for personal use should not be an issue
 namespace piranha { 
 namespace truncators {
 
@@ -342,4 +345,5 @@ namespace truncators {
 	};
 } }
 
+#pragma warning (pop)
 #endif

@@ -21,6 +21,8 @@
 #ifndef PIRANHA_STATS_H
 #define PIRANHA_STATS_H
 
+
+
 #include <boost/lexical_cast.hpp>
 #include <map>
 #include <sstream>
@@ -28,6 +30,9 @@
 
 #include "config.h"
 #include "exceptions.h"
+
+#pragma warning (push)
+#pragma warning (disable: 4251)
 
 namespace piranha
 {
@@ -83,4 +88,5 @@ class PIRANHA_VISIBLE stats
 
 }
 
+#pragma warning (pop)
 #endif

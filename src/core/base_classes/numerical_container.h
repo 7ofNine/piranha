@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
+#include "boost/algorithm/string/trim.hpp"
 #include <cmath>
 #include <cstddef>
 #include <iostream>
@@ -103,10 +104,10 @@ namespace piranha
 			 */
 			template <class ArgsTuple>
 			explicit NumericalContainer(const std::string &s, const ArgsTuple &):
-				m_value(boost::lexical_cast<T>(s)) {}
+				m_value(boost::lexical_cast<T>(boost::algorithm::trim_copy(s))) {} // trim trailing and heading blanks, exception otherwise
 			
 			/// Ctor from Psym.
-            // TODO: waht is the int and ArgsTuple good for??
+            // TODO: what is the int and ArgsTuple good for??
 			/**
 			 * Sets internal value to one.
 			 */
@@ -122,7 +123,7 @@ namespace piranha
 			/// Print in plain mode.
 			template <class ArgsTuple>
 			void printPlain(std::ostream &outStream, const ArgsTuple &) const {
-				outStream << boost::lexical_cast<std::string>(m_value);
+				outStream << boost::lexical_cast<std::string>(m_value); // this cast should be done according to the size of the value
 			}
 			
 			/// Print in pretty mode. Equivalent to print_plain.
@@ -287,7 +288,7 @@ namespace piranha
 			template <class ArgsTuple>
 			Derived besselJ(const int &n, const ArgsTuple &argsTuple) const
 			{
-				return Derived(piranha::besselJ(n,m_value),argsTuple);
+				return Derived(piranha::besselJ(n, m_value),argsTuple);
 			}
 			
 			/// Get value.

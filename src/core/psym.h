@@ -38,6 +38,8 @@
 #include "settings.h"
 #include "utils.h"
 
+#pragma warning(push)
+#pragma warning (disable: 4251)
 namespace piranha
 {
 	// the global "dictionary" of Psym(s)
@@ -458,4 +460,6 @@ namespace piranha
 		return vectorPsym;
 	}
 }
+
+#pragma warning (pop)
 #endif

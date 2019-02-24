@@ -54,7 +54,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct numerical_container_constructor_selector<T,typename boost::enable_if<boost::is_base_of<numerical_container_tag,T> >::type>
+	struct numerical_container_constructor_selector<T,typename boost::enable_if<boost::is_base_of<numerical_container_tag, T> >::type>
 	{
 		static const typename T::numerical_type &run(const T &other)
 		{
