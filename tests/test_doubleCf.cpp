@@ -646,7 +646,8 @@ BOOST_AUTO_TEST_CASE(A_substitute_test)
 BOOST_AUTO_TEST_CASE(A_eisubstitute_test)
 {
     // requires series. Why is on this level
-    BOOST_FAIL("Not implemented. Unclear if test belongs here");
+    BOOST_ERROR("Not implemented. Unclear if test belongs here");
+ //   BOOST_FAIL("Not implemented. Unclear if test belongs here");
 }
 ///// Bessel function of the first kind.
 ///**

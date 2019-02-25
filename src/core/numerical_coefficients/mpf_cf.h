@@ -18,6 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+// 
+// This class is currently nowhere used and would not compile !!
+//
+
 #ifndef PIRANHA_MPF_CF_H
 #define PIRANHA_MPF_CF_H
 

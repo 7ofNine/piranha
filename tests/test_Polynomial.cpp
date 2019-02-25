@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE BaseSeries Test
+#define BOOST_TEST_MODULE Polynomial Test
 #include "boost/test/included/unit_test.hpp"
 
 BOOST_AUTO_TEST_CASE(construction_test)

@@ -4,8 +4,8 @@
 
 
 //
-// Test for FourierSeriesTerms. BAseTerm is tested with Monomial
-// Do we need addional tests fro BAseSeries because we are using VectorKey insatead of ExpoKey??
+// Test for FourierSeriesTerms. BaseTerm is tested with Monomial
+// Do we need addional tests fro BaseSeries because we are using VectorKey insatead of ExpoKey??
 // 
 
 #include "piranha.h"
@@ -18,23 +18,6 @@ namespace {
 
 BOOST_AUTO_TEST_CASE(defaultconstruction_test)
 {
-    //#define PIRANHA_TERM_CTORS(TermName) \
-    //	explicit TermName(): ancestor() {} \
-
-    //	template <class ArgsTuple> \
-    //	explicit TermName(const std::string &str, const ArgsTuple &argsTuple): \
-    //			ancestor(str, argsTuple) {} \
-
-    //	explicit TermName(const CfType &c, const KeyType &t): ancestor(c, t) {} \
-
-    //	template <class Cf2, class ArgsTuple> \
-    //	explicit TermName(const TermName<Cf2, KeyType, Separator, Allocator> &term, const ArgsTuple &a): \
-    //			ancestor(term, a) {} \
-
-    //	template <class Cf2, class Key2> \
-    //	explicit TermName(const TermName<Cf2, Key2, Separator, Allocator> &term): \
-    //			ancestor(term) {}
-
     FourierType four;
     BOOST_TEST(four.cf == 0);
     BOOST_TEST(four.key.size() == 0); // cf and key are public in BaseTerm. Is that a good idea.
