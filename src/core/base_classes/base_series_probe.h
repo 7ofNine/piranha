@@ -120,17 +120,18 @@ namespace piranha
 	/// Base series equality test.
 	/**
 	 * Please note that this method has no knowledge about arguments: all comparisons performed here on coefficients and keys
-	 * assume that the arguments tuples of this and other have been merged.
+	 * assume that the arguments tuples of this and other have been merged and agree.
 	 *
-	 * @param[in] other series this will be compared to.
+	 * @param[in] T other series derived from BaseSeries this series will be compared to.
 	 *
-	 * @return false if: lengths of series differ or at least one term of this series is not found in other, true otherwise.
+	 * @return false if: lengths of series differ or at least one term of this series is not found in the other ,i.e. series are different
+     *         true :    both series agree on BAseSeriesLevel. (no sorting!)
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T>
 	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericSeriesComparison(const T &other) const
 	{
-		if (length() != other.length())
+		if (length() != other.length()) 
         {
 			return false;
 		}
@@ -141,7 +142,7 @@ namespace piranha
         for (const_iterator it = begin(); it != itf; ++it)
         {
 			const_iterator itOther(other.findTerm(*it));
-			if (itOther == itfOther || !(itOther->cf == it->cf))
+			if (itOther == itfOther || !(itOther->cf == it->cf)) // either no found or coefficients are different
             {
 				return false;
 			}

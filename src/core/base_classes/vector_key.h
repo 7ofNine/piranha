@@ -50,6 +50,9 @@ namespace piranha
 	template <class T, int Position, class Derived>
 	class VectorKey
 	{
+#ifdef DEBUG
+        int TPosition = Position;
+#endif
         static_assert(Position >= 0, "Wrong position.");
 
 			// The index into the vector is the same as into the argDescr. This is how the the symbols get
@@ -170,7 +173,7 @@ namespace piranha
 			// the index into the layout determines where it goes in the modified key
 			// the value in the pair of the layout (second) determines where it comes from (i.e. the source)
 			// the boolean in the pair says if it is actually done at this index. If they are all false the new container contents will be an empty container
-			// all values will be 0(or wahtever the initialization value of the used type is)
+			// all values will be 0(or whatever the initialization value of the used type is)
 			//
 			template <class LayoutTuple, class ArgsTuple>
 			void applyLayout(LayoutTuple const &layoutTuple, ArgsTuple const &)

@@ -86,6 +86,10 @@ namespace piranha
 	template <bool CanonicalCheck, bool Sign, class Term2, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term2, const ArgsTuple &argsTuple)
 	{
+#ifdef DEBUG
+        bool const TCanonical = CanonicalCheck;
+        bool const TSign = Sign;
+#endif
         //convert the inserted term to the type of the term (TermType) of the series it is being inserted to
 		TermConverter<Term2, TermType> convertedTerm(term2, argsTuple);
 
@@ -165,6 +169,9 @@ namespace piranha
 	template <bool Sign, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::llInsert(const TermType &term, const ArgsTuple &argsTuple)
 	{
+#ifdef DEBUG
+        bool TSign = Sign;
+#endif
 		// TODO: think about moving this check higher in the stack of functions, we probably don't want to reach
 		// _this_ point before checking for ignorability.
 		if (term.cf.isIgnorable(argsTuple) || term.key.isIgnorable(argsTuple)) 
@@ -207,6 +214,9 @@ namespace piranha
 	template <bool Sign, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::termInsertNew(const TermType &term, const ArgsTuple &argsTuple)
 	{
+#ifdef DEBUG
+        bool TSign = Sign;
+#endif
         //insert the term into the container
 		std::pair<const_iterator, bool> res(container.insert(term));
 
@@ -240,8 +250,9 @@ namespace piranha
 
     //
 	// Apply an arguments layout to all terms and insert them into retval.
-    // for layout see named_series_manip.h
-    // 
+    // for layout see named_series_manip.h.
+    // The control over the proper assigment of the positions to the arguments is outisde of this method somewhere in named series. Only there
+    // layouts actually make sense.
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class LayoutTuple, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::applyLayoutToTerms(LayoutTuple const &layoutTuple, ArgsTuple const &argsTuple, Derived &retval) const
@@ -269,6 +280,7 @@ namespace piranha
 		const const_iterator itEnd = end();
 		for (const_iterator it = begin(); it != itEnd; ++it) 
 		{
+            // this is accumulative over the series
 			it->cf.trimTest(trimFlags);
 			it->key.trimTest(trimFlags);
 		}
@@ -277,7 +289,7 @@ namespace piranha
 
     //
     // trim the arguments according to the trimFlags from the *this terms argumentTuple and return the modified series in retval
-    // the triiming of the argumentsTuple was done earlier
+    // the trimmming of the argumentsTuple was done earlier
     //
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class TrimFlags, class ArgsTuple>

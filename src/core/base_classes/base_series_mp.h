@@ -194,7 +194,9 @@ namespace piranha
 		}
 	};
 
-
+    //////////////////////////////////////////////////////////////
+    //
+    //
 	template <class T, class Enable = void>
 	struct BaseSeriesEqualToSelector
 	{

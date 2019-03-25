@@ -28,9 +28,11 @@ SET(Boost_USE_RELEASE_LIBS ON)
 SET(Boost_USE_STATIC_LIBS OFF)
 SET(Boost_USE_STATIC_RUNTIME OFF)
 set(Boost_USE_MULTITHREADED ON)
-FIND_PACKAGE(Boost 1.66.0 REQUIRED COMPONENTS thread python27)
+
+FIND_PACKAGE(Boost 1.69.0 REQUIRED COMPONENTS thread ${PYRANHA_BOOST_PYTHON_TARGET})
 if(Boost_FOUND)
 	MESSAGE(STATUS "Found Boost libraries: ${Boost_LIBRARIES}")
+    SET(PYRANHA_BOOST_LIBRARIES "${Boost_LIBRARIES}" PARENT_SCOPE)
 else()
 	MESSAGE(FATAL "Couldn't find Boost libraries")
 endif()
@@ -39,16 +41,21 @@ endif()
 # define target piranha.dll
 ADD_LIBRARY(piranha SHARED ${SRC_LIST} ${SRC_LIST_HEADERS}) # define target piranha.dll
 
-TARGET_INCLUDE_DIRECTORIES(piranha PRIVATE ${PYTHON_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
+TARGET_INCLUDE_DIRECTORIES(piranha PRIVATE ${Boost_INCLUDE_DIR})
 SET_PROPERTY(TARGET piranha PROPERTY COMPILE_DEFINITIONS _PIRANHA_DLL_EXPORT_API) # The dll exports its intefraces
-SET_TARGET_PROPERTIES(piranha PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 11)
-TARGET_LINK_LIBRARIES(piranha ${MANDATORY_LIBRARIES} ${PYTHON_LIBRARY} Boost::thread Boost::python27)
+TARGET_LINK_LIBRARIES(piranha ${MANDATORY_LIBRARIES} Boost::thread)
 
 # copy libraries so that we actually can run the tests and/or the single projects
 if(BUILD_TESTS)
+# somehow ENVIRONMENT for tests properties doesn't wotk (yet?)
 # CMAKE still doesn't support copying runtime dependencies properly to the targets. It's a pain
+
 get_filename_component(BASE_NAME_THREAD ${Boost_THREAD_LIBRARY_RELEASE} NAME_WE)
-get_filename_component(BASE_NAME_PYTHON ${Boost_PYTHON27_LIBRARY_RELEASE} NAME_WE)
+if(BUILD_PYRANHA_WITH_PYTHON3)
+    get_filename_component(BASE_NAME_PYTHON ${Boost_PYTHON37_LIBRARY_RELEASE} NAME_WE)
+else()
+    get_filename_component(BASE_NAME_PYTHON ${Boost_PYTHON27_LIBRARY_RELEASE} NAME_WE)
+endif()
 #get_filename_component(BASE_NAME_SYSTEM ${Boost_SYSTEM_LIBRARY_RELEASE} NAME_WE)
 
 	add_custom_command(TARGET piranha POST_BUILD
@@ -76,7 +83,9 @@ INSTALL(TARGETS piranha
 				RUNTIME DESTINATION . 
                 LIBRARY DESTINATION . 
 		)
-
+SET(PYRANA_BOOST_INSTALL_FILES "${Boost_LIBRARY_DIR_RELEASE}/${BASE_NAME_THREAD}.dll" "${Boost_LIBRARY_DIR_RELEASE}/${BASE_NAME_PYTHON}.dll" )
+INSTALL(FILES  ${PYRANA_BOOST_INSTALL_FILES} DESTINATION . )
+      
 # Target to get the header files into MSVC		
 SET(INCS
                 piranha.h
@@ -198,4 +207,4 @@ SET(INCS
 SOURCE_GROUP(TREE ${CMAKE_SOURCE_DIR} PREFIX "Header Files" FILES ${INCS})
 ADD_LIBRARY(Headers STATIC ${INCS})
 TARGET_INCLUDE_DIRECTORIES(Headers PRIVATE ${Boost_INCLUDE_DIR})
-SET_TARGET_PROPERTIES(Headers PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 11)
+SET_TARGET_PROPERTIES(Headers PROPERTIES LINKER_LANGUAGE CXX)

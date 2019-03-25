@@ -1,6 +1,8 @@
 # Modified to only support MSVC >=2017 any longer and nothing else.
 # The CMAKE is kept to keep some of the generations/installations easier
 #
+# This is old style unstructured CMAKE!
+#
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10.0 FATAL_ERROR)
 
 PROJECT(Piranha CXX)
@@ -15,6 +17,7 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # we only support MSVC >=2017 and 64 Bit
 IF(MSVC)
+        set(CMAKE_CXX_STANDARD 14) # 17 still has warnigns and errors
         IF(MSVC_VERSION LESS 1910)
              MESSAGE(STATUS "This version ${MSVC_VERSION} of MSVC is not tested. It may work or not")
         ENDIF()
@@ -50,6 +53,7 @@ INCLUDE(PiranhaCPackSetup)
 OPTION(BUILD_ENABLE_ASSERTS "Enable asserts in code, for debugging." ON)
 
 OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_WITH_PYTHON3 "Build using Python3(default) or Python2." ON "BUILD_PYRANHA" ON)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DFS "Build double coefficient Fourier series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DPOLY "Build double coefficient multivariate polynomial manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_ZPOLY "Build arbitrary-size integer coefficient multivariate polynomial manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
@@ -64,10 +68,19 @@ CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build PyQt4 gui for pyranha." OFF "BUI
 OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 
 
+
+
 # control build of load library (dll)
-IF(BUILD_PYRANHA)
-        INCLUDE(PiranhaPythonSetup)  # we need the python includes for piranha.dll
-        PIRANHA_PYTHON_SETUP()
+IF(BUILD_PYRANHA) # ultimately that should always be 3.* . Temporary to be able to switch between old and new
+        IF(BUILD_PYRANHA_WITH_PYTHON3)
+            SET(PYRANHA_PYTHON_BUILD_VERSION 3)
+            SET(PYRANHA_BOOST_PYTHON_TARGET "python37") # depdends on the precise version of python should be set up depdedent on python)
+        else()
+            SET(PYRANHA_PYTHON_BUILD_VERSION 2)
+            SET(PYRANHA_BOOST_PYTHON_TARGET "python27") # depdends on the precise version of python should be set up depdedent on python)
+        endif()
+        INCLUDE(PiranhaPythonSetup) # we need the python includes for piranha.dll ?
+        PIRANHA_PYTHON_SETUP(${PYRANHA_PYTHON_BUILD_VERSION}) 
 ENDIF()
 
 # Set default build type to "Release", change it in the GUI if you need to build with debug.
@@ -108,7 +121,7 @@ ENDIF()
 
 ADD_DEFINITIONS(${PIRANHA_DEFINITIONS})
 
-# Add libraries (static and DLL)
+# Add libraries DLL
 ADD_SUBDIRECTORY(src)
 
 # Add the tests
@@ -116,7 +129,7 @@ IF(BUILD_TESTS)
         ADD_SUBDIRECTORY(tests)
 ENDIF(BUILD_TESTS)
 
-# should be set form outside
+# should be set from outside
 SET(MY_PIRANHA_INSTALL "D:\\temp for tests\\${CMAKE_PROJECT_NAME}")
 # Installation directory
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)

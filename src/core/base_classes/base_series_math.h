@@ -60,7 +60,7 @@ namespace piranha
 		for (const_iterator2 it = series2.begin(); it != it_f; ++it) 
 		{
 			// No need to check, we are merging from another series.
-			insert<false, Sign>(*it, argsTuple); //wihtout canonical check
+			insert<false, Sign>(*it, argsTuple); //without canonical check
 		}
 
 		return *derived_cast;
@@ -70,7 +70,7 @@ namespace piranha
 	template <int N>
 	struct MultDivCoefficientsHelper
 	{
-        static_assert(N == 0, "N must be either 0 or 1."); // this checks on 0 , 1 is differetn specialisation. see below. Why aN if we only support 0 and 1?
+        static_assert(N == 0, "N must be either 0 or 1."); // this checks on 0 , 1 is differentn specialisation. see below.
 
 		template <class Cf, class T, class ArgsTuple>
 		static void run(Cf &cf, const T &x, const ArgsTuple &argsTuple) 
@@ -90,9 +90,10 @@ namespace piranha
 		}
 	};
 
-
+    //
 	// Multiply (N = 0) or divide (N = 1) all the coefficients of the series by a generic quantity x.
     // handle multiplication adn division in one implementation
+    //
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <int N, class T, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::multDivCoefficientsBy(const T &x, const ArgsTuple &argsTuple)
@@ -233,8 +234,7 @@ namespace piranha
 
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::divideCoefficientsBy(const Number &x,
-		const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::divideCoefficientsBy(const Number &x, const ArgsTuple &argsTuple)
 	{
 		if (MultDivCoefficientsChecker<Number>::checkZero(x)) 
 		{
@@ -242,7 +242,7 @@ namespace piranha
 
 		} else if (MultDivCoefficientsChecker<Number>::checkNonUnitary(x)) 
 		{
-			multDivCoefficientsBy<1>(x, argsTuple);
+			multDivCoefficientsBy<1>(x, argsTuple); // 1 == division
 		}
 
 		return *derived_cast;

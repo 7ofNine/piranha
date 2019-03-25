@@ -45,9 +45,10 @@ namespace piranha
 	template <class ArgsTuple>
 	inline bool namedSeriesIsArgsCompatible(ArgsTuple const & argsTuple1, ArgsTuple const & argsTuple2)
 	{
-		const std::size_t w = argsTuple2.get_head().size();
+        // should we check that both ArgsTuples have the same number of components/vectors in them?
+		const std::size_t w = argsTuple2.get_head().size(); // the size of the vector<Psym> at the head to the tuple of second parameter
 
-		if (w > argsTuple1.get_head().size()) 
+		if (w > argsTuple1.get_head().size())               // not compatible if more arguments than in first tuple.
 		{
 			return false;
 		}
@@ -56,11 +57,12 @@ namespace piranha
 		{
 			if (argsTuple1.get_head()[i] != argsTuple2.get_head()[i])  // same symbol in same position
 			{
-				return false;
+				return false;                                          // not the same symbol in same location they are not compatible
 			}
 		}
 
-        //recurse into argsTuple
+        // recurse into argsTuple(1/2). If we made it here we are compatible so far.
+        // continue with the next vector in the ArgsTuples, i.e. tail
 		return namedSeriesIsArgsCompatible(argsTuple1.get_tail(), argsTuple2.get_tail());
 	}
 

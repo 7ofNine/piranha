@@ -19,33 +19,52 @@
 # on MS Windows install Python with update to the registry in order for this to work. Pretty bad if you need to maintain 
 # several versions
 
-MACRO(PIRANHA_PYTHON_SETUP)
-	FIND_PACKAGE(PythonInterp)
-	IF(NOT PYTHONINTERP_FOUND)
-		MESSAGE(FATAL_ERROR "No Python interpreter found.")
-	ENDIF(NOT PYTHONINTERP_FOUND)
-	STRING(REPLACE "python.exe" "" PIRANHA_PYTHON_PATH ${PYTHON_EXECUTABLE})
-	MESSAGE(STATUS "Python Path:                 " ${PIRANHA_PYTHON_PATH})
+MACRO(PIRANHA_PYTHON_SETUP PYRANHA_PYTHON_BUILD_VERSION)
+    if(PYRANHA_PYTHON_BUILD_VERSION EQUAL 3)
+        FIND_PACKAGE(Python3 COMPONENTS Interpreter Development ) 
+    	IF(NOT Python3_FOUND)
+            MESSAGE(FATAL_ERROR "  -- No Python 3 interpreter found.--")
+        endif()
+        SET(PIRANHA_PYTHON_PATH "${Python3_EXECUTABLE}")
+        SET(PIRANHA_PYTHON_LIBRARY_RELEASE "${Python3_LIBRARY_RELEASE}")
+        SET(PIRANHA_PYTHON_LIBRARY_DEBUG "${Python3_LIBRARY_DEBUG}")
+        SET(PIRANHA_PYTHON_LIBRARIES "${Python3_LIBRARIES}")
+        SET(PIRANHA_PYTHON_INCLUDE_DIR "${Python3_INCLUDE_DIR}")
+        SET(PIRANHA_PYTHON_LIBRARY_VERSION ${Python3_VERSION})
+        SET(PIRANHA_PYTHON_VERSION_MAJOR ${Python3_VERSION_MAJOR})
+    else()
+        FIND_PACKAGE(Python2 COMPONENTS Interpreter Development )
+        IF(NOT Python2_FOUND)
+            MESSAGE(FATAL_ERROR STATUS "  -- No Python 2 interpreter found.--")
+        endif()
 
-	# Find Python libraries
-	FIND_PACKAGE(PythonLibs)
-	IF(NOT PYTHONLIBS_FOUND)
-		MESSAGE(FATAL_ERROR "No Python libraries found.")
-	ENDIF(NOT PYTHONLIBS_FOUND)
-        
-	MESSAGE(STATUS "Python libraries:            " ${PYTHON_LIBRARIES})
-#	INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
-        MESSAGE(STATUS "Python headers include path: " ${PYTHON_INCLUDE_PATH})
-	MESSAGE(STATUS "Python library:              " ${PYTHON_LIBRARY})
-        STRING(REGEX MATCH python[0-9]\\.?[0-9] PYTHON_LIBRARY_VERSION ${PYTHON_LIBRARY})
-	STRING(REGEX REPLACE python "" PYTHON_LIBRARY_VERSION ${PYTHON_LIBRARY_VERSION})
-        SET(PYTHON_MODULES_PATH .)
-	MESSAGE(STATUS "Python library version:      " ${PYTHON_LIBRARY_VERSION})
+#	STRING(REPLACE "python.exe" "" PIRANHA_PYTHON_PATH ${PYTHON_EXECUTABLE})
+#    SET(PIRANHA_PYTHON_PATH "C:\\Python\\Python37\\python.exe")
+        SET(PIRANHA_PYTHON_PATH "${Python2_EXECUTABLE}")
+        SET(PIRANHA_PYTHON_LIBRARY_RELEASE "${Python2_LIBRARY_RELEASE}")
+        SET(PIRANHA_PYTHON_LIBRARY_DEBUG "${Python2_LIBRARY_DEBUG}")
+        SET(PIRANHA_PYTHON_LIBRARIES "${Python2_LIBRARIES}")
+        SET(PIRANHA_PYTHON_INCLUDE_DIR "${Python2_INCLUDE_DIR}")
+        SET(PIRANHA_PYTHON_LIBRARY_VERSION ${Python2_VERSION})
+        SET(PIRANHA_PYTHON_VERSION_MAJOR ${Python2_VERSION_MAJOR})
+    endif()
+    
+	MESSAGE(STATUS "Python Path:                 " ${PIRANHA_PYTHON_PATH})
+    MESSAGE(STATUS "Python headers include path: " ${PIRANHA_PYTHON_INCLUDE_DIR})
+	MESSAGE(STATUS "Python library (Release)   : " ${PIRANHA_PYTHON_LIBRARY_RELEASE})
+    MESSAGE(STATUS "Python library (Debug)     : " ${PIRANHA_PYTHON_LIBRARY_DEBUG})
+    MESSAGE(STATUS "Python libraries           : " ${PIRANHA_PYTHON_LIBRARIES})
+    MESSAGE(STATUS "Python library version     : " ${PIRANHA_PYTHON_LIBRARY_VERSION})
+    
+#        STRING(REGEX MATCH python[0-9]\\.?[0-9] PYTHON_LIBRARY_VERSION ${PYTHON_LIBRARY})
+#	STRING(REGEX REPLACE python "" PYTHON_LIBRARY_VERSION ${PYTHON_LIBRARY_VERSION})
+    
 	
-	IF(${PYTHON_LIBRARY_VERSION} LESS 27 AND WIN32)
+	if(${PIRANHA_PYTHON_LIBRARY_VERSION} LESS 2.7 AND WIN32)
 		MESSAGE(FATAL_ERROR STATUS "Python < 2.7 detected on WIN32 platform. This is not supported")
-	ENDIF()
-        
+	endif()
+    
+    SET(PYTHON_MODULES_PATH .) #installation root    
 	MESSAGE(STATUS "Python modules install path: " "${PYTHON_MODULES_PATH}")
         
 ENDMACRO(PIRANHA_PYTHON_SETUP)

@@ -26,6 +26,10 @@
 namespace piranha
 {
 	/// Generic series multiplier.
+
+    //
+    //  Doesn't seem to be explicitly used anywhere
+    //
 	class SeriesMultiplier
 	{
 		public:

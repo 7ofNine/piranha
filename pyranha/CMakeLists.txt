@@ -1,15 +1,17 @@
 SET(PYRANHA_INSTALL_PATH ${PYTHON_MODULES_PATH}/pyranha)
+MESSAGE (STATUS " pyranha install path ${PYRANHA_INSTALL_PATH}")
 ADD_COMPILE_OPTIONS(/bigobj)
 ADD_COMPILE_OPTIONS(/wd4244) # Boost python shows a lot of size warnings with 64 bit compilation. Boost should fix that
 ADD_DEFINITIONS(-D_PIRANHA_DLL_IMPORT_API)  # here we import piranha.dll
-INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})  # everything under here needs the python declarations
+#INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})  # everything under here needs the python declarations
 
 
 MACRO(PYTHON_CPPMODULE arg1)
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES PREFIX "")
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES SUFFIX ".pyd")
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES FOLDER "Pyranha") # we want to put these projects into a Pyranha folder in VS
-	TARGET_LINK_LIBRARIES(${arg1} ${MANDATORY_LIBRARIES} ${PYTHON_LIBRARIES} ${ARGN})
+	TARGET_LINK_LIBRARIES(${arg1} ${MANDATORY_LIBRARIES} ${PIRANHA_PYTHON_LIBRARIES} ${PYRANHA_BOOST_LIBRARIES} ${ARGN})
+    TARGET_INCLUDE_DIRECTORIES(${arg1} PRIVATE ${PIRANHA_PYTHON_INCLUDE_DIR})
 	STRING(REGEX REPLACE "^_" "" DIR_ARG ${arg1})
 #	MESSAGE(STATUS "Install files: ${arg1}")
 	INSTALL(TARGETS ${arg1}

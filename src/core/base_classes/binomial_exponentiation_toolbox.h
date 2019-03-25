@@ -41,7 +41,12 @@ namespace piranha
 	/**
 	 * Overrides BaseSeries::realPower, BaseSeries::negativeIntegerPower, BaseSeries::rationalPower
 	 * and reimplements them using binomial expansion.
+     * 
 	 */
+    //
+    // requires the series_multiplication and truncator for the DerivedSeries
+    //
+
 	template <class Derived>
 	class BinomialExponentiation
 	{

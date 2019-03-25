@@ -53,6 +53,9 @@ namespace piranha
 	template < class T, int Pos >
 	class TrigVector: public VectorKey<T, Pos, TrigVector<T, Pos> >
 	{
+#ifdef DEBUG
+        int TPos = Pos;
+#endif
 			using Base =  VectorKey<T, Pos, TrigVector<T, Pos> >;
 
 			template <class SubSeries, class ArgsTuple>

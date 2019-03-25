@@ -216,7 +216,7 @@ namespace piranha
 
 
     //
-	// n-th Partial derivative with respect to name.
+	// n-th Partial derivative with respect to variable "name".
     //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::partial(std::string const &name, int const n) const

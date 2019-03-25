@@ -104,6 +104,11 @@ namespace piranha
 	 *
 	 * @author Francesco Biscani (bluescarni@gmail.com)
 	 */
+
+    //
+    // for series multiplication it requires to be used in parallel with series_multiplcation which in turn requires
+    // a multiplier and a truncator
+    //
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	class BaseSeries: BaseSeriesTag
 	{
@@ -205,29 +210,80 @@ namespace piranha
 
 			void baseSwap(Derived &);
 
+            //
+            // not sure what this is good for. requires series_multiplication and truncator
+            // I don't think it is used anywhere. except to define spli in cf_series and named_series
+            // 
 			template <class Series, class ArgsTuple>
 			void baseSplit(std::vector<std::vector<Series> > &, const int n, const ArgsTuple &) const;
 
+            //
+            // don't understand how that one really works.
+            // test with Echelon level > 0
+            //
+            // create a vector of the series term. Basically use distributive law.
+            // (x+2y+z)*cos(a) -> vector(x*cos, 2y*cos(a), z*cos(a))
+            //
 			template <class ArgsTuple>
 			std::vector<TermType> flattenTerms(const ArgsTuple &) const;
 
+            //
+            // layouts apply to named series and describe the realtion of the arguments to the key
+            //
+            //
+            // applies a new layout to the terms of the BaseSeries. LayoutTuple is tuple (number of echonLevel members)
+            // of vectors of pairs (bool, int). 
+            // In BaseSeries we iterate over the the terms of the BaseSeries term container. 
+            // for the cf as well as the key of the term we iterate over the size of the vector in the tuple and create a new
+            // container of this size. The size of the current BasSeries term cf/key container has to be smaller or equal
+            // to the size of the echelonLevel corresponding vector of the LayoutTuple. If the pair in the vector is 
+            // (true,int) int gives an index into the current container and this index will be transfered to
+            // new container at the current index position. Consequentially the int must be samller (it is an index) than the size of the current 
+            // BaseSeries container. 
+            //
 			template <class LayoutTuple, class ArgsTuple>
 			void applyLayoutToTerms(LayoutTuple const &, ArgsTuple const &, Derived &) const;
 
+            //
+            // test if we can trim some arguments from the argsTuple and terms. They can be trimmed if 
+            // return the result as trimFlags(tuple of vector<bool>, false: trim i.e. the symbol in the key of the term is not used
+            // The trimFlags vector has to be allocated and sized before calling trimTestTerms and has to agree with the sizes of the
+            // key(s) used for the terms.
+            // Used in cf_series and named_series.
+            //
 			template <class TrimFlags>
 			void trimTestTerms(TrimFlags &) const;
 
+            //
+            // trim the keys according to the trimFlags from the terms and return the updated series in retval
+            // The change of the argumentsTuple was done earlier before the use of trimTerms and the return series is setup
+            // accordingly.
+            //
 			template <class TrimFlags, class ArgsTuple>
 			void trimTerms(TrimFlags const &, ArgsTuple const &, Derived &) const;
 
+            //
+            // To be clarified
+            //
 			template <class RetSeries, class SubFunctor, class PosTuple, class SubCaches, class ArgsTuple>
 			RetSeries baseSub(const PosTuple &, SubCaches &, const ArgsTuple &) const;
             //@}
 
 			/** @name Terms accessors. */
 			//@{
+            // 
+            // find specified term in the BaseSeries term container
+            //
             const_iterator findTerm(const TermType &) const; // definition: base_series_manip.h
-			const_iterator begin() const;
+			
+            //
+            // first element of container
+            //
+            const_iterator begin() const;
+
+            //
+            // end of container 
+            //
 			const_iterator end() const;
 			//@}
 
@@ -239,9 +295,16 @@ namespace piranha
 			//@}
 			/** @name Base maths. */
 			//@{
+            //
+            // calculate the norm of the series
+            //
 			template <class ArgsTuple>
 			double baseNorm(const ArgsTuple &) const;
 
+            //
+            // evaluate series at value (a numeric value)
+            // result (EvalType) can be double or complex<double> depending on series
+            //
 			template <class ArgsTuple>
 			EvalType baseEval(const double, const ArgsTuple &) const;
 
@@ -251,6 +314,9 @@ namespace piranha
 			template <class T, class ArgsTuple>
 			Derived &baseSubtract(const T &, const ArgsTuple &);
 
+            //
+            // requires series_multiplication to be usefull
+            //
 			template <class T, class ArgsTuple>
 			Derived &baseMultBy(const T &, const ArgsTuple &);
 
@@ -332,7 +398,10 @@ namespace piranha
 			template <bool, class Derived2, class ArgsTuple>
 			Derived &mergeTerms(const Derived2 &, const ArgsTuple &);
 
-			template <class T>
+			//
+            // compare series on base level. T should be a BaseSeries or numerical
+            //
+            template <class T>
 			bool genericSeriesComparison(const T &) const;
 
 			template <class Number>

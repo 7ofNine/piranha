@@ -167,7 +167,7 @@ namespace std
 	template <>
 	class complex<piranha::double_cf>:
 	    public piranha::NumericalContainer<complex<double>, complex<piranha::double_cf> >, 	
-               piranha::NumericalContainerComplexToolbox<piranha::double_cf>
+        public piranha::NumericalContainerComplexToolbox<piranha::double_cf>  
 	{
 			typedef piranha::NumericalContainer<complex<double>, complex<piranha::double_cf> > ancestor;
 			typedef piranha::NumericalContainerComplexToolbox<piranha::double_cf> complex_toolbox;

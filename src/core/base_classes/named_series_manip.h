@@ -172,6 +172,8 @@ namespace piranha
     // the result is a modified argsTuple in *this that is the a sequenced union from the
     // *this and series2. The sequence of the resulting arguments is different from the sequences of the incoming arguments.
     // Also the result is dependent on which series is first, i.e. the result is non commutative
+    // Merging with oneself is not allowed on this level. should we fail it?? This would be programming error
+    //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class Derived2>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeArgs(Derived2 const &series2)
@@ -183,9 +185,9 @@ namespace piranha
 		}
 
         // the same symbols have to be in the same location, if not they are not compatible
-		if (!isArgsCompatible(series2))  // if they are compatible i.e. argsTuple2 are all contained in argsTuple1. 
+		if (!isArgsCompatible(series2))  // if they are not compatible i.e. argsTuple2 symbols are not all contained in argsTuple of this series. 
 		{
-			mergeIncompatibleArgs(series2);        // create union. Beware the sequence of symbols gets changed
+			mergeIncompatibleArgs(series2); // create union of the symbols. Beware the sequence of symbols gets changed, not just appended.
 		}
 	}
 
@@ -358,7 +360,7 @@ namespace piranha
 
     //
     // Layout: are tuples with respect to the exponential and trigonometric keys as they are described by the argsTuple members of the series.
-    // The elements of the tuple are vectors of pairs of (bool, int).
+    // The elements of the layout tuple are vectors of pairs of (bool, int).
     // The layout is determined by starting in series2. If the symbol is present in series2 but not in series1 the
     // bool flag is set to false. The index int is not used (typically 0). The index of the pair in the vector determines which index into the 
     // argumentsTuple Psym vector of series 2 it corresponds to (this could be changed to make it homogenous, see below)
@@ -379,7 +381,7 @@ namespace piranha
 	template <class Derived2>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeIncompatibleArgs(Derived2 const &series2)
 	{
-		// Build an empty retval and assign it the same arguments as this.
+		// Build an empty retval and assign to it the same arguments as this.
 		Derived retval;
 		retval.argumentsTuple = argumentsTuple;
 
@@ -484,22 +486,22 @@ namespace piranha
             VectorPsym newSymbols;
 			for (std::size_t i = 0; i < size; ++i) 
 			{
-				if (trimFlags.get_head()[i]) 
+				if (trimFlags.get_head()[i]) // if false we do't push i.e. argument is removed.
 				{
 					newSymbols.push_back(argsTuple.get_head()[i]);
 				}
 			}
 
-			newSymbols.swap(argsTuple.get_head()); // exchange the old arguments with the new arguments (vector.swap())
+			newSymbols.swap(argsTuple.get_head()); // replace the old arguments with the new arguments (vector.swap()).
 
-            // recurse to the next argumentsTuple element
+            // recurse to the next argumentsTuple element, i.e. key in the echelon level
 			TrimArguments<typename TrimFlags::tail_type, typename ArgsTuple::tail_type>::run(trimFlags.get_tail(), argsTuple.get_tail());
 		}
 	};
 
 
     //
-    // terminate recursion for argument trimming
+    // terminate recursion for argument trimming at end of argumentsTuple
     //
 	template <>
 	class TrimArguments<boost::tuples::null_type, boost::tuples::null_type> 
@@ -517,21 +519,21 @@ namespace piranha
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::trim()
 	{
-		typedef typename NTuple<std::vector<bool>, Derived::echelonLevel + 1>::Type TrimFlagsType;  //TODO: vector<char> ? shouldn't we use vectot<bool>?
+		typedef typename NTuple<std::vector<bool>, Derived::echelonLevel + 1>::Type TrimFlagsType; 
 		TrimFlagsType trimFlags;
 
 		TrimFlagsInit<TrimFlagsType, ArgsTupleType>::run(trimFlags, argumentsTuple);
 		
-        derivedConstCast->trimTestTerms(trimFlags);
+        derivedConstCast->trimTestTerms(trimFlags); // check if arguments can be trimmed
 
 		if (trimFlagsProceed(trimFlags))   // something to trim
 		{
 			// First let's do the arguments.
-			TrimArguments<TrimFlagsType, ArgsTupleType>::run(trimFlags, argumentsTuple);
-			// Let's proceed to the terms now.
-			Derived tmpSeries;
-			derivedCast->trimTerms(trimFlags, argumentsTuple, tmpSeries);
-			derivedCast->baseSwap(tmpSeries);   // exchange trimmed contents with *this. i.e. update
+			TrimArguments<TrimFlagsType, ArgsTupleType>::run(trimFlags, argumentsTuple); // this changes the arguments tuple of this series
+			// Let's proceed to the terms now.                                           // this series goes temporarily into an inconsistent   
+			Derived tmpSeries;                                                           // state until baseSwap
+			derivedCast->trimTerms(trimFlags, argumentsTuple, tmpSeries);                // trimTerms is in BaseSeries 
+			derivedCast->baseSwap(tmpSeries);   // exchange trimmed contents (== tmpSeries) with *this. i.e. update, argumentsTuple is already done
 		}
 	}
 
@@ -572,6 +574,10 @@ namespace piranha
 	template <class SubstitutionSeries>
 	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::substitute(std::string const &name, SubstitutionSeries const &series) const
 	{
+     // How to test that "name" is actually present in ArgsTuple and we can substitute it?? We already had that problem that substitution didn't fail
+        typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type    PositionTuple;
+        PositionTuple const testPositionTuple = psyms2pos(VectorPsym(1, Psym(name)), argumentsTuple);
+        
 		typedef typename Derived::TermType::CfType::
 			template SubstitutionCacheSelector<SubstitutionSeries, typename Derived::TermType::KeyType::
 			template SubstitutionCacheSelector<SubstitutionSeries, boost::tuples::null_type, ArgsTupleType>::Type, ArgsTupleType>::Type    SubstitutionCaches;
@@ -586,7 +592,7 @@ namespace piranha
 		Derived original(*derivedConstCast);
 
 		SubstitutionSeries substitutionCopy(series);
-		original.mergeArgs(substitutionCopy);
+		original.mergeArgs(substitutionCopy); // we already merge arguments but we don't know yet if argument with "name" actually exists.
         substitutionCopy.mergeArgs(original);
 
 		// Init substitution caches using s_copy and this_copy.m_arguments.

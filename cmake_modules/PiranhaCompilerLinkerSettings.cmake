@@ -23,9 +23,9 @@ SET(PIRANHA_EXTRA_LINK_FLAGS "")
 IF(MSVC)
         ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB) # don't include boost library versions as #pragma
         ADD_DEFINITIONS(-DNOMINMAX) # get rid of the min/mas macro MS defines
-        ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
-        ADD_DEFINITIONS(-DWIN32_LEAN_AND_MEAN)  # minimal windows
-		ADD_COMPILE_OPTIONS( /std:c++14)
+        ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS) # temporary??
+        ADD_DEFINITIONS(-DWIN32_LEAN_AND_MEAN)  # minimal windows . We probably can cut that down even more
+#		ADD_COMPILE_OPTIONS( /std:c++14)
 ENDIF()
 
 

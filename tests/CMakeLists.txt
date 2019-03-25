@@ -2,7 +2,8 @@ SET(CMAKE_SKIP_BUILD_RPATH TRUE)
 SET(PIRANHA_TESTS_DIRECTORY ${CMAKE_HOME_DIRECTORY}/tests)
 ADD_COMPILE_OPTIONS(/bigobj)
 ADD_DEFINITIONS(-D_PIRANHA_DLL_IMPORT_API) # we import piranha.dll
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR} ${PIRANHA_PYTHON_INCLUDE_DIR})
+#MESSAGE(STATUS, "Pyranha includes :  ${PIRANHA_PYTHON_INCLUDE_DIR}")
 list(APPEND testincludePath "${CMAKE_HOME_DIRECTORY}/src" "${CMAKE_HOME_DIRECTORY}/src/core")
 #
 #
@@ -153,4 +154,4 @@ ADD_TEST(test_sf_01 test_sf_01)
 
 #ADD_TEST(test_dfs2 test_dfs2 )
 
-set_tests_properties(test_celmec PROPERTIES ENVIRONMENT "PATH=D:\\Dev\\mpir\\dll\\x64\\Release;$ENV{PATH}") # temp just for testing generation
+set_tests_properties(test_celmec PROPERTIES ENVIRONMENT MYVAR=2) # temp just for testing generation
