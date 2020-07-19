@@ -119,6 +119,7 @@ CREATE_BOOST_TEST(test_PoissonSeries)
 CREATE_BOOST_TEST(test_qps_series)
 CREATE_BOOST_TEST(test_numericalContainer)
 CREATE_BOOST_TEST(test_doubleCf)
+CREATE_BOOST_TEST(test_cf_series)
 # and several more we don't know yet. How to test the specific instantiation qps, dps etc.
 
 

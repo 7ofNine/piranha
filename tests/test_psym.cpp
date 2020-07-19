@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE Psym Test
 #include "boost/test/included/unit_test.hpp"
-#include "boost/test/output_test_stream.hpp"
+#include "boost/test/tools/output_test_stream.hpp"
 #include <boost/lexical_cast.hpp>
 #include <boost/tuple/tuple.hpp>
 
@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE(setter_getter_test)
 
 	// set new order
 	symbol1.setOrder(testOrder);
-	BOOST_TEST(symbol1.order() = testOrder);
+	BOOST_TEST(symbol1.order() == testOrder);
 
 	// test time evaluation polynomial
 	// set new time evaluation vector via constructor

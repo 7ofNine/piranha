@@ -194,14 +194,18 @@ derivative works thereof, in binary and source code form.
         &construct,
         boost::python::type_id<ContainerType>());
     }
-
+#if PY_MAJOR_VERSION >= 3
+#define PYRANHA_PYStringCheck PyUnicode_Check
+#else
+#define PYRANHA_PYStringCheck PyString_Check
+#endif
     static void* convertible(PyObject* obj_ptr)
     {
       if (!(   PyList_Check(obj_ptr)
             || PyTuple_Check(obj_ptr)
             || PyIter_Check(obj_ptr)
             || PyRange_Check(obj_ptr)
-            || (   !PyString_Check(obj_ptr)
+            || (   !PYRANHA_PYStringCheck(obj_ptr)
                 && !PyUnicode_Check(obj_ptr)
                 && (   obj_ptr->ob_type == 0
                     || obj_ptr->ob_type->ob_type == 0

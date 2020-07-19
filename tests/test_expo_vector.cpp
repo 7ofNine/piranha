@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE Expo vector Test
 #include "boost/test/included/unit_test.hpp"
-#include "boost/test/output_test_stream.hpp"
+#include "boost/test/tools/output_test_stream.hpp"
 
 #include "piranha.h"
 

@@ -53,7 +53,8 @@ INCLUDE(PiranhaCPackSetup)
 OPTION(BUILD_ENABLE_ASSERTS "Enable asserts in code, for debugging." ON)
 
 OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_WITH_PYTHON3 "Build using Python3(default) or Python2." ON "BUILD_PYRANHA" ON)
+#PYTHON 2 no longer supported
+#CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_WITH_PYTHON3 "Build using Python3(default) or Python2." OFF "BUILD_PYRANHA" ON)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DFS "Build double coefficient Fourier series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DPOLY "Build double coefficient multivariate polynomial manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_ZPOLY "Build arbitrary-size integer coefficient multivariate polynomial manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)

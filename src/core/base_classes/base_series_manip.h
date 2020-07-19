@@ -81,6 +81,13 @@ namespace piranha
 	 * to the series.
 	 *
 	 * This function performs some checks and then calls llInsert.
+	 *
+	 * CanonicalCheck: true: a canonicality check is done for the key of term. For an exponential key this means no effect.
+	 *                       For a trigonometric key this means that the first (?) argument in the key is not negative, which
+	 *						 might mean changing the signs of the coefficent and keys (sinus) of the term
+	 * Sign: true : add the term , for an insert just add the positive value of the term
+	 *	     false: subtract the term. For a new insert that means insert the negative value of the term.
+	 *       Warning: this is somewhat confusing!!
 	 */
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool CanonicalCheck, bool Sign, class Term2, class ArgsTuple>
@@ -200,7 +207,8 @@ namespace piranha
 				it->cf.subtract(term.cf, argsTuple);
 			}
 
-			// Check if the new coefficient can be ignored.
+			// Check if the new resulting coefficient can be ignored. Beware there would have been an addition or subtraction.
+			// in case of new insertion the term would already have been dumped at the beginning.
 			if (it->cf.isIgnorable(argsTuple)) 
 			{
 				eraseTerm(it);
@@ -222,8 +230,12 @@ namespace piranha
 
 		PIRANHA_ASSERT(res.second); // check that insert worked
 
-        //if sign invert the coefficient
-		if (!Sign) 
+        //if not sign invert the coefficient
+		//if Sign is true than it is like adding an element
+		//if Sign is fale we have a subtraction. 
+		// Inserting a newTerm should normaly handled like adding a new term.
+		// sometimes we might handle it as inserting the negative value.
+		if (!Sign) // was that ever the other way round?? what is actually intended ??
 		{
 			res.first->cf.invertSign(argsTuple);
 		}

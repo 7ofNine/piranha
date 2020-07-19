@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE vector_key Test
 #include "boost/test/included/unit_test.hpp"
-#include "boost/test/output_test_stream.hpp"
+#include "boost/test/tools/output_test_stream.hpp"
 
 
 #include "piranha.h"
@@ -215,7 +215,7 @@ BOOST_AUTO_TEST_CASE(applyLayout)
 	LayoutElement nullPair = std::make_pair(false, 3);
 	Layout layout;
 	layoutTuple.get<0>() = Layout();
-	// layouTuple doesn't have nough elements
+	// layouTuple doesn't have enough elements
 	BOOST_CHECK_THROW(temp.applyLayout(layoutTuple, polyOnlyArgs), assertion_error);
 	
 	temp = tempSaved;

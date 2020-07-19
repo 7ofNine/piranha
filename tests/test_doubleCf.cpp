@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE Double coefficients
 #include "boost/test/included/unit_test.hpp"
-#include "boost/test/output_test_stream.hpp"
+#include "boost/test/tools/output_test_stream.hpp"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // contains also all test cases for the base class NumericalContainer
@@ -529,14 +529,14 @@ BOOST_AUTO_TEST_CASE(multBy_test)
     boost::tuple<VectorPsym> emptyTuple(noSymbol);
     double_cf value00(2.0, emptyTuple);
 
-    value00.multBy(-3.0, emptyTuple);
+    value00.multBy(-3.0, emptyTuple);  // select primitive type
 
     BOOST_TEST(value00.get_value() == -6.0);
 
     double_cf value01(2.0, emptyTuple);
     double_cf value02(-2.0, emptyTuple);
 
-    value00 = value01.multBy(value02, emptyTuple);
+    value00 = value01.multBy(value02, emptyTuple); // select numerical container type
     BOOST_TEST(value01.get_value() == -4.0);
     BOOST_TEST(value00.get_value() == -4.0);
 }

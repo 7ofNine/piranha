@@ -142,7 +142,7 @@ namespace piranha
         for (const_iterator it = begin(); it != itf; ++it)
         {
 			const_iterator itOther(other.findTerm(*it));
-			if (itOther == itfOther || !(itOther->cf == it->cf)) // either no found or coefficients are different
+			if (itOther == itfOther || !(itOther->cf == it->cf)) // either not found or coefficients are different
             {
 				return false;
 			}

@@ -212,7 +212,7 @@ namespace piranha
 
             //
             // not sure what this is good for. requires series_multiplication and truncator
-            // I don't think it is used anywhere. except to define spli in cf_series and named_series
+            // I don't think it is used anywhere. except to define split in cf_series and named_series
             // 
 			template <class Series, class ArgsTuple>
 			void baseSplit(std::vector<std::vector<Series> > &, const int n, const ArgsTuple &) const;
@@ -228,7 +228,7 @@ namespace piranha
 			std::vector<TermType> flattenTerms(const ArgsTuple &) const;
 
             //
-            // layouts apply to named series and describe the realtion of the arguments to the key
+            // layouts apply to named series and describe the relation of the arguments to the key
             //
             //
             // applies a new layout to the terms of the BaseSeries. LayoutTuple is tuple (number of echonLevel members)

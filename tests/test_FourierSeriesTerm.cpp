@@ -1,11 +1,11 @@
 #define BOOST_TEST_MODULE FourierSeriesTerm Test
 #include "boost/test/included/unit_test.hpp"
-//#include "boost/test/output_test_stream.hpp"
+//#include "boost/test/tools/output_test_stream.hpp"
 
 
 //
 // Test for FourierSeriesTerms. BaseTerm is tested with Monomial
-// Do we need addional tests fro BaseSeries because we are using VectorKey insatead of ExpoKey??
+// Do we need addional tests for BaseSeries because we are using VectorKey insatead of ExpoKey??
 // 
 
 #include "piranha.h"
