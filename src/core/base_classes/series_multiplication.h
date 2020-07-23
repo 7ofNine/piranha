@@ -37,6 +37,7 @@
 // i.e. why is it in a seperate class? Because it requires a Truncator? which is not necessary for a BaseSeries but BaseSeries wouldn't work without it. 
 // At least the NullTruncator is required. Set it up as default truncator??
 //
+// One also has to provide a Multiplier otherwise it doesn't know how to perform a mutliplcation/which algorithm to use
 namespace piranha
 {
 	template <class Derived, class Multiplier, class Truncator>

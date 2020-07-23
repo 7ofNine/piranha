@@ -30,7 +30,7 @@ using namespace piranha;
 int main()
 {
 //    settings::set_max_pretty_print_size(10000);
-//    settings::setMultiplicationAlgorithm(settings::ALGORITHM_VECTOR_CODED);
+    settings::setMultiplicationAlgorithm(settings::ALGORITHM_PLAIN);
 	// Expansion to order 401 of r/a in terms of e and M.
 	int retval = 0;
     // todo: remove just fro some testing

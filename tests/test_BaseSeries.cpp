@@ -18,7 +18,13 @@ using boost::test_tools::output_test_stream;
 // For this purpose we create an intermediate class, which is practically a "polynomial" without having any real polynomial features
 // but to be able to test the primitive functions without all the overhead comming from a "real" polynomial.
 // This is similar to what we do for VectorKey tests.
-
+//
+// For baseMultBySeries properly to work one needs to inherit from series_multiplication. Really bad structure
+// this is e.g. needed for basePow otherwise we can't even multiply a base series with itself.
+// series_multiplication needs a Multiplier and a Truncator.
+// Multipliers are BaseSeriesMultiplier
+//                 polynomial_multiplier       
+//                 poisson_series_multiplier 
 
 // argTuples are introduced using Psym but their connection to names is not actually being used! That is bussines of named series
 // Does that smell like bad design??
@@ -26,7 +32,7 @@ using boost::test_tools::output_test_stream;
 namespace {
 
     template< class Term>
-    class TSeries : public BaseSeries < Term, '!', std::allocator<char>, TSeries<Term> > 
+    class TSeries : public BaseSeries < Term, '!', std::allocator<char>, TSeries<Term> >
     {
     public: 
         TSeries() = default;
@@ -1022,7 +1028,10 @@ BOOST_AUTO_TEST_CASE(BaseSeriesFromKeyTest)
  //Derived baseInvert(const ArgsTuple&) const;
  BOOST_AUTO_TEST_CASE(baseInvert)
  {
-     BOOST_TEST_FAIL("No test implemented");
+     SSeries bseries01;
+     VectorPsym noSym;
+     boost::tuple<VectorPsym> noArgs(noSym);
+     BOOST_CHECK_THROW(bseries01.baseInvert(noArgs), not_implemented_error);
  }
 
 
@@ -1045,6 +1054,45 @@ BOOST_AUTO_TEST_CASE(BaseSeriesFromKeyTest)
  //Derived naturalPower(const std::size_t, const ArgsTuple&) const;
  BOOST_AUTO_TEST_CASE(naturalPower)
  {
+     //// not testable here. It requires inheritance from series_multiplication
+     //// series-multiplication in return requires Multiplicator and Truncator and so on.
+     //// It seems to be easier to test through the final code if one doesn't want to restructure
+     //// the whole code i.e. rewrite. the multiple inheritance and mutual dependencies kills it.
+
+     //// powers of a series by natural numbers
+     //// powers 1 to 4 have specific implementations
+     //// we need the argsTuple otherwise we can't insert according to the key
+     //Psym p1{ "p1" };
+     //Psym p2{ "p2" };
+     //SSeries bseries01;
+     //SSeries bseries02;
+     //VectorPsym symbols{ p1,p2 };
+     //boost::tuple<VectorPsym> args(symbols);
+     //// we use a series/polynomial with two different elements. This should correspond to binomial expressions
+     //SSeries::TermType::KeyType key01;
+     //SSeries::TermType::KeyType key02;
+     //key01.resize(2);
+     //key02.resize(2);
+     //key01[0] = 1;
+     //key01[1] = 0;
+     //key02[0] = 0;
+     //key02[0] = 1;
+     //SSeries::TermType::CfType value01(1.0, args);
+     //SSeries::TermType::CfType value02(1.0, args);
+     //bseries01.insert(SSeries::TermType(value01, key01), args); // this mimics addition
+     //bseries01.insert(SSeries::TermType(value02, key02), args); //
+     //// power 1
+     //bseries02 = bseries01.naturalPower(1, args);
+
+     //// power 2
+     //bseries02 = bseries01.naturalPower(2, args);
+     //// power 3
+     //bseries02 = bseries01.naturalPower(3, args);
+     //// power 4
+     //bseries02 = bseries01.naturalPower(4, args);
+
+     //// power 10
+     //bseries02 = bseries01.naturalPower(10, args);
      BOOST_TEST_FAIL("No test implemented");
  }
 
