@@ -17,7 +17,7 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # we only support MSVC >=2017 and 64 Bit
 IF(MSVC)
-        set(CMAKE_CXX_STANDARD 14) # 17 still has warnigns and errors
+        set(CMAKE_CXX_STANDARD 17) # 17 still has warnigns and errors
         IF(MSVC_VERSION LESS 1910)
              MESSAGE(STATUS "This version ${MSVC_VERSION} of MSVC is not tested. It may work or not")
         ENDIF()
@@ -54,7 +54,6 @@ OPTION(BUILD_ENABLE_ASSERTS "Enable asserts in code, for debugging." ON)
 
 OPTION(BUILD_PYRANHA "Build Python bindings." OFF)
 #PYTHON 2 no longer supported
-#CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_WITH_PYTHON3 "Build using Python3(default) or Python2." OFF "BUILD_PYRANHA" ON)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DFS "Build double coefficient Fourier series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DPOLY "Build double coefficient multivariate polynomial manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_ZPOLY "Build arbitrary-size integer coefficient multivariate polynomial manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
@@ -73,15 +72,10 @@ OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 
 # control build of load library (dll)
 IF(BUILD_PYRANHA) # ultimately that should always be 3.* . Temporary to be able to switch between old and new
-        IF(BUILD_PYRANHA_WITH_PYTHON3)
-            SET(PYRANHA_PYTHON_BUILD_VERSION 3)
-            SET(PYRANHA_BOOST_PYTHON_TARGET "python37") # depdends on the precise version of python should be set up depdedent on python)
-        else()
-            SET(PYRANHA_PYTHON_BUILD_VERSION 2)
-            SET(PYRANHA_BOOST_PYTHON_TARGET "python27") # depdends on the precise version of python should be set up depdedent on python)
-        endif()
-        INCLUDE(PiranhaPythonSetup) # we need the python includes for piranha.dll ?
-        PIRANHA_PYTHON_SETUP(${PYRANHA_PYTHON_BUILD_VERSION}) 
+    SET(PYRANHA_PYTHON_BUILD_VERSION 3)
+    SET(PYRANHA_BOOST_PYTHON_TARGET "python38") # depdends on the precise version of python should be set up depdedent on python)
+    INCLUDE(PiranhaPythonSetup) # we need the python includes for piranha.dll ?
+    PIRANHA_PYTHON_SETUP(${PYRANHA_PYTHON_BUILD_VERSION}) 
 ENDIF()
 
 # Set default build type to "Release", change it in the GUI if you need to build with debug.
@@ -94,14 +88,24 @@ SET(PIRANHA_DEFINITIONS "")
 
 
 #Cache size.
-SET(CACHE_SIZE 512 CACHE STRING "Cache size in kilobytes.")
+SET(CACHE_SIZE 1024 CACHE STRING "Cache size in kilobytes.")
 SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_PIRANHA_CACHE_SIZE=${CACHE_SIZE})
 MARK_AS_ADVANCED(CACHE_SIZE)
+
+IF(BUILD_ENABLE_ASSERTS)
+        SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_PIRANHA_ENABLE_ASSERTS)
+ENDIF()
+
+ADD_DEFINITIONS(${PIRANHA_DEFINITIONS})
+
+
+
+
 
 MESSAGE(STATUS "Source directory: ${CMAKE_SOURCE_DIR}")
 
 # Platform switches.
-#SET(PIRANHA_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+SET(PIRANHA_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 
 
 # Find MPIR, the Windows incarnation of GMP/MPFR. The C and CXX are combined into the same dll and use the same header
@@ -113,14 +117,9 @@ SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${MPIR_LIBRARIES})
 INCLUDE_DIRECTORIES(${MPIR_INCLUDE_DIR}) # MPIR is probably needed evwerywhere
 
 # Common stuff
-SET(THEORIES_INSTALL_PATH "theories")
+SET(THEORIES_INSTALL_PATH "theories")   # relative within destination see below
 SET(EXAMPLES_INSTALL_PATH "examples")
 
-IF(BUILD_ENABLE_ASSERTS)
-        SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_PIRANHA_ENABLE_ASSERTS)
-ENDIF()
-
-ADD_DEFINITIONS(${PIRANHA_DEFINITIONS})
 
 # Add libraries DLL
 ADD_SUBDIRECTORY(src)
@@ -131,11 +130,11 @@ IF(BUILD_TESTS)
 ENDIF(BUILD_TESTS)
 
 # should be set from outside
-SET(MY_PIRANHA_INSTALL "D:\\temp for tests\\${CMAKE_PROJECT_NAME}")
+SET(MY_PIRANHA_INSTALL "D:\\temp for tests\\${CMAKE_PROJECT_NAME}test")  # temporarily hardcoded for testing purposes
 # Installation directory
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+#if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
         SET(CMAKE_INSTALL_PREFIX ${MY_PIRANHA_INSTALL} CACHE PATH "Path to the PYRANHA installation" FORCE)
-endif()
+#endif()
 
 # Pyranha: piranha's python bindings
 IF(BUILD_PYRANHA)
@@ -144,8 +143,8 @@ IF(BUILD_PYRANHA)
 	
 	# installation of PYRANHA
 	SET(WIN_PKG_ROOT ${CMAKE_SOURCE_DIR}/WinPackage)
-	#CONFIGURE_FILE(${WIN_PKG_ROOT}/template.console.xml ${WIN_PKG_ROOT}/generated.console.xml)  #TODO: one day
-	
+#	CONFIGURE_FILE(${WIN_PKG_ROOT}/template.console.xml ${WIN_PKG_ROOT}/generated.console.xml)  #TODO: one day we have to change to consoleZ
+	MESSAGE (STATUS "winpackage: ${WIN_PKG_ROOT}") 
     SET(WIN_PKG_FILES
 						${WIN_PKG_ROOT}/Console.exe
 						${WIN_PKG_ROOT}/ConsoleHook.dll
@@ -155,10 +154,10 @@ IF(BUILD_PYRANHA)
             #            ${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
                         ${CMAKE_SOURCE_DIR}/extras/matplotlibrc
 		)
-		
+	MESSAGE (STATUS "${WIN_PKG_ROOT}/console.xml")	
 	SET(WIN_PKG_FILES ${WIN_PKG_FILES} ${MPIR_INCLUDE_DIR}/mpir.dll) # header in library for mpir are in the same folder
 		
-    INSTALL(FILES ${WIN_PKG_FILES} DESTINATION .)
+    INSTALL(FILES ${WIN_PKG_FILES} DESTINATION .)  # DESTINATION is relative to CMAKE_INSTALL_PREFIX
 	
 	INSTALL(FILES  ${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py  DESTINATION .ipython/profile_pyranha/startup) # install pyranha startup for ipython
 
@@ -222,39 +221,40 @@ IF(BUILD_PYRANHA)
             #$$         DESTINATION npp/plugins/APIs
             #$$     )
             #$$
-            #$$     INSTALL(FILES
-            #$$         ${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
-            #$$#            ${CMAKE_SOURCE_DIR}/extras/matplotlibrc
-            #$$         DESTINATION .ipython/profile_pyranha/startup
-            #$$     )
-            #$$
-            #$$     INSTALL(FILES
-            #$$         ${CMAKE_SOURCE_DIR}/extras/matplotlibrc
-            #$$         DESTINATION .
-            #$$     )
-            #$$
-            #$$
-            #$$ ENDIF(WIN32)
+                 INSTALL(FILES
+            #$$         ${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py  # we already did that. Whyis it here again
+                        ${CMAKE_SOURCE_DIR}/extras/matplotlibrc
+                        DESTINATION .ipython/profile_pyranha/startup
+                 )
+            
+                 INSTALL(FILES
+                     ${CMAKE_SOURCE_DIR}/extras/matplotlibrc   # why is it installed in two different locations???? something wrong with configuration
+                     DESTINATION .
+                 )
+            
+            
+            ## ENDIF(WIN32) #delete?
 ENDIF(BUILD_PYRANHA)
 
-            #$$# Install theories of motion and examples.
-            #$$SET(THEORIES_FILES
-            #$$ theories_of_motion/elp1.dps
-            #$$ theories_of_motion/elp2.dfs
-            #$$ theories_of_motion/elp3.dfs
-            #$$)
-            #$$
-            #$$SET(EXAMPLES_FILES
-            #$$ pyranha/examples/alt_besselJ.py
-            #$$)
-            #$$
-            #$$INSTALL(FILES ${THEORIES_FILES} DESTINATION "${THEORIES_INSTALL_PATH}")
-            #$$INSTALL(FILES ${EXAMPLES_FILES} DESTINATION "${EXAMPLES_INSTALL_PATH}")
-            #$$IF(WIN32)
-            #$$ CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/COPYING" "${CMAKE_SOURCE_DIR}/windows_package/license.txt")
-            #$$ CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/Changelog" "${CMAKE_SOURCE_DIR}/windows_package/changelog.txt")
-            #$$ INSTALL(FILES "${CMAKE_SOURCE_DIR}/windows_package/license.txt" "${CMAKE_SOURCE_DIR}/windows_package/changelog.txt" DESTINATION .)
-            #$$ENDIF(WIN32)
+            # Install theories of motion and examples.
+            SET(THEORIES_FILES
+                theories_of_motion/elp1.dps   # should be relative to source directory
+                theories_of_motion/elp2.dfs
+                theories_of_motion/elp3.dfs
+            )
+            
+            SET(EXAMPLES_FILES
+                pyranha/examples/alt_besselJ.py
+            )
+            
+            INSTALL(FILES ${THEORIES_FILES} DESTINATION "${THEORIES_INSTALL_PATH}")
+            INSTALL(FILES ${EXAMPLES_FILES} DESTINATION "${EXAMPLES_INSTALL_PATH}")
+            
+            
+            CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/COPYING" "${CMAKE_SOURCE_DIR}/windows_package/license.txt")
+            CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/Changelog" "${CMAKE_SOURCE_DIR}/windows_package/changelog.txt")
+ #           INSTALL(FILES "${CMAKE_SOURCE_DIR}/windows_package/license.txt" "${CMAKE_SOURCE_DIR}/windows_package/changelog.txt" DESTINATION .) # change to winPackae
+            
             #$$
             #$$INCLUDE(CPack)
             #$$

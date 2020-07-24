@@ -37,7 +37,7 @@ else()
 	MESSAGE(FATAL "Couldn't find Boost libraries")
 endif()
 
-
+ADD_COMPILE_OPTIONS(/wd4996)   #suppress stl in interface warning
 # define target piranha.dll
 ADD_LIBRARY(piranha SHARED ${SRC_LIST} ${SRC_LIST_HEADERS}) # define target piranha.dll
 
@@ -78,17 +78,23 @@ get_filename_component(BASE_NAME_THREAD ${Boost_THREAD_LIBRARY_RELEASE} NAME_WE)
 					  )	
 endif()
 
-	
+if(BUILD_PYRANHA)
+MESSAGE (STATUS "Boost libraries ${Boost_THREAD_LIBRARY_RELEASE},${Boost_PYTHON38_LIBRARY_RELEASE}")
+        get_filename_component(BASE_NAME_THREAD ${Boost_THREAD_LIBRARY_RELEASE} NAME_WE)
+        get_filename_component(BASE_NAME_PYTHON ${Boost_PYTHON38_LIBRARY_RELEASE} NAME_WE)
+#        get_filename_component(BASE_NAME_SYSTEM ${Boost_SYSTEM_LIBRARY_RELEASE} NAME_WE)
 INSTALL(TARGETS piranha 
 				RUNTIME DESTINATION . 
-                LIBRARY DESTINATION . 
+#                LIBRARY DESTINATION . 
 		)
 SET(PYRANA_BOOST_INSTALL_FILES "${Boost_LIBRARY_DIR_RELEASE}/${BASE_NAME_THREAD}.dll" "${Boost_LIBRARY_DIR_RELEASE}/${BASE_NAME_PYTHON}.dll" )
 INSTALL(FILES  ${PYRANA_BOOST_INSTALL_FILES} DESTINATION . )
+endif()
       
 # Target to get the header files into MSVC		
 SET(INCS
                 piranha.h
+                core/utils.h
                 core/utils.h
                 core/type_traits.h
                 core/stats.h

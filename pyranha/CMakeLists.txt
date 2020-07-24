@@ -3,7 +3,7 @@ MESSAGE (STATUS " pyranha install path ${PYRANHA_INSTALL_PATH}")
 ADD_COMPILE_OPTIONS(/bigobj)
 ADD_COMPILE_OPTIONS(/wd4244) # Boost python shows a lot of size warnings with 64 bit compilation. Boost should fix that
 ADD_DEFINITIONS(-D_PIRANHA_DLL_IMPORT_API)  # here we import piranha.dll
-#INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})  # everything under here needs the python declarations
+INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})  # everything under here needs the python declarations
 
 
 MACRO(PYTHON_CPPMODULE arg1)
@@ -16,7 +16,7 @@ MACRO(PYTHON_CPPMODULE arg1)
 #	MESSAGE(STATUS "Install files: ${arg1}")
 	INSTALL(TARGETS ${arg1}
 		RUNTIME DESTINATION ${PYRANHA_INSTALL_PATH}/${DIR_ARG}
-		LIBRARY DESTINATION ${PYRANHA_INSTALL_PATH}/${DIR_ARG}
+#		LIBRARY DESTINATION ${PYRANHA_INSTALL_PATH}/${DIR_ARG}
 	)
 	IF(WIN32 AND NOT MINGW)
 		INSTALL(FILES ${WIN_MSVC_DLL_FILES} DESTINATION ${PYRANHA_INSTALL_PATH}/${DIR_ARG}/Microsoft.VC90.CRT)

@@ -1,8 +1,8 @@
-#ifndef SCITBX_BOOST_PYTHON_CONTAINER_CONVERSIONS_H
-#define SCITBX_BOOST_PYTHON_CONTAINER_CONVERSIONS_H
+#ifndef BOOST_PYTHON_CONTAINER_CONVERSIONS_H
+#define BOOST_PYTHON_CONTAINER_CONVERSIONS_H
 
 // Slightly adapted from:
-// https://github.com/cctbx/cctbx_project/tree/master/scitbx/boost_python/container_conversions.h
+// http://cctbx.svn.sourceforge.net/viewvc/cctbx/trunk/scitbx/boost_python/container_conversions.h
 // Original Copyright notice follows.
 
 /*
@@ -52,16 +52,12 @@ other computer software, distribute, and sublicense such enhancements or
 derivative works thereof, in binary and source code form.
 */
 
+
 #include <boost/python/list.hpp>
 #include <boost/python/tuple.hpp>
 #include <boost/python/extract.hpp>
 #include <boost/python/to_python_converter.hpp>
-
-#if PY_MAJOR_VERSION >= 3
-#define IS_PY3K
-#endif
-
-//namespace scitbx { namespace boost_python { namespace container_conversions {
+#include <cstddef>
 
   template <typename ContainerType>
   struct to_tuple
@@ -198,34 +194,25 @@ derivative works thereof, in binary and source code form.
         &construct,
         boost::python::type_id<ContainerType>());
     }
-
+#if PY_MAJOR_VERSION >= 3
+#define PYRANHA_PYStringCheck PyUnicode_Check
+#else
+#define PYRANHA_PYStringCheck PyString_Check
+#endif
     static void* convertible(PyObject* obj_ptr)
     {
       if (!(   PyList_Check(obj_ptr)
             || PyTuple_Check(obj_ptr)
             || PyIter_Check(obj_ptr)
             || PyRange_Check(obj_ptr)
-#ifdef IS_PY3K
-            || (   !PyBytes_Check(obj_ptr)
-#else
-            || (   !PyString_Check(obj_ptr)
-#endif
+            || (   !PYRANHA_PYStringCheck(obj_ptr)
                 && !PyUnicode_Check(obj_ptr)
-#ifdef IS_PY3K
-                && (   Py_TYPE(obj_ptr) == 0
-                    || Py_TYPE(Py_TYPE(obj_ptr)) == 0
-                    || Py_TYPE(Py_TYPE(obj_ptr))->tp_name == 0
-                    || std::strcmp(
-                         Py_TYPE(Py_TYPE(obj_ptr))->tp_name,
-                         "Boost.Python.class") != 0)
-#else
                 && (   obj_ptr->ob_type == 0
                     || obj_ptr->ob_type->ob_type == 0
                     || obj_ptr->ob_type->ob_type->tp_name == 0
                     || std::strcmp(
                          obj_ptr->ob_type->ob_type->tp_name,
                          "Boost.Python.class") != 0)
-#endif
                 && PyObject_HasAttrString(obj_ptr, "__len__")
                 && PyObject_HasAttrString(obj_ptr, "__getitem__")))) return 0;
       boost::python::handle<> obj_iter(
@@ -235,7 +222,7 @@ derivative works thereof, in binary and source code form.
         return 0;
       }
       if (ConversionPolicy::check_convertibility_per_element()) {
-        int obj_size = PyObject_Length(obj_ptr);
+        auto obj_size = PyObject_Length(obj_ptr);
         if (obj_size < 0) { // must be a measurable sequence
           PyErr_Clear();
           return 0;
@@ -245,7 +232,7 @@ derivative works thereof, in binary and source code form.
         bool is_range = PyRange_Check(obj_ptr);
         std::size_t i=0;
         if (!all_elements_convertible(obj_iter, is_range, i)) return 0;
-        if (!is_range) assert(i == obj_size);
+        if (!is_range) assert(i == (std::size_t)obj_size);
       }
       return obj_ptr;
     }
@@ -364,8 +351,4 @@ derivative works thereof, in binary and source code form.
     }
   };
 
-//}
-//}
-//} // namespace scitbx::boost_python::container_conversions
-
-#endif // SCITBX_BOOST_PYTHON_CONTAINER_CONVERSIONS_H
+#endif

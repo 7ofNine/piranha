@@ -20,11 +20,11 @@
 __all__ = [@MODULE_LIST@]
 __manipulators__ = [@MANIPULATOR_LIST@]
 
-print "Pyranha initializing..."
-print "Available manipulators: ", __manipulators__
-print "Other modules: ", filter(lambda x: x not in __manipulators__,__all__)
+print("Pyranha initializing...")
+print("Available manipulators: ", __manipulators__)
+print("Other modules: ", filter(lambda x: x not in __manipulators__,__all__))
 
 from detail import manipulators
 from Truncators import truncators
 
-print "Pyranha is ready."
+print("Pyranha is ready.")

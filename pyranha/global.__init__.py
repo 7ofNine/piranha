@@ -20,11 +20,11 @@
 __all__ = [ "Core", "Math", "Celmec", "Test", "Truncators", "Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
 __manipulators__ = ["Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
 
-print "Pyranha initializing..."
-print "Available manipulators: ", __manipulators__
-print "Other modules: ", filter(lambda x: x not in __manipulators__,__all__)
+print("Pyranha initializing...")
+print("Available manipulators: ", __manipulators__)
+print("Other modules: ", filter(lambda x: x not in __manipulators__,__all__))
 
 from detail import manipulators
 from Truncators import truncators
 
-print "Pyranha is ready."
+print("Pyranha is ready.")
