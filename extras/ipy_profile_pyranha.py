@@ -26,64 +26,65 @@ ip = get_ipython()
 #ip = IPython.ipapi.get()
 
 def main():
-#	o = ip.options
-#	o.system_verbose = 0
-	import pyranha
-	for i in pyranha.__manipulators__:
-		ip.ex("from pyranha import %s" % i)
-		ip.ex("from pyranha.%s import %s" % (i,i.lower()))
-		# Try importing the complex counterpart.
-		try:
-			ip.ex("from pyranha.%s import %s" % (i,i.lower()+'c'))
-		except:
-			pass
-	for i in filter(lambda x: x not in pyranha.__manipulators__,pyranha.__all__):
-		if i != "Gui" and i != "Test" and i != "Truncators":
-			ip.ex("from pyranha.%s import *" % i)
-	# Import default series type.
-	ip.ex("from pyranha import ds")
-	# Import test module.
-	ip.ex("from pyranha import Test")
-	# Import truncator-handling class.
-	ip.ex("from pyranha import truncators")
-	import_error_msg = """
-		Warning: some of Pyranha's capabilities rely on numpy and matplotlib.
-		Please consider installing these packages:
-		http://numpy.scipy.org
-		http://matplotlib.sf.net"""
-	error_msg = False
-	try:
-		ip.ex("import numpy")
-		print("Numpy was successfully loaded.")
-	except ImportError:
-		if not error_msg: print(import_error_msg)
-		error_msg = True
-	try:
-		ip.ex("import matplotlib")
-		ip.ex("matplotlib.interactive(True)")
-		print("Matplotlib was successfully loaded. Interactive mode has been activated.")
-	except ImportError:
-		if not error_msg: print(import_error_msg)
-		error_msg = True
+#   o = ip.options
+#   o.system_verbose = 0
+    import pyranha
+    for i in pyranha.__manipulators__:
+        ip.ex("from pyranha import %s" % i)
+        ip.ex("from pyranha.%s import %s" % (i,i.lower()))
+        # Try importing the complex counterpart.
+        try:
+            ip.ex("from pyranha.%s import %s" % (i,i.lower()+'c'))
+        except:
+            pass
+    for i in filter(lambda x: x not in pyranha.__manipulators__,pyranha.__all__):
+        if i != "Gui" and i != "Test" and i != "Truncators":
+            ip.ex("from pyranha.%s import *" % i)
+    # Import default series type.
+    ip.ex("from pyranha import ds")
+    # Import test module.
+    ip.ex("from pyranha import Test")
+    # Import truncator-handling class.
+    ip.ex("from pyranha import truncators")
+    import_error_msg = """
+        Warning: some of Pyranha's capabilities rely on numpy and matplotlib.
+        Please consider installing these packages:
+        http://numpy.scipy.org
+        http://matplotlib.sf.net"""
+    error_msg = False
+    try:
+        ip.ex("import numpy")
+        print("Numpy was successfully loaded.")
+    except ImportError:
+        if not error_msg: print(import_error_msg)
+        error_msg = True
+    try:
+        ip.ex("import matplotlib")
+        ip.ex("matplotlib.interactive(True)")
+        print("Matplotlib was successfully loaded. Interactive mode has been activated.")
+    except ImportError:
+        if not error_msg: print(import_error_msg)
+        error_msg = True
 
 def piranha_editor(self, filename, linenum=None):
-	import os
-	# Try to fetch the "EDITOR" environment variable, otherwise use the provided npp editor.
-	try:
-		editor = os.environ["EDITOR"]
-	except KeyError:
-		editor = 'npp\\notepad++.exe'
-	# Marker for at which line to open the file (for existing objects)
-	if linenum is None or editor=='notepad' or editor=='npp\\notepad++.exe':
-		linemark = ''
-	else:
-		linemark = '+%d' % int(linenum)
-	# Enclose in quotes if necessary and legal
-	if ' ' in editor and os.path.isfile(editor) and editor[0] != '"':
-		editor = '"%s"' % editor
-	# Call the actual editor
-	os.system('%s %s %s' % (editor,linemark,filename))
+    import os
+    # Try to fetch the "EDITOR" environment variable, otherwise use the provided npp editor.
+    try:
+        editor = os.environ["EDITOR"]
+    except KeyError:
+        editor = 'npp\\notepad++.exe'
+    # Marker for at which line to open the file (for existing objects)
+    if linenum is None or editor=='notepad' or editor=='npp\\notepad++.exe':
+        linemark = ''
+    else:
+        linemark = '+%d' % int(linenum)
+    # Enclose in quotes if necessary and legal
+    if ' ' in editor and os.path.isfile(editor) and editor[0] != '"':
+        editor = '"%s"' % editor
+    # Call the actual editor
+    os.system('%s %s %s' % (editor,linemark,filename))
 
 ip.set_hook('editor', piranha_editor)
 
-main()
+if(__name__ == "__main__"):
+    main()

@@ -114,11 +114,11 @@ IF(BUILD_TESTS)
 ENDIF(BUILD_TESTS)
 
 # should be set form outside
-SET(MY_PIRANHA_INSTALL "D:\\temp for tests\\${CMAKE_PROJECT_NAME}")
+SET(MY_PIRANHA_INSTALL "D:\\Dev\\Miniconda3\\envs\\pyranha\\tests\\install")
 # Installation directory
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+#if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)  #we do this only to be able to install an oild verion with python 2.7 in an Anaconda environment
         SET(CMAKE_INSTALL_PREFIX ${MY_PIRANHA_INSTALL} CACHE PATH "Path to the PYRANHA installation" FORCE)
-endif()
+#endif()
 
 # Pyranha: piranha's python bindings
 IF(BUILD_PYRANHA)
@@ -135,7 +135,7 @@ IF(BUILD_PYRANHA)
 						${WIN_PKG_ROOT}/FreeImagePlus.dll
             #$$         ${WIN_PKG_ROOT}/console.chm   # TODO: get it from somewhere or build it
 						${WIN_PKG_ROOT}/console.xml
-            #            ${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
+                        ${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py
                         ${CMAKE_SOURCE_DIR}/extras/matplotlibrc
 		)
 		
