@@ -17,7 +17,7 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # we only support MSVC >=2017 and 64 Bit
 IF(MSVC)
-        set(CMAKE_CXX_STANDARD 17) # 17 still has warnigns and errors
+        set(CMAKE_CXX_STANDARD 14) # 17 still has warnigns and errors
         IF(MSVC_VERSION LESS 1910)
              MESSAGE(STATUS "This version ${MSVC_VERSION} of MSVC is not tested. It may work or not")
         ENDIF()
@@ -130,7 +130,7 @@ IF(BUILD_TESTS)
 ENDIF(BUILD_TESTS)
 
 # should be set from outside
-SET(MY_PIRANHA_INSTALL "D:\\temp for tests\\${CMAKE_PROJECT_NAME}test")  # temporarily hardcoded for testing purposes
+SET(MY_PIRANHA_INSTALL "D:\\\\temp for tests\\${CMAKE_PROJECT_NAME}test")  # temporarily hardcoded for testing purposes
 # Installation directory
 #if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
         SET(CMAKE_INSTALL_PREFIX ${MY_PIRANHA_INSTALL} CACHE PATH "Path to the PYRANHA installation" FORCE)
@@ -159,6 +159,7 @@ IF(BUILD_PYRANHA)
 		
     INSTALL(FILES ${WIN_PKG_FILES} DESTINATION .)  # DESTINATION is relative to CMAKE_INSTALL_PREFIX
 	
+    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/extras/template.ipy_profile_pyranha.py ${CMAKE_CURRENT_SOURCE_DIR}/extras/ipy_profile_pyranha.py)
 	INSTALL(FILES  ${CMAKE_SOURCE_DIR}/extras/ipy_profile_pyranha.py  DESTINATION .ipython/profile_pyranha/startup) # install pyranha startup for ipython
 
 	

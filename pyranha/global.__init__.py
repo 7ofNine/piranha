@@ -17,14 +17,26 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#__all__ = [ "Core", "Math", "Celmec", "Test", "Truncators", "Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
+#__manipulators__ = ["Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
+#
+#print("Pyranha initializing...")
+#print("Available manipulators: ", __manipulators__)
+#print("Other modules: ", filter(lambda x: x not in __manipulators__,__all__))
+#
+#from detail import manipulators
+#from Truncators import truncators
+#
+#print("Pyranha is ready.")
+
 __all__ = [ "Core", "Math", "Celmec", "Test", "Truncators", "Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
 __manipulators__ = ["Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
 
 print("Pyranha initializing...")
 print("Available manipulators: ", __manipulators__)
-print("Other modules: ", filter(lambda x: x not in __manipulators__,__all__))
+print("Other modules: ", [x for x in __all__ if x not in __manipulators__])
 
-from detail import manipulators
-from Truncators import truncators
+from .detail import manipulators
+from .Truncators import truncators
 
 print("Pyranha is ready.")

@@ -19,7 +19,7 @@ description on what you could do here.
 
 # Most of your config files and extensions will probably start with this import
 import os;
-os.add_dll_directory("D:\\temp for tests\Piranhatest") # needed since 3.8 to be able to load dependency dll's
+os.add_dll_directory("@MY_PIRANHA_INSTALL@") # needed since 3.8 to be able to load dependency dll's
 
 from IPython import get_ipython
 ip = get_ipython()

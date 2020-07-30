@@ -114,12 +114,12 @@ def suite_math():
 
 from pyranha import manipulators
 
-scalar_exact_series_types = filter(lambda m: hasattr(m,'is_ring_exact') and not hasattr(m,'is_complex'),manipulators)
-complex_exact_series_types = filter(lambda m: hasattr(m,'is_ring_exact') and hasattr(m,'is_complex'),manipulators)
+scalar_exact_series_types = [m for m in manipulators if hasattr(m,'is_ring_exact') and not hasattr(m,'is_complex')]
+complex_exact_series_types = [m for m in manipulators if hasattr(m,'is_ring_exact') and hasattr(m,'is_complex')]
 exact_series_types = scalar_exact_series_types + complex_exact_series_types
 
-scalar_trig_exact_series_types = filter(lambda m: hasattr(m,'is_ring_exact') and hasattr(m,'is_trig_exact') and not hasattr(m,'is_complex'),manipulators)
-complex_trig_exact_series_types = filter(lambda m: hasattr(m,'is_ring_exact') and hasattr(m,'is_trig_exact') and hasattr(m,'is_complex'),manipulators)
+scalar_trig_exact_series_types = [m for m in manipulators if hasattr(m,'is_ring_exact') and hasattr(m,'is_trig_exact') and not hasattr(m,'is_complex')]
+complex_trig_exact_series_types = [m for m in manipulators if hasattr(m,'is_ring_exact') and hasattr(m,'is_trig_exact') and hasattr(m,'is_complex')]
 trig_exact_series_types = scalar_trig_exact_series_types + complex_trig_exact_series_types
 
 class series_sf_test01(unittest.TestCase):
@@ -130,7 +130,7 @@ class series_sf_test01(unittest.TestCase):
 		from pyranha.Core import psym, rational
 		from pyranha.Math import cs_phase
 		from pyranha.Truncators import truncators
-		from detail import check_order
+		from .detail import check_order
 		truncators.unset()
 		for limit in [0,1,2,3,80]:
 			truncators.degree.set(limit)
@@ -139,16 +139,16 @@ class series_sf_test01(unittest.TestCase):
 				self.assertEqual(x.root(1),x)
 				self.assertEqual(x ** rational(1,1),x)
 				for n in range(-10,11):
-					self.assert_(t().besselJ(n) == 1 or t().besselJ(n) == 0)
+					self.assertTrue(t().besselJ(n) == 1 or t().besselJ(n) == 0)
 					self.assertEqual(x.besselJ(n),x.besselJ(-n) * cs_phase(n))
 					for m in range(-10,11):
 						if n >= m:
 							Jnx = x.besselJ(n)
 							Jnxm = x.besselJ_div_m(n,m)
 							if m >= 0:
-								self.assert_(check_order(x ** m * Jnxm, Jnx,limit))
+								self.assertTrue(check_order(x ** m * Jnxm, Jnx,limit))
 							elif m < 0:
-								self.assert_(check_order(Jnxm,Jnx * x ** (-m),limit))
+								self.assertTrue(check_order(Jnxm,Jnx * x ** (-m),limit))
 					if n != 0:
 						self.assertEqual((x ** -n).root(-n),x)
 						self.assertEqual((x ** -n) ** rational(1,-n),x)
@@ -163,7 +163,7 @@ class series_sf_test02(unittest.TestCase):
 		from pyranha.Truncators import truncators
 		# Legendre polynomials.
 		truncators.unset()
-		for t in filter(lambda m: hasattr(m,'is_divint_exact'), exact_series_types):
+		for t in [m for m in exact_series_types if hasattr(m,'is_divint_exact')]:
 			x = t(psym('x'))
 			for n in range(0,50):
 				self.assertEqual((-x).legendrePn(n),cs_phase(n) * x.legendrePn(n))
@@ -194,7 +194,7 @@ class series_sf_test02(unittest.TestCase):
 								x.legendrePn(m) * x.legendrePn(n).partial('x')) / (m * (m + 1) - n * (n + 1)))
 		# Associated Legendre functions.
 		# TODO: Gaunt's formula and odd values of m.
-		for t in filter(lambda m: hasattr(m,'is_divint_exact'), exact_series_types):
+		for t in [m for m in exact_series_types if hasattr(m,'is_divint_exact')]:
 			x = t(psym('x'))
 			for n in range(-20,20):
 				for m in range(-n,n):
@@ -213,7 +213,7 @@ class series_trig_test(unittest.TestCase):
 		from pyranha.Core import psym, integer, rational
 		from pyranha.Math import choose, einpi2, cs_phase
 		from pyranha.Truncators import truncators
-		from detail import check_order
+		from .detail import check_order
 		truncators.unset()
 		for limit in [1,2,3,80]:
 			psym('x')
@@ -243,10 +243,10 @@ class series_trig_test(unittest.TestCase):
 					# Integral formula for Bessel functions.
 					pi, tau = t(psym('pi')), t(psym('tau'))
 					tmp = (tau * n - x * tau.sin()).cos().integrate('tau')
-					self.assert_(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi',
+					self.assertTrue(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi',
 						type(t().complex())(-1 + 0j)),x.besselJ(n),limit))
 					tmp = (tau * -n - x * tau.sin()).cos().integrate('tau')
-					self.assert_(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi',
+					self.assertTrue(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi',
 						type(t().complex())(-1 + 0j)),x.besselJ(-n),limit))
 
 class series_celmec_test(unittest.TestCase):
@@ -258,8 +258,8 @@ class series_celmec_test(unittest.TestCase):
 		from pyranha.Core import psym
 		from pyranha.Truncators import truncators
 		from pyranha.Celmec import low_thrust as lt
-		series_types = filter(lambda m: hasattr(m,'is_ring_exact') and hasattr(m,'is_trig_exact') and not hasattr(m,'is_complex') and hasattr(m,'is_divint_exact'),manipulators)
-		series_types_rat_expo = filter(lambda m: hasattr(m,'is_rational_exponent'),series_types)
+		series_types = [m for m in manipulators if hasattr(m,'is_ring_exact') and hasattr(m,'is_trig_exact') and not hasattr(m,'is_complex') and hasattr(m,'is_divint_exact')]
+		series_types_rat_expo = [m for m in series_types if hasattr(m,'is_rational_exponent')]
 		truncators.unset()
 		for trunc_order in [5,7,9]:
 			for t in series_types_rat_expo:

@@ -138,9 +138,9 @@ class lt_convergent_planar(pyranha.Celmec.lie_theory,lt_base):
 		truncators.degree.set(['P','Q'],rational(self.trunc_order,2))
 		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q]).sub('Q',t(0))
 		# Second ctor.
-		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum(filter(lambda t: t.h_degree('lam') != 0,Hn)).integrate('lam')] * order, verbose = verbose)
+		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum([t for t in Hn if t.h_degree('lam') != 0]).integrate('lam')] * order, verbose = verbose)
 		# Isolate c1 and its derivatives.
-		self.__c_list = [sum(filter(lambda t: t.degree('eps') == i + 1, self.H[i + 1])).sub('eps',self.series_type(1)).sub('p',self.series_type(0)) for i in range(self.order)]
+		self.__c_list = [sum([t for t in self.H[i + 1] if t.degree('eps') == i + 1]).sub('eps',self.series_type(1)).sub('p',self.series_type(0)) for i in range(self.order)]
 		self.__c_Lam_list = [c.partial('Lam') for c in self.__c_list]
 		self.__c_P_list = [c.partial('P') for c in self.__c_list]
 		# Reset the truncator on exit.
@@ -284,7 +284,7 @@ class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
 		truncators.degree.set(['P','Q'],rational(self.trunc_order,2))
 		H = - (2 * Lam ** 2) ** -1 + eps_series * self._H1([Lam,P,Q,lam,p,q])
 		# Second ctor.
-		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum(filter(lambda t: t.h_degree('lam') != 0,Hn)).integrate('lam')] * order,verbose = verbose)
+		pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum([t for t in Hn if t.h_degree('lam') != 0]).integrate('lam')] * order,verbose = verbose)
 		# Reset the truncator on exit.
 		truncators.unset()
 	def solve_last(self,init,t):

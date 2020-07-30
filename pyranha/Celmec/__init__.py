@@ -17,7 +17,7 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from detail import __check_uniform_type
+from .detail import __check_uniform_type
 
 def r_a(e,M):
 	"""
@@ -27,7 +27,7 @@ def r_a(e,M):
 	try:
 		return e.r_a(e,M)
 	except AttributeError:
-		raise AttributeError, "The series type '" + str(type(e)) +  "' does not offer an r_a method."
+		raise AttributeError("The series type '" + str(type(e)) +  "' does not offer an r_a method.")
 
 def a_r(e,M):
 	"""
@@ -37,7 +37,7 @@ def a_r(e,M):
 	try:
 		return e.a_r(e,M)
 	except AttributeError:
-		raise AttributeError, "The series type '" + str(type(e)) +  "' does not offer an a_r method."
+		raise AttributeError("The series type '" + str(type(e)) +  "' does not offer an a_r method.")
 
 def cos_f(e,M):
 	"""
@@ -47,7 +47,7 @@ def cos_f(e,M):
 	try:
 		return e.cos_f(e,M)
 	except AttributeError:
-		raise AttributeError, "The series type '" + str(type(e)) +  "' does not offer a cos_f method."
+		raise AttributeError("The series type '" + str(type(e)) +  "' does not offer a cos_f method.")
 
 def sin_f(e,M):
 	"""
@@ -57,7 +57,7 @@ def sin_f(e,M):
 	try:
 		return e.sin_f(e,M)
 	except AttributeError:
-		raise AttributeError, "The series type '" + str(type(e)) +  "' does not offer a sin_f method."
+		raise AttributeError("The series type '" + str(type(e)) +  "' does not offer a sin_f method.")
 
 def cos_E(e,M):
 	"""
@@ -67,7 +67,7 @@ def cos_E(e,M):
 	try:
 		return e.cos_E(e,M)
 	except AttributeError:
-		raise AttributeError, "The series type '" + str(type(e)) +  "' does not offer a cos_E method."
+		raise AttributeError("The series type '" + str(type(e)) +  "' does not offer a cos_E method.")
 
 def sin_E(e,M):
 	"""
@@ -77,7 +77,7 @@ def sin_E(e,M):
 	try:
 		return e.sin_E(e,M)
 	except AttributeError:
-		raise AttributeError, "The series type '" + str(type(e)) +  "' does not offer a sin_E method."
+		raise AttributeError("The series type '" + str(type(e)) +  "' does not offer a sin_E method.")
 
 def EE(e,M):
 	"""
@@ -88,7 +88,7 @@ def EE(e,M):
 	try:
 		return e.EE(e,M)
 	except AttributeError:
-		raise AttributeError, "The series type '" + str(type(e)) +  "' does not offer an E method."
+		raise AttributeError("The series type '" + str(type(e)) +  "' does not offer an E method.")
 
 def eipE(e,M,p = 1):
 	"""
@@ -98,7 +98,7 @@ def eipE(e,M,p = 1):
 	try:
 		return e.eipE(e,M,p)
 	except AttributeError:
-		raise AttributeError, "The series type '" + str(type(e)) +  "' does not offer an eipE method."
+		raise AttributeError("The series type '" + str(type(e)) +  "' does not offer an eipE method.")
 
 def vsop_to_dps(input_filename):
 	import re
@@ -506,23 +506,23 @@ class lie_theory(object):
 		self.__verbose = bool(verbose)
 		# Input parameters checks.
 		if not type(H) in manipulators:
-			raise(TypeError('Hamiltonian must be a series.'))
+			raise TypeError
 		self.__H = deepcopy(H)
 		self.__series_type = type(H)
 		if not isinstance(eps_name,str) or not all([isinstance(i,str) for i in p_names]) or not all([isinstance(i,str) for i in q_names]):
-			raise(TypeError('Variable names must be strings.'))
+			raise TypeError
 		self.__eps_name = deepcopy(eps_name)
 		self.__p_names = list(p_names)
 		self.__q_names = list(q_names)
 		if len(self.__p_names) != len(self.__q_names):
-			raise(ValueError('The numbers of momenta and coordinates must be the same.'))
+			raise ValueError
 		if len(self.__p_names) == 0:
-			raise(ValueError('Problem dimension must be strictly positive.'))
+			raise ValueError
 		self.__he_solvers = list(he_solvers)
 		if not all([callable(i) for i in self.__he_solvers]):
-			raise(TypeError('Homological equation solvers must all be callable objects.'))
+			raise TypeError
 		if len(self.__he_solvers) < 1:
-			raise(ValueError('The order of the theory must be at least 1.'))
+			raise ValueError
 		self.__order = len(self.__he_solvers)
 		self.__init_list = None
 		# Run the calculations.
@@ -591,7 +591,7 @@ class lie_theory(object):
 		s_names = self.__p_names + self.__q_names
 		# Check that init eval dictionary has all the necessary variables.
 		if not all([s in init for s in s_names]):
-			raise(ValueError('Initial conditions are needed for *all* coordinates and momenta.'))
+			raise ValueError
 		init_list = [deepcopy(init)]
 		for i in range(0,self.__order):
 			# Copy the original eval dictionary and transform coordinates and momenta.
@@ -646,7 +646,7 @@ class lie_theory(object):
 		"""
 		from copy import deepcopy
 		if self.__init_list is None:
-			raise(ValueError('Initial conditions have not been set. Please use set_init().'))
+			raise ValueError
 		return deepcopy(self.__init_list)
 	@property
 	def series_type(self):

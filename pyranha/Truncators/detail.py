@@ -20,7 +20,7 @@
 class __truncators(object):
 	def __init__(self):
 		from pyranha.Truncators import _Truncators
-		self.__list = filter(lambda x: x.endswith('_truncator'),dir(_Truncators))
+		self.__list = [x for x in dir(_Truncators) if x.endswith('_truncator')]
 		for n in self.__list:
 			exec('self.%s = _Truncators.%s()' % (n.split('_truncator')[0][2:],n))
 	def __repr__(self):

@@ -30,13 +30,12 @@ class main_window(PyQt4.QtGui.QMainWindow,Ui_main_window):
 			self.__n_columns = len(self.__headers)
 			self.__series_db = self.__build_series_db()
 		def __build_series_db(self):
-			retval = map(lambda x:
-				(
+			retval = [(
 					id(self.ip_ns[x]),
 					x,
 					self.ip_ns[x].__short_type__,
 					len(self.ip_ns[x])
-				),filter(lambda x: type(self.ip_ns[x]) in pyranha.manipulators, self.ip_ns))
+				) for x in [x for x in self.ip_ns if type(self.ip_ns[x]) in pyranha.manipulators]]
 			assert(not retval or self.__n_columns == len(retval[0]))
 			retval.sort()
 			return retval

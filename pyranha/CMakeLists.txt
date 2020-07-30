@@ -26,7 +26,7 @@ ENDMACRO(PYTHON_CPPMODULE)
 
 MACRO(PYRANHA_MANIPULATOR_INIT arg1)
 	STRING(REGEX REPLACE "^_" "" DIR_ARG ${arg1})
-	SET(MODULE_NAME ${arg1})
+	SET(MODULE_NAME ${DIR_ARG})  # we use DIR_ARG because it is the name without "_". Needed in the __init__.py file
 	CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../template.__init__.py
 		${CMAKE_CURRENT_SOURCE_DIR}/__init__.py)
 	INSTALL(FILES __init__.py DESTINATION ${PYRANHA_INSTALL_PATH}/${DIR_ARG})

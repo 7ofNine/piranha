@@ -112,7 +112,7 @@ class series_draw_area(PyQt4.QtGui.QGraphicsView):
 		self.__populator_thread.start()
 	def set_series(self,name,series):
 		if self.__is_busy():
-			print "thread is running, won't do"
+			print("thread is running, won't do")
 			return
 		self.__series = series
 		self.__series_name = name

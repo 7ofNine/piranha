@@ -50,12 +50,11 @@ class __series(object):
 			raise ImportError("IPython not available.")
 		import pyranha
 		ip_ns = IPython.ipapi.get().user_ns
-		l = map(lambda x:
-			(
+		l = [(
 				x,
 				ip_ns[x].__short_type__,
 				len(ip_ns[x])
-			),filter(lambda x: type(ip_ns[x]) in pyranha.manipulators, ip_ns))
+			) for x in [x for x in ip_ns if type(ip_ns[x]) in pyranha.manipulators]]
 		l.sort()
 		if not l:
 			return 'No series defined.'

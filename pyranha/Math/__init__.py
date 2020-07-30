@@ -131,7 +131,7 @@ def hyperF(a_sequence,b_sequence,z,limit = None):
 			return z.hyperF([rational(a) for a in a_sequence],[rational(b) for b in b_sequence])
 		else:
 			return z.hyperF([rational(a) for a in a_sequence],[rational(b) for b in b_sequence],limit)
-	except TypeError, ArgumentError:
+	except TypeError as ArgumentError:
 		raise TypeError('inputs a_sequence and b_sequence must be sequences of elements from which rationals can be constructed.')
 	except AttributeError:
 		raise TypeError('z does not provide an hyperF() method.')
@@ -151,7 +151,7 @@ def dhyperF(a_sequence,b_sequence,z,limit = None,order = 1):
 			return z.dhyperF(order,[rational(a) for a in a_sequence],[rational(b) for b in b_sequence])
 		else:
 			return z.dhyperF(order,[rational(a) for a in a_sequence],[rational(b) for b in b_sequence],limit)
-	except TypeError, ArgumentError:
+	except TypeError as ArgumentError:
 		raise TypeError('inputs a_sequence and b_sequence must be sequences of elements from which rationals can be constructed.')
 	except AttributeError:
 		raise TypeError('z does not provide an hyperF() method.')

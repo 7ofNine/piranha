@@ -18,7 +18,7 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from _Core import *
-from impl import *
+from .impl import *
 
 def is_iteratable(arg):
 	"""
@@ -41,7 +41,7 @@ def latex(arg):
 	"""
 	Return latex-formatted string representation of the object.
 	"""
-	if isinstance(arg,(int,long)):
+	if isinstance(arg,int):
 		return str(arg)
 	if isinstance(arg,float):
 		# Handle the case in which float representation is in scientific format.
@@ -129,7 +129,7 @@ def display(series):
 			output = tmp
 		proc = Popen(['okular',os.path.join(tmp_dir,'pyranha_output.pdf')], stdout = PIPE, stderr = STDOUT)
 		proc.wait()
-		raw_input('Press Enter to continue...')
+		input('Press Enter to continue...')
 	finally:
 		shutil.rmtree(tmp_dir)
 
@@ -167,4 +167,4 @@ def gui():
 		import pyranha.Gui
 		pyranha.Gui.mw.show()
 	except ImportError:
-		print "Gui support is not available or PyQt4 is not installed."
+		print("Gui support is not available or PyQt4 is not installed.")
