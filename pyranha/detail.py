@@ -17,19 +17,27 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+
+# TODO: get rid of exec !
+
 def __build_manipulators(manipulators):
     """
     Build the list of manipulator types
     """
+    #print("pyranha.detail.py.24")     #DEBUG
     type_list = []
     for i in manipulators:
-        exec("import pyranha.%s as cur_manip" % i)
-        type_list.append(getattr(cur_manip,i.lower()))
+        #print("pyranha.detail.py.30: " + str(i))   #DEBUG
+        __cur_manip = {} # just a work arround before we can get rid of the exec function calls
+        exec("import pyranha.%s as __cur_manip" % i , {}, __cur_manip)
+        cur_manip = __cur_manip['__cur_manip']  # get the actual object
+        type_list.append(getattr(cur_manip, i.lower()))
         # Let's try to see if we can get the complex counterpart.
         try:
             type_list.append(getattr(cur_manip,i.lower()+'c'))
         except AttributeError:
             pass
+    #print("pyranha.detail.py.34 " + str(type_list))   #DEBUG
     return tuple(type_list)
 
 def __series_filtered(self, criterion = None):
@@ -49,6 +57,7 @@ def __series_filtered(self, criterion = None):
     Please note that since reassembling coefficient-key pairs involves series multiplications, active truncators
     have an effect on the filtering process.
     """
+    #print("pyranha.detail.py.52")   #DEBUG
     from copy import copy
     if criterion is None:
         return copy(self)
@@ -82,6 +91,7 @@ def __series_short_type(self):
     """
     Return a short string containing the series' class name.
     """
+    #print("pyranha.detail.py.85")  #DEBUG
     return str(type(self)).rpartition('.')[-1].strip('>\'')
 
 def __series_psi(self, n = 0, s = 1):
@@ -89,6 +99,7 @@ def __series_psi(self, n = 0, s = 1):
     Return the limit of the power series expansion compatible with the truncator currently in use by the series.
     The optional arguments are the starting degree (n) and the step size (s) of the power series expansion.
     """
+    #print("pyranha.detail.py.92")  #DEBUG
     return self.__psi__(n,s)
 
 def __series_split(self, n = 0):
@@ -100,6 +111,7 @@ def __series_split(self, n = 0):
     on the single term's coefficient series will take place and the return value will be a
     sequence of coefficient-key pairs for the coefficient series.
     """
+    #print("pyranha.detail.py.103") #DEBUG
     return self.__split__(n)
 
 def __series_eval(self,arg):
@@ -115,6 +127,7 @@ def __series_eval(self,arg):
 
     If arg is anything else, a TypeError exception will be raised.
     """
+    #print("pyranha.detail.py.118") #DEBUG
     if isinstance(arg,(float,int)):
         return self.__eval__(arg)
     if isinstance(arg,dict):
@@ -132,6 +145,7 @@ def __series_repr(self):
     """
     __repr__ method that prints the series' type and then the series itself in pretty print.
     """
+    #print("pyranha.detail.py.135") #DEBUG
     retval = '%s series: ' % self.__short_type__
     retval += self.__impl_repr__()
     return retval
@@ -140,21 +154,26 @@ def __series_contains(self,name):
     """
     Check whether symbol named 'name' is present in the series.
     """
+    #print("pyranha.detail.py.143") #DEBUG
     from pyranha.Core import psym
     return psym(name) in reduce(lambda a,b: a + b, self.arguments)
 
 def __series_deepcopy(self,memo):
+    #print("pyranha.detail.py.147") #DEBUG
     return self.__copy__()
 
 def __add_method(module_name,method_name,function):
     """
     Add a method to a manipulator.
     """
-    exec("import %s.%s._%s as __cur_manip" % ("pyranha", module_name, module_name))
-    exec("__cur_manip.%s.%s = function" % (module_name.lower(),method_name))
+    __cur_manip = {}
+    #print("pyranha.detail.py.153 " + module_name ) #DEBUG
+    exec("import %s.%s as __cur_manip" % ("pyranha", module_name), {}, __cur_manip)
+    #print("pyranha.detail.py.155 " + str(__cur_manip)) #DEBUG
+    exec("__cur_manip['__cur_manip'].%s.%s = function" % (module_name.lower(),method_name))
     # Try to take care of the complex counterpart.
     try:
-        exec("__cur_manip.%s.%s = function " % ((module_name.lower()+'c'),method_name))
+        exec("__cur_manip['__cur_manip'].%s.%s = function " % ((module_name.lower()+'c'),method_name))
     except AttributeError:
         pass
 
@@ -162,11 +181,16 @@ def __add_property(module_name, property_name, fget=None, fset=None, fdel=None, 
     """
     Add a property to a manipulator.
     """
-    exec("import %s.%s._%s as __cur_manip" % ("pyranha", module_name, module_name) )
-    exec("__cur_manip.%s.%s = property(fget,fset,fdel,doc)" % (module_name.lower(),property_name))
+    __cur_manip = {}
+    #print("pyranha.detail.py.165 " + module_name) #DEBUG
+    exec("import %s.%s as __cur_manip" % ("pyranha", module_name), {}, __cur_manip )   # how can we avoid exec !!! causes issues
+    #print("pyranha.detail.py.167 " + str(__cur_manip)) #DEBUG #exec keeps __cur_manip it locally and it is not visible. That is Python3!!
+    exec("__cur_manip['__cur_manip'].%s.%s = property(fget,fset,fdel,doc)" % (module_name.lower(),property_name))
     try:
-        exec("__cur_manip.%s.%s = property(fget,fset,fdel,doc) " % ((module_name.lower()+'c'),property_name))
+        #print("pyranha.detail.py.187")  #DEBUG
+        exec("__cur_manip['__cur_manip'].%s.%s = property(fget,fset,fdel,doc) " % ((module_name.lower()+'c'),property_name))
     except AttributeError:
+        #print("pyranha.detail.py.190")  #DEBUG
         pass
 
 def __enhance_manipulators(manipulators):
@@ -174,6 +198,7 @@ def __enhance_manipulators(manipulators):
     Add useful methods and properties to a list of manipulators.
     """
     for i in manipulators:
+        #print("pyranha.detail.py.177 " + str(dir(i)))  #DEBUG
         __add_property(i, "__short_type__", __series_short_type)
         __add_method(i, "filtered", __series_filtered)
         __add_method(i, "psi", __series_psi)
@@ -182,29 +207,35 @@ def __enhance_manipulators(manipulators):
         __add_method(i, "__contains__", __series_contains)
         __add_method(i, "__repr__", __series_repr)
         __add_method(i, "__deepcopy__", __series_deepcopy)
+        #print("pyranha.detail.py.186 " + str(dir(i)))  #DEBUG
 
-
-
-
-
-import pyranha
+#print("pyranha.detail.py.186a")
+import pyranha   # if not imported it doesn't know the name pyranha for pyranha.__all__. Why???doesn't seem to do anything. It's a recursive call. This already called during an import pyranha!!
+#print("pyranha.detail.py.188")
 from functools import reduce
 
 # Let's try do define a default series type
-print(__name__)  # for test only scope is pyranha.detail
-print("Trace 2")
+#print(__name__)  # for test only scope is pyranha.detail
+#print("Trace 2")
 if len([x for x in pyranha.__all__ if x not in pyranha.__manipulators__]) > 0:
-    print("Trace 3")
+    #print("pyranha.detail.py.192")
     #exec ("import %s as __last_manipulator" % pyranha.__manipulators__[-1])
-    exec("from . import %s as __last_manipulator" % pyranha.__manipulators__[-1])
-    print("Trace1 :"+__last_manipulator)
-    ds = getattr(__last_manipulator,pyranha.__manipulators__[-1].lower(), "") # fix it: for setting the default series type. worked in Python 2
-    setattr(pyranha,'ds',ds)
+    __last_manipulator = {}
+    exec("from . import %s as __last_manipulator" % pyranha.__manipulators__[-1], globals(), __last_manipulator)
+    last_manipulator = __last_manipulator['__last_manipulator']
+    #print("pyranha.detail.py.194" + str(last_manipulator)) #DEBUG
+    ds = getattr(last_manipulator, pyranha.__manipulators__[-1].lower(), "") # fix it: for setting the default series type. worked in Python 2
+    #print("pyranha.detail.py.195") #DEBUG
+    setattr(pyranha, 'ds', ds)
+    #print("pyranha.detail.py.198") #DEBUG
     print(("Default series type is " + str(ds)))
 else:
     print("Default series type could not be established, assigning None.")
     ds = None
 
+#print("pyranha.detail.py.204") #DEBUG  
 __enhance_manipulators(pyranha.__manipulators__)
 
+#print("pyranha.detail.py.207") #DEBUG
 manipulators = tuple(__build_manipulators(pyranha.__manipulators__))
+#print("pyranha.detail.py.236") #DEBUG

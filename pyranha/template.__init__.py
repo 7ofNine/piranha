@@ -17,8 +17,8 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 # from @MODULE_NAME@ import * original
-print("Loading @MODULE_NAME@") #for testing only
+#print("@MODULE_NAME@.__init__.py.19 " + str(dir()))  #DEBUG
 from pyranha.@MODULE_NAME@._@MODULE_NAME@ import * # fix it: import has changed for python3 have to put scoping in. worked in Python2
                                                    # before we imported all methods/attributes without scoping
                                                    # __all__ could be used but * is considered bad practice. i.e. don't do it
-print("@MODULE_NAME@  loaded") #for testing only                                                   
+#print("@MODULE_NAME@.__init__.py.21 " + str(dir())) #DEBUG                                                  

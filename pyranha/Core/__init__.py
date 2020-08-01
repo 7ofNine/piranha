@@ -17,7 +17,8 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from _Core import *
+#print("Core.__init__.py.20 " + str(dir())) #DEBUG
+from ._Core import *
 from .impl import *
 
 def is_iteratable(arg):
@@ -168,3 +169,5 @@ def gui():
 		pyranha.Gui.mw.show()
 	except ImportError:
 		print("Gui support is not available or PyQt4 is not installed.")
+
+#print("Core.__init__.py.173 " + str(dir()))   #DEBUG

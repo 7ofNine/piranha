@@ -17,7 +17,9 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from _Truncators import *
+#print("Truncators.__init__.py.20 " + str(dir()))  #DEBUG
+from ._Truncators import *
 from .detail import __truncators
 
 truncators = __truncators()
+#print("Truncators.__init__.py.25 " + str(dir()))   #DEBUG
