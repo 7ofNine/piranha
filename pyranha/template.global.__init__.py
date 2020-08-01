@@ -29,6 +29,9 @@
 #
 #print("Pyranha is ready.")
 
+import os;
+os.add_dll_directory("@MY_PIRANHA_INSTALL@") # needed since 3.8 to be able to load dependency dll's
+
 __all__ = [@MODULE_LIST@]
 __manipulators__ = [@MANIPULATOR_LIST@]
 

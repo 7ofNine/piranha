@@ -29,6 +29,9 @@
 #
 #print("Pyranha is ready.")
 
+import os;
+os.add_dll_directory("D:\\temp for tests\Piranhatest") # needed since 3.8 to be able to load dependency dll's
+
 __all__ = [ "Core", "Math", "Celmec", "Test", "Truncators", "Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
 __manipulators__ = ["Dfs", "Dpoly", "Zpoly", "Qpoly", "Qqpoly", "Dps", "Qps", "Dqps", "Qqps", ]
 
