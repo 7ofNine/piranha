@@ -35,16 +35,16 @@ using namespace pyranha;
 BOOST_PYTHON_MODULE(_Zpoly)
 {
     docstring_options docOptions(true, false, false);
-	translate_exceptions();
+    translate_exceptions();
 
-	class_<zpoly> inst = series_basic_instantiation<zpoly>(std::string("zpoly"),
-		std::string("Multivariate polynomial with arbitrary-size integer coefficients."));
-	common_polynomial_instantiation(inst);
-	series_sub_instantiation<zpoly, zpoly>(inst);
-	class_<zpolyc> instc = series_basic_instantiation<zpolyc>(std::string("zpolyc"),
-		std::string("Multivariate polynomial with complex arbitrary-size integer coefficients."));
-	common_polynomial_instantiation(instc);
-	series_complex_instantiation(instc, inst);
-	series_sub_instantiation<zpolyc, zpoly>(instc);
-	series_sub_instantiation<zpolyc, zpolyc>(instc);
+    class_<zpoly> inst = series_basic_instantiation<zpoly>(std::string("zpoly"),
+        std::string("Multivariate polynomial with arbitrary-size integer coefficients."));
+    common_polynomial_instantiation(inst);
+    series_sub_instantiation<zpoly, zpoly>(inst);
+    class_<zpolyc> instc = series_basic_instantiation<zpolyc>(std::string("zpolyc"),
+        std::string("Multivariate polynomial with complex arbitrary-size integer coefficients."));
+    common_polynomial_instantiation(instc);
+    series_complex_instantiation(instc, inst);
+    series_sub_instantiation<zpolyc, zpoly>(instc);
+    series_sub_instantiation<zpolyc, zpolyc>(instc);
 }

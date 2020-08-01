@@ -18,19 +18,19 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class __truncators(object):
-	def __init__(self):
-		from pyranha.Truncators import _Truncators
-		self.__list = [x for x in dir(_Truncators) if x.endswith('_truncator')]
-		for n in self.__list:
-			exec('self.%s = _Truncators.%s()' % (n.split('_truncator')[0][2:],n))
-	def __repr__(self):
-		from pyranha.Truncators import _Truncators
-		retval = ''
-		for n in self.__list:
-			exec('t = _Truncators.%s()' % n)
-			retval += ('%s: %s\n' % (n.split('_truncator')[0][2:],str(t)))
-		return retval
-	def unset(self):
-		from pyranha.Truncators import _Truncators
-		_Truncators.unset()
+    def __init__(self):
+        from pyranha.Truncators import _Truncators
+        self.__list = [x for x in dir(_Truncators) if x.endswith('_truncator')]
+        for n in self.__list:
+            exec('self.%s = _Truncators.%s()' % (n.split('_truncator')[0][2:],n))
+    def __repr__(self):
+        from pyranha.Truncators import _Truncators
+        retval = ''
+        for n in self.__list:
+            exec('t = _Truncators.%s()' % n)
+            retval += ('%s: %s\n' % (n.split('_truncator')[0][2:],str(t)))
+        return retval
+    def unset(self):
+        from pyranha.Truncators import _Truncators
+        _Truncators.unset()
 

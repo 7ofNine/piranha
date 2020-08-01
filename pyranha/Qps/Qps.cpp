@@ -35,19 +35,19 @@ using namespace pyranha;
 BOOST_PYTHON_MODULE(_Qps)
 {
     docstring_options docOptions(true, false, false);
-	translate_exceptions();
+    translate_exceptions();
 
-	class_<qps> inst(series_basic_instantiation<qps>(std::string("qps"),
-		std::string("Poisson series with arbitrary-precision rational coefficients.")));
-	common_poisson_series_instantiation(inst, "qps");
-	celmec_instantiation(inst);
-	series_trigonometric_instantiation(inst);
-	series_sub_instantiation<qps, qps>(inst);
-	series_ei_sub_instantiation<qps, qpsc>(inst);
-	class_<qpsc> instc(series_basic_instantiation<qpsc>(std::string("qpsc"),
-		std::string("Poisson series with complex arbitrary-precision rational coefficients.")));
-	common_poisson_series_instantiation(instc, "qpsc");
-	series_complex_instantiation(instc, inst);
-	series_sub_instantiation<qpsc, qps>(instc);
-	series_ei_sub_instantiation<qpsc, qpsc>(instc);
+    class_<qps> inst(series_basic_instantiation<qps>(std::string("qps"),
+        std::string("Poisson series with arbitrary-precision rational coefficients.")));
+    common_poisson_series_instantiation(inst, "qps");
+    celmec_instantiation(inst);
+    series_trigonometric_instantiation(inst);
+    series_sub_instantiation<qps, qps>(inst);
+    series_ei_sub_instantiation<qps, qpsc>(inst);
+    class_<qpsc> instc(series_basic_instantiation<qpsc>(std::string("qpsc"),
+        std::string("Poisson series with complex arbitrary-precision rational coefficients.")));
+    common_poisson_series_instantiation(instc, "qpsc");
+    series_complex_instantiation(instc, inst);
+    series_sub_instantiation<qpsc, qps>(instc);
+    series_ei_sub_instantiation<qpsc, qpsc>(instc);
 }

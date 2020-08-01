@@ -35,16 +35,16 @@ using namespace pyranha;
 BOOST_PYTHON_MODULE(_Qqpoly)
 {
     docstring_options docOptions(true, false, false);
-	translate_exceptions();
+    translate_exceptions();
 
-	class_<qqpoly> inst = series_basic_instantiation<qqpoly>(std::string("qqpoly"),
-		std::string("Multivariate polynomial with arbitrary-size rational coefficients."));
-	common_polynomial_instantiation(inst);
-	series_sub_instantiation<qqpoly, qqpoly>(inst);
-	class_<qqpolyc> instc = series_basic_instantiation<qqpolyc>(std::string("qqpolyc"),
-			std::string("Multivariate polynomial with complex arbitrary-size rational coefficients."));
-	common_polynomial_instantiation(instc);
-	series_complex_instantiation(instc, inst);
-	series_sub_instantiation<qqpolyc, qqpoly>(instc);
-	series_sub_instantiation<qqpolyc, qqpolyc>(instc);
+    class_<qqpoly> inst = series_basic_instantiation<qqpoly>(std::string("qqpoly"),
+        std::string("Multivariate polynomial with arbitrary-size rational coefficients."));
+    common_polynomial_instantiation(inst);
+    series_sub_instantiation<qqpoly, qqpoly>(inst);
+    class_<qqpolyc> instc = series_basic_instantiation<qqpolyc>(std::string("qqpolyc"),
+            std::string("Multivariate polynomial with complex arbitrary-size rational coefficients."));
+    common_polynomial_instantiation(instc);
+    series_complex_instantiation(instc, inst);
+    series_sub_instantiation<qqpolyc, qqpoly>(instc);
+    series_sub_instantiation<qqpolyc, qqpolyc>(instc);
 }

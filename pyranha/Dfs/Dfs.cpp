@@ -35,14 +35,14 @@ using namespace pyranha;
 BOOST_PYTHON_MODULE(_Dfs)
 {
     docstring_options docOptions(true, false, false);
-	translate_exceptions();
+    translate_exceptions();
 
-	class_<dfs> inst = series_basic_instantiation<dfs>(std::string("dfs"), std::string("Fourier series with double precision coefficients."));
-	common_fourier_series_instantiation(inst);
-	series_trigonometric_instantiation(inst);
-	series_sub_instantiation<dfs, dfs>(inst);
-	class_<dfsc> instc = series_basic_instantiation<dfsc>(std::string("dfsc"), std::string("Fourier series with complex double precision coefficients."));
-	series_complex_instantiation(instc, inst);
-	common_fourier_series_instantiation(instc);
-	series_sub_instantiation<dfsc, dfs>(instc);
+    class_<dfs> inst = series_basic_instantiation<dfs>(std::string("dfs"), std::string("Fourier series with double precision coefficients."));
+    common_fourier_series_instantiation(inst);
+    series_trigonometric_instantiation(inst);
+    series_sub_instantiation<dfs, dfs>(inst);
+    class_<dfsc> instc = series_basic_instantiation<dfsc>(std::string("dfsc"), std::string("Fourier series with complex double precision coefficients."));
+    series_complex_instantiation(instc, inst);
+    common_fourier_series_instantiation(instc);
+    series_sub_instantiation<dfsc, dfs>(instc);
 }

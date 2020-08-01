@@ -18,9 +18,9 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 def __check_uniform_type(*args):
-	if not args:
-		return
-	t = type(args[0])
-	for i in args[1:]:
-		if type(i) != t:
-			raise TypeError('Arguments for this function must be of uniform type.')
+    if not args:
+        return
+    t = type(args[0])
+    for i in args[1:]:
+        if type(i) != t:
+            raise TypeError('Arguments for this function must be of uniform type.')

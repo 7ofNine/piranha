@@ -35,16 +35,16 @@ using namespace pyranha;
 BOOST_PYTHON_MODULE(_Dpoly)
 {
     docstring_options docOptions(true, false, false);
-	translate_exceptions();
+    translate_exceptions();
 
-	class_<dpoly> inst = series_basic_instantiation<dpoly>(std::string("dpoly"),
-			std::string("Multivariate polynomial with double precision coefficients."));
-	common_polynomial_instantiation(inst);
-	series_sub_instantiation<dpoly, dpoly>(inst);
-	class_<dpolyc> instc = series_basic_instantiation<dpolyc>(std::string("dpolyc"),
-			std::string("Multivariate polynomial with complex double precision coefficients."));
-	common_polynomial_instantiation(instc);
-	series_complex_instantiation(instc, inst);
-	series_sub_instantiation<dpolyc, dpolyc>(instc);
-	series_sub_instantiation<dpolyc, dpoly>(instc);
+    class_<dpoly> inst = series_basic_instantiation<dpoly>(std::string("dpoly"),
+            std::string("Multivariate polynomial with double precision coefficients."));
+    common_polynomial_instantiation(inst);
+    series_sub_instantiation<dpoly, dpoly>(inst);
+    class_<dpolyc> instc = series_basic_instantiation<dpolyc>(std::string("dpolyc"),
+            std::string("Multivariate polynomial with complex double precision coefficients."));
+    common_polynomial_instantiation(instc);
+    series_complex_instantiation(instc, inst);
+    series_sub_instantiation<dpolyc, dpolyc>(instc);
+    series_sub_instantiation<dpolyc, dpoly>(instc);
 }
