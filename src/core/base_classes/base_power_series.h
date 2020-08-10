@@ -43,7 +43,7 @@ namespace piranha
 			class CompareDegree
 			{
                 public:
-				explicit CompareDegree(VectorPsym const & symbols) :symbols(symbols) {}
+				explicit CompareDegree(VectorPsym const & s) :symbols(s) {}
 
 				bool operator()(Term const &term1, Term const &term2) const 
                 {
@@ -60,7 +60,7 @@ namespace piranha
 			class CompareOrder
 			{
 				public:
-					explicit CompareOrder(VectorPsym const & symbols) :symbols(symbols) {}
+					explicit CompareOrder(VectorPsym const & s) :symbols(s) {}
 
 					bool operator()(Term const &term1, Term const &term2) const 
 					{
@@ -77,7 +77,7 @@ namespace piranha
 			{
                 public:
 
-				ComparePartialDegree(PositionTuple const &p):positionTuple(positionTuple) {}
+				ComparePartialDegree(PositionTuple const &p):positionTuple(p) {}
 
 				bool operator()(Term const &term1, Term const &term2) const 
                 {
@@ -95,7 +95,7 @@ namespace piranha
 			{
                 public:
 
-				ComparePartialOrder(PositionTuple const &positionTuple):positionTuple(positionTuple) {}
+				ComparePartialOrder(PositionTuple const &p):positionTuple(p) {}
 
 				bool operator()(Term const &term1, Term const &term2) const 
                 {
@@ -153,7 +153,15 @@ namespace piranha
 					return Degree(0);
 				}
 
-				const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(), 
+				auto begin = derived_const_cast->begin();
+				auto end = derived_const_cast->end();
+
+				//for (Derived::const_iterator it = begin; it ++; it != end)
+				//{
+				//	auto it2 = it;
+				//}
+				//const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(),
+					const typename Derived::const_iterator result(std::max_element(begin, end, 
                                                               ComparePartialDegree<typename Derived::TermType, PositionTuple>(positionTuple) ));
 
 				return result->template get<ExpoTermPosition>().partialDegree(positionTuple);
