@@ -549,6 +549,7 @@ namespace piranha
 
 		static void run(SubstitutionCaches &substitutionCaches, SubstitutionSeries const &series, ArgsTuple const *argsTuple) 
 		{
+			std::cout << std::endl << "trace 1 : InitSubstitutionCaches::run" << std::endl;
 			substitutionCaches.get_head().setup(series, argsTuple);
 			InitSubstitutionCaches<typename SubstitutionCaches::tail_type, SubstitutionSeries, ArgsTuple>::run(substitutionCaches.get_tail(), series, argsTuple);
 		}
@@ -572,8 +573,9 @@ namespace piranha
     //
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	template <class SubstitutionSeries>
-	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::substitute(std::string const &name, SubstitutionSeries const &series) const
+	inline Derived NamedSeries<PIRANHA_NAMED_SERIES_TP>::sub(std::string const &name, SubstitutionSeries const &series) const
 	{
+		std::cout << std::endl << "trace 1 : NamedSeries::sub " << std::endl;
      // How to test that "name" is actually present in ArgsTuple and we can substitute it?? We already had that problem that substitution didn't fail
         typedef typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type    PositionTuple;
         PositionTuple const testPositionTuple = psyms2pos(VectorPsym(1, Psym(name)), argumentsTuple);

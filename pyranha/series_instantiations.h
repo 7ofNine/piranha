@@ -295,7 +295,7 @@ namespace pyranha
 	template <class T, class Series>
 	static inline T py_series_sub_string_series(const T &series, const std::string &s, const Series &sub)
 	{
-		return series.template substitute<Series>(s, sub);
+		return series.template sub<Series>(s, sub);
 	}
 
 	template <class T, class Series>
@@ -389,7 +389,7 @@ namespace pyranha
 		inst.def("degree", &T::partialDegree);
 		inst.def("degree", &p_degree_str<T>);
 		inst.def("order", &T::order, "(Partial) order.");
-		inst.def("order", &T::partialOrder);
+		inst.def("order", &T::partialOrder);  //GUT TODO: my change for order of Psym reverted
 		inst.def("order", &p_order_str<T>);
 	}
 

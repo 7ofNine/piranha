@@ -44,7 +44,7 @@ def alt_besselJ(o,x):
     # definition through power series, the starting degree will be n and the step will be 2.
     l = x.psi(n,2)
     for m in range(0,l):
-        tmp = (x / 2)**(2 * m + n)
+        tmp = (x // 2)**(2 * m + n)
         tmp *= (-1)**m
         # Here we use the unbound factorial functions of the series' type to avoid
         # losing precision when working with multi-precision coefficients.

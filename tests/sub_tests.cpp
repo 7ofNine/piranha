@@ -41,7 +41,7 @@ int main()
     zpoly f = zpoly(x) + zpoly(y) + zpoly(z);
     zpoly g = f.pow(40); 
 
-    zpoly tempg = g.substitute("x", zpoly(x) + 1).substitute("x", zpoly(x) - 1);
+    zpoly tempg = g.sub("x", zpoly(x) + 1).sub("x", zpoly(x) - 1);
     tempg.printPlain(std::cout);
 	retval += !(tempg == g);
 	

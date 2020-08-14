@@ -20,4 +20,5 @@
 def check_order(s1,s2,n):
     l = len(s1.arguments)
     assert(l == len(s2.arguments))
+    print(" check_order: " + str(n) + "\\n")
     return s1.filtered([lambda t: (t[0] * t[1]).order() < n] * l) == s2.filtered([lambda t: (t[0] * t[1]).order() < n] * l)
