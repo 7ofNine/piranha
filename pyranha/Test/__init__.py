@@ -217,7 +217,7 @@ class series_trig_test(unittest.TestCase):
         truncators.unset()
         for limit in [1,2,3,80]:
             psym('x')
-            truncators.degree.set('x',limit)
+            truncators.degree.set('x', limit)
             for t in scalar_trig_exact_series_types:
                 x = t(psym('x'))
                 self.assertEqual(x.sin() * x.sin() + x.cos() * x.cos(), 1)
@@ -229,25 +229,25 @@ class series_trig_test(unittest.TestCase):
                 # Triple angle formulas.
                 self.assertEqual((3 * x).sin(), 3 * x.sin() - 4 * x.sin() ** 3)
                 self.assertEqual((3 * x).cos(), 4 * x.cos() ** 3 - 3 * x.cos())
+                
                 for n in range(0,21):
                     # Sine/cosine of multiple angles.
                     self.assertEqual((n * x).sin(), sum([choose(integer(n),k) * x.cos() ** k * x.sin() ** (n - k) * einpi2(n - k).imag for k in range(0,n + 1)]))
                     self.assertEqual((n * x).cos(), sum([choose(integer(n),k) * x.cos() ** k * x.sin() ** (n - k) * einpi2(n - k).real for k in range(0,n + 1)]))
                     # Power-reduction formulas.
                     if n % 2:
-                        self.assertEqual(x.cos() ** n, rational(2) / (rational(2) ** n) * sum([choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,(n - 1) / 2 + 1)]))
-                        self.assertEqual(x.sin() ** n, rational(2) / (rational(2) ** n) * sum([cs_phase((n - 1) / 2 - k) * choose(rational(n),k) * ((n - 2 * k) * x).sin() for k in range(0,(n - 1) / 2 + 1)]))
+                        self.assertEqual(x.cos() ** n, rational(2) / (rational(2) ** n) * sum([choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,(n - 1) // 2 + 1)]))
+                        self.assertEqual(x.sin() ** n, rational(2) / (rational(2) ** n) * sum([cs_phase((n - 1) // 2 - k) * choose(rational(n),k) * ((n - 2 * k) * x).sin() for k in range(0,(n - 1) // 2 + 1)]))
                     else:
-                        self.assertEqual(x.cos() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n / 2)) + rational(2) / (rational(2) ** n) * sum([choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n / 2)]))
-                        self.assertEqual(x.sin() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n / 2)) + rational(2) / (rational(2) ** n) * sum([cs_phase(n / 2 - k) * choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n / 2)]))
+                        self.assertEqual(x.cos() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n // 2)) + rational(2) / (rational(2) ** n) * sum([choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n // 2)]))
+                        self.assertEqual(x.sin() ** n, rational(1) / (rational(2) ** n) * choose(rational(n), (n // 2)) + rational(2) / (rational(2) ** n) * sum([cs_phase(n // 2 - k) * choose(rational(n),k) * ((n - 2 * k) * x).cos() for k in range(0,n // 2)]))
                     # Integral formula for Bessel functions.
-                    pi, tau = t(psym('pi')), t(psym('tau'))
+                    pi  = t(psym('pi'))
+                    tau = t(psym('tau'))
                     tmp = (tau * n - x * tau.sin()).cos().integrate('tau')
-                    self.assertTrue(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi',
-                        type(t().complex())(-1 + 0j)),x.besselJ(n),limit))
+                    self.assertTrue(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi', type(t().complex())(-1 + 0j)),x.besselJ(n),limit))
                     tmp = (tau * -n - x * tau.sin()).cos().integrate('tau')
-                    self.assertTrue(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi',
-                        type(t().complex())(-1 + 0j)),x.besselJ(-n),limit))
+                    self.assertTrue(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi', type(t().complex())(-1 + 0j)),x.besselJ(-n),limit))
 
 class series_celmec_test(unittest.TestCase):
     """

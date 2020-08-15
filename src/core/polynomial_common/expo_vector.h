@@ -386,7 +386,16 @@ namespace piranha
 				return degree(symbols);
 			}
 
+			DegreeType xorder() const
+			{
+				DegreeType degree(0);
+				for (int i = 0; i < size(); ++i)
+				{
+					degree += (*this)[i];
+				}
+				return degree;
 
+			}
 			/// Minimum total degree of the variables at specified positions pos.
 			/**
 			 * Provided for use within the power series toolbox, and defined to be equivalent to partialDegree().

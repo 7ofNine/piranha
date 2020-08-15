@@ -30,7 +30,7 @@ using namespace piranha;
 int main()
 {
 //    settings::set_max_pretty_print_size(10000);
-    settings::setMultiplicationAlgorithm(settings::ALGORITHM_PLAIN);
+//    settings::setMultiplicationAlgorithm(settings::ALGORITHM_PLAIN);
 	// Expansion to order 401 of r/a in terms of e and M.
 	int retval = 0;
     // todo: remove just fro some testing
@@ -47,9 +47,13 @@ int main()
 //    }
     // todo end
 
+    
+    settings::setMultiplicationAlgorithm(settings::ALGORITHM_AUTOMATIC); // this seems to be the fastest for the situation here
 
 	Psym e("e"), M("M");
-	truncators::Degree::set(401);
+    truncators::Degree::unset();
+    //truncators::Degree::set(11);
+    truncators::Degree::set(401);
     std::vector< ps > flattened;
     boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
     ps res(ps::r_a(ps(e), ps(M)));

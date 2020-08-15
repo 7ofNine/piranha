@@ -531,7 +531,7 @@ struct polynomial_multiplier
 
 				PIRANHA_DEBUG(std::cout << "Block size: " << block_size << '\n');
 
-                std::cout << "Block size: " << block_size << '\n';
+                //std::cout << "Block size: " << block_size << '\n';
                 const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 				
                 std::pair<cf_type1, MaxFastInt> cterm;
@@ -539,7 +539,7 @@ struct polynomial_multiplier
 
 				this->blockedMultiplication(block_size, size1, size2, hm);
                 
-                std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
+                //std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000 << '\n';
 
 				PIRANHA_DEBUG(std::cout << "Done polynomial hash coded multiplying\n");
 

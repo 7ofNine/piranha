@@ -388,7 +388,7 @@ namespace pyranha
 		inst.def("degree", &T::degree, "(Partial) degree.");
 		inst.def("degree", &T::partialDegree);
 		inst.def("degree", &p_degree_str<T>);
-		inst.def("order", &T::order, "(Partial) order.");
+		inst.def("order", &T::xorder, "(Partial) order.");
 		inst.def("order", &T::partialOrder);  //GUT TODO: my change for order of Psym reverted
 		inst.def("order", &p_order_str<T>);
 	}

@@ -71,6 +71,21 @@ namespace piranha
 					VectorPsym const & symbols;
 			};
 
+
+			template <class Term>
+			class XCompareOrder      //GUT possible fix for parameter free order
+			{
+			public:
+				explicit XCompareOrder(){}
+
+				bool operator()(Term const& term1, Term const& term2) const
+				{
+					return (term1.template get<ExpoTermPosition>().xorder() < term2.template get<ExpoTermPosition>().xorder());
+				}
+
+			};
+
+
             // comparison functor for partial degree. Only arguments that are marked by the positionTuple are considered
 			template <class Term, class PositionTuple>
 			class  ComparePartialDegree
@@ -141,6 +156,18 @@ namespace piranha
 
 				const typename Derived::const_iterator result(std::min_element(derived_const_cast->begin(), derived_const_cast->end(), CompareOrder<typename Derived::TermType>(symbols) ));
 				return result->template get<ExpoTermPosition>().order(symbols);
+			}
+
+			Degree xorder() const
+			{
+				if (derived_const_cast->empty())
+				{
+					return Degree(0);
+				}
+				const typename Derived::const_iterator result(std::min_element(derived_const_cast->begin(), derived_const_cast->end(), XCompareOrder<typename Derived::TermType>()));
+				return result->template get<ExpoTermPosition>().xorder();
+
+
 			}
 
 		//protected:
