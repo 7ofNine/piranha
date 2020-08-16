@@ -1,16 +1,18 @@
-INCLUDE(FindPyQt4)
 
-FIND_PACKAGE(PyQt4 REQUIRED)
+message(STATUS "module path ${CMAKE_MODULE_PATH}")
+INCLUDE(FindPySide2)
+
+FIND_PACKAGE(PySide2 REQUIRED)
 
 SET(ui_list main_window.ui)
 #SET(rc_list __resources.qrc)
-PYQT4_WRAP_UI(pyranha_ui ${ui_list})
-#PYQT4_WRAP_RC(pyranha_rc ${rc_list})
+PYSIDE2_WRAP_UI(pyranha_ui ${ui_list})
+#PYSIDE2_WRAP_RC(pyranha_rc ${rc_list})
 
 SET(pyranha_py main_window.py series_draw_area.py)
 
 MESSAGE(STATUS "pyranha_ui is " ${pyranha_ui})
-MESSAGE(STATUS "pyranha_rc is " ${pyranha_rc})
+#MESSAGE(STATUS "pyranha_rc is " ${pyranha_rc})
 
 #SET(IPYTHON_GUI_TOOLKIT "-q4thread")
 SET(IPYTHON_GUI_TOOLKIT "--gui=qt")

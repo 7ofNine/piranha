@@ -21,6 +21,7 @@ INCLUDE(CheckCXXCompilerFlag)
 SET(PIRANHA_EXTRA_LINK_FLAGS "")
 
 IF(MSVC)
+        #SET (CMAKE_CXX_FLAGS_DEBUG /D_DEBUG)  # We don' set _DEBUG, causes problems with linking and we don't reall need it 
         ADD_DEFINITIONS(-DBOOST_ALL_NO_LIB) # don't include boost library versions as #pragma
         ADD_DEFINITIONS(-DNOMINMAX) # get rid of the min/mas macro MS defines
         ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS) # temporary??

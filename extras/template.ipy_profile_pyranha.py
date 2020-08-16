@@ -23,7 +23,7 @@ description on what you could do here.
 
 # Most of your config files and extensions will probably start with this import
 from IPython import get_ipython
-ip = get_ipython()
+ip = get_ipython()  # get the ipython instance we are running in
 
 #import IPython.ipapi
 #ip = IPython.ipapi.get()
