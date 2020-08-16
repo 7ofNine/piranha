@@ -18,3 +18,4 @@ tests/testxxxx.qps
 .vs
 updtaelist.txt
 /tests/Release
+/extras/ipy_profile_pyranha.py
