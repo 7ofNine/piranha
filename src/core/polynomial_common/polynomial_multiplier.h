@@ -455,7 +455,7 @@ struct polynomial_multiplier
 				VectorFunctorType vm(tc1, tc2, this->m_ckeys1, this->m_ckeys2a, t1, t2, trunc, vc_res, argsTuple);
 //				const std::size_t nthread = settings::get_nthread();
 				//TODO:GUT corrected below. There are problems with the number of threads in several places. This is one.
-				const std::size_t nthread = std::min(settings::get_nthread(), std::min(size1, size2));
+				const std::size_t nthread = std::min(settings::getNthread(), std::min(size1, size2));
 //  timing      const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 				
                 // Variables needed by the multiplier.

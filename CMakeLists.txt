@@ -17,7 +17,7 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # we only support MSVC >=2017 and 64 Bit
 IF(MSVC)
-        set(CMAKE_CXX_STANDARD 14) # 17 still has warnigns and errors
+        set(CMAKE_CXX_STANDARD 17) 
         IF(MSVC_VERSION LESS 1910)
              MESSAGE(STATUS "This version ${MSVC_VERSION} of MSVC is not tested. It may work or not")
         ENDIF()
@@ -63,7 +63,10 @@ CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DPS "Build double precision Poisson series 
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_QPS "Build rational coeffcient Poisson series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_DQPS "Build double coefficient - rational exponents Poisson series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_QQPS "Build rational coefficient - rational exponents Poisson series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
-CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build PySide2 gui for pyranha." OFF "BUILD_PYRANHA" OFF) # TODO:?? upgrade to qt5??
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_GUI "Build PySide2 gui for pyranha." OFF "BUILD_PYRANHA" OFF) # TODO: actually make it usefull
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_MATH "Build special functions for series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
+CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_CELMEC "Build methods of Celestial Mechanics for poisson series manipulators in Pyranha." ON "BUILD_PYRANHA" OFF)
+#CMAKE_DEPENDENT_OPTION(BUILD_PYRANHA_TEST "Build tests for series manipulator in Pyranha." ON "BUILD_PYRANHA" OFF)
 
 OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 
@@ -71,7 +74,7 @@ OPTION(BUILD_TESTS "Build performance and correctness tests." OFF)
 
 
 # control build of load library (dll)
-IF(BUILD_PYRANHA) # ultimately that should always be 3.* . Temporary to be able to switch between old and new
+IF(BUILD_PYRANHA) 
     SET(PYRANHA_PYTHON_BUILD_VERSION 3)
     SET(PYRANHA_BOOST_PYTHON_TARGET "python38") # depdends on the precise version of python should be set up depdedent on python)
     INCLUDE(PiranhaPythonSetup) # we need the python includes for piranha.dll ?
@@ -96,7 +99,7 @@ IF(BUILD_ENABLE_ASSERTS)
         SET(PIRANHA_DEFINITIONS ${PIRANHA_DEFINITIONS} -D_PIRANHA_ENABLE_ASSERTS)
 ENDIF()
 
-ADD_DEFINITIONS(${PIRANHA_DEFINITIONS})
+ADD_DEFINITIONS(${PIRANHA_DEFINITIONS})   # should be replaced by add_compile_definitions
 
 
 
@@ -114,7 +117,7 @@ FIND_PACKAGE(MPIR MODULE REQUIRED) # we have findMPIR in our local cmake script 
 
 # Note: the order seems important here, at least in MinGW.
 SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${MPIR_LIBRARIES})
-INCLUDE_DIRECTORIES(${MPIR_INCLUDE_DIR}) # MPIR is probably needed evwerywhere
+INCLUDE_DIRECTORIES(${MPIR_INCLUDE_DIR}) # MPIR is probably needed evwerywhere   SHould use target_include_directories
 
 # Common stuff
 SET(THEORIES_INSTALL_PATH "theories")   # relative within destination see below

@@ -121,7 +121,7 @@ class PIRANHA_VISIBLE atomic_counter_msvc_long
                  * Declared mutable because atomic_counter_msvc_long::get_value needs to perform the operation
                  * this + 0 in order to fetch safely the current m_value with MSVC's atomic builtins.
                  */
-                mutable std::size_t m_value;
+                mutable std::size_t m_value = 0;
 };
 
 #endif

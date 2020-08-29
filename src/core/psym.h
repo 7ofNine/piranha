@@ -92,7 +92,7 @@ namespace piranha
 				const std::size_t w = timeEval.size();
 				for (std::size_t i = 0; i < w; ++i) 
 				{
-					// FIXME: use natural_pow or the like here, to speed up?
+					// FIXME: use natural_pow or the like here, to speed up? We should use Horner. there is no need for the pow function, just simple multiplication
 					retval += std::pow(t, (int)i) * timeEval[i];
 				}
 

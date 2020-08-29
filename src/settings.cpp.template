@@ -89,7 +89,7 @@ namespace piranha
                 m_max_pretty_print_size = boost::numeric_cast<std::size_t>(n);
         }
 
-        void settings::set_nthread(const int &n)
+        void settings::setNthread(const unsigned int &n)
         {
                 if (n <= 0) {
                         PIRANHA_THROW(value_error,"invalid number of threads, "
@@ -98,7 +98,7 @@ namespace piranha
                 m_nthread = boost::numeric_cast<unsigned>(n);
         }
 
-        std::size_t settings::get_nthread()
+        std::size_t settings::getNthread()
         {
                 return m_nthread;
         }

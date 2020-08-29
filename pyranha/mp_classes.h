@@ -21,11 +21,15 @@
 #ifndef PYRANHA_MP_CLASSES_H
 #define PYRANHA_MP_CLASSES_H
 
-#include <boost/python/class.hpp>
-#include <boost/python/operators.hpp>
+//#include <boost/python/class.hpp>
+//#include <boost/python/operators.hpp>
 #include <string>
 
 #include "commons.h"
+
+
+#include "pybind11/pybind11.h"
+#include "pybind11/operators.h"
 
 // TODO
 // - expose complex mp types, including choose overloads for complexes.
@@ -36,56 +40,56 @@ namespace pyranha
 	inline void common_mp_operators(T &inst, const U &x)
 	{
 		// Comparisons
-		inst.def(boost::python::self == x);
-		inst.def(boost::python::self != x);
-		inst.def(x == boost::python::self);
-		inst.def(x != boost::python::self);
+		inst.def(pybind11::self == x);
+		inst.def(pybind11::self != x);
+		inst.def(x == pybind11::self);
+		inst.def(x != pybind11::self);
 
 		// Addition and subtraction.
-		inst.def(boost::python::self += x);
-		inst.def(boost::python::self + x);
-		inst.def(x + boost::python::self);
-		inst.def(boost::python::self -= x);
-		inst.def(boost::python::self - x);
-		inst.def(x - boost::python::self);
+		inst.def(pybind11::self += x);
+		inst.def(pybind11::self + x);
+		inst.def(x + pybind11::self);
+		inst.def(pybind11::self -= x);
+		inst.def(pybind11::self - x);
+		inst.def(x - pybind11::self);
 
 		// Multiplication.
-		inst.def(boost::python::self *= x);
-		inst.def(boost::python::self * x);
-		inst.def(x * boost::python::self);
+		inst.def(pybind11::self *= x);
+		inst.def(pybind11::self * x);
+		inst.def(x * pybind11::self);
 
 		// Division.
-		inst.def(boost::python::self /= x);
-		inst.def(boost::python::self / x);
-		inst.def(x / boost::python::self);
+		inst.def(pybind11::self /= x);
+		inst.def(pybind11::self / x);
+		inst.def(x / pybind11::self);
 	}
 
 	template <class T>
-	inline void common_mp_methods(boost::python::class_<T>  &inst)
+	inline void common_mp_methods(pybind11::class_<T>  &inst)
 	{
 		// Constructors.
-		inst.def(boost::python::init<const int &>());
-		inst.def(boost::python::init<const double &>());
-		inst.def(boost::python::init<const std::string &>());
-		inst.def(boost::python::init<const piranha::mp_rational &>());
-		inst.def(boost::python::init<const piranha::mp_integer &>());
+		inst.def(pybind11::init<const int &>());
+		//inst.def(pybind11::init<const double &>());
+		//inst.def(pybind11::init<const std::string &>());
+		//inst.def(pybind11::init<const piranha::mp_rational &>());
+		//inst.def(pybind11::init<const piranha::mp_integer &>());
 
 		// Some special methods.
-		inst.def("__abs__",  &T::abs, "Absolute value.");
-		inst.def("__copy__", &py_copy<T>);
-		inst.def(boost::python::self_ns::repr(boost::python::self));
+		//inst.def("__abs__",  &T::abs, "Absolute value.");
+		//inst.def("__copy__", &py_copy<T>);
+		//inst.def(pybind11::self_ns::repr(pybind11::self)); //TODO: what might correspond to self_ns in pybind
 
 		// Negation.
-		inst.def(-boost::python::self);
+		//inst.def(- pybind11::self);
 
 		// Exponentiation & friends.
-		typedef T (T::*pow_double)(const double &) const;
-		typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
-		inst.def("__pow__", (pow_double)&T::pow,        "Exponentiation.");
-		inst.def("__pow__", (pow_rational)&T::pow,      "Exponentiation.");
-		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
-		inst.def("root",    &T::root,                   "N-th root.");
-		inst.def("__hash__",&T::hash,                   "Hash value.");
+		//typedef T (T::*pow_double)(const double &) const;
+		//typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
+		//inst.def("__pow__", (pow_double)&T::pow,        "Exponentiation.");
+		//inst.def("__pow__", (pow_rational)&T::pow,      "Exponentiation.");
+		//inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
+		//inst.def("root",    &T::root,                   "N-th root.");
+		//inst.def("__hash__",&T::hash,                   "Hash value.");
 	}
 
 	template <class T, class U>
@@ -93,35 +97,38 @@ namespace pyranha
 	{
 		common_mp_operators(inst,x);
 		// Comparisons
-		inst.def(boost::python::self < x);
-		inst.def(boost::python::self <= x);
-		inst.def(boost::python::self > x);
-		inst.def(boost::python::self >= x);
-		inst.def(x < boost::python::self);
-		inst.def(x <= boost::python::self);
-		inst.def(x > boost::python::self);
-		inst.def(x >= boost::python::self);
+		inst.def(pybind11::self < x);
+		inst.def(pybind11::self <= x);
+		inst.def(pybind11::self > x);
+		inst.def(pybind11::self >= x);
+		inst.def(x < pybind11::self);
+		inst.def(x <= pybind11::self);
+		inst.def(x > pybind11::self);
+		inst.def(x >= pybind11::self);
 	}
 
 	template <class T>
-	inline void real_mp_methods(boost::python::class_<T> &inst)
+	inline void real_mp_methods(pybind11::class_<T> &inst)
 	{
 		common_mp_methods(inst);
 		// Conversions.
-		inst.def("__float__", &T::to_double, "Convert to floating point.");
-		inst.def("__int__",   &T::to_int,    "Convert to integer.");
+		//inst.def("__float__", &T::to_double, "Convert to floating point.");
+		inst.def("__int__",   &T::to_int,     "Convert to integer.");
 	}
 
 	template <class T>
-	inline boost::python::class_<T> expose_real_mp_class(const std::string &name, const std::string &doc)
+	inline pybind11::class_<T> expose_real_mp_class(pybind11::module m, const std::string &name, const std::string &doc)
 	{
-		boost::python::class_<T> inst(name.c_str(),doc.c_str(),boost::python::init<>());
+		pybind11::class_<T> inst(m, name.c_str(), doc.c_str());
+	
+		inst.def(pybind11::init<>());
+
 		real_mp_methods(inst);
 		// Operators against standard types.
-		real_mp_operators(inst,double());
-		real_mp_operators(inst,int());
-		real_mp_operators(inst,piranha::mp_rational());
-		real_mp_operators(inst,piranha::mp_integer());
+		//real_mp_operators(inst, double());
+		//real_mp_operators(inst, int());
+		//real_mp_operators(inst, piranha::mp_rational());
+		//real_mp_operators(inst, piranha::mp_integer());
 		return inst;
 	}
 }

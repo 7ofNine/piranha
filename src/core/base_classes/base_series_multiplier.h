@@ -290,7 +290,7 @@ namespace piranha
 					// TODO: fix numeric casting here.
 					// If size1 is less than the number of desired threads,
 					// use size1 as number of threads.
-					const std::size_t n = std::min(boost::numeric_cast<typename std::vector<TermType1 const *>::size_type > (settings::get_nthread()), terms1.size());
+					const std::size_t n = std::min(boost::numeric_cast<typename std::vector<TermType1 const *>::size_type > (settings::getNthread()), terms1.size());
 					std::vector<std::vector<TermType1 const *> > split1(n);
 					// m is the number of terms per thread for regular blocks.
 					const std::size_t m = terms1.size() / n;

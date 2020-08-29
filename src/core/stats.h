@@ -75,6 +75,7 @@ class PIRANHA_VISIBLE stats
 		static std::string dump()
 		{
 			std::ostringstream oss;
+			oss << "no statistics until we can test multiplication";  //temp.
 			for  (std::map<std::string,std::string>::const_iterator it = m_container.begin(); it != m_container.end(); ++it) {
 				oss << it->first << ": " << it->second << '\n';
 			}

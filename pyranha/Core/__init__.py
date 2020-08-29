@@ -21,6 +21,14 @@
 from ._Core import *
 from .impl import *
 
+
+psyms  = impl.__psyms()
+series = impl.__series()
+
+settings = _Core.__settings()
+stats    = _Core.__stats()
+
+
 def is_iteratable(arg):
     """
     Returns True if arg is iteratable, false otherwise.
@@ -31,12 +39,14 @@ def is_iteratable(arg):
     except TypeError:
         return False
 
+
 def copy(arg):
     """
     Standard copy function. Lifted from the copy module.
     """
     import copy as __copy
     return __copy.copy(arg)
+
 
 def latex(arg):
     """
@@ -61,6 +71,7 @@ def latex(arg):
     if not hasattr(arg,"_latex_"):
         raise AttributeError('Object does not provide a _latex_() method.')
     return arg._latex_()
+
 
 def latex_tab(series, width = .8 , geometry = 'a4paper,margin=0.2in', textsize = 'tiny'):
     """
@@ -103,6 +114,7 @@ def latex_tab(series, width = .8 , geometry = 'a4paper,margin=0.2in', textsize =
     """
     return retval
 
+
 def display(series):
     import shutil, tempfile, os.path
     from pyranha.Core import latex_tab
@@ -134,8 +146,6 @@ def display(series):
     finally:
         shutil.rmtree(tmp_dir)
 
-psyms = impl.__psyms()
-series = impl.__series()
 
 def load(*args):
     """
@@ -160,8 +170,6 @@ def load(*args):
         except NameError:
             raise NameError("Series type \"" + ext_name + "\" is unknown.")
 
-settings = _Core.__settings()
-stats = _Core.__stats()
 
 def gui():
     try:

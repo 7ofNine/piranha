@@ -70,7 +70,7 @@ namespace piranha
 
 
 			/// Get debug flag.
-			static bool get_debug()
+			static bool getDebug()
 			{
 				return m_debug;
 			}
@@ -83,7 +83,7 @@ namespace piranha
 
 
 			/// Set debug flag.
-			static void set_debug(const bool &flag)
+			static void setDebug(const bool &flag)
 			{
 #ifndef NDEBUG
 				m_debug = flag;
@@ -102,8 +102,8 @@ namespace piranha
 			static bool blocker;
 			static std::size_t get_max_pretty_print_size();
 			static void set_max_pretty_print_size(int);
-			static std::size_t get_nthread();
-			static void set_nthread(const int &);
+			static std::size_t getNthread();
+			static void setNthread(const unsigned int &);
 
 			static MultiplicationAlgorithm getMultiplicationAlgorithm()
 			{
