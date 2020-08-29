@@ -42,10 +42,10 @@ namespace pyranha
 		// Comparisons
 		inst.def(pybind11::self == x);
 		inst.def(pybind11::self != x);
-		inst.def(x == pybind11::self);
+		inst.def(x == pybind11::self);   
 		inst.def(x != pybind11::self);
 
-		// Addition and subtraction.
+		//// Addition and subtraction.
 		inst.def(pybind11::self += x);
 		inst.def(pybind11::self + x);
 		inst.def(x + pybind11::self);
@@ -53,68 +53,74 @@ namespace pyranha
 		inst.def(pybind11::self - x);
 		inst.def(x - pybind11::self);
 
-		// Multiplication.
+		//// Multiplication.
 		inst.def(pybind11::self *= x);
 		inst.def(pybind11::self * x);
 		inst.def(x * pybind11::self);
 
-		// Division.
+		//// Division.
 		inst.def(pybind11::self /= x);
 		inst.def(pybind11::self / x);
 		inst.def(x / pybind11::self);
 	}
+
 
 	template <class T>
 	inline void common_mp_methods(pybind11::class_<T>  &inst)
 	{
 		// Constructors.
 		inst.def(pybind11::init<const int &>());
-		//inst.def(pybind11::init<const double &>());
-		//inst.def(pybind11::init<const std::string &>());
-		//inst.def(pybind11::init<const piranha::mp_rational &>());
-		//inst.def(pybind11::init<const piranha::mp_integer &>());
+		inst.def(pybind11::init<const double &>());
+		inst.def(pybind11::init<const std::string &>());
+		//inst.def(pybind11::init<const piranha::mp_rational &>());/// how do I actually instantiat this way?? 
+		//inst.def(pybind11::init<const piranha::mp_integer &>()); /// how do I actually instantiat this way??
+
+		inst.def("__repr__", &py_print_to_string<T>, "Display function");  // make it displayable
 
 		// Some special methods.
-		//inst.def("__abs__",  &T::abs, "Absolute value.");
-		//inst.def("__copy__", &py_copy<T>);
-		//inst.def(pybind11::self_ns::repr(pybind11::self)); //TODO: what might correspond to self_ns in pybind
+		inst.def("__abs__",  &T::abs, "Absolute value."); 
+		inst.def("__copy__", &py_copy<T>);
+		//inst.def(pybind11::self_ns::repr(pybind11::self)); //TODO: what might correspond to self_ns in pybind what does that do anyways
 
 		// Negation.
-		//inst.def(- pybind11::self);
+		inst.def(- pybind11::self);
 
 		// Exponentiation & friends.
-		//typedef T (T::*pow_double)(const double &) const;
+		typedef T (T::*pow_double)(const double &) const;
 		//typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
-		//inst.def("__pow__", (pow_double)&T::pow,        "Exponentiation.");
+		inst.def("__pow__", (pow_double)&T::pow,        "Exponentiation.");
 		//inst.def("__pow__", (pow_rational)&T::pow,      "Exponentiation.");
-		//inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
-		//inst.def("root",    &T::root,                   "N-th root.");
-		//inst.def("__hash__",&T::hash,                   "Hash value.");
+		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
+		inst.def("root",    &T::root,                   "N-th root.");
+		inst.def("__hash__",&T::hash,                   "Hash value.");
 	}
+
 
 	template <class T, class U>
 	inline void real_mp_operators(T &inst, const U &x)
 	{
-		common_mp_operators(inst,x);
+		common_mp_operators(inst, x);
 		// Comparisons
-		inst.def(pybind11::self < x);
-		inst.def(pybind11::self <= x);
-		inst.def(pybind11::self > x);
-		inst.def(pybind11::self >= x);
-		inst.def(x < pybind11::self);
-		inst.def(x <= pybind11::self);
-		inst.def(x > pybind11::self);
-		inst.def(x >= pybind11::self);
+		//inst.def(pybind11::self < x);
+		//inst.def(pybind11::self <= x);
+		//inst.def(pybind11::self > x);
+		//inst.def(pybind11::self >= x);
+		//inst.def(x < pybind11::self);
+		//inst.def(x <= pybind11::self);
+		//inst.def(x > pybind11::self);
+		//inst.def(x >= pybind11::self);
 	}
+
 
 	template <class T>
 	inline void real_mp_methods(pybind11::class_<T> &inst)
 	{
 		common_mp_methods(inst);
 		// Conversions.
-		//inst.def("__float__", &T::to_double, "Convert to floating point.");
+		inst.def("__float__", &T::to_double,  "Convert to floating point.");
 		inst.def("__int__",   &T::to_int,     "Convert to integer.");
 	}
+
 
 	template <class T>
 	inline pybind11::class_<T> expose_real_mp_class(pybind11::module m, const std::string &name, const std::string &doc)
@@ -124,11 +130,12 @@ namespace pyranha
 		inst.def(pybind11::init<>());
 
 		real_mp_methods(inst);
+
 		// Operators against standard types.
-		//real_mp_operators(inst, double());
-		//real_mp_operators(inst, int());
-		//real_mp_operators(inst, piranha::mp_rational());
-		//real_mp_operators(inst, piranha::mp_integer());
+		real_mp_operators(inst, double());
+		real_mp_operators(inst, int());
+		//real_mp_operators(inst, piranha::mp_rational());   // How do we create this case???
+		//real_mp_operators(inst, piranha::mp_integer());    // how dowe create this case??  some method that returns such a result??
 		return inst;
 	}
 }

@@ -144,7 +144,8 @@ PYBIND11_MODULE(_Core, mc)
 
     // class mp_integer
     pybind11::class_<mp_integer> mpz(expose_real_mp_class<mp_integer>(mc, "integer", "Multi-precision integer number."));
-    //mpz.def(pybind11::init<const mp_rational &>());
+    //mpz.def(pybind11::init<const mp_rational &>());    // how would that be working. How to instantiate i.e. how do we get an mp_rational as input?? unnecessary already in common_mp_methods but still where would it come from
+   
     //mpz.def("factorial", &mp_integer::factorial, "Factorial.");
     //mpz.def("choose",    &mp_integer::choose,    "Binomial coefficient (choose function).");
     //mpz.def("lcm",       &mp_integer::lcm,       "Set self to the least common multiplier of input arguments.");
@@ -185,7 +186,8 @@ PYBIND11_MODULE(_Core, mc)
 
 
     // class Psym
-    pybind11::class_<Psym> ps(mc, "Psym", "Symbol class.");
+    // Should psym offer a latex method ?? not much really to show that way, probably just the name!
+    pybind11::class_<Psym> ps(mc, "psym", "Symbol class.");
     
     ps.def(pybind11::init<const std::string&, const std::vector<double>&>());
     ps.def(pybind11::init<const std::string&, const double&>());

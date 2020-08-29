@@ -21,8 +21,8 @@ import functools
 
 class __psyms(object):
     def __repr__(self):
-        from pyranha.Core import Psym
-        l = Psym.list()
+        from pyranha.Core import psym
+        l = psym.list()
         retval = ''
         if not l:
             return 'No symbols defined.'
@@ -42,7 +42,7 @@ class __psyms(object):
         for i in names.split():
             try:
                 # Try to fetch the psym from the psym manager.
-                ip.ex("%s = Psym(\"%s\")" % (i,i))
+                ip.ex("%s = psym(\"%s\")" % (i,i))
             except SyntaxError:
                 raise SyntaxError("The name '" + i + "' is not valid Python syntax, skipping.")
                 
@@ -89,6 +89,6 @@ class __series(object):
         for i in names.split():
             try:
                 # Try to fetch the psym from the psym manager.
-                ip.ex("%s = %s(Psym(\"%s\"))" % (i, s_type,i))
+                ip.ex("%s = %s(psym(\"%s\"))" % (i, s_type,i))
             except SyntaxError:
                 raise SyntaxError("The name '" + i + "' is not valid Python syntax, skipping.")
