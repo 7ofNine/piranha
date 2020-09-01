@@ -17,13 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <vector>
-#include <string>
-
-#include <boost/python/class.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/docstring_options.hpp>
 
 
 #include "../../src/core/truncators/degree.h"
@@ -33,15 +26,20 @@
 #include "../commons.h"
 #include "../exceptions.h"
 
-using namespace boost::python;
+#include "pybind11/pybind11.h"
+
+#include <vector>
+#include <string>
+
+//using namespace boost::python;
 using namespace piranha;
 using namespace pyranha;
 
 // Instantiate the pyranha Truncators module.
-BOOST_PYTHON_MODULE(_Truncators)
+PYBIND11_MODULE(_Truncators, mt)
 {
-    docstring_options docOptions(true, false, false);
-    translate_exceptions();
+    //docstring_options docOptions(true, false, false);  //TODO: tob done
+    //translate_exceptions();                            //TODO:: to be done 
 
     typedef void (*deg_set)(const int);
     typedef void (*q_deg_set)(const mp_rational &);
@@ -49,24 +47,29 @@ BOOST_PYTHON_MODULE(_Truncators)
     typedef void (*p_q_deg_set)(const std::vector<std::string> &, const mp_rational &);
     typedef void (*s_p_deg_set)(const std::string &, const int);
     typedef void (*s_p_q_deg_set)(const std::string &, const mp_rational &);
-    class_<truncators::Degree>("__degree_truncator", "Minimum degree truncator.", init<>())
-    .def("__repr__", &py_print_to_string<truncators::Degree>)
-    .def("set", deg_set(&truncators::Degree::set), "Set truncation level of series' minimum degree to arg1.")
-    .def("set", s_p_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
-        "relatively to Psym named arg1.")
-    .def("set", p_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
-        "relatively to list of Psym names arg1.")
-    .def("set", q_deg_set(&truncators::Degree::set), "Set truncation level of series' minimum degree to arg1.")
-    .def("set", s_p_q_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
-        "relatively to Psym named arg1.")
-    .def("set", p_q_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
-        "relatively to list of Psym names arg1.").staticmethod("set")
-    .def("unset", &truncators::Degree::unset, "Clear minimum degree limit.").staticmethod("unset");
 
-    class_<truncators::Norm>("__norm_truncator", "Norm truncator.", init<>())
-    .def("__repr__", &py_print_to_string<truncators::Norm>)
-    .def("set", &truncators::Norm::set, "Set norm truncation level to arg1.").staticmethod("set")
-    .def("unset", &truncators::Norm::unset, "Disable norm-based truncation.").staticmethod("unset");
 
-    def("unset",&truncators::unset,"Unset all truncators.");
+    pybind11::class_<truncators::Degree> td(mt, "__degree_truncator", "Minimum degree truncator.");
+    td.def(pybind11::init<>());
+    td.def("__repr__", &py_print_to_string<truncators::Degree>);
+    td.def_static("set", deg_set(&truncators::Degree::set), "Set truncation level of series' minimum degree to arg1.");
+    td.def_static("set", s_p_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+        "relatively to Psym named arg1.");
+    td.def_static("set", p_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+        "relatively to list of Psym names arg1.");
+    td.def_static("set", q_deg_set(&truncators::Degree::set), "Set truncation level of series' minimum degree to arg1.");
+    td.def_static("set", s_p_q_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+        "relatively to Psym named arg1.");
+    td.def_static("set", p_q_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+        "relatively to list of Psym names arg1.");
+    td.def_static("unset", &truncators::Degree::unset, "Clear minimum degree limit.");
+
+
+    pybind11::class_<truncators::Norm> tn(mt, "__norm_truncator", "Norm truncator.");
+    tn.def(pybind11::init<>());
+    tn.def("__repr__", &py_print_to_string<truncators::Norm>);
+    tn.def_static("set", &truncators::Norm::set, "Set norm truncation level to arg1.");
+    tn.def_static("unset", &truncators::Norm::unset, "Disable norm-based truncation.");
+
+    mt.def("unset", &truncators::unset, "Unset all truncators.");
 }

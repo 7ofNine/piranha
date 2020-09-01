@@ -18,15 +18,6 @@
 *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 ***************************************************************************/
 
-//#include <boost/functional/hash.hpp>
-//#include <boost/python/class.hpp>
-//#include <boost/python/copy_const_reference.hpp>
-//#include <boost/python/def.hpp>
-//#include <boost/python/enum.hpp>
-//#include <boost/python/make_function.hpp>
-//#include <boost/python/module.hpp>
-//#include <boost/python/operators.hpp>
-//#include <boost/python/docstring_options.hpp>
 #include <cstddef>
 #include <sstream>
 #include <string>
@@ -40,7 +31,6 @@
 #include "../../src/core/settings.h"
 #include "../../src/core/stats.h"
 #include "../args_tuple.h"
-//#include "../boost_python_container_conversions.h"
 #include "../commons.h"
 #include "../exceptions.h"
 #include "../mp_classes.h"
@@ -121,13 +111,12 @@ PYBIND11_MODULE(_Core, mc)
 //from_python_sequence<std::vector<mp_integer>,variable_capacity_policy>();
 
 
-// Expose evaluation dictionary.
-//class_<EvalDict> ed("EvalDict","Evaluation dictionary.", init<>());
-    //pybind11::class_<EvalDict> ed(mc, "EvalDict", "Evaluation dictionary");
+// Expose evaluation dictionary.     TODO: disbaled until we need it
+// pybind11::class_<EvalDict> ed(mc, "evaldict", "Evaluation dictionary");
 
-    //ed.def(pybind11::init<>());
+// ed.def(pybind11::init<>());
 
-    //ed.def("__setitem__", &ed_set_item);
+// ed.def("__setitem__", &ed_set_item);    //TODO: is that all we need??? 
 
     //// Expose arguments tuples.
     //expose_argsTuples<__PIRANHA_MAX_ECHELON_LEVEL>();
@@ -136,23 +125,22 @@ PYBIND11_MODULE(_Core, mc)
     // MP classes.
     // class mp_rational
     pybind11::class_<mp_rational> mpr(expose_real_mp_class<mp_rational>(mc, "rational", "Multi-precision rational number."));
-    //mpr.def(pybind11::init<const int &, const int &>());
-    //mpr.def(pybind11::init<const mp_integer &, const mp_integer &>());
-    ////mpr.add_property("num", &mp_rational::get_num, "Numerator of the rational number");    // TODO: how to do property with the docstring?????
-    ////mpr.add_property("den", &mp_rational::get_den, "Denominator of the ratonal Number");   // TODO: how to do property with the docstring?????
-    //mpr.def("choose", &mp_rational::choose, "Binomial coefficient (choose function).");
+    mpr.def(pybind11::init<const int &, const int &>());
+    mpr.def(pybind11::init<const mp_integer &, const mp_integer &>());
+    mpr.def_property_readonly("num", &mp_rational::get_num, "Numerator of the rational number");    
+    mpr.def_property_readonly("den", &mp_rational::get_den, "Denominator of the ratonal Number");   
+    mpr.def("choose", &mp_rational::choose, "Binomial coefficient (choose function).");
+
 
     // class mp_integer
     pybind11::class_<mp_integer> mpz(expose_real_mp_class<mp_integer>(mc, "integer", "Multi-precision integer number."));
     //mpz.def(pybind11::init<const mp_rational &>());    // how would that be working. How to instantiate i.e. how do we get an mp_rational as input?? unnecessary already in common_mp_methods but still where would it come from
    
-    //mpz.def("factorial", &mp_integer::factorial, "Factorial.");
-    //mpz.def("choose",    &mp_integer::choose,    "Binomial coefficient (choose function).");
-    //mpz.def("lcm",       &mp_integer::lcm,       "Set self to the least common multiplier of input arguments.");
-    //mpz.def(pybind11::self %= mp_integer());
-    //mpz.def(pybind11::self %= int());
-    //mpz.def(pybind11::self % mp_integer());
-    //mpz.def(pybind11::self % int());
+    mpz.def("factorial", &mp_integer::factorial, "Factorial.");
+    mpz.def("choose",    &mp_integer::choose,    "Binomial coefficient (choose function).");
+    mpz.def("lcm",       &mp_integer::lcm,       "Set self to the least common multiplier of input arguments.");   //TODO: maybe a better interface. not just k.lcm(i,i) and for plain int i,j?
+    mpz.def(pybind11::self %= mp_integer());                                                                       // todo: maybe also a better interface. make it assignable? only i%=j --> i works    
+    mpz.def(pybind11::self %= int());
 
 
     // class settings (for pyranha)
@@ -185,7 +173,7 @@ PYBIND11_MODULE(_Core, mc)
     enu.export_values();
 
 
-    // class Psym
+    // class psym
     // Should psym offer a latex method ?? not much really to show that way, probably just the name!
     pybind11::class_<Psym> ps(mc, "psym", "Symbol class.");
     

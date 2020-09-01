@@ -37,17 +37,14 @@ using namespace pyranha;
 PYBIND11_MODULE(_Zpoly, m)
 {
     //docstring_options docOptions(true, false, false);
-    translate_exceptions();
+    //translate_exceptions();  //still todo
 
-    //class_<zpoly> inst = series_basic_instantiation<zpoly>(std::string("zpoly"),
-    //    std::string("Multivariate polynomial with arbitrary-size integer coefficients."));
-    //pybind11::class_<zpoly> inst();
-    auto inst = series_basic_instantiation<zpoly>(m, "zpoly", "Multivariate polynomial with arbitrary-size integer coefficients.");
+    pybind11::class_<zpoly> inst(series_basic_instantiation<zpoly>(m, "zpoly", "Multivariate polynomial with arbitrary-size integer coefficients."));
     common_polynomial_instantiation(inst);
     series_sub_instantiation<zpoly, zpoly>(inst);
 
     // complex zpoly
-    auto instc = series_basic_instantiation<zpolyc>(m, "zpolyc", "Multivariate polynomial with complex arbitrary-size integer coefficients.");
+    pybind11::class_<zpolyc> instc(series_basic_instantiation<zpolyc>(m, "zpolyc", "Multivariate polynomial with complex arbitrary-size integer coefficients."));
     common_polynomial_instantiation(instc);
     series_complex_instantiation(instc, inst);
     series_sub_instantiation<zpolyc, zpoly>(instc);

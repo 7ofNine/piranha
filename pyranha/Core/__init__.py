@@ -29,7 +29,7 @@ settings = _Core.__settings()
 stats    = _Core.__stats()
 
 
-def is_iteratable(arg):
+def is_iterable(arg):
     """
     Returns True if arg is iteratable, false otherwise.
     """
@@ -115,11 +115,11 @@ def latex_tab(series, width = .8 , geometry = 'a4paper,margin=0.2in', textsize =
     return retval
 
 
-def display(series):
+def display(series):     # not functional win 32 problems with unlink. Probably somewhat tricky to solve. Assumese the existence of pdflatex
     import shutil, tempfile, os.path
     from pyranha.Core import latex_tab
     from subprocess import Popen, PIPE, STDOUT
-    if isinstance(series,str):
+    if isinstance(series, str):
         s = series
     else:
         s = latex_tab(series.split())
@@ -148,25 +148,28 @@ def display(series):
 
 
 def load(*args):
+    # TODO:: fix for using folder names. Save works with folder names but the load doesn't the split doesn't work properly for .
     """
     Load series from list of filenames arguments.
     Type of series will be inferred - if possible - from the files' extensions.
     """
     try:
-        import IPython.ipapi
+        from IPython import get_ipython
     except ImportError:
         raise ImportError("IPython not available.")
-    ip = IPython.ipapi.get()
+    ip = get_ipython()
     args_list = list(args)
     for i in args_list:
         s = i.split(".")
+        print("s: " + str(s))
         var_name = s.pop(0)
+        print("var_name: " + var_name)
         if not s:
             raise ValueError("Could not establish an extension for the filename \"" + arg + "\".")
             return
         ext_name = s.pop()
         try:
-            ip.ex("%s = %s(\"%s\")" % (var_name,ext_name,i))
+            ip.ex("%s = %s(\"%s\")" % (var_name, ext_name, i))
         except NameError:
             raise NameError("Series type \"" + ext_name + "\" is unknown.")
 
@@ -176,6 +179,6 @@ def gui():
         import pyranha.Gui
         pyranha.Gui.mw.show()
     except ImportError:
-        print("Gui support is not available or PyQt4 is not installed.")
+        print("Gui support is not available or 'Python for Qt' is not installed.")
 
 #print("Core.__init__.py.173 " + str(dir()))   #DEBUG

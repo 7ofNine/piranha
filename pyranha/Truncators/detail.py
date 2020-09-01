@@ -23,13 +23,15 @@ class __truncators(object):
         self.__list = [x for x in dir(_Truncators) if x.endswith('_truncator')]
         for n in self.__list:
             exec('self.%s = _Truncators.%s()' % (n.split('_truncator')[0][2:],n))
+
     def __repr__(self):
         from pyranha.Truncators import _Truncators
         retval = ''
         for n in self.__list:
-            exec('t = _Truncators.%s()' % n)
-            retval += ('%s: %s\n' % (n.split('_truncator')[0][2:],str(t)))
+            exec('global _pyranha_t\n_pyranha_t = _Truncators.%s()' % n)
+            retval += ('%s: %s\n' % (n.split('_truncator')[0][2:], str(_pyranha_t)))
         return retval
+
     def unset(self):
         from pyranha.Truncators import _Truncators
         _Truncators.unset()

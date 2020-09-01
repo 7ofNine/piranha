@@ -294,7 +294,7 @@ namespace piranha
 			 */
 			mp_rational choose(const int &k) const
 			{
-				return generic_choose(*this,k);
+				return generic_choose(*this, k);
 			}
 			/// Exponentiation.
 			/**
@@ -744,6 +744,8 @@ namespace piranha
 				}
 				return retval;
 			}
+
+
 		private:
 			mp_integer pow_int(const int &n) const
 			{

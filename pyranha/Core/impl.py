@@ -63,7 +63,8 @@ class __series(object):
         l.sort()
         if not l:
             return 'No series defined.'
-        m0, m1 = max([len(t[0]) for t in l]), max([len(t[1]) for t in l])
+        m0 = max([len(t[0]) for t in l])
+        m1 = max([len(t[1]) for t in l])
         return functools.reduce(lambda a,b: a+ b,
             ['Series: \'' + t[0] + '\'' + (' ' * (m0 - len(t[0]))) + ' - \'' + t[1] + '\'' + (' ' * (m1 - len(t[1]))) + ' - ' + str(t[2]) + '\n' for t in l])[0:-1]
             

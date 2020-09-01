@@ -21,8 +21,6 @@
 #ifndef PYRANHA_MP_CLASSES_H
 #define PYRANHA_MP_CLASSES_H
 
-//#include <boost/python/class.hpp>
-//#include <boost/python/operators.hpp>
 #include <string>
 
 #include "commons.h"
@@ -87,9 +85,9 @@ namespace pyranha
 
 		// Exponentiation & friends.
 		typedef T (T::*pow_double)(const double &) const;
-		//typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
+		typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
 		inst.def("__pow__", (pow_double)&T::pow,        "Exponentiation.");
-		//inst.def("__pow__", (pow_rational)&T::pow,      "Exponentiation.");
+		inst.def("__pow__", (pow_rational)&T::pow,      "Exponentiation.");
 		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
 		inst.def("root",    &T::root,                   "N-th root.");
 		inst.def("__hash__",&T::hash,                   "Hash value.");
@@ -100,17 +98,45 @@ namespace pyranha
 	inline void real_mp_operators(T &inst, const U &x)
 	{
 		common_mp_operators(inst, x);
-		// Comparisons
-		//inst.def(pybind11::self < x);
-		//inst.def(pybind11::self <= x);
-		//inst.def(pybind11::self > x);
-		//inst.def(pybind11::self >= x);
-		//inst.def(x < pybind11::self);
-		//inst.def(x <= pybind11::self);
-		//inst.def(x > pybind11::self);
-		//inst.def(x >= pybind11::self);
+		
+		// Comparisons                             
+		inst.def(pybind11::self < x);
+		inst.def(pybind11::self <= x);
+		inst.def(pybind11::self > x);
+		inst.def(pybind11::self >= x);
+		inst.def(x < pybind11::self);
+		inst.def(x <= pybind11::self);
+		inst.def(x > pybind11::self);
+		inst.def(x >= pybind11::self);
 	}
 
+	template <class T>
+	inline void real_mp_operators(pybind11::class_<T> &inst)
+	{
+		inst.def(pybind11::self < pybind11::self);
+		inst.def(pybind11::self <= pybind11::self);
+		inst.def(pybind11::self > pybind11::self);
+		inst.def(pybind11::self >= pybind11::self);
+
+		// Comparisons
+		inst.def(pybind11::self == pybind11::self);
+		inst.def(pybind11::self != pybind11::self);
+
+		//// Addition and subtraction.
+		inst.def(pybind11::self += pybind11::self);
+		inst.def(pybind11::self + pybind11::self);
+		inst.def(pybind11::self -= pybind11::self);
+		inst.def(pybind11::self - pybind11::self);
+
+		//// Multiplication.
+		inst.def(pybind11::self *= pybind11::self);
+		inst.def(pybind11::self * pybind11::self);
+
+		//// Division.
+		inst.def(pybind11::self /= pybind11::self);
+		inst.def(pybind11::self / pybind11::self);
+
+	}
 
 	template <class T>
 	inline void real_mp_methods(pybind11::class_<T> &inst)
@@ -130,10 +156,11 @@ namespace pyranha
 		inst.def(pybind11::init<>());
 
 		real_mp_methods(inst);
-
+		
 		// Operators against standard types.
-		real_mp_operators(inst, double());
-		real_mp_operators(inst, int());
+		real_mp_operators(inst);                 // operators with itself
+		real_mp_operators(inst, double());       // operators with double
+		real_mp_operators(inst, int());          // operators with int   
 		//real_mp_operators(inst, piranha::mp_rational());   // How do we create this case???
 		//real_mp_operators(inst, piranha::mp_integer());    // how dowe create this case??  some method that returns such a result??
 		return inst;

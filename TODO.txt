@@ -1,0 +1,18 @@
+LIst of piranha TODOs
+
+1)   saveTo work with a relative path but loading it doesn't work with path!!
+
+2)   loading a series geneartes arguments according to the given name in the file but they are not created as a separate accesible psym entry under this name. i.e. how to access them??
+
+3)   loading the psym definition from file can not identify the order field. That was noy part of the original design, i.e. parsing order and setting it is not provided.
+
+4)   zpoly and rational. adding subtracting etc. just silently morphs the rational into an integer. Is that a good idea?? Undetected errors being cretaed. SHould it automatically create a qpoly?? or simply fail
+     can we actually create a qpoly from a zpoly. Theyare mathematically contained i.e Q[[z]] > Z[[z]]. The same is true for double. 
+     
+5)   there is no better real version than double. Should we do that. Ultimately change over to mp++?? WE have mpf_cf based on mpf_class from mpir but it is nowhere used!! in any series. 
+     There is also mpfr_t from mpfr
+     
+6)   for zpoly rational power it first complains about truncator not set and only then that it can't create it from non unity values. root of course doesn't work either for zpoly
+
+7)  wich raises the question if we should have a degree limit setable per series. This can safe probably lots of run time.
+

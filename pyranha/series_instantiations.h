@@ -34,7 +34,7 @@
 #include "../src/core/mp.h"
 #include "../src/core/psym.h"
 #include "../src/core/type_traits.h"
-#include "boost_python_container_conversions.h"
+//#include "boost_python_container_conversions.h"
 #include "commons.h"
 
 #include "pybind11/pybind11.h"
@@ -90,28 +90,30 @@ namespace pyranha
 		// Expose vectors of series and vectors of vectors of series as Python tuples.
 		//to_tuple_mapping<std::vector<T> >();                                               //TODO
 		//to_tuple_mapping<std::vector<std::vector<T> > >();                                 //TODO
+
 		// Expose the manipulator class.
 		pybind11::class_<T> inst(m, name.c_str(), description.c_str());
-		//inst.def(pybind11::init<const T &>());
-		//inst.def(pybind11::init<const std::string &>());
-		//inst.def(pybind11::init<const double &>());
-		//inst.def(pybind11::init<const piranha::mp_rational &>());
-		//inst.def(pybind11::init<const piranha::mp_integer &>());
+		inst.def(pybind11::init<const T &>());
+		inst.def(pybind11::init<const std::string &>());
+		inst.def(pybind11::init<const double &>());
+		inst.def(pybind11::init<const piranha::mp_rational &>());
+		inst.def(pybind11::init<const piranha::mp_integer &>());
 		inst.def(pybind11::init<const piranha::Psym &>());
 
 		// Some special methods.
-		//inst.def("__copy__", &py_copy<T>);
+		inst.def("__copy__", &py_copy<T>);
 		//inst.def("__iter__", boost::python::iterator<T>());
-		//inst.def("__iter__", boost::python::range(&series_begin<T>, &series_end<T>));		//TODO
-		//inst.def("__len__", &T::length);
-		//inst.def("__impl_repr__", &py_print_to_string<T>);
-		// Pyranha-specific special methods.
-		//inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
-		//inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
+		//inst.def("__iter__", boost::python::range(&series_begin<T>, &series_end<T>));		//TODO  these are needed for for loops (for i in....) doe we need a __next__ too?
+		inst.def("__len__", &T::length);
+		inst.def("__impl_repr__", &py_print_to_string<T>);
 
-		//inst.add_property("arguments", &py_series_arguments<T>, "Series arguments.");                  //TODO
+		// Pyranha-specific special methods.
+		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
+		inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
+
+		inst.def_property_readonly("arguments", &py_series_arguments<T>, "Series arguments.");                 
 		//inst.def_property_readonly_static("echelonLevel", &py_echelon_level<T>, pybind11::return_value_policy::copy, "Echelon level of the series.");  //TODO: how can we make the deocumentation string work??
-		//if (piranha::is_ring_exact<T>::value) {                                                          //TODO
+		//if (piranha::is_ring_exact<T>::value) {                                                          //TODO    // are these really used for anything or even usefull??
 		//	inst.add_static_property("is_ring_exact", &py_type_trait<piranha::is_ring_exact<T> >,
 		//		"is_ring_exact type trait for the series.");
 		//}
@@ -130,77 +132,84 @@ namespace pyranha
 		//	inst.add_static_property("is_rational_exponent", &py_type_trait<piranha::is_rational_exponent<T> >,
 		//		"is_rational_exponent type trait for the series.");
 		//}
-		//inst.def("__split__", &T::split, "Split series.");
-		//inst.def("__psi__", &T::psi, "Power series iterations.");
-		//inst.def("saveTo", &T::saveTo, "Save to file.");
-		//typedef typename T::EvalType (T::*eval_double)(const double &) const;
-		//typedef typename T::EvalType (T::*eval_dic)(const piranha::EvalDict &) const;
-		//inst.def("__eval__", eval_double(&T::eval), "Evaluate at time arg2.");
-		//inst.def("__eval__", eval_dic(&T::eval), "Evaluate using dictionary arg2.");
-		//inst.add_property("norm", &T::norm, "Norm.");															//TODO
-		//inst.add_property("atoms", &T::atoms, "Number of atoms composing the series.");						//TODO
-		//inst.def("swap", &T::swap, "Swap contents with series arg2.");
-		//inst.def("flatten", &T::flatten, "Flatten series.");
-		// Equality.
-		//inst.def(pybind11::self == double());
-		//inst.def(pybind11::self == piranha::mp_rational());
-		//inst.def(pybind11::self == piranha::mp_integer());
+		inst.def("__split__", &T::split, "Split series.");
+		inst.def("__psi__", &T::psi, "Power series iterations.");
+		inst.def("saveTo", &T::saveTo, "Save to file.");
+		typedef typename T::EvalType (T::*eval_double)(const double &) const;
+		typedef typename T::EvalType (T::*eval_dic)(const piranha::EvalDict &) const;
+		inst.def("__eval__", eval_double(&T::eval), "Evaluate at time arg2.");
+		inst.def("__eval__", eval_dic(&T::eval),    "Evaluate using dictionary arg2.");
+		inst.def_property_readonly("norm", &T::norm, "Norm.");															
+		inst.def_property_readonly("atoms", &T::atoms, "Number of atoms composing the series.");						
+		inst.def("swap", &T::swap, "Swap contents with series arg2.");
+		inst.def("flatten", &T::flatten, "Flatten series.");
+
+		// Equality, Inequality
+		inst.def(pybind11::self == double());
+		inst.def(pybind11::self == piranha::mp_rational());
+		inst.def(pybind11::self == piranha::mp_integer());
 		inst.def(pybind11::self == pybind11::self);
-		//inst.def(pybind11::self != double());
-		//inst.def(pybind11::self != piranha::mp_rational());
-		//inst.def(pybind11::self != piranha::mp_integer());
+		inst.def(pybind11::self != double());
+		inst.def(pybind11::self != piranha::mp_rational());
+		inst.def(pybind11::self != piranha::mp_integer());
 		inst.def(pybind11::self != pybind11::self);
+
 		// Addition.
-		//inst.def(pybind11::self += double());
-		//inst.def(pybind11::self += piranha::mp_rational());
-		//inst.def(pybind11::self += piranha::mp_integer());
-		//inst.def(pybind11::self += pybind11::self);
-		//inst.def(pybind11::self + double());
-		//inst.def(pybind11::self + piranha::mp_rational());
-		//inst.def(pybind11::self + piranha::mp_integer());
-		//inst.def(double() + pybind11::self);
-		//inst.def(piranha::mp_rational() + pybind11::self);
-		//inst.def(piranha::mp_integer() + pybind11::self);
-		//inst.def(pybind11::self + pybind11::self);
+		inst.def(pybind11::self += double());
+		inst.def(pybind11::self += piranha::mp_rational());
+		inst.def(pybind11::self += piranha::mp_integer());
+		inst.def(pybind11::self += pybind11::self);
+		inst.def(pybind11::self + double());
+		inst.def(pybind11::self + piranha::mp_rational());
+		inst.def(pybind11::self + piranha::mp_integer());
+		inst.def(double() + pybind11::self);
+		inst.def(piranha::mp_rational() + pybind11::self);
+		inst.def(piranha::mp_integer() + pybind11::self);
+		inst.def(pybind11::self + pybind11::self);
+
 		// Subtraction (same as above).
-		//inst.def(pybind11::self -= double());
-		//inst.def(pybind11::self -= piranha::mp_rational());
-		//inst.def(pybind11::self -= piranha::mp_integer());
-		//inst.def(pybind11::self -= pybind11::self);
-		//inst.def(pybind11::self - double());
-		//inst.def(pybind11::self - piranha::mp_rational());
-		//inst.def(pybind11::self - piranha::mp_integer());
-		//inst.def(double() - pybind11::self);
-		//inst.def(piranha::mp_rational() - pybind11::self);
-		//inst.def(piranha::mp_integer() - pybind11::self);
-		//inst.def(pybind11::self - pybind11::self);
+		inst.def(pybind11::self -= double());
+		inst.def(pybind11::self -= piranha::mp_rational());
+		inst.def(pybind11::self -= piranha::mp_integer());
+		inst.def(pybind11::self -= pybind11::self);
+		inst.def(pybind11::self - double());
+		inst.def(pybind11::self - piranha::mp_rational());
+		inst.def(pybind11::self - piranha::mp_integer());
+		inst.def(double() - pybind11::self);
+		inst.def(piranha::mp_rational() - pybind11::self);
+		inst.def(piranha::mp_integer() - pybind11::self);
+		inst.def(pybind11::self - pybind11::self);
+
 		// Negation.
-		//inst.def(-pybind11::self);
+		inst.def(-pybind11::self);
+
 		// Multiplication.
-		//inst.def(pybind11::self *= double());
-		//inst.def(pybind11::self *= piranha::mp_rational());
-		//inst.def(pybind11::self *= piranha::mp_integer());
-		//inst.def(pybind11::self *= pybind11::self);
-		//inst.def(pybind11::self * double());
-		//inst.def(pybind11::self * piranha::mp_rational());
-		//inst.def(pybind11::self * piranha::mp_integer());
-		//inst.def(double() * pybind11::self);
-		//inst.def(piranha::mp_rational() * pybind11::self);
-		//inst.def(piranha::mp_integer() * pybind11::self);
-		//inst.def(pybind11::self * pybind11::self);
+		inst.def(pybind11::self *= double());
+		inst.def(pybind11::self *= piranha::mp_rational());
+		inst.def(pybind11::self *= piranha::mp_integer());
+		inst.def(pybind11::self *= pybind11::self);
+		inst.def(pybind11::self * double());
+		inst.def(pybind11::self * piranha::mp_rational());
+		inst.def(pybind11::self * piranha::mp_integer());
+		inst.def(double() * pybind11::self);
+		inst.def(piranha::mp_rational() * pybind11::self);
+		inst.def(piranha::mp_integer() * pybind11::self);
+		inst.def(pybind11::self * pybind11::self);
+
 		// Division.
-		//inst.def(pybind11::self /= double());
-		//inst.def(pybind11::self /= piranha::mp_rational());
-		//inst.def(pybind11::self /= piranha::mp_integer());
-		//inst.def(pybind11::self / double());
-		//inst.def(pybind11::self / piranha::mp_rational());
-		//inst.def(pybind11::self / piranha::mp_integer());
+		inst.def(pybind11::self /= double());
+		inst.def(pybind11::self /= piranha::mp_rational());
+		inst.def(pybind11::self /= piranha::mp_integer());
+		inst.def(pybind11::self / double());
+		inst.def(pybind11::self / piranha::mp_rational());
+		inst.def(pybind11::self / piranha::mp_integer());
+
 		// Exponentiation.
-		//typedef T (T::*pow_double)(const double) const;
-		//typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
-		//inst.def("__pow__", pow_double(&T::pow));
-		//inst.def("__pow__", pow_rational(&T::pow));
-		//inst.def("root", &T::root, "arg2-th root.");
+		typedef T (T::*pow_double)(const double) const;
+		typedef T (T::*pow_rational)(const piranha::mp_rational &) const;
+		inst.def("__pow__", pow_double(&T::pow));
+		inst.def("__pow__", pow_rational(&T::pow));
+		inst.def("root", &T::root, "arg2-th root.");
 		return inst;
 	}
 
@@ -208,45 +217,52 @@ namespace pyranha
 	inline void series_complex_instantiation(pybind11::class_<std::complex<T> > &instc, pybind11::class_<T> &inst)
 	{
 		// Ctors.
-		//instc.def(pybind11::init<const std::complex<double> &>());
-		//instc.def(pybind11::init<const T &>());
-		//instc.def(pybind11::init<const T &, const T &>());
-		//inst.def("complex", &T::complex, "Return complex counterpart.");
-		//instc.def(pybind11::self == T());
-		//instc.def(pybind11::self != T());
-		//instc.def(pybind11::self == std::complex<double>());
-		//instc.def(pybind11::self != std::complex<double>());
+		instc.def(pybind11::init<const std::complex<double> &>());
+		instc.def(pybind11::init<const T &>());
+		instc.def(pybind11::init<const T &, const T &>());
+		inst.def("complex", &T::complex, "Return complex counterpart.");
+
+		instc.def(pybind11::self == T());
+		instc.def(pybind11::self != T());
+		instc.def(pybind11::self == std::complex<double>());
+		instc.def(pybind11::self != std::complex<double>());
+		
 		// Addition and subtraction.
-		//instc.def(pybind11::self += std::complex<double>());
-		//instc.def(pybind11::self += T());
-		//instc.def(pybind11::self + std::complex<double>());
-		//instc.def(std::complex<double>() + pybind11::self);
-		//instc.def(pybind11::self + T());
-		//instc.def(T() + pybind11::self);
-		//instc.def(pybind11::self -= std::complex<double>());
-		//instc.def(pybind11::self -= T());
-		//instc.def(pybind11::self - std::complex<double>());
-		//instc.def(std::complex<double>() - pybind11::self);
-		//instc.def(pybind11::self - T());
-		//instc.def(T() - pybind11::self);
+		instc.def(pybind11::self += std::complex<double>());
+		instc.def(pybind11::self += T());
+		instc.def(pybind11::self + std::complex<double>());
+		instc.def(std::complex<double>() + pybind11::self);
+		instc.def(pybind11::self + T());
+		instc.def(T() + pybind11::self);
+		instc.def(pybind11::self -= std::complex<double>());
+		instc.def(pybind11::self -= T());
+		instc.def(pybind11::self - std::complex<double>());
+		instc.def(std::complex<double>() - pybind11::self);
+		instc.def(pybind11::self - T());
+		instc.def(T() - pybind11::self);
+		
 		// Multiplication.
-		//instc.def(pybind11::self *= std::complex<double>());
-		//instc.def(pybind11::self *= T());
-		//instc.def(pybind11::self * std::complex<double>());
-		//instc.def(std::complex<double>() * pybind11::self);
-		//instc.def(pybind11::self * T());
-		//instc.def(T() * pybind11::self);
+		instc.def(pybind11::self *= std::complex<double>());
+		instc.def(pybind11::self *= T());
+		instc.def(pybind11::self * std::complex<double>());
+		instc.def(std::complex<double>() * pybind11::self);
+		instc.def(pybind11::self * T());
+		instc.def(T() * pybind11::self);
+		
 		// Division.
-		//instc.def(pybind11::self /= std::complex<double>());
-		//instc.def(pybind11::self / std::complex<double>());
+		instc.def(pybind11::self /= std::complex<double>());
+		instc.def(pybind11::self / std::complex<double>());
+
 		// Real and imaginary parts assignment and extraction.
-		//instc.add_property("real", &std::complex<T>::real, &std::complex<T>::set_real, "Get/set real part.");               //TODO
-		//instc.add_property("imag", &std::complex<T>::imag, &std::complex<T>::set_imag, "Get/set imaginary part.");		//TODO
+		instc.def_property("real", &std::complex<T>::real, &std::complex<T>::set_real, "Get/set real part.");               //TODO
+		instc.def_property("imag", &std::complex<T>::imag, &std::complex<T>::set_imag, "Get/set imaginary part.");		//TODO
+
 		// Absolute values.
-		//instc.def("__abs__", &std::complex<T>::abs, "Absolute value.");
-		//instc.def("abs2", &std::complex<T>::abs2, "Squared absolute value.");
+		instc.def("__abs__", &std::complex<T>::abs, "Absolute value.");
+		instc.def("abs2", &std::complex<T>::abs2, "Squared absolute value.");
+		
 		// Conjugate.
-		//instc.def("conjugate", &std::complex<T>::conjugate, "Complex conjugate.");
+		instc.def("conjugate", &std::complex<T>::conjugate, "Complex conjugate.");
 	}
 
 	//template <class T>
