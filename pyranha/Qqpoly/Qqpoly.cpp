@@ -18,31 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/docstring_options.hpp>
-#include <string>
+//#include <boost/python/class.hpp>
+//#include <boost/python/module.hpp>
+//#include <boost/python/docstring_options.hpp>
+//#include <string>
 
 #include "../../src/manipulators/qqpoly.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
 
-using namespace boost::python;
+//using namespace boost::python;
 using namespace piranha;
 using namespace piranha::manipulators;
 using namespace pyranha;
 
-BOOST_PYTHON_MODULE(_Qqpoly)
-{
-    docstring_options docOptions(true, false, false);
-    translate_exceptions();
+#include "pybind11/pybind11.h"
 
-    class_<qqpoly> inst = series_basic_instantiation<qqpoly>(std::string("qqpoly"),
-        std::string("Multivariate polynomial with arbitrary-size rational coefficients."));
+PYBIND11_MODULE(_Qqpoly, m)
+{
+    //docstring_options docOptions(true, false, false);
+    //translate_exceptions();
+
+    pybind11::class_<qqpoly> inst(series_basic_instantiation<qqpoly>(m, "qqpoly", "Multivariate polynomial with arbitrary-size rational coefficients."));
     common_polynomial_instantiation(inst);
     series_sub_instantiation<qqpoly, qqpoly>(inst);
-    class_<qqpolyc> instc = series_basic_instantiation<qqpolyc>(std::string("qqpolyc"),
-            std::string("Multivariate polynomial with complex arbitrary-size rational coefficients."));
+
+    pybind11::class_<qqpolyc> instc(series_basic_instantiation<qqpolyc>(m, "qqpolyc", "Multivariate polynomial with complex arbitrary-size rational coefficients."));
     common_polynomial_instantiation(instc);
     series_complex_instantiation(instc, inst);
     series_sub_instantiation<qqpolyc, qqpoly>(instc);

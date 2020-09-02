@@ -18,31 +18,34 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/docstring_options.hpp>
-#include <string>
+//#include <boost/python/class.hpp>
+//#include <boost/python/module.hpp>
+//#include <boost/python/docstring_options.hpp>
+//#include <string>
 
 #include "../../src/manipulators/dpoly.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
 
-using namespace boost::python;
+
+#include"pybind11/pybind11.h"
+
+//using namespace boost::python;
 using namespace piranha;
 using namespace piranha::manipulators;
 using namespace pyranha;
 
-BOOST_PYTHON_MODULE(_Dpoly)
-{
-    docstring_options docOptions(true, false, false);
-    translate_exceptions();
 
-    class_<dpoly> inst = series_basic_instantiation<dpoly>(std::string("dpoly"),
-            std::string("Multivariate polynomial with double precision coefficients."));
+PYBIND11_MODULE(_Dpoly, m)
+{
+    //docstring_options docOptions(true, false, false);
+    //translate_exceptions();
+
+    pybind11::class_<dpoly> inst(series_basic_instantiation<dpoly>(m, "dpoly", "Multivariate polynomial with double precision coefficients."));
     common_polynomial_instantiation(inst);
     series_sub_instantiation<dpoly, dpoly>(inst);
-    class_<dpolyc> instc = series_basic_instantiation<dpolyc>(std::string("dpolyc"),
-            std::string("Multivariate polynomial with complex double precision coefficients."));
+
+    pybind11::class_<dpolyc> instc(series_basic_instantiation<dpolyc>(m, "dpolyc", "Multivariate polynomial with complex double precision coefficients."));
     common_polynomial_instantiation(instc);
     series_complex_instantiation(instc, inst);
     series_sub_instantiation<dpolyc, dpolyc>(instc);
