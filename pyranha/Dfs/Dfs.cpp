@@ -18,30 +18,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/docstring_options.hpp>
-#include <string>
 
 #include "../../src/manipulators/dfs.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
 
-using namespace boost::python;
+#include "pybind11/pybind11.h"
+
 using namespace piranha;
 using namespace piranha::manipulators;
 using namespace pyranha;
 
-BOOST_PYTHON_MODULE(_Dfs)
+PYBIND11_MODULE(_Dfs, m)
 {
-    docstring_options docOptions(true, false, false);
-    translate_exceptions();
+    //docstring_options docOptions(true, false, false);
+    //translate_exceptions();
 
-    class_<dfs> inst = series_basic_instantiation<dfs>(std::string("dfs"), std::string("Fourier series with double precision coefficients."));
+    pybind11::class_<dfs> inst(series_basic_instantiation<dfs>(m, "dfs", "Fourier series with double precision coefficients."));
     common_fourier_series_instantiation(inst);
     series_trigonometric_instantiation(inst);
     series_sub_instantiation<dfs, dfs>(inst);
-    class_<dfsc> instc = series_basic_instantiation<dfsc>(std::string("dfsc"), std::string("Fourier series with complex double precision coefficients."));
+
+    pybind11::class_<dfsc> instc(series_basic_instantiation<dfsc>(m, "dfsc", "Fourier series with complex double precision coefficients."));
     series_complex_instantiation(instc, inst);
     common_fourier_series_instantiation(instc);
     series_sub_instantiation<dfsc, dfs>(instc);

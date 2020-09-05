@@ -31,9 +31,6 @@
 #include <vector>
 #include <string>
 
-//using namespace boost::python;
-using namespace piranha;
-using namespace pyranha;
 
 // Instantiate the pyranha Truncators module.
 PYBIND11_MODULE(_Truncators, mt)
@@ -42,34 +39,34 @@ PYBIND11_MODULE(_Truncators, mt)
     //translate_exceptions();                            //TODO:: to be done 
 
     typedef void (*deg_set)(const int);
-    typedef void (*q_deg_set)(const mp_rational &);
+    typedef void (*q_deg_set)(const piranha::mp_rational &);
     typedef void (*p_deg_set)(const std::vector<std::string> &, const int);
-    typedef void (*p_q_deg_set)(const std::vector<std::string> &, const mp_rational &);
+    typedef void (*p_q_deg_set)(const std::vector<std::string> &, const piranha::mp_rational &);
     typedef void (*s_p_deg_set)(const std::string &, const int);
-    typedef void (*s_p_q_deg_set)(const std::string &, const mp_rational &);
+    typedef void (*s_p_q_deg_set)(const std::string &, const piranha::mp_rational &);
 
 
-    pybind11::class_<truncators::Degree> td(mt, "__degree_truncator", "Minimum degree truncator.");
+    pybind11::class_<piranha::truncators::Degree> td(mt, "__degree_truncator", "Minimum degree truncator.");
     td.def(pybind11::init<>());
-    td.def("__repr__", &py_print_to_string<truncators::Degree>);
-    td.def_static("set", deg_set(&truncators::Degree::set), "Set truncation level of series' minimum degree to arg1.");
-    td.def_static("set", s_p_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+    td.def("__repr__", &pyranha::py_print_to_string<piranha::truncators::Degree>);
+    td.def_static("set", deg_set(&piranha::truncators::Degree::set), "Set truncation level of series' minimum degree to arg1.");
+    td.def_static("set", s_p_deg_set(&piranha::truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
         "relatively to Psym named arg1.");
-    td.def_static("set", p_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+    td.def_static("set", p_deg_set(&piranha::truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
         "relatively to list of Psym names arg1.");
-    td.def_static("set", q_deg_set(&truncators::Degree::set), "Set truncation level of series' minimum degree to arg1.");
-    td.def_static("set", s_p_q_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+    td.def_static("set", q_deg_set(&piranha::truncators::Degree::set), "Set truncation level of series' minimum degree to arg1.");
+    td.def_static("set", s_p_q_deg_set(&piranha::truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
         "relatively to Psym named arg1.");
-    td.def_static("set", p_q_deg_set(&truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
+    td.def_static("set", p_q_deg_set(&piranha::truncators::Degree::set), "Set truncation level of series' partial minimum degree to arg2, "
         "relatively to list of Psym names arg1.");
-    td.def_static("unset", &truncators::Degree::unset, "Clear minimum degree limit.");
+    td.def_static("unset", &piranha::truncators::Degree::unset, "Clear minimum degree limit.");
 
 
-    pybind11::class_<truncators::Norm> tn(mt, "__norm_truncator", "Norm truncator.");
+    pybind11::class_<piranha::truncators::Norm> tn(mt, "__norm_truncator", "Norm truncator.");
     tn.def(pybind11::init<>());
-    tn.def("__repr__", &py_print_to_string<truncators::Norm>);
-    tn.def_static("set", &truncators::Norm::set, "Set norm truncation level to arg1.");
-    tn.def_static("unset", &truncators::Norm::unset, "Disable norm-based truncation.");
+    tn.def("__repr__", &pyranha::py_print_to_string<piranha::truncators::Norm>);
+    tn.def_static("set", &piranha::truncators::Norm::set, "Set norm truncation level to arg1.");
+    tn.def_static("unset", &piranha::truncators::Norm::unset, "Disable norm-based truncation.");
 
-    mt.def("unset", &truncators::unset, "Unset all truncators.");
+    mt.def("unset", &piranha::truncators::unset, "Unset all truncators.");
 }

@@ -18,34 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/docstring_options.hpp>
-#include <string>
-
 #include "../../src/manipulators/qps.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
 
-using namespace boost::python;
+#include "pybind11/pybind11.h"
+
 using namespace piranha;
 using namespace piranha::manipulators;
 using namespace pyranha;
 
-BOOST_PYTHON_MODULE(_Qps)
+PYBIND11_MODULE(_Qps, m)
 {
-    docstring_options docOptions(true, false, false);
-    translate_exceptions();
+    //docstring_options docOptions(true, false, false);
+    //translate_exceptions();
 
-    class_<qps> inst(series_basic_instantiation<qps>(std::string("qps"),
-        std::string("Poisson series with arbitrary-precision rational coefficients.")));
+    pybind11::class_<qps> inst(series_basic_instantiation<qps>(m, "qps",
+            "Poisson series with arbitrary-precision rational coefficients."));
     common_poisson_series_instantiation(inst, "qps");
     celmec_instantiation(inst);
     series_trigonometric_instantiation(inst);
     series_sub_instantiation<qps, qps>(inst);
     series_ei_sub_instantiation<qps, qpsc>(inst);
-    class_<qpsc> instc(series_basic_instantiation<qpsc>(std::string("qpsc"),
-        std::string("Poisson series with complex arbitrary-precision rational coefficients.")));
+
+    pybind11::class_<qpsc> instc(series_basic_instantiation<qpsc>(m, "qpsc", "Poisson series with complex arbitrary-precision rational coefficients."));
     common_poisson_series_instantiation(instc, "qpsc");
     series_complex_instantiation(instc, inst);
     series_sub_instantiation<qpsc, qps>(instc);

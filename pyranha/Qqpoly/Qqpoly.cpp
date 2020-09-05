@@ -18,19 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-//#include <boost/python/class.hpp>
-//#include <boost/python/module.hpp>
-//#include <boost/python/docstring_options.hpp>
-//#include <string>
 
 #include "../../src/manipulators/qqpoly.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
 
-//using namespace boost::python;
-using namespace piranha;
-using namespace piranha::manipulators;
-using namespace pyranha;
 
 #include "pybind11/pybind11.h"
 
@@ -39,13 +31,13 @@ PYBIND11_MODULE(_Qqpoly, m)
     //docstring_options docOptions(true, false, false);
     //translate_exceptions();
 
-    pybind11::class_<qqpoly> inst(series_basic_instantiation<qqpoly>(m, "qqpoly", "Multivariate polynomial with arbitrary-size rational coefficients."));
-    common_polynomial_instantiation(inst);
-    series_sub_instantiation<qqpoly, qqpoly>(inst);
+    pybind11::class_<piranha::manipulators::qqpoly> inst(pyranha::series_basic_instantiation<piranha::manipulators::qqpoly>(m, "qqpoly", "Multivariate polynomial with arbitrary-size rational coefficients."));
+    pyranha::common_polynomial_instantiation(inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::qqpoly, piranha::manipulators::qqpoly>(inst);
 
-    pybind11::class_<qqpolyc> instc(series_basic_instantiation<qqpolyc>(m, "qqpolyc", "Multivariate polynomial with complex arbitrary-size rational coefficients."));
-    common_polynomial_instantiation(instc);
-    series_complex_instantiation(instc, inst);
-    series_sub_instantiation<qqpolyc, qqpoly>(instc);
-    series_sub_instantiation<qqpolyc, qqpolyc>(instc);
+    pybind11::class_<piranha::manipulators::qqpolyc> instc(pyranha::series_basic_instantiation<piranha::manipulators::qqpolyc>(m, "qqpolyc", "Multivariate polynomial with complex arbitrary-size rational coefficients."));
+    pyranha::common_polynomial_instantiation(instc);
+    pyranha::series_complex_instantiation(instc, inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::qqpolyc, piranha::manipulators::qqpoly>(instc);
+    pyranha::series_sub_instantiation<piranha::manipulators::qqpolyc, piranha::manipulators::qqpolyc>(instc);
 }

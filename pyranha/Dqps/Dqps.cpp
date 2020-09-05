@@ -18,37 +18,31 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/docstring_options.hpp>
-#include <string>
 
 #include "../../src/manipulators/dqps.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
 
-using namespace boost::python;
+#include "pybind11/pybind11.h"
+
 using namespace piranha;
 using namespace piranha::manipulators;
 using namespace pyranha;
 
-BOOST_PYTHON_MODULE(_Dqps)
+PYBIND11_MODULE(_Dqps, m)
 {
-    docstring_options docOptions(true, false, false);
-	translate_exceptions();
+    //docstring_options docOptions(true, false, false);
+	//translate_exceptions();
 
-	class_<dqps> inst(
-		series_basic_instantiation<dqps>(std::string("dqps"),
-		std::string("Poisson series with double precision rational coefficients and arbitrary-precision rational exponents.")));
+	pybind11::class_<dqps> inst(series_basic_instantiation<dqps>(m, "dqps", "Poisson series with double precision rational coefficients and arbitrary-precision rational exponents."));
 	common_poisson_series_instantiation(inst, "dqps");
 	celmec_instantiation(inst);
 	series_trigonometric_instantiation(inst);
 	series_sub_instantiation<dqps, dqps>(inst);
 	series_ei_sub_instantiation<dqps, dqpsc>(inst);
-	class_<dqpsc> instc(
-		series_basic_instantiation<dqpsc>(std::string("dqpsc"),
-		std::string("Poisson series with complex double precision "
-		"rational coefficients and arbitrary-precision rational exponents.")));
+
+	pybind11::class_<dqpsc> instc(series_basic_instantiation<dqpsc>(m, "dqpsc", "Poisson series with complex double precision "
+		"rational coefficients and arbitrary-precision rational exponents."));
 	common_poisson_series_instantiation(instc, "dqpsc");
 	series_complex_instantiation(instc, inst);
 	series_sub_instantiation<dqpsc, dqps>(instc);

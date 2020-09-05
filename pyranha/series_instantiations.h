@@ -22,9 +22,6 @@
 #define PYRANHA_SERIES_INSTANTIATIONS_H
 
 #include <boost/lexical_cast.hpp>
-//#include <boost/python/class.hpp>
-//#include <boost/python/iterator.hpp>
-//#include <boost/python/operators.hpp>
 #include <complex>
 #include <string>
 #include <vector>
@@ -88,11 +85,12 @@ namespace pyranha
 	inline pybind11::class_<T> series_basic_instantiation(pybind11::module &m, const std::string &name, const std::string &description)
 	{
 		// Expose vectors of series and vectors of vectors of series as Python tuples.
-		//to_tuple_mapping<std::vector<T> >();                                               //TODO
+		//to_tuple_mapping<std::vector<T> >();                                               //we don't need it 
 		//to_tuple_mapping<std::vector<std::vector<T> > >();                                 //TODO
 
 		// Expose the manipulator class.
 		pybind11::class_<T> inst(m, name.c_str(), description.c_str());
+		inst.def(pybind11::init<>());
 		inst.def(pybind11::init<const T &>());
 		inst.def(pybind11::init<const std::string &>());
 		inst.def(pybind11::init<const double &>());
@@ -111,27 +109,35 @@ namespace pyranha
 		inst.def("_latex_", &py_print_to_string_tex<T>, "Latex representation.");
 		inst.def("dump", &py_print_to_string_plain<T>, "Return a string of the series in plain format.");
 
-		inst.def_property_readonly("arguments", &py_series_arguments<T>, "Series arguments.");                 
-		//inst.def_property_readonly_static("echelonLevel", &py_echelon_level<T>, pybind11::return_value_policy::copy, "Echelon level of the series.");  //TODO: how can we make the deocumentation string work??
-		//if (piranha::is_ring_exact<T>::value) {                                                          //TODO    // are these really used for anything or even usefull??
-		//	inst.add_static_property("is_ring_exact", &py_type_trait<piranha::is_ring_exact<T> >,
-		//		"is_ring_exact type trait for the series.");
-		//}
-		//if (piranha::is_trig_exact<T>::value) {															//TODO
-		//	inst.add_static_property("is_trig_exact", &py_type_trait<piranha::is_trig_exact<T> >,
-		//		"is_trig_exact type trait for the series.");
-		//}
-		//if (piranha::is_divint_exact<T>::value) {															//TODO
-		//	inst.add_static_property("is_divint_exact", &py_type_trait<piranha::is_divint_exact<T> >,
-		//		"is_divint_exact type trait for the series.");
-		//}
-		//if (py_is_complex_impl<T>::value) {																//TODO
-		//	inst.add_static_property("is_complex", &py_is_complex<T>, "is_complex type trait for the series.");
-		//}
-		//if (piranha::is_rational_exponent<T>::value) {														//TODO
-		//	inst.add_static_property("is_rational_exponent", &py_type_trait<piranha::is_rational_exponent<T> >,
-		//		"is_rational_exponent type trait for the series.");
-		//}
+		inst.def_property_readonly("arguments", &py_series_arguments<T>, "Series arguments.");  
+
+		inst.def_property_readonly_static("echelonLevel", [](pybind11::object) { return py_echelon_level<T>(); }, pybind11::return_value_policy::copy, "Echelon level of the series.");
+
+		if (piranha::is_ring_exact<T>::value)
+		{      
+			inst.def_property_readonly_static("is_ring_exact", [](pybind11::object) { return py_type_trait<piranha::is_ring_exact<T> >(); }, "is_ring_exact type trait for the series.");
+		}
+
+		if (piranha::is_trig_exact<T>::value)
+		{															
+			inst.def_property_readonly_static("is_trig_exact", [](pybind11::object) {return py_type_trait<piranha::is_trig_exact<T> >(); }, "is_trig_exact type trait for the series.");
+		}
+
+		if (piranha::is_divint_exact<T>::value)
+		{															
+			inst.def_property_readonly_static("is_divint_exact", [](pybind11::object) { return py_type_trait<piranha::is_divint_exact<T> >(); }, "is_divint_exact type trait for the series.");
+		}
+
+		if (py_is_complex_impl<T>::value)
+		{															
+			inst.def_property_readonly_static("is_complex", [](pybind11::object) { return py_is_complex<T>(); }, "is_complex type trait for the series.");
+		}
+
+		if (piranha::is_rational_exponent<T>::value)
+		{					
+			inst.def_property_readonly_static("is_rational_exponent", [](pybind11::object) { return py_type_trait<piranha::is_rational_exponent<T> >(); }, "is_rational_exponent type trait for the series.");
+		}
+
 		inst.def("__split__", &T::split, "Split series.");
 		inst.def("__psi__", &T::psi, "Power series iterations.");
 		inst.def("saveTo", &T::saveTo, "Save to file.");
@@ -265,27 +271,26 @@ namespace pyranha
 		instc.def("conjugate", &std::complex<T>::conjugate, "Complex conjugate.");
 	}
 
-	//template <class T>
-	//inline void series_trigonometric_instantiation(boost::python::class_<T> &inst)
-	//{
-	//	inst.def("ei", &T::ei, "Complex exponential.");
-	//	inst.def("cos", &T::cos, "Cosine.");
-	//	inst.def("sin", &T::sin, "Sine.");
-	//	typedef std::complex<T> (*Ynm_named)(const int &, const int &,
-	//		const T &, const T &);
-	//	typedef std::complex<T> (*Ynm_ei_named)(const int &, const int &,
-	//		const T &, const std::complex<T> &, const std::complex<T> &);
-	//	typedef std::complex<T> (*Ynm_wigner)(const int &, const int &,
-	//		const T &, const T &, const T &, const T &, const T &);
-	//	typedef std::complex<T> (*Ynm_ei_wigner)(const int &, const int &,
-	//		const T &, const std::complex<T> &, const std::complex<T> &, const T &, const T &, const T &);
-	//	const char *Ynm_descr = "Non-normalised spherical harmonic.";
-	//	inst.def("Ynm", Ynm_named(&T::Ynm), Ynm_descr);
-	//	inst.def("Ynm", Ynm_ei_named(&T::Ynm), Ynm_descr);
-	//	inst.def("Ynm", Ynm_wigner(&T::Ynm), Ynm_descr);
-	//	inst.def("Ynm", Ynm_ei_wigner(&T::Ynm), Ynm_descr);
-	//	inst.staticmethod("Ynm");
-	//}
+	template <class T>
+	inline void series_trigonometric_instantiation(pybind11::class_<T> &inst)
+	{
+		inst.def("ei", &T::ei, "Complex exponential.");
+		inst.def("cos", &T::cos, "Cosine.");
+		inst.def("sin", &T::sin, "Sine.");
+		typedef std::complex<T> (*Ynm_named)(const int &, const int &,
+			const T &, const T &);
+		typedef std::complex<T> (*Ynm_ei_named)(const int &, const int &,
+			const T &, const std::complex<T> &, const std::complex<T> &);
+		typedef std::complex<T> (*Ynm_wigner)(const int &, const int &,
+			const T &, const T &, const T &, const T &, const T &);
+		typedef std::complex<T> (*Ynm_ei_wigner)(const int &, const int &,
+			const T &, const std::complex<T> &, const std::complex<T> &, const T &, const T &, const T &);
+		const char *Ynm_descr = "Non-normalised spherical harmonic.";
+		inst.def_static("Ynm", Ynm_named(&T::Ynm), Ynm_descr);
+		inst.def_static("Ynm", Ynm_ei_named(&T::Ynm), Ynm_descr);
+		inst.def_static("Ynm", Ynm_wigner(&T::Ynm), Ynm_descr);
+		inst.def_static("Ynm", Ynm_ei_wigner(&T::Ynm), Ynm_descr);
+	}
 
 	template <class T>
 	static inline T py_series_partial_1(const T &series, const std::string &s)
@@ -331,12 +336,12 @@ namespace pyranha
 		inst.def("sub", &py_series_sub_string_series<T, Series>, "Substitute psym named arg2 with series arg3.");
 	}
 
-	//template <class T, class Series>
-	//inline void series_ei_sub_instantiation(boost::python::class_<T> &inst)
-	//{
-	//	inst.def("ei_sub", &py_series_ei_sub_string_series<T, Series>, "Substitute complex exponential of psym "
-	//		"named arg2 with series arg3 in trigonometric keys.");
-	//}
+	template <class T, class Series>
+	inline void series_ei_sub_instantiation(pybind11::class_<T> &inst)
+	{
+		inst.def("ei_sub", &py_series_ei_sub_string_series<T, Series>, "Substitute complex exponential of psym "
+			"named arg2 with series arg3 in trigonometric keys.");
+	}
 
 	template <class T>
 	inline void series_special_functions_instantiation(pybind11::class_<T> &inst)
@@ -363,31 +368,31 @@ namespace pyranha
 	}
 
 #define __celmec_inst(arg) \
-	inst.def(#arg, &T::arg, arg##_docstring) \
-	.staticmethod(#arg);
+	inst.def_static(#arg, &T::arg, arg##_docstring);
+	
 
-	//template <class T>
-	//inline void celmec_instantiation(boost::python::class_<T> &inst)
-	//{
-	//	const char *r_a_docstring = "Elliptic expansion of r / a in terms of eccentricity arg2 and mean anomaly arg3.";
-	//	const char *a_r_docstring = "Elliptic expansion of a / r in terms of eccentricity arg2 and mean anomaly arg3.";
-	//	const char *cos_f_docstring = "Elliptic expansion of cos(f) in terms of eccentricity arg2 and mean anomaly arg3.";
-	//	const char *sin_f_docstring = "Elliptic expansion of sin(f) in terms of eccentricity arg2 and mean anomaly arg3.";
-	//	const char *cos_E_docstring = "Elliptic expansion of cos(E) in terms of eccentricity arg2 and mean anomaly arg3.";
-	//	const char *sin_E_docstring = "Elliptic expansion of sin(E) in terms of eccentricity arg2 and mean anomaly arg3.";
-	//	const char *EE_docstring = "Elliptic expansion of E (solution of Kepler's equation) "
-	//		"in terms of eccentricity arg2 and mean anomaly arg3.";
-	//	const char *eipE_docstring = "Elliptic expansion of exp(i*p*E) in terms of eccentricity arg2 and mean anomaly arg3, "
-	//		"with p = arg4.";
-	//	__celmec_inst(r_a);
-	//	__celmec_inst(a_r);
-	//	__celmec_inst(cos_f);
-	//	__celmec_inst(sin_f);
-	//	__celmec_inst(cos_E);
-	//	__celmec_inst(sin_E);
-	//	__celmec_inst(EE);
-	//	__celmec_inst(eipE);
-	//}
+	template <class T>
+	inline void celmec_instantiation(pybind11::class_<T> &inst)
+	{
+		const char *r_a_docstring = "Elliptic expansion of r / a in terms of eccentricity arg2 and mean anomaly arg3.";
+		const char *a_r_docstring = "Elliptic expansion of a / r in terms of eccentricity arg2 and mean anomaly arg3.";
+		const char *cos_f_docstring = "Elliptic expansion of cos(f) in terms of eccentricity arg2 and mean anomaly arg3.";
+		const char *sin_f_docstring = "Elliptic expansion of sin(f) in terms of eccentricity arg2 and mean anomaly arg3.";
+		const char *cos_E_docstring = "Elliptic expansion of cos(E) in terms of eccentricity arg2 and mean anomaly arg3.";
+		const char *sin_E_docstring = "Elliptic expansion of sin(E) in terms of eccentricity arg2 and mean anomaly arg3.";
+		const char *EE_docstring = "Elliptic expansion of E (solution of Kepler's equation) "
+			"in terms of eccentricity arg2 and mean anomaly arg3.";
+		const char *eipE_docstring = "Elliptic expansion of exp(i*p*E) in terms of eccentricity arg2 and mean anomaly arg3, "
+			"with p = arg4.";
+		__celmec_inst(r_a);
+		__celmec_inst(a_r);
+		__celmec_inst(cos_f);
+		__celmec_inst(sin_f);
+		__celmec_inst(cos_E);
+		__celmec_inst(sin_E);
+		__celmec_inst(EE);
+		__celmec_inst(eipE);
+	}
 
 #undef __celmec_inst
 
@@ -426,18 +431,18 @@ namespace pyranha
 		return p.partialHarmonicOrder(std::vector<std::string>(1,name));
 	}
 
-	//template <class T>
-	//inline void harmonic_series_instantiation(boost::python::class_<T> &inst)
-	//{
-	//	inst.def("harmonicDegree", &T::harmonicDegree, "(Partial) harmonic degree.");
-	//	inst.def("harmonicDegree", &T::partialHarmonicDegree);
-	//	inst.def("harmonicDegree", &p_h_degree_str<T>);
-	//	inst.def("harmonicOrder", &T::harmonicOrder, "(Partial) harmonic order.");
-	//	inst.def("harmonicOrder", &T::partialHarmonicOrder);
-	//	inst.def("harmonicOrder", &p_h_order_str<T>);
-	//	inst.def("isSine", &T::isSine, "Return true if series is made only of sine terms.");
-	//	inst.def("isCosine", &T::isCosine, "Return true if series is made only of cosine terms.");
-	//}
+	template <class T>
+	inline void harmonic_series_instantiation(pybind11::class_<T> &inst)
+	{
+		inst.def("harmonicDegree", &T::harmonicDegree, "(Partial) harmonic degree.");
+		inst.def("harmonicDegree", &T::partialHarmonicDegree);
+		inst.def("harmonicDegree", &p_h_degree_str<T>);
+		inst.def("harmonicOrder", &T::harmonicOrder, "(Partial) harmonic order.");
+		inst.def("harmonicOrder", &T::partialHarmonicOrder);
+		inst.def("harmonicOrder", &p_h_order_str<T>);
+		inst.def("isSine", &T::isSine, "Return true if series is made only of sine terms.");
+		inst.def("isCosine", &T::isCosine, "Return true if series is made only of cosine terms.");
+	}
 
 	template <class T>
 	inline void common_polynomial_instantiation(pybind11::class_<T> &inst)
@@ -448,24 +453,24 @@ namespace pyranha
 		power_series_instantiation(inst);
 	}
 
-	//template <class T>
-	//inline void common_poisson_series_instantiation(boost::python::class_<T> &inst, const std::string &)
-	//{
-	//	series_differential_instantiation(inst);
-	//	series_special_functions_instantiation(inst);
-	//	power_series_instantiation(inst);
-	//	harmonic_series_instantiation(inst);
-	//	series_integral_instantiation(inst);
-	//}
+	template <class T>
+	inline void common_poisson_series_instantiation(pybind11::class_<T> &inst, const std::string &)
+	{
+		series_differential_instantiation(inst);
+		series_special_functions_instantiation(inst);
+		power_series_instantiation(inst);
+		harmonic_series_instantiation(inst);
+		series_integral_instantiation(inst);
+	}
 
-	//template <class T>
-	//inline void common_fourier_series_instantiation(boost::python::class_<T> &inst)
-	//{
-	//	series_special_functions_instantiation(inst);
-	//	series_differential_instantiation(inst);
-	//	harmonic_series_instantiation(inst);
-	//	series_integral_instantiation(inst);
-	//}
+	template <class T>
+	inline void common_fourier_series_instantiation(pybind11::class_<T> &inst)
+	{
+		series_special_functions_instantiation(inst);
+		series_differential_instantiation(inst);
+		harmonic_series_instantiation(inst);
+		series_integral_instantiation(inst);
+	}
 }
 
 #endif

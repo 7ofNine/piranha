@@ -18,10 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-//#include <boost/python/class.hpp>
-//#include <boost/python/module.hpp>
-//#include <boost/python/docstring_options.hpp>
-//#include <string>
 
 #include "../../src/manipulators/qpoly.h"
 #include "../series_instantiations.h"
@@ -29,12 +25,10 @@
 
 #include "pybind11/pybind11.h"
 
-//using namespace boost::python;
 using namespace piranha;
 using namespace piranha::manipulators;
 using namespace pyranha;
 
-//#include <string>
 
 PYBIND11_MODULE(_Qpoly, m )
 {

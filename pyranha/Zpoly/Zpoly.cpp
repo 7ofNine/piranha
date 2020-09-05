@@ -18,10 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-//#include <boost/python/class.hpp>
-//#include <boost/python/module.hpp>
-//#include <boost/python/docstring_options.hpp>
-#include <string>
 
 #include "../../src/manipulators/zpoly.h"
 #include "../series_instantiations.h"
@@ -29,24 +25,22 @@
 
 #include "pybind11/pybind11.h"
 
-//using namespace boost::python;
-using namespace piranha;
-using namespace piranha::manipulators;
-using namespace pyranha;
 
 PYBIND11_MODULE(_Zpoly, m)
 {
     //docstring_options docOptions(true, false, false);
     //translate_exceptions();  //still todo
 
-    pybind11::class_<zpoly> inst(series_basic_instantiation<zpoly>(m, "zpoly", "Multivariate polynomial with arbitrary-size integer coefficients."));
-    common_polynomial_instantiation(inst);
-    series_sub_instantiation<zpoly, zpoly>(inst);
+    pybind11::class_<piranha::manipulators::zpoly> inst(pyranha::series_basic_instantiation<piranha::manipulators::zpoly>(m, 
+                "zpoly", "Multivariate polynomial with arbitrary-size integer coefficients."));
+    pyranha::common_polynomial_instantiation(inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::zpoly, piranha::manipulators::zpoly>(inst);
 
     // complex zpoly
-    pybind11::class_<zpolyc> instc(series_basic_instantiation<zpolyc>(m, "zpolyc", "Multivariate polynomial with complex arbitrary-size integer coefficients."));
-    common_polynomial_instantiation(instc);
-    series_complex_instantiation(instc, inst);
-    series_sub_instantiation<zpolyc, zpoly>(instc);
-    series_sub_instantiation<zpolyc, zpolyc>(instc);
+    pybind11::class_<piranha::manipulators::zpolyc> instc(pyranha::series_basic_instantiation<piranha::manipulators::zpolyc>(m,
+                "zpolyc", "Multivariate polynomial with complex arbitrary-size integer coefficients."));
+    pyranha::common_polynomial_instantiation(instc);
+    pyranha::series_complex_instantiation(instc, inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::zpolyc, piranha::manipulators::zpoly>(instc);
+    pyranha::series_sub_instantiation<piranha::manipulators::zpolyc, piranha::manipulators::zpolyc>(instc);
 }

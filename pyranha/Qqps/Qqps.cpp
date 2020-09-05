@@ -18,39 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/docstring_options.hpp>
-#include <string>
 
 #include "../../src/manipulators/qqps.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
 
-using namespace boost::python;
-using namespace piranha;
-using namespace piranha::manipulators;
-using namespace pyranha;
+#include "pybind11/pybind11.h"
 
-BOOST_PYTHON_MODULE(_Qqps)
+PYBIND11_MODULE(_Qqps, m)
 {
-    docstring_options docOptions(true, false, false);
-    translate_exceptions();
+    //docstring_options docOptions(true, false, false);
+    //translate_exceptions();
 
-    class_<qqps> inst(
-        series_basic_instantiation<qqps>(std::string("qqps"),
-        std::string("Poisson series with arbitrary-precision rational coefficients and arbitrary-precision rational exponents.")));
-    common_poisson_series_instantiation(inst, "qqps");
-    celmec_instantiation(inst);
-    series_trigonometric_instantiation(inst);
-    series_sub_instantiation<qqps, qqps>(inst);
-    series_ei_sub_instantiation<qqps, qqpsc>(inst);
-    class_<qqpsc> instc(
-        series_basic_instantiation<qqpsc>(std::string("qqpsc"),
-        std::string("Poisson series with complex arbitrary-precision "
-        "rational coefficients and arbitrary-precision rational exponents.")));
-    common_poisson_series_instantiation(instc, "qqpsc");
-    series_complex_instantiation(instc, inst);
-    series_sub_instantiation<qqpsc, qqps>(instc);
-    series_ei_sub_instantiation<qqpsc, qqpsc>(instc);
+    pybind11::class_<piranha::manipulators::qqps> inst(pyranha::series_basic_instantiation<piranha::manipulators::qqps>(m, "qqps",
+            "Poisson series with arbitrary-precision rational coefficients and arbitrary-precision rational exponents."));
+    pyranha::common_poisson_series_instantiation(inst, "qqps");
+    pyranha::celmec_instantiation(inst);
+    pyranha::series_trigonometric_instantiation(inst);
+    pyranha::series_sub_instantiation< piranha::manipulators::qqps, piranha::manipulators::qqps>(inst);
+    pyranha::series_ei_sub_instantiation<piranha::manipulators::qqps, piranha::manipulators::qqpsc>(inst);
+
+    pybind11::class_<piranha::manipulators::qqpsc> instc(pyranha::series_basic_instantiation<piranha::manipulators::qqpsc>(m, "qqpsc",
+        "Poisson series with complex arbitrary-precision rational coefficients and arbitrary-precision rational exponents."));
+    pyranha::common_poisson_series_instantiation(instc, "qqpsc");
+    pyranha::series_complex_instantiation(instc, inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::qqpsc, piranha::manipulators::qqps>(instc);
+    pyranha::series_ei_sub_instantiation<piranha::manipulators::qqpsc, piranha::manipulators::qqpsc>(instc);
 }

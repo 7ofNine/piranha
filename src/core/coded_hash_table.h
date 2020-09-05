@@ -102,7 +102,8 @@ class coded_hash_table
                 /// Bucket size type.
                 typedef typename bucket_type::size_type bucket_size_type;
                 /// Internal container type.
-                typedef std::vector<bucket_type,typename Allocator::template rebind<bucket_type>::other> container_type;
+                //typedef std::vector<bucket_type,typename Allocator::template rebind<bucket_type>::other> container_type;
+                typedef std::vector<bucket_type, typename std::allocator_traits<Allocator>::template rebind_alloc<bucket_type> > container_type;
                 /// Size type.
                 typedef typename container_type::size_type size_type;
                 /// Iterator class.
