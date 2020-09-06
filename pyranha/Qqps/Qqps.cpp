@@ -28,7 +28,7 @@
 PYBIND11_MODULE(_Qqps, m)
 {
     //docstring_options docOptions(true, false, false);
-    //translate_exceptions();
+    pyranha::translate_exceptions();
 
     pybind11::class_<piranha::manipulators::qqps> inst(pyranha::series_basic_instantiation<piranha::manipulators::qqps>(m, "qqps",
             "Poisson series with arbitrary-precision rational coefficients and arbitrary-precision rational exponents."));

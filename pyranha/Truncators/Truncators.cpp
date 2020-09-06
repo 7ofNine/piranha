@@ -36,7 +36,7 @@
 PYBIND11_MODULE(_Truncators, mt)
 {
     //docstring_options docOptions(true, false, false);  //TODO: tob done
-    //translate_exceptions();                            //TODO:: to be done 
+    pyranha::translate_exceptions();
 
     typedef void (*deg_set)(const int);
     typedef void (*q_deg_set)(const piranha::mp_rational &);

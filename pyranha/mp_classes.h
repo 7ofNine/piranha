@@ -70,8 +70,8 @@ namespace pyranha
 		inst.def(pybind11::init<const int &>());
 		inst.def(pybind11::init<const double &>());
 		inst.def(pybind11::init<const std::string &>());
-		//inst.def(pybind11::init<const piranha::mp_rational &>());/// how do I actually instantiat this way?? 
-		//inst.def(pybind11::init<const piranha::mp_integer &>()); /// how do I actually instantiat this way??
+		inst.def(pybind11::init<const piranha::mp_rational &>()); 
+		inst.def(pybind11::init<const piranha::mp_integer &>()); 
 
 		inst.def("__repr__", &py_print_to_string<T>, "Display function");  // make it displayable
 
@@ -161,8 +161,8 @@ namespace pyranha
 		real_mp_operators(inst);                 // operators with itself
 		real_mp_operators(inst, double());       // operators with double
 		real_mp_operators(inst, int());          // operators with int   
-		//real_mp_operators(inst, piranha::mp_rational());   // How do we create this case???
-		//real_mp_operators(inst, piranha::mp_integer());    // how dowe create this case??  some method that returns such a result??
+		real_mp_operators(inst, piranha::mp_rational());   
+		real_mp_operators(inst, piranha::mp_integer());    
 		return inst;
 	}
 }

@@ -22,17 +22,18 @@
 #define PYRANHA_argsTuple_H
 
 #include <boost/lexical_cast.hpp>
-#include <boost/python/class.hpp>
-#include <boost/tuple/tuple.hpp>
 #include <sstream>
 #include <string>
 
 #include "../src/core/ntuple.h"
 #include "../src/core/Psym.h"
 
+#include "pybind11/pybind11.h"
+
 namespace pyranha
 {
 	inline void argsTuple_py_print_helper(const boost::tuples::null_type &, const std::string) {}
+
 
 	template <class ArgsTuple>
 	inline void argsTuple_py_print_helper(const ArgsTuple &argsTuple, std::string &out)
@@ -45,6 +46,7 @@ namespace pyranha
 		argsTuple_py_print_helper(argsTuple.get_tail(), out);
 	}
 
+
 	template <class ArgsTuple>
 	inline std::string py_argsTuple_repr(const ArgsTuple &argsTuple)
 	{
@@ -53,20 +55,22 @@ namespace pyranha
 		return retval;
 	}
 
+
 	template <int N>
-	inline void expose_argsTuples()
+	inline void expose_argsTuples(pybind11::module m)
 	{
 		typedef typename piranha::NTuple<piranha::VectorPsym, N>::Type ArgsTupleType;
-		boost::python::class_<ArgsTupleType>
-		argsTuple_inst((std::string("__base_argsTuple") + boost::lexical_cast<std::string>(N) + "__").c_str(),
-						(std::string("Tuple of ") + boost::lexical_cast<std::string>(N) + " arguments vectors.").c_str());
-		argsTuple_inst.def(boost::python::init<const ArgsTupleType &>());
-		argsTuple_inst.def("__repr__", &py_argsTuple_repr<ArgsTupleType>);
-		expose_argsTuples < N - 1 > ();
+
+		pybind11::class_<ArgsTupleType>	inst(m, ("__base_argsTuple" + boost::lexical_cast<std::string>(N) + "__").c_str(),
+		   		                                ("Tuple of " + boost::lexical_cast<std::string>(N) + " arguments vectors.").c_str());
+		inst.def(pybind11::init<const ArgsTupleType &>());
+		inst.def("__repr__", &py_argsTuple_repr<ArgsTupleType>);
+		expose_argsTuples < N - 1 > (m);
 	}
 
+
 	template <>
-	inline void expose_argsTuples<0>() {}
+	inline void expose_argsTuples<0>(pybind11::module m) {}
 }
 
 #endif

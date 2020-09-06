@@ -18,11 +18,6 @@
 *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 ***************************************************************************/
 
-#include <cstddef>
-#include <sstream>
-#include <string>
-#include <vector>
-#include <functional>
 
 #include "../../src/core/base_classes/named_series_def.h"
 #include "../../src/core/config.h"
@@ -39,10 +34,13 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
 
-using namespace piranha;
-using namespace pyranha;
+#include <cstddef>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <functional>
 
-std::string static inline py_psym_repr(const Psym &p)    //TODO: 
+std::string static inline py_psym_repr(const piranha::Psym &p)    //TODO: 
 {                                                        // we should be able to use unicode!!!! e.g. for greek alphabet etc.       
     std::ostringstream stream;
     stream << "Symbol: '" << p.getName() << "' - " << "o:" << p.order() << " - e:[";
@@ -60,21 +58,21 @@ std::string static inline py_psym_repr(const Psym &p)    //TODO:
 }
 
 
-static inline std::size_t py_psym_hash(const Psym &p)
+static inline std::size_t py_psym_hash(const  piranha::Psym &p)
 {
     return std::hash<std::string>()(p.getName());
 }
 
 
-static inline void ed_set_item(EvalDict &d, const std::string &n, const double &value)
+static inline void  ed_set_item(piranha::EvalDict &d, const std::string &n, const double &value)
 {
     d[n] = value;
 }
 
 
-static inline std::string py_stats_dump(const stats &)
+static inline std::string py_stats_dump(const  piranha::stats &)
 {
-    return stats::dump();
+    return  piranha::stats::dump();
 }
 
 
@@ -84,7 +82,7 @@ static inline std::string py_stats_dump(const stats &)
 PYBIND11_MODULE(_Core, mc)
 {   
 //docstring_options docOptions(true, false, false);
-//translate_exceptions();
+pyranha::translate_exceptions();
 
 // Interop between vectors of some types and Python tuples/lists.
 //to_tuple_mapping<std::vector<std::string> >();
@@ -111,90 +109,89 @@ PYBIND11_MODULE(_Core, mc)
 
 
 // Expose evaluation dictionary.     TODO: disbaled until we need it
-// pybind11::class_<EvalDict> ed(mc, "evaldict", "Evaluation dictionary");
+    pybind11::class_< piranha::EvalDict> ed(mc, "evaldict", "Evaluation dictionary");
 
-// ed.def(pybind11::init<>());
+    ed.def(pybind11::init<>());
+    ed.def("__setitem__", &ed_set_item);    //TODO: is that all we need??? 
 
-// ed.def("__setitem__", &ed_set_item);    //TODO: is that all we need??? 
-
-    //// Expose arguments tuples.
-    //expose_argsTuples<__PIRANHA_MAX_ECHELON_LEVEL>();
+// Expose arguments tuples.   //is that used anywhere ????
+    pyranha::expose_argsTuples<__PIRANHA_MAX_ECHELON_LEVEL>(mc);
 
 
     // MP classes.
     // class mp_rational
-    pybind11::class_<mp_rational> mpr(expose_real_mp_class<mp_rational>(mc, "rational", "Multi-precision rational number."));
+    pybind11::class_< piranha::mp_rational> mpr(pyranha::expose_real_mp_class< piranha::mp_rational>(mc, "rational", "Multi-precision rational number."));
     mpr.def(pybind11::init<const int &, const int &>());
-    mpr.def(pybind11::init<const mp_integer &, const mp_integer &>());
-    mpr.def_property_readonly("num", &mp_rational::get_num, "Numerator of the rational number");    
-    mpr.def_property_readonly("den", &mp_rational::get_den, "Denominator of the ratonal Number");   
-    mpr.def("choose", &mp_rational::choose, "Binomial coefficient (choose function).");
+    mpr.def(pybind11::init<const  piranha::mp_integer &, const  piranha::mp_integer &>());
+    mpr.def_property_readonly("num", &piranha::mp_rational::get_num, "Numerator of the rational number");
+    mpr.def_property_readonly("den", &piranha::mp_rational::get_den, "Denominator of the ratonal Number");
+    mpr.def("choose", &piranha::mp_rational::choose, "Binomial coefficient (choose function).");
 
 
     // class mp_integer
-    pybind11::class_<mp_integer> mpz(expose_real_mp_class<mp_integer>(mc, "integer", "Multi-precision integer number."));
-    //mpz.def(pybind11::init<const mp_rational &>());    // how would that be working. How to instantiate i.e. how do we get an mp_rational as input?? unnecessary already in common_mp_methods but still where would it come from
+    pybind11::class_< piranha::mp_integer> mpz(pyranha::expose_real_mp_class< piranha::mp_integer>(mc, "integer", "Multi-precision integer number."));
+    mpz.def(pybind11::init<const  piranha::mp_rational &>());
    
-    mpz.def("factorial", &mp_integer::factorial, "Factorial.");
-    mpz.def("choose",    &mp_integer::choose,    "Binomial coefficient (choose function).");
-    mpz.def("lcm",       &mp_integer::lcm,       "Set self to the least common multiplier of input arguments.");   //TODO: maybe a better interface. not just k.lcm(i,i) and for plain int i,j?
-    mpz.def(pybind11::self %= mp_integer());                                                                       // todo: maybe also a better interface. make it assignable? only i%=j --> i works    
+    mpz.def("factorial", &piranha::mp_integer::factorial, "Factorial.");
+    mpz.def("choose",    &piranha::mp_integer::choose,    "Binomial coefficient (choose function).");
+    mpz.def("lcm",       &piranha::mp_integer::lcm,       "Set self to the least common multiplier of input arguments.");   //TODO: maybe a better interface. not just k.lcm(i,i) and for plain int i,j?
+    mpz.def(pybind11::self %= piranha::mp_integer());                                                                       // todo: maybe also a better interface. make it assignable? only i%=j --> i works    
     mpz.def(pybind11::self %= int());
 
 
     // class settings (for pyranha)
-    auto getMemoryLimit = [](pybind11::object) {return settings::get_memory_limit(); };
-    auto setMemoryLimit = [](pybind11::object, std::size_t v) { settings::set_memory_limit(v); };
-    auto getMemoryUsed  = [](pybind11::object) { return settings::get_used_memory(); };
-    auto getNthread     = [](pybind11::object) {return settings::getNthread(); };
-    auto setNthread     = [](pybind11::object, int n) {settings::setNthread(n); };
-    auto getDebug       = [](pybind11::object) { return settings::getDebug(); };
-    auto setDebug       = [](pybind11::object, bool d) { settings::setDebug(d); };
-    auto getAlgorithm   = [](pybind11::object) { return settings::getMultiplicationAlgorithm(); };
-    auto setAlgorithm   = [](pybind11::object, settings::MultiplicationAlgorithm a) { settings::setMultiplicationAlgorithm(a); };
+    auto getMemoryLimit = [](pybind11::object) {return  piranha::settings::get_memory_limit(); };
+    auto setMemoryLimit = [](pybind11::object, std::size_t v) {  piranha::settings::set_memory_limit(v); };
+    auto getMemoryUsed  = [](pybind11::object) { return  piranha::settings::get_used_memory(); };
+    auto getNthread     = [](pybind11::object) {return  piranha::settings::getNthread(); };
+    auto setNthread     = [](pybind11::object, int n) { piranha::settings::setNthread(n); };
+    auto getDebug       = [](pybind11::object) { return  piranha::settings::getDebug(); };
+    auto setDebug       = [](pybind11::object, bool d) {  piranha::settings::setDebug(d); };
+    auto getAlgorithm   = [](pybind11::object) { return  piranha::settings::getMultiplicationAlgorithm(); };
+    auto setAlgorithm   = [](pybind11::object, piranha::settings::MultiplicationAlgorithm a) {  piranha::settings::setMultiplicationAlgorithm(a); };
    
-    pybind11::class_<settings> set(mc, "__settings", "pyranha settings");
+    pybind11::class_< piranha::settings> set(mc, "__settings", "pyranha settings");
     set.def(pybind11::init<>());
     set.def_property_static("debug",                        getDebug, setDebug);  
     set.def_property_readonly_static("memory_used",         getMemoryUsed);                                                                         // , "amount of used memory in bytes.");                        // todo: how to do property with the docstring?????
     set.def_property_static("memory_limit",                 getMemoryLimit, setMemoryLimit);                                                        // todo: how to do property with the docstring?????
-    set.def_property_static("max_pretty_print_size",        &settings::get_max_pretty_print_size, &settings::set_max_pretty_print_size);            // todo: how to do property with the docstring?????
+    set.def_property_static("max_pretty_print_size",        &piranha::settings::get_max_pretty_print_size, &piranha::settings::set_max_pretty_print_size);            // todo: how to do property with the docstring?????
     set.def_property_static("nthread",                      getNthread, setNthread);                                                                // todo: how to do property with the docstring?????
     set.def_property_static("multiplication_algorithm",     getAlgorithm, setAlgorithm);                                                            // todo: how to do property with the docstring?????
  
 
     // enum for multiplication algorithm   
-    pybind11::enum_<settings::MultiplicationAlgorithm> enu(mc, "multiplication_algorithm", "Selected algorithm for multiplication");
-    enu.value("automatic",      settings::ALGORITHM_AUTOMATIC);
-    enu.value("plain",          settings::ALGORITHM_PLAIN);
-    enu.value("vector_coded",   settings::ALGORITHM_VECTOR_CODED);
-    enu.value("hash_coded",     settings::ALGORITHM_HASH_CODED);
+    pybind11::enum_< piranha::settings::MultiplicationAlgorithm> enu(mc, "multiplication_algorithm", "Selected algorithm for multiplication");
+    enu.value("automatic", piranha::settings::ALGORITHM_AUTOMATIC);
+    enu.value("plain", piranha::settings::ALGORITHM_PLAIN);
+    enu.value("vector_coded", piranha::settings::ALGORITHM_VECTOR_CODED);
+    enu.value("hash_coded", piranha::settings::ALGORITHM_HASH_CODED);
     enu.export_values();
 
 
     // class psym
     // Should psym offer a latex method ?? not much really to show that way, probably just the name!
-    pybind11::class_<Psym> ps(mc, "psym", "Symbol class.");
+    pybind11::class_< piranha::Psym> ps(mc, "psym", "Symbol class.");
     
     ps.def(pybind11::init<const std::string&, const std::vector<double>&>());
     ps.def(pybind11::init<const std::string&, const double&>());
     ps.def(pybind11::init<const std::string&>());
 
-    ps.def("__copy__", &py_copy<Psym>);
+    ps.def("__copy__", &pyranha::py_copy< piranha::Psym>);
     ps.def("__hash__", &py_psym_hash);
     ps.def("__repr__", &py_psym_repr);
-    ps.def("eval", &Psym::eval);
-    ps.def_property_readonly("name", &Psym::getName, pybind11::return_value_policy::copy);
-    ps.def_property("time_eval", &Psym::getTimeEval, &Psym::setTimeEval, pybind11::return_value_policy::copy);
-    ps.def_static("list", &Psym::list, "Get list of global psyms");
-    ps.def_property("order", &Psym::order, &Psym::setOrder, "Get/set the order of the symbol for truncation (default: 1)");
+    ps.def("eval", &piranha::Psym::eval);
+    ps.def_property_readonly("name", &piranha::Psym::getName, pybind11::return_value_policy::copy);
+    ps.def_property("time_eval", &piranha::Psym::getTimeEval, &piranha::Psym::setTimeEval, pybind11::return_value_policy::copy);
+    ps.def_static("list", &piranha::Psym::list, "Get list of global psyms");
+    ps.def_property("order", &piranha::Psym::order, &piranha::Psym::setOrder, "Get/set the order of the symbol for truncation (default: 1)");
     //
     ps.def(pybind11::self == pybind11::self);
     ps.def(pybind11::self != pybind11::self);
 
 
     // Stats class.
-    pybind11::class_<stats> s(mc, "__stats", "Stats class.");
+    pybind11::class_< piranha::stats> s(mc, "__stats", "Stats class.");
     
     s.def(pybind11::init<>());
     s.def("__repr__", &py_stats_dump);

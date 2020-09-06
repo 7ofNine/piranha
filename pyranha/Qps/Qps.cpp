@@ -24,26 +24,23 @@
 
 #include "pybind11/pybind11.h"
 
-using namespace piranha;
-using namespace piranha::manipulators;
-using namespace pyranha;
 
 PYBIND11_MODULE(_Qps, m)
 {
     //docstring_options docOptions(true, false, false);
-    //translate_exceptions();
+    pyranha::translate_exceptions();
 
-    pybind11::class_<qps> inst(series_basic_instantiation<qps>(m, "qps",
+    pybind11::class_<piranha::manipulators::qps> inst(pyranha::series_basic_instantiation<piranha::manipulators::qps>(m, "qps",
             "Poisson series with arbitrary-precision rational coefficients."));
-    common_poisson_series_instantiation(inst, "qps");
-    celmec_instantiation(inst);
-    series_trigonometric_instantiation(inst);
-    series_sub_instantiation<qps, qps>(inst);
-    series_ei_sub_instantiation<qps, qpsc>(inst);
+    pyranha::common_poisson_series_instantiation(inst, "qps");
+    pyranha::celmec_instantiation(inst);
+    pyranha::series_trigonometric_instantiation(inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::qps, piranha::manipulators::qps>(inst);
+    pyranha::series_ei_sub_instantiation<piranha::manipulators::qps, piranha::manipulators::qpsc>(inst);
 
-    pybind11::class_<qpsc> instc(series_basic_instantiation<qpsc>(m, "qpsc", "Poisson series with complex arbitrary-precision rational coefficients."));
-    common_poisson_series_instantiation(instc, "qpsc");
-    series_complex_instantiation(instc, inst);
-    series_sub_instantiation<qpsc, qps>(instc);
-    series_ei_sub_instantiation<qpsc, qpsc>(instc);
+    pybind11::class_<piranha::manipulators::qpsc> instc(pyranha::series_basic_instantiation<piranha::manipulators::qpsc>(m, "qpsc", "Poisson series with complex arbitrary-precision rational coefficients."));
+    pyranha::common_poisson_series_instantiation(instc, "qpsc");
+    pyranha::series_complex_instantiation(instc, inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::qpsc, piranha::manipulators::qps>(instc);
+    pyranha::series_ei_sub_instantiation<piranha::manipulators::qpsc, piranha::manipulators::qpsc>(instc);
 }

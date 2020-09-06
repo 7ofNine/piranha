@@ -29,7 +29,7 @@
 PYBIND11_MODULE(_Zpoly, m)
 {
     //docstring_options docOptions(true, false, false);
-    //translate_exceptions();  //still todo
+    pyranha::translate_exceptions();   
 
     pybind11::class_<piranha::manipulators::zpoly> inst(pyranha::series_basic_instantiation<piranha::manipulators::zpoly>(m, 
                 "zpoly", "Multivariate polynomial with arbitrary-size integer coefficients."));

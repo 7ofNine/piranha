@@ -26,28 +26,25 @@
 
 #include"pybind11/pybind11.h"
 
-using namespace piranha;
-using namespace piranha::manipulators;
-using namespace pyranha;
 
 PYBIND11_MODULE(_Dps, m)
 {
     //docstring_options docOptions(true, false, false);
-    //translate_exceptions();
+    pyranha::translate_exceptions();
 
-    pybind11::class_<dps> inst(series_basic_instantiation<dps>(m, "dps", "Poisson series with double precision coefficients."));
-    common_poisson_series_instantiation(inst, "dps");
-    celmec_instantiation(inst);
-    series_trigonometric_instantiation(inst);
-    series_sub_instantiation<dps, dps>(inst);
-    series_ei_sub_instantiation<dps, dpsc>(inst);
+    pybind11::class_<piranha::manipulators::dps> inst(pyranha::series_basic_instantiation<piranha::manipulators::dps>(m, "dps", "Poisson series with double precision coefficients."));
+    pyranha::common_poisson_series_instantiation(inst, "dps");
+    pyranha::celmec_instantiation(inst);
+    pyranha::series_trigonometric_instantiation(inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::dps, piranha::manipulators::dps>(inst);
+    pyranha::series_ei_sub_instantiation<piranha::manipulators::dps, piranha::manipulators::dpsc>(inst);
 
-    inst.def("to_dfs", &dps::to_fs<dfs>, "Convert to dfs.");
+    inst.def("to_dfs", &piranha::manipulators::dps::to_fs<piranha::manipulators::dfs>, "Convert to dfs.");
 
-    pybind11::class_<dpsc> instc(series_basic_instantiation<dpsc>(m, "dpsc", "Poisson series with complex double precision coefficients."));
-    common_poisson_series_instantiation(instc, "dpsc");
-    series_complex_instantiation(instc, inst);
-    series_sub_instantiation<dpsc, dps>(instc);
-    series_ei_sub_instantiation<dpsc, dpsc>(instc);
-    instc.def("to_dfsc", &dpsc::to_fs<dfsc>, "Convert to dfsc.");
+    pybind11::class_<piranha::manipulators::dpsc> instc(pyranha::series_basic_instantiation<piranha::manipulators::dpsc>(m, "dpsc", "Poisson series with complex double precision coefficients."));
+    pyranha::common_poisson_series_instantiation(instc, "dpsc");
+    pyranha::series_complex_instantiation(instc, inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::dpsc, piranha::manipulators::dps>(instc);
+    pyranha::series_ei_sub_instantiation<piranha::manipulators::dpsc, piranha::manipulators::dpsc>(instc);
+    instc.def("to_dfsc", &piranha::manipulators::dpsc::to_fs<piranha::manipulators::dfsc>, "Convert to dfsc.");
 }

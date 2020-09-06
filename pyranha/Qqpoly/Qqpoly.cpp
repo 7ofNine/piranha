@@ -29,7 +29,7 @@
 PYBIND11_MODULE(_Qqpoly, m)
 {
     //docstring_options docOptions(true, false, false);
-    //translate_exceptions();
+    pyranha::translate_exceptions();
 
     pybind11::class_<piranha::manipulators::qqpoly> inst(pyranha::series_basic_instantiation<piranha::manipulators::qqpoly>(m, "qqpoly", "Multivariate polynomial with arbitrary-size rational coefficients."));
     pyranha::common_polynomial_instantiation(inst);

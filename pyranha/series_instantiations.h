@@ -31,7 +31,6 @@
 #include "../src/core/mp.h"
 #include "../src/core/psym.h"
 #include "../src/core/type_traits.h"
-//#include "boost_python_container_conversions.h"
 #include "commons.h"
 
 #include "pybind11/pybind11.h"
@@ -84,10 +83,6 @@ namespace pyranha
 	template <class T>
 	inline pybind11::class_<T> series_basic_instantiation(pybind11::module &m, const std::string &name, const std::string &description)
 	{
-		// Expose vectors of series and vectors of vectors of series as Python tuples.
-		//to_tuple_mapping<std::vector<T> >();                                               //we don't need it 
-		//to_tuple_mapping<std::vector<std::vector<T> > >();                                 //TODO
-
 		// Expose the manipulator class.
 		pybind11::class_<T> inst(m, name.c_str(), description.c_str());
 		inst.def(pybind11::init<>());

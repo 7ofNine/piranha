@@ -25,26 +25,24 @@
 
 #include "pybind11/pybind11.h"
 
-using namespace piranha;
-using namespace piranha::manipulators;
-using namespace pyranha;
 
 PYBIND11_MODULE(_Dqps, m)
 {
     //docstring_options docOptions(true, false, false);
-	//translate_exceptions();
+	pyranha::translate_exceptions();
 
-	pybind11::class_<dqps> inst(series_basic_instantiation<dqps>(m, "dqps", "Poisson series with double precision rational coefficients and arbitrary-precision rational exponents."));
-	common_poisson_series_instantiation(inst, "dqps");
-	celmec_instantiation(inst);
-	series_trigonometric_instantiation(inst);
-	series_sub_instantiation<dqps, dqps>(inst);
-	series_ei_sub_instantiation<dqps, dqpsc>(inst);
+	pybind11::class_<piranha::manipulators::dqps> inst(pyranha::series_basic_instantiation<piranha::manipulators::dqps>(m, "dqps",
+					"Poisson series with double precision rational coefficients and arbitrary-precision rational exponents."));
+	pyranha::common_poisson_series_instantiation(inst, "dqps");
+	pyranha::celmec_instantiation(inst);
+	pyranha::series_trigonometric_instantiation(inst);
+	pyranha::series_sub_instantiation<piranha::manipulators::dqps, piranha::manipulators::dqps>(inst);
+	pyranha::series_ei_sub_instantiation<piranha::manipulators::dqps, piranha::manipulators::dqpsc>(inst);
 
-	pybind11::class_<dqpsc> instc(series_basic_instantiation<dqpsc>(m, "dqpsc", "Poisson series with complex double precision "
+	pybind11::class_<piranha::manipulators::dqpsc> instc(pyranha::series_basic_instantiation<piranha::manipulators::dqpsc>(m, "dqpsc", "Poisson series with complex double precision "
 		"rational coefficients and arbitrary-precision rational exponents."));
-	common_poisson_series_instantiation(instc, "dqpsc");
-	series_complex_instantiation(instc, inst);
-	series_sub_instantiation<dqpsc, dqps>(instc);
-	series_ei_sub_instantiation<dqpsc, dqpsc>(instc);
+	pyranha::common_poisson_series_instantiation(instc, "dqpsc");
+	pyranha::series_complex_instantiation(instc, inst);
+	pyranha::series_sub_instantiation<piranha::manipulators::dqpsc, piranha::manipulators::dqps>(instc);
+	pyranha::series_ei_sub_instantiation<piranha::manipulators::dqpsc, piranha::manipulators::dqpsc>(instc);
 }

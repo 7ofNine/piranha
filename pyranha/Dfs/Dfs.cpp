@@ -25,22 +25,19 @@
 
 #include "pybind11/pybind11.h"
 
-using namespace piranha;
-using namespace piranha::manipulators;
-using namespace pyranha;
 
 PYBIND11_MODULE(_Dfs, m)
 {
     //docstring_options docOptions(true, false, false);
-    //translate_exceptions();
+    pyranha::translate_exceptions();
 
-    pybind11::class_<dfs> inst(series_basic_instantiation<dfs>(m, "dfs", "Fourier series with double precision coefficients."));
-    common_fourier_series_instantiation(inst);
-    series_trigonometric_instantiation(inst);
-    series_sub_instantiation<dfs, dfs>(inst);
+    pybind11::class_<piranha::manipulators::dfs> inst(pyranha::series_basic_instantiation<piranha::manipulators::dfs>(m, "dfs", "Fourier series with double precision coefficients."));
+    pyranha::common_fourier_series_instantiation(inst);
+    pyranha::series_trigonometric_instantiation(inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::dfs, piranha::manipulators::dfs>(inst);
 
-    pybind11::class_<dfsc> instc(series_basic_instantiation<dfsc>(m, "dfsc", "Fourier series with complex double precision coefficients."));
-    series_complex_instantiation(instc, inst);
-    common_fourier_series_instantiation(instc);
-    series_sub_instantiation<dfsc, dfs>(instc);
+    pybind11::class_<piranha::manipulators::dfsc> instc(pyranha::series_basic_instantiation<piranha::manipulators::dfsc>(m, "dfsc", "Fourier series with complex double precision coefficients."));
+    pyranha::series_complex_instantiation(instc, inst);
+    pyranha::common_fourier_series_instantiation(instc);
+    pyranha::series_sub_instantiation<piranha::manipulators::dfsc, piranha::manipulators::dfs>(instc);
 }

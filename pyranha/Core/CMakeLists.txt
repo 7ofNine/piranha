@@ -6,7 +6,6 @@ SET(PYRANHA_CORE_HEADERS
 	../../src/core/settings.h
 	../../src/core/stats.h
 	../args_tuple.h
-	../boost_python_container_conversions.h
 	../commons.h
 	../exceptions.h
 	../mp_classes.h

@@ -25,23 +25,19 @@
 
 #include "pybind11/pybind11.h"
 
-using namespace piranha;
-using namespace piranha::manipulators;
-using namespace pyranha;
-
 
 PYBIND11_MODULE(_Qpoly, m )
 {
     //docstring_options docOptions(true, false, false);
-    //translate_exceptions();
+    pyranha::translate_exceptions();
 
-    pybind11::class_<qpoly> inst(series_basic_instantiation<qpoly> (m, "qpoly", "Multivariate polynomial with arbitrary-size rational coefficients."));
-    common_polynomial_instantiation(inst);
-    series_sub_instantiation<qpoly, qpoly>(inst);
+    pybind11::class_<piranha::manipulators::qpoly> inst(pyranha::series_basic_instantiation<piranha::manipulators::qpoly> (m, "qpoly", "Multivariate polynomial with arbitrary-size rational coefficients."));
+    pyranha::common_polynomial_instantiation(inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::qpoly, piranha::manipulators::qpoly>(inst);
 
-    pybind11::class_<qpolyc> instc(series_basic_instantiation<qpolyc>(m, "qpolyc", "Multivariate polynomial with complex arbitrary-size rational coefficients."));
-    common_polynomial_instantiation(instc);
-    series_complex_instantiation(instc, inst);
-    series_sub_instantiation<qpolyc, qpoly>(instc);
-    series_sub_instantiation<qpolyc, qpolyc>(instc);
+    pybind11::class_<piranha::manipulators::qpolyc> instc(pyranha::series_basic_instantiation<piranha::manipulators::qpolyc>(m, "qpolyc", "Multivariate polynomial with complex arbitrary-size rational coefficients."));
+    pyranha::common_polynomial_instantiation(instc);
+    pyranha::series_complex_instantiation(instc, inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::qpolyc, piranha::manipulators::qpoly>(instc);
+    pyranha::series_sub_instantiation<piranha::manipulators::qpolyc, piranha::manipulators::qpolyc>(instc);
 }

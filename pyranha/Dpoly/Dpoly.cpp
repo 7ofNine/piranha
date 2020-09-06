@@ -26,23 +26,19 @@
 
 #include"pybind11/pybind11.h"
 
-using namespace piranha;
-using namespace piranha::manipulators;
-using namespace pyranha;
-
 
 PYBIND11_MODULE(_Dpoly, m)
 {
     //docstring_options docOptions(true, false, false);
-    //translate_exceptions();
+    pyranha::translate_exceptions();
 
-    pybind11::class_<dpoly> inst(series_basic_instantiation<dpoly>(m, "dpoly", "Multivariate polynomial with double precision coefficients."));
-    common_polynomial_instantiation(inst);
-    series_sub_instantiation<dpoly, dpoly>(inst);
+    pybind11::class_<piranha::manipulators::dpoly> inst(pyranha::series_basic_instantiation<piranha::manipulators::dpoly>(m, "dpoly", "Multivariate polynomial with double precision coefficients."));
+    pyranha::common_polynomial_instantiation(inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::dpoly, piranha::manipulators::dpoly>(inst);
 
-    pybind11::class_<dpolyc> instc(series_basic_instantiation<dpolyc>(m, "dpolyc", "Multivariate polynomial with complex double precision coefficients."));
-    common_polynomial_instantiation(instc);
-    series_complex_instantiation(instc, inst);
-    series_sub_instantiation<dpolyc, dpolyc>(instc);
-    series_sub_instantiation<dpolyc, dpoly>(instc);
+    pybind11::class_<piranha::manipulators::dpolyc> instc(pyranha::series_basic_instantiation<piranha::manipulators::dpolyc>(m, "dpolyc", "Multivariate polynomial with complex double precision coefficients."));
+    pyranha::common_polynomial_instantiation(instc);
+    pyranha::series_complex_instantiation(instc, inst);
+    pyranha::series_sub_instantiation<piranha::manipulators::dpolyc, piranha::manipulators::dpolyc>(instc);
+    pyranha::series_sub_instantiation<piranha::manipulators::dpolyc, piranha::manipulators::dpoly>(instc);
 }

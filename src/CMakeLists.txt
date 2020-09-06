@@ -30,7 +30,7 @@ SET(Boost_USE_STATIC_RUNTIME OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_DEBUG_PYTHON ON)
 
-FIND_PACKAGE(Boost 1.69.0 REQUIRED COMPONENTS thread ${PYRANHA_BOOST_PYTHON_TARGET})
+FIND_PACKAGE(Boost 1.69.0 REQUIRED COMPONENTS thread)
 if(Boost_FOUND)
 	MESSAGE(STATUS "Found Boost libraries: ${Boost_LIBRARIES}")
     SET(PYRANHA_BOOST_LIBRARIES "${Boost_LIBRARIES}" PARENT_SCOPE)
@@ -203,8 +203,6 @@ SET(INCS
                 manipulators/qqps.h
                 manipulators/zpoly.h
                 ../pyranha/args_tuple.h
-                ../pyranha/boost_python_container_conversions.h
-                ../pyranha/boost_python_p_exceptions.h
                 ../pyranha/commons.h
                 ../pyranha/exceptions.h
                 ../pyranha/mp_classes.h
