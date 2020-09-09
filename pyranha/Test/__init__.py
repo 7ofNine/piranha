@@ -216,9 +216,11 @@ class series_trig_test(unittest.TestCase):
         from .detail import check_order
         truncators.unset()
         for limit in [1,2,3,80]:
+            print("trace 1: limit = " + str(limit))
             psym('x')
             truncators.degree.set('x', limit)
             for t in scalar_trig_exact_series_types:
+                print(" trace 1a: t = " + str(t))
                 x = t(psym('x'))
                 self.assertEqual(x.sin() * x.sin() + x.cos() * x.cos(), 1)
                 # Double angle formulas.
@@ -244,6 +246,7 @@ class series_trig_test(unittest.TestCase):
                     # Integral formula for Bessel functions.
                     pi  = t(psym('pi'))
                     tau = t(psym('tau'))
+                    print("trace 2: n = " + str(n))
                     tmp = (tau * n - x * tau.sin()).cos().integrate('tau')
                     self.assertTrue(check_order(pi ** -1 * (tmp.sub('tau',pi) - tmp.sub('tau',t())).ei_sub('pi', type(t().complex())(-1 + 0j)),x.besselJ(n),limit))
                     tmp = (tau * -n - x * tau.sin()).cos().integrate('tau')
@@ -270,10 +273,10 @@ class series_celmec_test(unittest.TestCase):
 
 def suite_series():
     suite = unittest.TestSuite()
-    suite.addTest(series_sf_test01())
-    suite.addTest(series_sf_test02())
+    #suite.addTest(series_sf_test01())
+    #suite.addTest(series_sf_test02())
     suite.addTest(series_trig_test())
-    suite.addTest(series_celmec_test())
+    #suite.addTest(series_celmec_test())
     return suite
 
 def run_full_suite():

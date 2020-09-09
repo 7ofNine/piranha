@@ -30,17 +30,17 @@ PYBIND11_MODULE(_Qps, m)
     //docstring_options docOptions(true, false, false);
     pyranha::translate_exceptions();
 
-    pybind11::class_<piranha::manipulators::qps> inst(pyranha::series_basic_instantiation<piranha::manipulators::qps>(m, "qps",
-            "Poisson series with arbitrary-precision rational coefficients."));
-    pyranha::common_poisson_series_instantiation(inst, "qps");
-    pyranha::celmec_instantiation(inst);
-    pyranha::series_trigonometric_instantiation(inst);
-    pyranha::series_sub_instantiation<piranha::manipulators::qps, piranha::manipulators::qps>(inst);
-    pyranha::series_ei_sub_instantiation<piranha::manipulators::qps, piranha::manipulators::qpsc>(inst);
+    //pybind11::class_<piranha::manipulators::qps> inst(pyranha::series_basic_instantiation<piranha::manipulators::qps>(m, "qps",
+    //        "Poisson series with arbitrary-precision rational coefficients."));
+    //pyranha::common_poisson_series_instantiation(inst, "qps");
+    //pyranha::celmec_instantiation(inst);
+    //pyranha::series_trigonometric_instantiation(inst);
+    //pyranha::series_sub_instantiation<piranha::manipulators::qps, piranha::manipulators::qps>(inst);
+    //pyranha::series_ei_sub_instantiation<piranha::manipulators::qps, piranha::manipulators::qpsc>(inst);
 
     pybind11::class_<piranha::manipulators::qpsc> instc(pyranha::series_basic_instantiation<piranha::manipulators::qpsc>(m, "qpsc", "Poisson series with complex arbitrary-precision rational coefficients."));
-    pyranha::common_poisson_series_instantiation(instc, "qpsc");
-    pyranha::series_complex_instantiation(instc, inst);
-    pyranha::series_sub_instantiation<piranha::manipulators::qpsc, piranha::manipulators::qps>(instc);
-    pyranha::series_ei_sub_instantiation<piranha::manipulators::qpsc, piranha::manipulators::qpsc>(instc);
+    //pyranha::common_poisson_series_instantiation(instc, "qpsc");
+    //pyranha::series_complex_instantiation(instc, inst);
+    //pyranha::series_sub_instantiation<piranha::manipulators::qpsc, piranha::manipulators::qps>(instc);
+    //pyranha::series_ei_sub_instantiation<piranha::manipulators::qpsc, piranha::manipulators::qpsc>(instc);
 }
