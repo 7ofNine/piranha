@@ -53,7 +53,7 @@ namespace piranha
 
 			static std::size_t get_used_memory()
 			{
-				return base_counting_allocator::count();
+				return BaseCountingAllocator::count();
 			}
 
 

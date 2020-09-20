@@ -30,7 +30,6 @@
 #include <memory>
 #include <new> // For std::bad_alloc.
 
-#include "atomic_counters/atomic_counters.h" // For counting allocator.
 #include "base_classes/base_counting_allocator.h"
 #include "exceptions.h"
 #include "integer_typedefs.h"
@@ -45,7 +44,7 @@ namespace piranha
 	 * allocations are taking place it is not guaranteed that in each moment the count reflects exactly the number of allocated bytes.
 	 */
 	template <class T, class Allocator>
-	class CountingAllocator: public base_counting_allocator
+	class CountingAllocator: public BaseCountingAllocator
 	{
 			template <class U, class Allocator2>
 			friend class CountingAllocator;
@@ -79,7 +78,7 @@ namespace piranha
 			{
 				// TODO: guard overflow here?
 				const std::size_t add = n * sizeof(value_type);
-                std::size_t       cur = m_counter.get_value();
+                std::size_t       cur = counter;
 				std::size_t     	l = settings::get_memory_limit();
 				// Formulate in this way in order to avoid bogus values when doing l - add
 				// (which is unsigned arithmetic).
@@ -89,14 +88,14 @@ namespace piranha
 				}
 
 				pointer retval = m_alloc.allocate(n,hint);
-				m_counter += add;
+				counter += add;
 				return retval;
 			}
 
 			void deallocate(pointer p, const size_type &n)
 			{
 				m_alloc.deallocate(p, n);
-				m_counter -= n * sizeof(value_type);
+				counter -= n * sizeof(value_type);
 			}
 
 			size_type max_size() const

@@ -18,10 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "core/atomic_counters/atomic_counters.h"
 #include "core/base_classes/base_counting_allocator.h"
+#include <atomic>
 
 namespace piranha
 {
-	atomic_counter_size_t base_counting_allocator::m_counter;
+    BaseCountingAllocator::CounterType BaseCountingAllocator::counter;
 }

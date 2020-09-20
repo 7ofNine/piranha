@@ -41,6 +41,8 @@
 #include "base_series_mp.h"
 #include "base_series_tag.h"
 
+#include <unordered_set>
+
 // Template parameters list for piranha::BaseSeries (declaration form).
 #define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived
 // Template parameters list for piranha::BaseSeries (implementation form).
@@ -67,6 +69,7 @@ namespace piranha
 	template <class Term>
 	struct SeriesContainer
 	{
+		//typedef std::unordered_set<Term> Type;
 		typedef boost::unordered_set<Term, boost::hash<Term>, std::equal_to<Term>, CountingAllocator<Term, std::allocator<Term> > > Type;
 	};
 

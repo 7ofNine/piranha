@@ -19,3 +19,4 @@ tests/testxxxx.qps
 updtaelist.txt
 /tests/Release
 /extras/ipy_profile_pyranha.py
+/pyranha/global.__init__.py
