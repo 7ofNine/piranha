@@ -15,7 +15,7 @@ SET(SRC_LIST ${SRC_LIST} degree_truncator.cpp
 SET(SRC_LIST_HEADERS core/mp.h core/psym.h core/truncators/degree.h
                      core/exceptions.h core/settings.h core/truncators/norm.h
                      core/exceptions.h core/mp.h
-                     core/atomic_counters/atomic_counters.h core/base_classes/base_counting_allocator.h
+                     core/base_classes/base_counting_allocator.h
                      core/config.h core/exceptions.h core/memory.h core/settings.h
                      core/Psym.h
                      core/stats.h
@@ -188,8 +188,6 @@ SET(INCS
                 core/base_classes/series_multiplication.h
                 core/base_classes/series_multiplier.h
                 core/base_classes/vector_key.h
-                core/atomic_counters/atomic_counter_msvc_long.h
-                core/atomic_counters/atomic_counters.h
                 core/mp/complex_generic_mp_container.h
                 core/mp/mp_commons.h
                 core/mp/piranha_gmp.h
