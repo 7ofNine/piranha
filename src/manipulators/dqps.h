@@ -21,7 +21,6 @@
 #ifndef PIRANHA_DQPS_H
 #define PIRANHA_DQPS_H
 
-#include <boost/cstdint.hpp>
 #include <complex>
 
 #include "../core/mp.h"
@@ -41,7 +40,7 @@ namespace manipulators
 	<
 		double_cf,
 		ExpoVector<mp_rational,0>,
-		TrigVector<boost::int16_t, 1>,
+		TrigVector<int16_t, 1>,
 		polynomial_multiplier,
 		PoissonSeriesMultiplier,
 		truncators::PowerSeries,

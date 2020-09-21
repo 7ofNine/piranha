@@ -24,7 +24,6 @@
 #include <algorithm>
 #include <boost/lambda/lambda.hpp>
 #include <boost/numeric/conversion/cast.hpp>
-#include <boost/type_traits/is_base_of.hpp>
 #include <cstddef>
 #include <iostream>
 #include <string>
@@ -36,6 +35,8 @@
 #include "base_series_def.h"
 #include "base_series_mp.h"
 #include "base_series_tag.h"
+
+#include <type_traits>
 
 #define DCC static_cast<Derived const *>(this)
 #define DC static_cast<Derived *>(this)
@@ -254,7 +255,7 @@ namespace piranha
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline BaseSeries<__PIRANHA_BASE_SERIES_TP>::~BaseSeries()
 	{
-        static_assert((boost::is_base_of<BaseSeriesTag, Derived>::value), "Final series class must derive from BaseSeries class.");
+        static_assert(std::is_base_of_v<BaseSeriesTag, Derived>, "Final series class must derive from BaseSeries class.");
 	}
 }
 

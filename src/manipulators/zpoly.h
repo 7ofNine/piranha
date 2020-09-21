@@ -21,7 +21,6 @@
 #ifndef PIRANHA_ZPOLY_H
 #define PIRANHA_ZPOLY_H
 
-#include <boost/cstdint.hpp>
 #include <complex>
 
 #include "../core/numerical_coefficients/mpz_cf.h"
@@ -38,7 +37,7 @@ namespace manipulators
 	typedef Polynomial
 	<
 		mpz_cf,
-		ExpoVector<boost::int16_t, 0>,
+		ExpoVector<int16_t, 0>,
 		polynomial_multiplier,
 		truncators::PowerSeries
 	> zpoly;

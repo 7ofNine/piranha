@@ -21,7 +21,6 @@
 #ifndef PIRANHA_QPOLY_H
 #define PIRANHA_QPOLY_H
 
-#include <boost/cstdint.hpp>
 #include <complex>
 
 #include "../core/numerical_coefficients/mpq_cf.h"
@@ -38,7 +37,7 @@ namespace manipulators
 	typedef Polynomial
 	<
 		mpq_cf,
-		ExpoVector<boost::int16_t, 0>,
+		ExpoVector<int16_t, 0>,
 		polynomial_multiplier,
 		truncators::PowerSeries
 	> qpoly;

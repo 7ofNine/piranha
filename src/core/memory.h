@@ -21,7 +21,6 @@
 #ifndef PIRANHA_MEMORY_H
 #define PIRANHA_MEMORY_H
 
-#include <boost/cstdint.hpp> // For uint8_t.
 #include <boost/integer_traits.hpp> // For max allocatable number of objects.
 #include <boost/type_traits/is_same.hpp> // For type mismatch identification in the counting allocator.
 #include <stdint.h>
@@ -204,26 +203,26 @@ namespace piranha
                 {
 					throw std::bad_alloc();
 				}
-				boost::uint8_t *mem_ptr;
+				uint8_t *mem_ptr;
 				if (!Alignment) 
                 {
 					// We have not to satisfy any alignment.
-					if ((mem_ptr = (boost::uint8_t *)std::malloc(n * sizeof(value_type) + 1)) != 0) 
+					if ((mem_ptr = (uint8_t *)std::malloc(n * sizeof(value_type) + 1)) != 0) 
                     {
 						// Store (mem_ptr - "real allocated memory") in *(mem_ptr-1).
-						*mem_ptr = (boost::uint8_t)1;
+						*mem_ptr = (uint8_t)1;
 						// Return the mem_ptr pointer.
 						return ((pointer)(mem_ptr + 1));
 					}
 				} else 
                 {
-					boost::uint8_t *tmp;
+					uint8_t *tmp;
 					// Allocate the required size memory + alignment so we
 					// can realign the data if necessary.
-					if ((tmp = (boost::uint8_t *)std::malloc(n * sizeof(value_type) + Alignment)) != 0) 
+					if ((tmp = (uint8_t *)std::malloc(n * sizeof(value_type) + Alignment)) != 0) 
                     {
 						// Align the tmp pointer.
-						mem_ptr = (boost::uint8_t *)((ptr_uint_t)(tmp + Alignment - 1) & (~(ptr_uint_t)(Alignment - 1)));
+						mem_ptr = (uint8_t *)((ptr_uint_t)(tmp + Alignment - 1) & (~(ptr_uint_t)(Alignment - 1)));
 						// Special case where malloc has already satisfied the alignment
 						// We must add alignment to mem_ptr because we must store
 						// (mem_ptr - tmp) in *(mem_ptr-1)
@@ -235,7 +234,7 @@ namespace piranha
 						}
 						// (mem_ptr - tmp) is stored in *(mem_ptr-1) so we are able to retrieve
 						// the real malloc block allocated and free it in deallocation.
-						*(mem_ptr - 1) = (boost::uint8_t)(mem_ptr - tmp);
+						*(mem_ptr - 1) = (uint8_t)(mem_ptr - tmp);
 						// Return the aligned pointer
 						return ((pointer)mem_ptr);
 					}
@@ -252,7 +251,7 @@ namespace piranha
 					return;
 				}
 				// Aligned pointer.
-				boost::uint8_t *ptr = (boost::uint8_t *)p;
+				uint8_t *ptr = (uint8_t *)p;
 				// *(ptr - 1) holds the offset to the real allocated block
 				// we subtract that offset os we free the real pointer.
 				ptr -= *(ptr - 1);

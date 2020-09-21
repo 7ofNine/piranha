@@ -22,7 +22,6 @@
 #define PIRANHA_CODED_HASH_TABLE_H
 
 #include <algorithm>
-#include <boost/cstdint.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/iterator/iterator_categories.hpp>
@@ -61,7 +60,7 @@ class coded_hash_table
                 {
                         public:
                                 /// Bucket size type.
-                                typedef boost::uint8_t size_type;
+                                typedef uint8_t size_type;
                 static_assert(N > 0 && N <= boost::integer_traits<size_type>::const_max, "Invalid bucket size.");
                                 /// Default constructor.
                                 /**

@@ -2,7 +2,7 @@ SET(PYRANHA_INSTALL_PATH ${PYTHON_MODULES_PATH}/pyranha)
 MESSAGE (STATUS " pyranha install path ${PYRANHA_INSTALL_PATH}")
 ADD_COMPILE_OPTIONS(/bigobj)
 ADD_COMPILE_OPTIONS(/wd4244) # Boost python shows a lot of size warnings with 64 bit compilation. Boost should fix that
-ADD_DEFINITIONS(-D_PIRANHA_DLL_IMPORT_API)  # here we import piranha.dll
+ADD_DEFINITIONS(-D_PIRANHA_DLL_IMPORT_API -DBOOST_BIND_GLOBAL_PLACEHOLDERS)  # here we import piranha.dll until boost/python fixes the deprecated warnings
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})  # everything under here needs the python declarations
 link_directories(${PIRANHA_PYTHON_LIBRARIES_DIR})    # pyconfig.h sets required pylib (or pylib_d) which gets messed up by boost wrap_python.h when _DEBUG is set, it temporary unsets it. This requires the python library dir explicitly available
                                                      # the pyconfig.h only contains the names not the path!!! We don't set _DEBUG hence we have to provide the library dir separately

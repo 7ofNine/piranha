@@ -21,7 +21,6 @@
 #ifndef PIRANHA_QPS_H
 #define PIRANHA_QPS_H
 
-#include <boost/cstdint.hpp>
 #include <complex>
 
 #include "../core/harmonic_series/trig_vector.h"
@@ -40,8 +39,8 @@ namespace manipulators
 	typedef poisson_series
 	<
 		mpq_cf,
-		ExpoVector<boost::int16_t, 0>,
-		TrigVector<boost::int16_t, 1>,
+		ExpoVector<int16_t, 0>,
+		TrigVector<int16_t, 1>,
 		polynomial_multiplier,
 		PoissonSeriesMultiplier,
 		truncators::PowerSeries,

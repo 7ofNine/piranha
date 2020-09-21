@@ -279,17 +279,19 @@ namespace piranha
 			template <class ArgsTuple>
 			void canonicalise(const ArgsTuple &) {}
 			
+
+			// TODO: do we need this currently nowhere used!!
 			/// Hasher functor.
 			/**
 			 * Useful in STL-like containers.
 			 */
-			struct Hasher 
-			{
-				std::size_t operator()(const BaseTerm &t) const 
-				{
-					return t.key.hash_value();
-				}
-			};
+			//struct Hasher 
+			//{
+			//	std::size_t operator()(const BaseTerm &t) const 
+			//	{
+			//		return t.key.hash_value();
+			//	}
+			//};
 
 			// Data members.
 			/// Coefficient.

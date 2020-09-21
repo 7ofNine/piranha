@@ -21,7 +21,6 @@
 #ifndef PIRANHA_DFS_H
 #define PIRANHA_DFS_H
 
-#include <boost/cstdint.hpp>
 #include <complex>
 
 #include "../core/harmonic_series/trig_vector.h"
@@ -37,7 +36,8 @@ namespace manipulators
 	/// Fourier series manipulator.
 	typedef fourier_series
 	<
-		double_cf, TrigVector<boost::int16_t, 0>,
+		double_cf,
+		TrigVector<int16_t, 0>,
 		PoissonSeriesMultiplier,
 		truncators::Norm
 	> dfs;
