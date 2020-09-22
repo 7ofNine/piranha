@@ -42,6 +42,7 @@
 #include "base_series_tag.h"
 
 #include <unordered_set>
+#include <type_traits>
 
 // Template parameters list for piranha::BaseSeries (declaration form).
 #define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived
@@ -87,6 +88,7 @@ namespace piranha
 
 
 	template <class Iterator>
+	//	requires std::is_pointer<Iterator>
 	struct FromIterator<Iterator, typename boost::enable_if<boost::is_pointer<typename Iterator::value_type> >::type>
 	{
 		static typename Iterator::value_type get(const Iterator &it)

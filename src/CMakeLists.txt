@@ -44,6 +44,7 @@ ADD_LIBRARY(piranha SHARED ${SRC_LIST} ${SRC_LIST_HEADERS}) # define target pira
 
 TARGET_INCLUDE_DIRECTORIES(piranha PRIVATE ${Boost_INCLUDE_DIR})
 SET_PROPERTY(TARGET piranha PROPERTY COMPILE_DEFINITIONS _PIRANHA_DLL_EXPORT_API) # The dll exports its intefraces
+SET_PROPERTY(TARGET piranha PROPERTY CXX_STANDARD 17)
 TARGET_LINK_LIBRARIES(piranha ${MANDATORY_LIBRARIES} Boost::thread)
 
 # copy libraries so that we actually can run the tests and/or the single projects

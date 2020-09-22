@@ -22,7 +22,6 @@
 #define PIRANHA_DOUBLE_CF_H
 
 #include <boost/numeric/conversion/converter.hpp>
-#include <boost/utility/enable_if.hpp>
 #include <cmath>
 #include <complex>
 

@@ -21,7 +21,7 @@
 #ifndef PIRANHA_MPQ_CF_H
 #define PIRANHA_MPQ_CF_H
 
-#include <boost/type_traits/integral_constant.hpp>
+//#include <boost/type_traits/integral_constant.hpp>
 #include <cmath>
 #include <complex>
 

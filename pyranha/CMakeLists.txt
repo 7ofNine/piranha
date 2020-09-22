@@ -8,6 +8,7 @@ link_directories(${PIRANHA_PYTHON_LIBRARIES_DIR})    # pyconfig.h sets required 
                                                      # the pyconfig.h only contains the names not the path!!! We don't set _DEBUG hence we have to provide the library dir separately
 
 MACRO(PYTHON_CPPMODULE arg1)
+    SET_TARGET_PROPERTIES(${arg1} PROPERTIES CXX_STANDARD 17)
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES PREFIX "")
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES SUFFIX ".pyd")
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES FOLDER "Pyranha") # we want to put these projects into a Pyranha folder in VS
