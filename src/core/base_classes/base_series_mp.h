@@ -21,14 +21,16 @@
 #ifndef PIRANHA_BASE_SERIES_MP_H
 #define PIRANHA_BASE_SERIES_MP_H
 
-#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <complex>
-#include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
 #include "base_series_tag.h"
+
+#include <complex>
+#include <vector>
+#include <type_traits>
+
 
 namespace piranha
 {
@@ -182,8 +184,8 @@ namespace piranha
 
 
 	template <class Derived, class T>
-	struct BaseSeriesMultiplySelector<Derived, T, typename boost::enable_if_c<std::is_base_of<BaseSeriesTag, T>::value &&
-		(boost::is_same<Derived, T>::value || boost::is_same<Derived, std::complex<T> >::value)>::type>
+	struct BaseSeriesMultiplySelector<Derived, T, typename boost::enable_if_c<std::is_base_of_v<BaseSeriesTag, T> &&
+		(std::is_same_v<Derived, T> || std::is_same_v<Derived, std::complex<T> >)>::type>
 	{
 		template <class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)

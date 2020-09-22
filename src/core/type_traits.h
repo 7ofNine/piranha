@@ -23,7 +23,6 @@
 
 #include <boost/type_traits/integral_constant.hpp>
 #include <boost/type_traits/is_complex.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 
 #include "base_classes/base_series_tag.h"
@@ -173,7 +172,7 @@ namespace piranha
 	 * Will be true if series has a degree_type typedef which is rational.
 	 */
 	template <class T>
-	struct is_rational_exponent<T,typename boost::enable_if_c<boost::is_base_of<BaseSeriesTag, T>::value && boost::is_same<typename T::degree_type, mp_rational>::value>::type>:
+	struct is_rational_exponent<T,typename boost::enable_if_c<std::is_base_of_v<BaseSeriesTag, T> && std::is_same_v<typename T::degree_type, mp_rational>>::type>:
 	boost::true_type {};
 
 

@@ -24,7 +24,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <boost/tuple/tuple.hpp>
 
 #include "../base_classes/base_series_tag.h"
@@ -112,7 +111,7 @@ namespace piranha {
                 template <class Key>
                 void assign(std::vector<boost::numeric::interval<T> > &minmax, const Key &key)
                 {
-            static_assert((boost::is_same<T, typename Key::value_type>::value), "");
+            static_assert((std::is_same_v<T, typename Key::value_type>), "");
 
                         typedef typename Key::size_type size_type;
                         const size_type size = key.size();
@@ -130,7 +129,7 @@ namespace piranha {
                 template <class Key>
                 void test(std::vector<boost::numeric::interval<T> > &minmax, const Key &key)
                 {
-            static_assert((boost::is_same<T,typename Key::value_type>::value),"");
+            static_assert((std::is_same_v<T,typename Key::value_type>),"");
                         typedef typename Key::size_type size_type;
                         const size_type size = key.size();
                         PIRANHA_ASSERT(size <= minmax.size());
@@ -181,7 +180,7 @@ namespace piranha {
                 template <class Key>
                 void assign(std::vector<boost::numeric::interval<mp_rational> > &minmax, const Key &key)
                 {
-            static_assert((boost::is_same<mp_rational,typename Key::value_type>::value),"");
+            static_assert((std::is_same_v<mp_rational,typename Key::value_type>),"");
                         typedef typename Key::size_type size_type;
                         const size_type size = key.size();
 
@@ -202,7 +201,7 @@ namespace piranha {
                 template <class Key>
                 void test(std::vector<boost::numeric::interval<mp_rational> > &minmax, const Key &key)
                 {
-            static_assert((boost::is_same<mp_rational,typename Key::value_type>::value),"");
+            static_assert((std::is_same_v<mp_rational,typename Key::value_type>),"");
                         typedef typename Key::size_type size_type;
                         const size_type size = key.size();
                         PIRANHA_ASSERT(size <= minmax.size());
@@ -592,7 +591,7 @@ namespace piranha {
                 template <class CodingTuple, class Cf, class VhTuple>
                 static void run(const CodingTuple &ct, const Cf &cf, const VhTuple &vh_tuple, MaxFastInt &retval1, MaxFastInt &retval2)
                 {
-            static_assert((boost::is_same<typename CodingTuple::head_type::value_type,MaxFastInt>::value),"");
+            static_assert((std::is_same_v<typename CodingTuple::head_type::value_type,MaxFastInt>),"");
                         PIRANHA_ASSERT(cf.length() == 1);
 
                         typedef typename Cf::TermType::KeyType::size_type size_type;
@@ -630,7 +629,7 @@ namespace piranha {
                 template <class CodingTuple, class Term, class VhTuple>
                 static void run(const CodingTuple &ct, const Term &term, const VhTuple &vh_tuple, MaxFastInt &retval1, MaxFastInt &retval2)
                 {
-            static_assert((boost::is_same<typename CodingTuple::head_type::value_type,MaxFastInt>::value),"");
+            static_assert((std::is_same_v<typename CodingTuple::head_type::value_type,MaxFastInt>),"");
                         PIRANHA_ASSERT(term.key.size() <= ct.get_head().size());
 
                         static const bool sub_requested = op_has_sub<OpTuple>::value;

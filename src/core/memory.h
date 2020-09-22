@@ -22,17 +22,18 @@
 #define PIRANHA_MEMORY_H
 
 #include <boost/integer_traits.hpp> // For max allocatable number of objects.
-#include <boost/type_traits/is_same.hpp> // For type mismatch identification in the counting allocator.
-#include <stdint.h>
-#include <cstdlib>
-#include <cstddef>
-#include <memory>
-#include <new> // For std::bad_alloc.
 
 #include "base_classes/base_counting_allocator.h"
 #include "exceptions.h"
 #include "integer_typedefs.h"
 #include "settings.h"
+
+#include <stdint.h>
+#include <cstdlib>
+#include <cstddef>
+#include <memory>
+#include <new> // For std::bad_alloc.
+#include <type_traits>
 
 namespace piranha
 {
@@ -50,7 +51,7 @@ namespace piranha
 			typedef typename Allocator::template rebind<T>::other alloc;
 			//using alloc = typename std::allocator_traits<Allocator>::template rebind_alloc<T>;
 			//using allocTypes = std::allocator_traits<alloc>;
-			static_assert((boost::is_same<T,typename alloc::value_type>::value), "Type mismatch in counting allocator.");
+			static_assert((std::is_same_v<T,typename alloc::value_type>), "Type mismatch in counting allocator.");
 		public:
 			typedef typename alloc::size_type size_type;
 			typedef typename alloc::difference_type difference_type;

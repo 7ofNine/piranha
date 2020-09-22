@@ -25,12 +25,7 @@
 #include <boost/lambda/lambda.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/thread/thread.hpp>
-#include <boost/type_traits/is_same.hpp> // For key type detection.
 #include <boost/tuple/tuple.hpp>
-#include <cmath>
-#include <cstddef>
-#include <iterator>
-#include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -39,7 +34,11 @@
 #include "base_series_multiplier_mp.h"
 #include "null_truncator.h"
 
-
+#include <cmath>
+#include <cstddef>
+#include <iterator>
+#include <vector>
+#include <type_traits>
 #define DC static_cast<Derived *>(this)
 
 namespace piranha
@@ -59,7 +58,7 @@ namespace piranha
 			// Alias for term type of second input series.
 			typedef typename Series2::TermType TermType2;
 
-            static_assert((boost::is_same<typename TermType1::KeyType, typename TermType2::KeyType>::value), "Key type mismatch in base multiplier.");
+            static_assert((std::is_same_v<typename TermType1::KeyType, typename TermType2::KeyType>), "Key type mismatch in base multiplier.");
 
 			/// Compute block size for multiplication.
 			/**

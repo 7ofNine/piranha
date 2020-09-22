@@ -22,15 +22,16 @@
 #define PIRANHA_BINOMIAL_EXPONENTIATION_TOOLBOX_H
 
 #include <boost/numeric/conversion/cast.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <cstddef>
-#include <string>
-#include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
 #include "../mp.h"
 #include "../settings.h"
+
+#include <cstddef>
+#include <string>
+#include <vector>
+#include <type_traits>
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -123,7 +124,7 @@ namespace piranha
 			{
 				typedef typename Derived::TermType TermType;
 
-                static_assert((boost::is_same<Term, typename Derived::TermType>::value), "Term type mismatch in binomial expansion.");
+                static_assert((std::is_same_v<Term, typename Derived::TermType>), "Term type mismatch in binomial expansion.");
 
 				// Start the binomial expansion.
 				TermType tmpTerm;

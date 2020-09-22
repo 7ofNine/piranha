@@ -17,19 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
 #ifndef PIRANHA_SERIES_MULTIPLICATION_H
 #define PIRANHA_SERIES_MULTIPLICATION_H
 
-#define derived_const_cast static_cast<Derived const *>(this) // using the this of the derived class. It has to 
-#define derived_cast static_cast<Derived *>(this)
-
-#include <boost/type_traits/is_same.hpp>
-#include <cstddef>
-#include <iostream>
-
 #include "../config.h"
 #include "../settings.h"
+
+#include <cstddef>
+#include <iostream>
+#include <type_traits>
+
+
+#define derived_const_cast static_cast<Derived const *>(this) // using the this of the derived class. It has to 
+#define derived_cast static_cast<Derived *>(this)
 
 // 
 // for a series/polynomial to provide multiplication with another series even of its own type the 
@@ -56,7 +56,7 @@ namespace piranha
 			template <class Series, class ArgsTuple>
 			std::vector<typename Series::TermType const *> get_sorted_series(const ArgsTuple &argsTuple) const
 			{
-				static const bool check = boost::is_same<Series, Derived>::value;
+				static const bool check = std::is_same_v<Series, Derived>;
                 static_assert(check, "");
 
 				return Multiplier::template get_type<Derived, Derived, ArgsTuple, Truncator>

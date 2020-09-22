@@ -21,7 +21,7 @@
 #ifndef PIRANHA_CODED_MULTIPLIER_H
 #define PIRANHA_CODED_MULTIPLIER_H
 
-#include <algorithm>
+
 #include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/iterator/permutation_iterator.hpp>
@@ -30,12 +30,6 @@
 #include <boost/numeric/interval.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp> // We assert equality between vh tuples below.
-#include <boost/type_traits/is_same.hpp>
-#include <cstddef>
-#include <iterator>
-#include <string>
-#include <utility>
-#include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -47,6 +41,13 @@
 #include "coded_multiplier_mp.h"
 #include "null_truncator.h"
 
+#include <algorithm>
+#include <cstddef>
+#include <iterator>
+#include <string>
+#include <utility>
+#include <vector>
+#include <type_traits>
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
@@ -383,8 +384,8 @@ struct BaseCodedFunctor
 			typedef typename cm_tuple<Series1>::type_decoding_tuple decoding_tuple_type;
 			// These static checks makes sure that the two series have compatible types in the echelon
 			// hierarchy, apart from the numerical coefficients.
-            static_assert((boost::is_same<minmax_type, typename cm_tuple<Series2>::type_minmax>::value), "");
-            static_assert((boost::is_same<value_handler_type, typename cm_tuple<Series2>::type_value_handler>::value), "");
+            static_assert((std::is_same_v<minmax_type, typename cm_tuple<Series2>::type_minmax>), "");
+            static_assert((std::is_same_v<value_handler_type, typename cm_tuple<Series2>::type_value_handler>), "");
 			
 			// Generalised reverse lexicographic comparison.
 			class key_revlex_comparison

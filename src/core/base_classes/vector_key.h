@@ -21,22 +21,22 @@
 #ifndef PIRANHA_VECTOR_KEY_H
 #define PIRANHA_VECTOR_KEY_H
 
-#include <cstddef>
-#include <iostream>
-#include <memory>
-#include <utility>
-#include <vector>
 
 #include <boost/functional/hash.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <boost/type_traits/is_same.hpp>
 
 #include "../config.h"
 #include "../exceptions.h"
 #include "../memory.h"
 #include "../Psym.h"
 
+#include <cstddef>
+#include <iostream>
+#include <memory>
+#include <utility>
+#include <vector>
+#include <type_traits>
 
 namespace piranha
 {
@@ -178,7 +178,7 @@ namespace piranha
 			template <class LayoutTuple, class ArgsTuple>
 			void applyLayout(LayoutTuple const &layoutTuple, ArgsTuple const &)
 			{
-                static_assert((boost::is_same<std::vector<std::pair<bool, std::size_t> >, typename boost::tuples::element<Position, LayoutTuple>::type>::value), "Wrong layout type.");
+                static_assert((std::is_same_v<std::vector<std::pair<bool, std::size_t> >, typename boost::tuples::element<Position, LayoutTuple>::type>), "Wrong layout type.");
 				// TODO: add check about tuples length.
 				const size_type layoutSize = boost::numeric_cast<size_type>(layoutTuple.template get<Position>().size());
 
