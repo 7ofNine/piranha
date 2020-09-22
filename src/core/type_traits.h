@@ -21,13 +21,13 @@
 #ifndef PIRANHA_TYPE_TRAITS_H
 #define PIRANHA_TYPE_TRAITS_H
 
-#include <boost/type_traits/integral_constant.hpp>
-#include <boost/type_traits/is_complex.hpp>
-#include <boost/utility/enable_if.hpp>
 
 #include "base_classes/base_series_tag.h"
 #include "config.h"
 #include "mp.h"
+
+#include <boost/type_traits/integral_constant.hpp>
+#include <boost/type_traits/is_complex.hpp>
 
 #include <complex>
 #include <type_traits>
@@ -89,7 +89,7 @@ namespace piranha
 	 * if T is not a series type (in that case, the series type trait specialisation will be used).
 	 */
 	template <class T>
-	struct is_ring_exact<T,typename boost::enable_if_c<boost::is_complex<T>::value && !std::is_base_of_v<BaseSeriesTag,T>>::type>:
+	struct is_ring_exact<T,typename std::enable_if_t<boost::is_complex<T>::value && !std::is_base_of_v<BaseSeriesTag,T>>>:
 		is_ring_exact<typename T::value_type>
 	{};
 
@@ -98,7 +98,7 @@ namespace piranha
 	 * Will be true if coefficient and key are ring exact.
 	 */
 	template <class T>
-	struct is_ring_exact<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
+	struct is_ring_exact<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
 	{
 		static const bool value = is_ring_exact<typename T::TermType::CfType>::value && is_ring_exact<typename T::TermType::KeyType>::value;
 	};
@@ -117,7 +117,7 @@ namespace piranha
 	 * if T is not a series type (in that case, the series type trait specialisation will be used).
 	 */
 	template <class T>
-	struct is_trig_exact<T, typename boost::enable_if_c<boost::is_complex<T>::value && !std::is_base_of_v<BaseSeriesTag, T>>::type>:
+	struct is_trig_exact<T, typename std::enable_if_t<boost::is_complex<T>::value && !std::is_base_of_v<BaseSeriesTag, T>>>:
 		is_trig_exact<typename T::value_type>
 	{};
 
@@ -126,7 +126,7 @@ namespace piranha
 	 * Will be true if either coefficient or key are trig exact.
 	 */
 	template <class T>
-	struct is_trig_exact<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
+	struct is_trig_exact<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
 	{
 		static const bool value = is_trig_exact<typename T::TermType::CfType>::value || is_trig_exact<typename T::TermType::KeyType>::value;
 	};
@@ -145,7 +145,7 @@ namespace piranha
 	 * if T is not a series type (in that case, the series type trait specialisation will be used).
 	 */
 	template <class T>
-	struct is_divint_exact<T,typename boost::enable_if_c<boost::is_complex<T>::value && !std::is_base_of_v<BaseSeriesTag, T>>::type>:
+	struct is_divint_exact<T,typename std::enable_if_t<boost::is_complex<T>::value && !std::is_base_of_v<BaseSeriesTag, T>>>:
 		is_divint_exact<typename T::value_type>
 	{};
 
@@ -154,7 +154,7 @@ namespace piranha
 	 * Will be true if either coefficient or key are divint exact.
 	 */
 	template <class T>
-	struct is_divint_exact<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
+	struct is_divint_exact<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
 	{
 		static const bool value = is_divint_exact<typename T::TermType::CfType>::value || is_divint_exact<typename T::TermType::KeyType>::value;
 	};
@@ -172,7 +172,7 @@ namespace piranha
 	 * Will be true if series has a degree_type typedef which is rational.
 	 */
 	template <class T>
-	struct is_rational_exponent<T,typename boost::enable_if_c<std::is_base_of_v<BaseSeriesTag, T> && std::is_same_v<typename T::degree_type, mp_rational>>::type>:
+	struct is_rational_exponent<T,typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> && std::is_same_v<typename T::degree_type, mp_rational>>>:
 	boost::true_type {};
 
 
@@ -187,7 +187,7 @@ namespace piranha
 
 
 	template <class Cf>
-	struct FinalCfImplementation<Cf, typename boost::enable_if_c<!boost::is_base_of<BaseSeriesTag, Cf>::value>::type>
+	struct FinalCfImplementation<Cf, typename std::enable_if_t<!std::is_base_of_v<BaseSeriesTag, Cf>>>
 	{
 		typedef Cf Type;
 	};
@@ -199,7 +199,7 @@ namespace piranha
 	template <class Series>
 	struct FinalCf
 	{
-        static_assert((boost::is_base_of<BaseSeriesTag, Series>::value), "Cannot determine final coefficient of a non-series type.");
+        static_assert((std::is_base_of_v<BaseSeriesTag, Series>), "Cannot determine final coefficient of a non-series type.");
 
 		typedef typename FinalCfImplementation<typename Series::TermType::CfType>::Type Type;
 	};

@@ -21,16 +21,17 @@
 #ifndef PIRANHA_CODED_MULTIPLIER_MP_H
 #define PIRANHA_CODED_MULTIPLIER_MP_H
 
-#include <boost/lexical_cast.hpp>
-#include <boost/numeric/conversion/cast.hpp>
-#include <boost/numeric/interval.hpp>
-#include <boost/tuple/tuple.hpp>
 
 #include "../base_classes/base_series_tag.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../mp.h"
+
+#include <boost/lexical_cast.hpp>
+#include <boost/numeric/conversion/cast.hpp>
+#include <boost/numeric/interval.hpp>
+#include <boost/tuple/tuple.hpp>
 
 #include <utility>
 #include <vector>
@@ -50,7 +51,7 @@ namespace piranha {
         };
 
         template <class CfSeries>
-        struct final_cf_getter_impl<CfSeries,typename boost::enable_if<std::is_base_of<BaseSeriesTag,CfSeries> >::type>
+        struct final_cf_getter_impl<CfSeries,typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag,CfSeries> >>
         {
                 static const typename FinalCf<CfSeries>::Type &run(CfSeries const &cfSeries)
                 {
@@ -83,7 +84,7 @@ namespace piranha {
 
 
         template <class Term>
-        struct key_revlex_comparison_impl<Term,typename boost::enable_if<std::is_base_of<BaseSeriesTag,typename Term::CfType> >::type>
+        struct key_revlex_comparison_impl<Term,typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag,typename Term::CfType> >>
         {
                 static bool run(const Term *t1, const Term *t2)
                 {

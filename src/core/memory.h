@@ -21,14 +21,11 @@
 #ifndef PIRANHA_MEMORY_H
 #define PIRANHA_MEMORY_H
 
-#include <boost/integer_traits.hpp> // For max allocatable number of objects.
-
 #include "base_classes/base_counting_allocator.h"
 #include "exceptions.h"
 #include "integer_typedefs.h"
 #include "settings.h"
 
-#include <stdint.h>
 #include <cstdlib>
 #include <cstddef>
 #include <memory>

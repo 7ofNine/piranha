@@ -21,12 +21,10 @@
 #ifndef PIRANHA_EXPO_VECTOR_MP_H
 #define PIRANHA_EXPO_VECTOR_MP_H
 
-#include <boost/numeric/conversion/cast.hpp>
-#include <boost/utility/enable_if.hpp>
-
-
 #include "../exceptions.h"
 #include "../mp.h"
+
+#include <boost/numeric/conversion/cast.hpp>
 
 #include <iostream>
 #include <type_traits>
@@ -85,7 +83,7 @@ namespace piranha
 
 	// For rationals, we build a rational from the double and go on with the exponentiation.
 	template <class T>
-	struct ExpoVectorPowDouble<T, typename boost::enable_if<std::is_same<T, mp_rational> >::type>
+	struct ExpoVectorPowDouble<T, typename std::enable_if_t<std::is_same_v<T, mp_rational> >>
 	{
 		template <class ExpoVector>
 		static ExpoVector run(const ExpoVector &expoVector, const double &x)
@@ -127,7 +125,7 @@ namespace piranha
 
 	// For rationals, we do simple exponentiation.
 	template <class T>
-	struct ExpoVectorPowRational<T, typename boost::enable_if<std::is_same<T, mp_rational> >::type>
+	struct ExpoVectorPowRational<T, typename std::enable_if_t<std::is_same_v<T, mp_rational> >>
 	{
 		template <class ExpoVector>
 		static ExpoVector run(const ExpoVector &expoVector, const mp_rational &q)

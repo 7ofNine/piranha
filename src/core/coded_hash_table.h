@@ -21,20 +21,24 @@
 #ifndef PIRANHA_CODED_HASH_TABLE_H
 #define PIRANHA_CODED_HASH_TABLE_H
 
-#include <algorithm>
+
 #include <boost/functional/hash.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/iterator/iterator_categories.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/numeric/conversion/cast.hpp>
-#include <cstddef>
-#include <exception>
-#include <utility> // For std::pair.
-#include <vector>
 
 #include "config.h"
 #include "exceptions.h"
 #include "settings.h"
+
+#include <cstddef>
+#include <cstdint>
+#include <exception>
+#include <utility> // For std::pair.
+#include <vector>
+
+#include <algorithm>
 
 namespace piranha
 {

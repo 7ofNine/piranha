@@ -21,10 +21,6 @@
 #ifndef PIRANHA_BASE_SERIES_MATH_H
 #define PIRANHA_BASE_SERIES_MATH_H
 
-#include <boost/lexical_cast.hpp>
-#include <boost/type_traits/is_complex.hpp>
-#include <boost/utility/addressof.hpp>
-#include <boost/utility/enable_if.hpp>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -34,6 +30,10 @@
 #include "base_series_def.h"
 #include "base_series_mp.h"
 #include "base_series_tag.h"
+
+#include <boost/lexical_cast.hpp>
+#include <boost/type_traits/is_complex.hpp>
+#include <boost/utility/addressof.hpp>
 
 #include <cstddef>
 #include <complex>
@@ -189,9 +189,9 @@ namespace piranha
 	// but in case T is a series, extraction of real and imaginary part would be
 	// quite a bit more expensive. So this also serves as an optimisation.
 	template <class T>
-	struct MultDivCoefficientsChecker<T,typename boost::enable_if_c<boost::is_complex<T>::value && (
+	struct MultDivCoefficientsChecker<T, typename std::enable_if_t<boost::is_complex<T>::value && (
 		std::is_integral_v<typename T::value_type> ||
-		std::is_floating_point_v<typename T::value_type>)>::type>
+		std::is_floating_point_v<typename T::value_type>)>>
 	{
 		static bool checkZero(const T &c)
 		{

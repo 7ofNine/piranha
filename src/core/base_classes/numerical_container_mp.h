@@ -22,7 +22,6 @@
 #define PIRANHA_NUMERICAL_CONTAINER_MP_H
 
 #include <boost/lexical_cast.hpp>
-#include <boost/utility/enable_if.hpp>
 
 #include "numerical_container_tag.h"
 
@@ -57,7 +56,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct numerical_container_constructor_selector<T,typename boost::enable_if<std::is_base_of<numerical_container_tag, T> >::type>
+	struct numerical_container_constructor_selector<T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag, T> >>
 	{
 		static const typename T::numerical_type &run(const T &other)
 		{
@@ -144,7 +143,7 @@ namespace piranha
 	};
 
 	template <class Derived, class T>
-	struct numerical_container_equality_selector<Derived,T,typename boost::enable_if<std::is_base_of<numerical_container_tag,T> >::type>
+	struct numerical_container_equality_selector<Derived,T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag,T> >>
 	{
 		static bool run(const Derived &cf, const T &other)
 		{
@@ -164,7 +163,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct numerical_container_add_selector<T,typename boost::enable_if<std::is_base_of<numerical_container_tag,T> >::type>
+	struct numerical_container_add_selector<T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag,T> >>
 	{
 		template <class Derived>
 		static Derived &run(Derived &cf, const T &other)
@@ -186,7 +185,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct numerical_container_subtract_selector<T,typename boost::enable_if<std::is_base_of<numerical_container_tag,T> >::type>
+	struct numerical_container_subtract_selector<T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag,T> >>
 	{
 		template <class Derived>
 		static Derived &run(Derived &cf, const T &other)
@@ -217,7 +216,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct numerical_container_multiply_selector<T,typename boost::enable_if<std::is_base_of<numerical_container_tag,T> >::type>
+	struct numerical_container_multiply_selector<T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag,T> >>
 	{
 		template <class Derived>
 		static Derived &run(Derived &cf, const T &other)
@@ -248,7 +247,7 @@ namespace piranha
 	};
 
 	template <class T>
-	struct numerical_container_divide_selector<T,typename boost::enable_if<std::is_base_of<numerical_container_tag,T> >::type>
+	struct numerical_container_divide_selector<T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag,T> >>
 	{
 		template <class Derived>
 		static Derived &run(Derived &cf, const T &other)

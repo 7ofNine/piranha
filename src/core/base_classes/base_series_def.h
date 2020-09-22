@@ -21,14 +21,6 @@
 #ifndef PIRANHA_BASE_SERIES_DEF_H
 #define PIRANHA_BASE_SERIES_DEF_H
 
-#include <boost/functional/hash.hpp>
-#include <boost/unordered_set.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <cstddef>
-#include <functional>
-#include <iostream>
-#include <memory>
-#include <vector>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -39,6 +31,14 @@
 #include "base_series_mp.h"
 #include "base_series_tag.h"
 
+#include <boost/functional/hash.hpp>
+#include <boost/unordered_set.hpp>
+
+#include <cstddef>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <vector>
 #include <unordered_set>
 #include <type_traits>
 
@@ -58,7 +58,7 @@ namespace piranha
 
 
 	template <class FinalCf>
-	struct EchelonLevelImpl<FinalCf, typename boost::enable_if_c<!std::is_base_of_v<BaseSeriesTag, FinalCf>>::type>
+	struct EchelonLevelImpl<FinalCf, typename std::enable_if_t<!std::is_base_of_v<BaseSeriesTag, FinalCf>>>
 	{
 		static const int value = 0;
 	};
@@ -87,7 +87,7 @@ namespace piranha
 
 	template <class Iterator>
 	//	requires std::is_pointer<Iterator>
-	struct FromIterator<Iterator, typename boost::enable_if<std::is_pointer<typename Iterator::value_type> >::type>
+	struct FromIterator<Iterator, typename std::enable_if_t<std::is_pointer_v<typename Iterator::value_type> >>
 	{
 		static typename Iterator::value_type get(const Iterator &it)
 		{

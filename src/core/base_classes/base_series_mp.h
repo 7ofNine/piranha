@@ -21,8 +21,6 @@
 #ifndef PIRANHA_BASE_SERIES_MP_H
 #define PIRANHA_BASE_SERIES_MP_H
 
-#include <boost/utility/enable_if.hpp>
-
 #include "../config.h"
 #include "../exceptions.h"
 #include "base_series_tag.h"
@@ -140,7 +138,7 @@ namespace piranha
 
 
 	template <class T>
-	struct BaseSeriesAddSelector<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
+	struct BaseSeriesAddSelector<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
 	{
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
@@ -162,7 +160,7 @@ namespace piranha
 
 
 	template <class T>
-	struct BaseSeriesSubtractSelector<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
+	struct BaseSeriesSubtractSelector<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
 	{
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
@@ -184,8 +182,8 @@ namespace piranha
 
 
 	template <class Derived, class T>
-	struct BaseSeriesMultiplySelector<Derived, T, typename boost::enable_if_c<std::is_base_of_v<BaseSeriesTag, T> &&
-		(std::is_same_v<Derived, T> || std::is_same_v<Derived, std::complex<T> >)>::type>
+	struct BaseSeriesMultiplySelector<Derived, T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> &&
+		(std::is_same_v<Derived, T> || std::is_same_v<Derived, std::complex<T> >)>>
 	{
 		template <class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
@@ -210,7 +208,7 @@ namespace piranha
 
 
 	template <class T>
-	struct BaseSeriesEqualToSelector<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
+	struct BaseSeriesEqualToSelector<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
 	{
 		template <class Derived>
 		static bool run(const Derived &series, const T &other)

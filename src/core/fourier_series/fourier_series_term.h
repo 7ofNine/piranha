@@ -29,7 +29,7 @@ namespace piranha
 {
 	// Term class for Fourier series.
 	// Cf:   coefficients for series term e.g. double_cf, polynomial_cf
-	// Trig: trigonometric key i.e. the linear constituents and their coefficients and cos/sin (flavour), e.g. TrigVector<boost::int16_t, 0>, TrigVector<boost::int16_t, 1>,
+	// Trig: trigonometric key i.e. the linear constituents and their coefficients and cos/sin (flavour), e.g. TrigVector<int16_t, 0>, TrigVectorint16_t, 1>,
 	//       last template parameter is actually the echelon level.
 	// Separator: print/read separator between coefficient and key, e.g.:  '|'
 	// Allocator: specific allocator e.g. for statistics or performance improvements. but typicall std::allocator<char>
