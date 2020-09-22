@@ -33,11 +33,11 @@
 
 #include <boost/lexical_cast.hpp>
 #include <boost/type_traits/is_complex.hpp>
-#include <boost/utility/addressof.hpp>
 
 #include <cstddef>
 #include <complex>
 #include <string>
+#include <memory>
 #include <type_traits>
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -53,7 +53,7 @@ namespace piranha
 	{
 		typedef typename Derived2::const_iterator const_iterator2;
 
-		PIRANHA_ASSERT((void *)boost::addressof(*derived_cast) != (void *)boost::addressof(series2)); // check on not insert into itself
+		PIRANHA_ASSERT((void *)(std::addressof(*derived_cast)) != (void *)(std::addressof(series2))); // check on not insert into itself
 		
         const const_iterator2 it_f = series2.end();
 		for (const_iterator2 it = series2.begin(); it != it_f; ++it) 

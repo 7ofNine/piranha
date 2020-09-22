@@ -21,10 +21,7 @@
 #ifndef PIRANHA_NAMED_SERIES_MATH_H
 #define PIRANHA_NAMED_SERIES_MATH_H
 
-#include <cstddef>
-#include <vector>
-
-#include <boost/utility.hpp>
+//#include <boost/utility.hpp>
 
 #include "../exceptions.h"
 #include "../mp.h"
@@ -32,6 +29,10 @@
 #include "../Psym.h"
 #include "../settings.h"
 #include "named_series_def.h"
+
+#include <cstddef>
+#include <memory>
+#include <vector>
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast       static_cast<Derived *>(this)
@@ -48,7 +49,7 @@ namespace piranha
 	inline Derived & NamedSeries<PIRANHA_NAMED_SERIES_TP>::mergeWithSeries(Derived2 const &series2)
 	{
 		// If we are merging with self, create a copy and call recursively.
-		if ((void *)(boost::addressof(*derived_cast)) == (void *)(boost::addressof(series2)))
+		if ((void *)(std::addressof(*derived_cast)) == (void *)(std::addressof(series2)))
 		{
 			PIRANHA_DEBUG(std::cout << "Merging with self, performing a copy." << '\n');
 			mergeWithSeries<Sign>(Derived(*derived_const_cast)); // create a copy and merge the copy
