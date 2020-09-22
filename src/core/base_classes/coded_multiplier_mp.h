@@ -24,7 +24,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
-#include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/tuple/tuple.hpp>
 
@@ -108,7 +107,7 @@ namespace piranha {
         struct cm_value_handler
         {
                 // Make really sure we use this only with integral types.
-        static_assert(boost::is_integral<T>::value,"");
+        static_assert(std::is_integral_v<T>, "");
                 // Assign to the minmax vector the values in the array key.
                 template <class Key>
                 void assign(std::vector<boost::numeric::interval<T> > &minmax, const Key &key)

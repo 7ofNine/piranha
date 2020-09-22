@@ -24,12 +24,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/type_traits/is_complex.hpp>
 #include <boost/type_traits/is_floating_point.hpp>
-#include <boost/type_traits/is_integral.hpp>
 #include <boost/utility/addressof.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cstddef>
-#include <complex>
-#include <string>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -40,6 +36,9 @@
 #include "base_series_mp.h"
 #include "base_series_tag.h"
 
+#include <cstddef>
+#include <complex>
+#include <string>
 #include <type_traits>
 
 #define derived_const_cast static_cast<Derived const *>(this)
@@ -192,7 +191,7 @@ namespace piranha
 	// quite a bit more expensive. So this also serves as an optimisation.
 	template <class T>
 	struct MultDivCoefficientsChecker<T,typename boost::enable_if_c<boost::is_complex<T>::value && (
-		boost::is_integral<typename T::value_type>::value ||
+		std::is_integral_v<typename T::value_type> ||
 		boost::is_floating_point<typename T::value_type>::value)>::type>
 	{
 		static bool checkZero(const T &c)
