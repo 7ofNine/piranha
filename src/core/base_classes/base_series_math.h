@@ -23,7 +23,6 @@
 
 #include <boost/lexical_cast.hpp>
 #include <boost/type_traits/is_complex.hpp>
-#include <boost/type_traits/is_floating_point.hpp>
 #include <boost/utility/addressof.hpp>
 #include <boost/utility/enable_if.hpp>
 
@@ -192,7 +191,7 @@ namespace piranha
 	template <class T>
 	struct MultDivCoefficientsChecker<T,typename boost::enable_if_c<boost::is_complex<T>::value && (
 		std::is_integral_v<typename T::value_type> ||
-		boost::is_floating_point<typename T::value_type>::value)>::type>
+		std::is_floating_point_v<typename T::value_type>)>::type>
 	{
 		static bool checkZero(const T &c)
 		{
