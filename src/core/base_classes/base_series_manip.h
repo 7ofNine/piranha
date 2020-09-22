@@ -106,8 +106,9 @@ namespace piranha
 		TermType *newTerm(0); //NULL pointer
 		if (convertedTerm.result.cf.needsPadding(argsTuple) || convertedTerm.result.key.needsPadding(argsTuple)) 
 		{
-			newTerm = TermType::allocator.allocate(1);
-			TermType::allocator.construct(newTerm, convertedTerm.result); /// Shouldn't we just overload new???
+			newTerm = TermType::AllocatorInterface::allocate(TermType::allocator, 1);                      // TODO: Should we or can we use an implementation of new??
+			TermType::AllocatorInterface::construct(TermType::allocator, newTerm, convertedTerm.result);
+
 			newTerm->cf.padRight(argsTuple);
 			newTerm->key.padRight(argsTuple);
 		}
@@ -118,8 +119,8 @@ namespace piranha
 			{
 				if (newTerm == 0) 
 				{
-					newTerm = TermType::allocator.allocate(1);
-					TermType::allocator.construct(newTerm, convertedTerm.result);
+					newTerm = TermType::AllocatorInterface::allocate(TermType::allocator, 1);
+					TermType::AllocatorInterface::construct(TermType::allocator, newTerm, convertedTerm.result);
 				}
 				newTerm->canonicalise(argsTuple);
 			}
@@ -138,8 +139,8 @@ namespace piranha
 		
 		if (newTerm) 
 		{
-			TermType::allocator.destroy(newTerm);   // should we use a helper for RAII?
-			TermType::allocator.deallocate(newTerm, 1);
+			TermType::AllocatorInterface::destroy(TermType::allocator, newTerm);
+			TermType::AllocatorInterface::deallocate(TermType::allocator, newTerm, 1);
 		}
 	}
 

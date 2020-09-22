@@ -121,9 +121,10 @@ namespace piranha
 			typedef Cf CfType;
 			/// Alias for key type.
 			typedef Key KeyType;
-			/// Alias for allocator type.
-			typedef typename Allocator::template rebind<Derived>::other AllocatorType;
-			
+			/// Alias for allocator type and interface
+			using AllocatorType = typename std::allocator_traits<Allocator>::template rebind_alloc<Derived>;
+			using AllocatorInterface = std::allocator_traits<AllocatorType>;
+
 
 
 
