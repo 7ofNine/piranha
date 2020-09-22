@@ -22,7 +22,6 @@
 #define PIRANHA_BASE_SERIES_DEF_H
 
 #include <boost/functional/hash.hpp>
-#include <boost/type_traits/is_base_of.hpp>
 #include <boost/unordered_set.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cstddef>
@@ -59,7 +58,7 @@ namespace piranha
 
 
 	template <class FinalCf>
-	struct EchelonLevelImpl<FinalCf, typename boost::enable_if_c<!boost::is_base_of<BaseSeriesTag, FinalCf>::value>::type>
+	struct EchelonLevelImpl<FinalCf, typename boost::enable_if_c<!std::is_base_of_v<BaseSeriesTag, FinalCf>>::type>
 	{
 		static const int value = 0;
 	};

@@ -21,10 +21,11 @@
 #ifndef PIRANHA_NAMED_SERIES_MP_H
 #define PIRANHA_NAMED_SERIES_MP_H
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <boost/utility/enable_if.hpp>
 
 #include "base_series_tag.h"
+
+#include <type_traits>
 
 namespace piranha
 {
@@ -42,7 +43,7 @@ namespace piranha
 
 
 	template <class T>
-	class NamedSeriesAddSelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
+	class NamedSeriesAddSelector<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
 	{
         public:
 
@@ -69,7 +70,7 @@ namespace piranha
 
 
 	template <class T>
-	class NamedSeriesSubtractSelector<T,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,T> >::type>
+	class NamedSeriesSubtractSelector<T,typename boost::enable_if<std::is_base_of<BaseSeriesTag,T> >::type>
 	{
         public:
 
@@ -98,7 +99,7 @@ namespace piranha
 
 	//multiply with another series
 	template <class T>
-	class NamedSeriesMultiplySelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
+	class NamedSeriesMultiplySelector<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
 	{
         public:
 
@@ -123,7 +124,7 @@ namespace piranha
 	};
 
 	template <class T>
-	class NamedSeriesEqualitySelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
+	class NamedSeriesEqualitySelector<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
 	{
         public:
 

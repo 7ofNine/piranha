@@ -22,7 +22,6 @@
 #define PIRANHA_BASE_SERIES_MATH_H
 
 #include <boost/lexical_cast.hpp>
-#include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/is_complex.hpp>
 #include <boost/type_traits/is_floating_point.hpp>
 #include <boost/type_traits/is_integral.hpp>
@@ -40,6 +39,8 @@
 #include "base_series_def.h"
 #include "base_series_mp.h"
 #include "base_series_tag.h"
+
+#include <type_traits>
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -253,7 +254,7 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseDivideBy(const T &x, const ArgsTuple &argsTuple)
 	{
-        static_assert((!boost::is_base_of<BaseSeriesTag,T>::value), "Cannot divide by another series.");
+        static_assert((!std::is_base_of_v<BaseSeriesTag,T>), "Cannot divide by another series.");
 
 		return divideCoefficientsBy(x, argsTuple);
 	}

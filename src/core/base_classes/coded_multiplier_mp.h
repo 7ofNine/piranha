@@ -24,18 +24,19 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/numeric/interval.hpp>
-#include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <utility>
-#include <vector>
 
 #include "../base_classes/base_series_tag.h"
 #include "../config.h"
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../mp.h"
+
+#include <utility>
+#include <vector>
+#include <type_traits>
 
 // Meta-programming methods for coded multiplier.
 
@@ -51,7 +52,7 @@ namespace piranha {
         };
 
         template <class CfSeries>
-        struct final_cf_getter_impl<CfSeries,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,CfSeries> >::type>
+        struct final_cf_getter_impl<CfSeries,typename boost::enable_if<std::is_base_of<BaseSeriesTag,CfSeries> >::type>
         {
                 static const typename FinalCf<CfSeries>::Type &run(CfSeries const &cfSeries)
                 {
@@ -84,7 +85,7 @@ namespace piranha {
 
 
         template <class Term>
-        struct key_revlex_comparison_impl<Term,typename boost::enable_if<boost::is_base_of<BaseSeriesTag,typename Term::CfType> >::type>
+        struct key_revlex_comparison_impl<Term,typename boost::enable_if<std::is_base_of<BaseSeriesTag,typename Term::CfType> >::type>
         {
                 static bool run(const Term *t1, const Term *t2)
                 {
@@ -702,7 +703,7 @@ namespace piranha {
                 static void run(const FinalCf &final_cf, const DecodingTuple &dt, const MinMaxTuple &gr, Cf &cf,
                                 const VhTuple &vh_tuple, const MaxFastInt &code, const ArgsTuple &argsTuple)
                 {
-            static_assert((boost::is_base_of<BaseSeriesTag,Cf>::value),"");
+            static_assert((std::is_base_of<BaseSeriesTag,Cf>::value),"");
                         typedef typename Cf::TermType term_type;
                         typedef typename term_type::KeyType::size_type size_type;
 

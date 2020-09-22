@@ -21,7 +21,6 @@
 #ifndef PIRANHA_BASE_SERIES_MP_H
 #define PIRANHA_BASE_SERIES_MP_H
 
-#include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <complex>
@@ -139,7 +138,7 @@ namespace piranha
 
 
 	template <class T>
-	struct BaseSeriesAddSelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
+	struct BaseSeriesAddSelector<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
 	{
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
@@ -161,7 +160,7 @@ namespace piranha
 
 
 	template <class T>
-	struct BaseSeriesSubtractSelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
+	struct BaseSeriesSubtractSelector<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
 	{
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
@@ -183,7 +182,7 @@ namespace piranha
 
 
 	template <class Derived, class T>
-	struct BaseSeriesMultiplySelector<Derived, T, typename boost::enable_if_c<boost::is_base_of<BaseSeriesTag, T>::value &&
+	struct BaseSeriesMultiplySelector<Derived, T, typename boost::enable_if_c<std::is_base_of<BaseSeriesTag, T>::value &&
 		(boost::is_same<Derived, T>::value || boost::is_same<Derived, std::complex<T> >::value)>::type>
 	{
 		template <class ArgsTuple>
@@ -209,7 +208,7 @@ namespace piranha
 
 
 	template <class T>
-	struct BaseSeriesEqualToSelector<T, typename boost::enable_if<boost::is_base_of<BaseSeriesTag, T> >::type>
+	struct BaseSeriesEqualToSelector<T, typename boost::enable_if<std::is_base_of<BaseSeriesTag, T> >::type>
 	{
 		template <class Derived>
 		static bool run(const Derived &series, const T &other)
