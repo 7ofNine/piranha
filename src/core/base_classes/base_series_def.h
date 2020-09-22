@@ -25,7 +25,6 @@
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/unordered_set.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/is_pointer.hpp>
 #include <cstddef>
 #include <functional>
 #include <iostream>
@@ -89,7 +88,7 @@ namespace piranha
 
 	template <class Iterator>
 	//	requires std::is_pointer<Iterator>
-	struct FromIterator<Iterator, typename boost::enable_if<boost::is_pointer<typename Iterator::value_type> >::type>
+	struct FromIterator<Iterator, typename boost::enable_if<std::is_pointer<typename Iterator::value_type> >::type>
 	{
 		static typename Iterator::value_type get(const Iterator &it)
 		{
