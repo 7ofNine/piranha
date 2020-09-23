@@ -23,7 +23,6 @@
 
 
 #include <boost/functional/hash.hpp>
-#include <boost/integer_traits.hpp>
 #include <boost/iterator/iterator_categories.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/numeric/conversion/cast.hpp>
@@ -37,7 +36,7 @@
 #include <exception>
 #include <utility> // For std::pair.
 #include <vector>
-
+#include <limits>
 #include <algorithm>
 
 namespace piranha
@@ -65,7 +64,7 @@ class coded_hash_table
                         public:
                                 /// Bucket size type.
                                 typedef uint8_t size_type;
-                static_assert(N > 0 && N <= boost::integer_traits<size_type>::const_max, "Invalid bucket size.");
+                static_assert(N > 0 && N <= std::numeric_limits<size_type>::max(), "Invalid bucket size.");
                                 /// Default constructor.
                                 /**
                                  * Will initialise the code of each coefficient to -1.

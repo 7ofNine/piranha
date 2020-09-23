@@ -22,14 +22,6 @@
 #define PIRANHA_CODED_MULTIPLIER_H
 
 
-#include <boost/functional/hash.hpp>
-#include <boost/integer_traits.hpp>
-#include <boost/iterator/permutation_iterator.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/numeric/conversion/cast.hpp>
-#include <boost/numeric/interval.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/tuple/tuple_comparison.hpp> // We assert equality between vh tuples below.
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -41,6 +33,14 @@
 #include "coded_multiplier_mp.h"
 #include "null_truncator.h"
 
+#include <boost/functional/hash.hpp>
+#include <boost/iterator/permutation_iterator.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/numeric/conversion/cast.hpp>
+#include <boost/numeric/interval.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp> // We assert equality between vh tuples below.
+
 #include <algorithm>
 #include <cstddef>
 #include <iterator>
@@ -48,6 +48,7 @@
 #include <utility>
 #include <vector>
 #include <type_traits>
+
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
 
@@ -603,10 +604,10 @@ struct BaseCodedFunctor
 //                auto f = [](const std::size_t x) -> std::size_t { return x + 1; }; // increment functor
 
 				if (boost::numeric::subset(m_mp_h,boost::numeric::interval<mp_integer>(
-					boost::lexical_cast<mp_integer>(boost::integer_traits<MaxFastInt>::const_min),
-					boost::lexical_cast<mp_integer>(boost::integer_traits<MaxFastInt>::const_max))) &&
+					boost::lexical_cast<mp_integer>(std::numeric_limits<MaxFastInt>::min()),
+					boost::lexical_cast<mp_integer>(std::numeric_limits<MaxFastInt>::max()))) &&
 					boost::numeric::width(m_mp_h) <=
-					boost::lexical_cast<mp_integer>(boost::integer_traits<MaxFastInt>::const_max) / 2)
+					boost::lexical_cast<mp_integer>(std::numeric_limits<MaxFastInt>::max()) / 2)
 				{
 					// Mark representation as viable.
 					m_gr_is_viable = true;

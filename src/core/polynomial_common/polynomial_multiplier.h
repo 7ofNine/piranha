@@ -21,19 +21,6 @@
 #ifndef PIRANHA_POLYNOMIAL_MULTIPLIER_H
 #define PIRANHA_POLYNOMIAL_MULTIPLIER_H
 
-#include <algorithm> // For std::max.
-#include <boost/integer_traits.hpp>
-#include <boost/numeric/conversion/cast.hpp>
-#include <boost/thread/barrier.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/type_traits/integral_constant.hpp>
-#include <cstddef>
-#include <exception>
-#include <stdexcept>
-#include <utility> // For std::pair.
-#include <vector>
-
 
 #include "../base_classes/base_series_multiplier.h"
 #include "../base_classes/coded_multiplier.h"
@@ -45,6 +32,20 @@
 #include "../stats.h"
 #include "../type_traits.h"
 #include "../utils.h" // For iota.
+
+#include <boost/numeric/conversion/cast.hpp>
+#include <boost/thread/barrier.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/type_traits/integral_constant.hpp>
+
+#include <cstddef>
+#include <exception>
+#include <stdexcept>
+#include <utility> // For std::pair.
+#include <vector>
+#include <algorithm> // For std::max.
+
 
 namespace piranha
 {
@@ -75,8 +76,8 @@ struct ThreadedBlockedMultiplier
 		// Numerical limits check. We need an extra block size buffer at the end to make sure we are able to
 		// represent all indices and sizes.
 		// TODO: we need to take care of extra thread_n blocks at the end, they must be representable. Maybe not, after all.
-		if (nominal_block_size > boost::integer_traits<std::size_t>::const_max || size1 >= boost::integer_traits<std::size_t>::const_max - nominal_block_size ||
-			size2 >= boost::integer_traits<std::size_t>::const_max - nominal_block_size)
+		if (nominal_block_size > std::numeric_limits<std::size_t>::max() || size1 >= std::numeric_limits<std::size_t>::max() - nominal_block_size ||
+			size2 >= std::numeric_limits<std::size_t>::max() - nominal_block_size)
 		{
 			PIRANHA_THROW(std::overflow_error, "numerical overflow in threaded block multiplication");
 		}

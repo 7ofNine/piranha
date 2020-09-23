@@ -21,8 +21,6 @@
 #ifndef PIRANHA_NAMED_SERIES_MATH_H
 #define PIRANHA_NAMED_SERIES_MATH_H
 
-//#include <boost/utility.hpp>
-
 #include "../exceptions.h"
 #include "../mp.h"
 #include "../ntuple.h"
