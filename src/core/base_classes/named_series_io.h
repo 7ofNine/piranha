@@ -209,7 +209,7 @@ namespace piranha
 		{
 			typename Term::CfType coeff = trigSortedTerms[i]->get<0>();
 
-            outfile << i + 1 <<":" << endl; // group index, makes it easier to find in the listing
+            outfile << i + 1 <<":" << std::endl; // group index, makes it easier to find in the listing
 			auto terms = getExpoSortedCoefficient(coeff, expPositions); // these are pointers to the single terms as they are in the coefficient split out and sorted according to exponent and position
 			for (decltype(terms.size()) j = 0, e = terms.size(); j < e; ++j)
 			{
@@ -336,7 +336,7 @@ namespace piranha
         std::transform(sequence.begin(), sequence.end(), std::insert_iterator< PrintSequenceType >(normalSequence, normalSequence.begin()),
                        [&positions](typename Term::KeyType const & trigKey) -> typename Term::KeyType 
                        {    
-                            Term::KeyType newKey;
+                            typename Term::KeyType newKey;
                             PIRANHA_ASSERT(positions.size() == trigKey.size())
                             newKey.resize(trigKey.size());
                                 for (decltype(positions.size()) i = 0, e = positions.size(); i < e; ++i)
@@ -360,11 +360,11 @@ namespace piranha
         RetValType retval;
         // now find all the elements given by the sequence. By definition a trigKey uniquely identifies an element of the series (echelon level 1)
         // if nor found put it in a temporaryresult that will get standard sorted
-        for (Term::KeyType t : normalSequence)
+        for (typename Term::KeyType t : normalSequence)
         {
             decltype(tempResult.end()) it;
             it = std::find_if(tempResult.begin(), tempResult.end(),
-                              [&t](RetValType::value_type const &st)->bool
+                              [&t](typename RetValType::value_type const &st)->bool
                               {
                                   auto const s = st->get<1>();
                                   return (s == t) || (-s == t);

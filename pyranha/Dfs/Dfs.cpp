@@ -18,14 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <boost/python/class.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/docstring_options.hpp>
-#include <string>
-
 #include "../../src/manipulators/dfs.h"
 #include "../series_instantiations.h"
 #include "../exceptions.h"
+
+#include <string>                   // boost python requires system includes first!
+
+#include <boost/python/detail/wrap_python.hpp>
+#include <boost/python/class.hpp>
+#include <boost/python/module.hpp>
+#include <boost/python/docstring_options.hpp>
+
 
 using namespace boost::python;
 using namespace piranha;

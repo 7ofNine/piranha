@@ -25,6 +25,7 @@
 
 #include "../settings.h"
 #include "named_series.h"
+#include "base_series_def.h"
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast static_cast<Derived *>(this)
@@ -105,7 +106,7 @@ namespace piranha
 
 #define COMPLEX_NAMED_SERIES_CTORS(real_series) \
 	explicit complex(const complex<double> &cx) { \
-		*this = baseSeriesFromNumber(cx,this->arguments()); \
+		*this = baseSeriesFromNumber(cx, this->arguments()); \
 		this->trim(); \
 	} \
 	explicit complex(const real_series &r) { \

@@ -17,20 +17,6 @@
 *   Free Software Foundation, Inc.,                                       *
 *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 ***************************************************************************/
-#include <boost/functional/hash.hpp>
-#include <boost/python/class.hpp>
-#include <boost/python/copy_const_reference.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/enum.hpp>
-#include <boost/python/make_function.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/operators.hpp>
-#include <boost/python/docstring_options.hpp>
-#include <cstddef>
-#include <sstream>
-#include <string>
-#include <vector>
-
 #include "../../src/core/base_classes/named_series_def.h"
 #include "../../src/core/config.h"
 #include "../../src/core/mp.h"
@@ -42,6 +28,23 @@
 #include "../commons.h"
 #include "../exceptions.h"
 #include "../mp_classes.h"
+
+
+#include <cstddef>   // boost python requires the system headers before !! not what the recommendations are!!
+#include <sstream>
+#include <string>
+#include <vector>
+
+#include <boost/functional/hash.hpp>
+#include <boost/python/class.hpp>
+#include <boost/python/copy_const_reference.hpp>
+#include <boost/python/def.hpp>
+#include <boost/python/enum.hpp>
+#include <boost/python/make_function.hpp>
+#include <boost/python/module.hpp>
+#include <boost/python/operators.hpp>
+#include <boost/python/docstring_options.hpp>
+
 
 using namespace boost::python;
 using namespace piranha;

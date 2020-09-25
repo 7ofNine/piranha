@@ -193,7 +193,7 @@ namespace piranha
 			template <class ArgsTuple>
 			explicit TrigVector(const std::string &s, const ArgsTuple & argsTuple): flavour(true)
 			{
-                auto trigTuple = argsTuple.get<position>();
+                auto trigTuple = argsTuple.get<this->position>();
 				std::vector<std::string> sd;
 				boost::split(sd, s, boost::is_any_of(std::string(1, this->separator)));
                 PIRANHA_ASSERT(trigTuple.size() + 1 == sd.size()) // arguments have to agree and we have flavour
@@ -632,7 +632,7 @@ namespace piranha
             TrigVector operator-() const
             {
                 TrigVector result(*this);
-                for (decltype(size()) i = 0, e = size(); i < e; ++i)
+                for (decltype(this->size()) i = 0, e = this->size(); i < e; ++i)
                 {
                     result[i] = -result[i];
                 }

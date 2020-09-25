@@ -15,9 +15,11 @@ ENDIF(COMMAND cmake_policy)
 # we want to organize projects in folders
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
+set(CMAKE_CXX_STANDARD 20)
+
 # we only support MSVC >=2017 and 64 Bit
 IF(MSVC)
-        set(CMAKE_CXX_STANDARD 14) # 17 still has warnigns and errors
+        #set(CMAKE_CXX_STANDARD 17) # 17 still has warnigns and errors
         IF(MSVC_VERSION LESS 1910)
              MESSAGE(STATUS "This version ${MSVC_VERSION} of MSVC is not tested. It may work or not")
         ENDIF()

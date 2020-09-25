@@ -31,6 +31,7 @@
 #include "../exceptions.h"
 #include "../settings.h"
 #include "../stats.h"
+#include "../lambdas.h"
 #include "base_series_multiplier_mp.h"
 #include "null_truncator.h"
 

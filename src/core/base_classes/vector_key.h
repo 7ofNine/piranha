@@ -71,7 +71,7 @@ namespace piranha
 			typedef typename ContainerType::iterator iterator;
 			/// Position in the series' arguments tuple.
 			// a series has Echelon+1 tuples as keys
-			static const int position = Position;
+			constexpr static int position = Position;
 			/// Separator for string representation.
 			/**
 			 * The separator character must not be used in the textual representation of value_type,

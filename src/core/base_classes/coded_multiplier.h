@@ -30,6 +30,7 @@
 #include "../settings.h"
 #include "../stats.h"
 #include "../type_traits.h"
+#include "../lambdas.h"
 #include "coded_multiplier_mp.h"
 #include "null_truncator.h"
 
@@ -57,9 +58,6 @@
 // - cache usage: determine optimal size at runtime, e.g., inspecting the size of MP coefficients?
 // - numeric cast in coded functor & friends.
 
-namespace {
-    auto increment = [](const std::size_t x) -> std::size_t { return x + 1; }; // increment functor
-}
 
 namespace piranha
 {

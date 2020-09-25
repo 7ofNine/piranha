@@ -41,10 +41,11 @@ endif()
 ADD_COMPILE_OPTIONS(/wd4996)   #suppress stl in interface warning
 # define target piranha.dll
 ADD_LIBRARY(piranha SHARED ${SRC_LIST} ${SRC_LIST_HEADERS}) # define target piranha.dll
+set_property(TARGET piranha PROPERTY CXX_STANDARD_REQUIRED YES)
 
 TARGET_INCLUDE_DIRECTORIES(piranha PRIVATE ${Boost_INCLUDE_DIR})
 SET_PROPERTY(TARGET piranha PROPERTY COMPILE_DEFINITIONS _PIRANHA_DLL_EXPORT_API) # The dll exports its intefraces
-SET_PROPERTY(TARGET piranha PROPERTY CXX_STANDARD 17)
+#SET_PROPERTY(TARGET piranha PROPERTY CXX_STANDARD 17)
 TARGET_LINK_LIBRARIES(piranha ${MANDATORY_LIBRARIES} Boost::thread)
 
 # copy libraries so that we actually can run the tests and/or the single projects
@@ -113,6 +114,7 @@ SET(INCS
                 core/config.h
                 core/common_functors.h
                 core/coded_hash_table.h
+                core/lambdas.h
                 core/truncators/degree.h
                 core/truncators/norm.h
                 core/truncators/power_series.h

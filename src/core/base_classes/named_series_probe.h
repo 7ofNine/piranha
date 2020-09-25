@@ -252,7 +252,7 @@ namespace piranha
 
 		// Build a tuple of layouts.
 		//typename NTuple<std::vector<std::pair<bool, std::size_t> >, Derived::echelonLevel + 1>::Type layout;
-        LayoutTuple<typename Derived::ArgumentsDescription>::Type layoutTuple;
+        typename LayoutTuple< typename Derived::ArgumentsDescription>::Type layoutTuple;
 		// Get the relative layouts of this wrt other and put the result into layout.
 		NamedSeriesGetLayout<ArgsTupleType>::run(argumentsTuple, other.arguments(), layoutTuple);
 

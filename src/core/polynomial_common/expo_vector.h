@@ -338,9 +338,9 @@ namespace piranha
                 // the length of the symbols can be >= the size of the current vector.
                 // this happens during merge of arguments in multiplication and addition.
                 // The positions have to correspond to the correct symbols, but this can not be verified here
-                PIRANHA_ASSERT(symbols.size() >= size())
+                PIRANHA_ASSERT(symbols.size() >= this->size())
 				DegreeType degree(0);
-				for (VectorPsym::size_type i = 0; i < size(); ++i)
+				for (VectorPsym::size_type i = 0; i < this->size(); ++i)
 				{
 					degree += symbols[i].order() * (*this)[i];
 				}
@@ -389,7 +389,7 @@ namespace piranha
 			DegreeType xorder() const
 			{
 				DegreeType degree(0);
-				for (int i = 0; i < size(); ++i)
+				for (int i = 0; i < this->size(); ++i)
 				{
 					degree += (*this)[i];
 				}
