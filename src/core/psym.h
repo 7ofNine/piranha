@@ -99,9 +99,9 @@ namespace piranha
 				return retval;
 			}
 
-			void setOrder(const int order)
+			void setOrder(const int inorder)
 			{
-				this->order = order;
+				this->order = inorder;
 			}
 
             private:

@@ -38,7 +38,8 @@ else()
 	MESSAGE(FATAL "Couldn't find Boost libraries")
 endif()
 
-ADD_COMPILE_OPTIONS(/wd4996)   #suppress stl in interface warning
+#ADD_COMPILE_OPTIONS(/wd4996)   #suppress deprecated warnings
+ADD_COMPILE_OPTIONS(/wd4251)   # suppress dll interface warnings for stl items. 
 # define target piranha.dll
 ADD_LIBRARY(piranha SHARED ${SRC_LIST} ${SRC_LIST_HEADERS}) # define target piranha.dll
 set_property(TARGET piranha PROPERTY CXX_STANDARD_REQUIRED YES)

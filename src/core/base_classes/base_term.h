@@ -286,13 +286,13 @@ namespace piranha
 			/**
 			 * Useful in STL-like containers.
 			 */
-			//struct Hasher 
-			//{
-			//	std::size_t operator()(const BaseTerm &t) const 
-			//	{
-			//		return t.key.hash_value();
-			//	}
-			//};
+			struct Hasher 
+			{
+				std::size_t operator()(const BaseTerm &t) const 
+				{
+					return t.key.hash_value();
+				}
+			};
 
 			// Data members.
 			/// Coefficient.

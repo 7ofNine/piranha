@@ -15,6 +15,7 @@ namespace {
 	template < class T, int Position>
 	class Intermediate : public VectorKey < T, Position, Intermediate<T, Position>>
 	{
+		using Ancestor = VectorKey < T, Position, Intermediate<T, Position>>;
 	public:
 		Intermediate() = default;
 		Intermediate(Intermediate const &) = default;
@@ -24,15 +25,15 @@ namespace {
 		Intermediate & operator=(Intermediate &&) = default;
 
 		template <class ArgsTuple>
-		Intermediate(const Psym & p, const int & n, ArgsTuple const & a):VectorKey(p, n, a) {}
+		Intermediate(const Psym & p, const int & n, ArgsTuple const & a):Ancestor(p, n, a) {}
 
 		// tests for protected members. SHould we do that?
-		std::size_t pelementsHasher() { return elementsHasher(); }
-		bool pElementsAreZero() const  { return elementsAreZero(); }
-		void pprintElements(std::ostream & outstream) const { printElements(outstream); }
+		std::size_t pelementsHasher() { return this->elementsHasher(); }
+		bool pElementsAreZero() const  { return this->elementsAreZero(); }
+		void pprintElements(std::ostream & outstream) const { this->printElements(outstream); }
 		void pprintElementsSorted(std::ostream &outstream, std::vector<std::pair<bool, std::size_t> > positions) const
 		{
-			printElementsSorted(outstream, positions);
+			this->printElementsSorted(outstream, positions);
 		}
 
 	};

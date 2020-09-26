@@ -138,7 +138,7 @@ namespace piranha
 
 
 			/// Ctor from Psym.
-			// construct an expoVector from a Psym. There will only be one element in te vector
+			// construct an expoVector from a Psym. There will only be one element in the vector.
 			// n is the position of the key in the key hierarchy (echelon level)
 			template <class ArgsTuple>
 			explicit ExpoVector(const Psym &p, const int n, const ArgsTuple &a): Ancestor(p, n, a) {}

@@ -1,6 +1,7 @@
 SET(CMAKE_SKIP_BUILD_RPATH TRUE)
 SET(PIRANHA_TESTS_DIRECTORY ${CMAKE_HOME_DIRECTORY}/tests)
 ADD_COMPILE_OPTIONS(/bigobj)
+ADD_COMPILE_OPTIONS(/wd4251)
 ADD_DEFINITIONS(-D_PIRANHA_DLL_IMPORT_API) # we import piranha.dll
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR} ${PIRANHA_PYTHON_INCLUDE_DIR})
 #MESSAGE(STATUS, "Pyranha includes :  ${PIRANHA_PYTHON_INCLUDE_DIR}")
@@ -40,17 +41,17 @@ list(APPEND testincludePath "${CMAKE_HOME_DIRECTORY}/src" "${CMAKE_HOME_DIRECTOR
 #TARGET_INCLUDE_DIRECTORIES(test_pearce_2 PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
 #TARGET_LINK_LIBRARIES(test_pearce_2 piranha)
 
-ADD_EXECUTABLE(test_celmec celmec_test_01.cpp)
-TARGET_INCLUDE_DIRECTORIES(test_celmec PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
-TARGET_LINK_LIBRARIES(test_celmec piranha)
+#ADD_EXECUTABLE(test_celmec celmec_test_01.cpp)
+#TARGET_INCLUDE_DIRECTORIES(test_celmec PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
+#TARGET_LINK_LIBRARIES(test_celmec piranha)
 
 #ADD_EXECUTABLE(test_binomial binomial_20000.cpp)
 #TARGET_INCLUDE_DIRECTORIES(test_binomial PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
 #TARGET_LINK_LIBRARIES(test_binomial piranha)
 
-ADD_EXECUTABLE(test_sub sub_tests.cpp)
-TARGET_INCLUDE_DIRECTORIES(test_sub PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
-TARGET_LINK_LIBRARIES(test_sub piranha)
+#ADD_EXECUTABLE(test_sub sub_tests.cpp)
+#TARGET_INCLUDE_DIRECTORIES(test_sub PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
+#TARGET_LINK_LIBRARIES(test_sub piranha)
 
 #ADD_EXECUTABLE(test_sf_01 sf_tests_01.cpp)
 #TARGET_INCLUDE_DIRECTORIES(test_sf_01 PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
@@ -64,9 +65,9 @@ TARGET_LINK_LIBRARIES(test_sub piranha)
 #TARGET_INCLUDE_DIRECTORIES(test_dfs2 PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
 #TARGET_LINK_LIBRARIES(test_dfs2 piranha)
 
-ADD_EXECUTABLE(test_read test_read.cpp)
-TARGET_INCLUDE_DIRECTORIES(test_read PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
-TARGET_LINK_LIBRARIES(test_read piranha)
+#ADD_EXECUTABLE(test_read test_read.cpp)
+#TARGET_INCLUDE_DIRECTORIES(test_read PRIVATE ${CMAKE_HOME_DIRECTORY}/src)
+#TARGET_LINK_LIBRARIES(test_read piranha)
 
 
 MACRO(CREATE_BOOST_TEST arg1)
@@ -126,33 +127,24 @@ CREATE_BOOST_TEST(test_cf_series)
 
 # doesn't work . Possibly only for VS express
 #set_target_properties( test_fateman_1 PROPERTIES FOLDER TESTS)
-# Add tests.
-ADD_TEST(test_fateman_1 test_fateman_1)
-#ADD_DEPENDENCIES(RUN_TEST_PREPARE test_fateman_1)
-
-ADD_TEST(test_fateman_2 test_fateman_2)
-
-#ADD_TEST(small small_poly_test)  # runs for ever??
-
-#ADD_TEST(test_gastineau COMMAND test_gastineau)
-
-ADD_TEST(test_pearce_1 test_pearce_1 )
-
-#ADD_TEST(test_pearce_2 test_pearce_2)
-
-ADD_TEST(test_binomial test_binomial)
+# Add pre-existing tests. they are not using BOOST sofar.
+CREATE_BOOST_TEST(test_fateman_poly_1)
+CREATE_BOOST_TEST(test_fateman_poly_2)
+CREATE_BOOST_TEST(test_small_poly)  # runs for ever??
+CREATE_BOOST_TEST(test_gastineau)
+CREATE_BOOST_TEST(test_pearce_sparse_poly_1)
+CREATE_BOOST_TEST(test_pearce_sparse_poly_2)
+CREATE_BOOST_TEST(test_binomial)
 #ADD_DEPENDENCIES(RUN_TEST_PREPARE test_binomial)
-
-ADD_TEST(test_celmec test_celmec)
-
-ADD_TEST(test_sub test_sub )
+CREATE_BOOST_TEST(test_celmec)
+CREATE_BOOST_TEST(test_sub)
 #ADD_DEPENDENCIES(RUN_TEST_PREPARE test_sub)
 
-ADD_TEST(test_sf_01 test_sf_01)
+CREATE_BOOST_TEST(test_sf)
 #ADD_DEPENDENCIES(RUN_TEST_PREPARE test_sf_01)
 
-#ADD_TEST(test_dfs1 test_dfs1 )
+CREATE_BOOST_TEST(test_dfs_1)
 
-#ADD_TEST(test_dfs2 test_dfs2 )
+CREATE_BOOST_TEST(test_dfs_2)
 
 set_tests_properties(test_celmec PROPERTIES ENVIRONMENT MYVAR=2) # temp just for testing generation
