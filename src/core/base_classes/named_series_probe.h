@@ -140,6 +140,7 @@ namespace piranha
 	// TMP function for checking that evaluation dictionary has all the elements needed.
 	//
     // terminate recursion
+	template<>
     static inline bool checkEvalDict(EvalDict const &, boost::tuples::null_type const &)
 	{
 		return true;

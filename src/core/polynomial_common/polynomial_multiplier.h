@@ -268,12 +268,12 @@ struct PolynomialVectorFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTu
 		std::sort(perm2.begin(), perm2.end(), IndirectSorter(*this, this->m_ck2));
 
 		// Apply the permutations to the other vectors.
-		apply_permutation(perm1, this->m_tc1);
-		apply_permutation(perm1, this->m_ck1);
-		apply_permutation(perm1, this->m_t1);
-		apply_permutation(perm2, this->m_tc2);
-		apply_permutation(perm2, this->m_ck2);
-		apply_permutation(perm2, this->m_t2);
+		this->apply_permutation(perm1, this->m_tc1);
+		this->apply_permutation(perm1, this->m_ck1);
+		this->apply_permutation(perm1, this->m_t1);
+		this->apply_permutation(perm2, this->m_tc2);
+		this->apply_permutation(perm2, this->m_ck2);
+		this->apply_permutation(perm2, this->m_t2);
 	}
 
 

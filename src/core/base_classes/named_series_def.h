@@ -304,17 +304,17 @@ public: \
 	} \
 	explicit SeriesName(const double &x) \
 	{ \
-		*this = baseSeriesFromNumber(x, this->argumentsTuple); \
+		*this = this->baseSeriesFromNumber(x, this->argumentsTuple); \
 		this->trim(); \
 	} \
 	explicit SeriesName(const piranha::mp_rational &q) \
 	{ \
-		*this = baseSeriesFromNumber(q, this->argumentsTuple); \
+		*this = this->baseSeriesFromNumber(q, this->argumentsTuple); \
 		this->trim(); \
 	} \
 	explicit SeriesName(const piranha::mp_integer &z) \
 	{ \
-		*this = baseSeriesFromNumber(z, this->argumentsTuple); \
+		*this = this->baseSeriesFromNumber(z, this->argumentsTuple); \
 		this->trim(); \
 	}
 }
