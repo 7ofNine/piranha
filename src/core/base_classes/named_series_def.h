@@ -75,17 +75,17 @@ namespace piranha
 	template <PIRANHA_NAMED_SERIES_TP_DECL>
 	class NamedSeries
 	{
-			template <class T, class Enable>
-			friend class NamedSeriesAddSelector;
+			template <typename>
+			friend struct NamedSeriesAddSelector;
 
-			template <class T, class Enable>
-			friend class NamedSeriesSubtractSelector;
+			template <typename T>
+			friend struct NamedSeriesSubtractSelector;
 
-			template <class T, class Enable>
-			friend class NamedSeriesMultiplySelector;
+			template <typename T>
+			friend struct NamedSeriesMultiplySelector;
 
-			template <class T, class Enable>
-			friend class NamedSeriesEqualitySelector;
+			template <typename T>
+			friend struct NamedSeriesEqualitySelector;
 
 		public:
 			typedef ArgsDescr ArgumentsDescription; //ArgsDescr is expected to be a boost::tuples (NTuple) of echelonLevel+1 length. 

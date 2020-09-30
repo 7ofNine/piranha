@@ -64,37 +64,31 @@ namespace piranha
 		outStream << x;
 	}
 
-	// Default behaviour is to refuse to do anything is expo vector is not unity.
-	template <class T, class Enable = void>
+
+	template <typename T>
 	struct ExpoVectorPowDouble
-	{
-		template <class ExpoVector>
-		static ExpoVector run(const ExpoVector &expoVector, const double &)
-		{
-			if (!expoVector.isUnity())
-            {
-				PIRANHA_THROW(value_error, "cannot raise non-unity exponent vector to real power");
-			}
-
-			return expoVector;
-		}
-	};
-
-
-	// For rationals, we build a rational from the double and go on with the exponentiation.
-	template <class T>
-	struct ExpoVectorPowDouble<T, typename std::enable_if_t<std::is_same_v<T, mp_rational> >>
 	{
 		template <class ExpoVector>
 		static ExpoVector run(const ExpoVector &expoVector, const double &x)
 		{
-			return expoVector.genericPow(mp_rational(x));
+			if constexpr (std::is_same_v<T, mp_rational>)
+			{
+				return expoVector.genericPow(mp_rational(x));
+			}
+			else
+			{
+				if (expoVector.isUnity())
+				{
+					return expoVector;
+				}
+				PIRANHA_THROW(value_error, "cannot raise non-unity exponent vector to real power");
+			}
 		}
 	};
 
 
-	// Default behaviour is to refuse to do anything is resulting expo vector is not unity.
-	template <class T, class Enable = void>
+	//// Default behaviour is to refuse to do anything is resulting expo vector is not unity.
+	template <typename T>
 	struct ExpoVectorPowRational
 	{
 		template <class ExpoVector>
@@ -124,8 +118,8 @@ namespace piranha
 
 
 	// For rationals, we do simple exponentiation.
-	template <class T>
-	struct ExpoVectorPowRational<T, typename std::enable_if_t<std::is_same_v<T, mp_rational> >>
+	template <typename T> requires std::is_same_v<T, mp_rational>
+	struct ExpoVectorPowRational<T>
 	{
 		template <class ExpoVector>
 		static ExpoVector run(const ExpoVector &expoVector, const mp_rational &q)
@@ -133,6 +127,7 @@ namespace piranha
 			return expoVector.genericPow(q);
 		}
 	};
+
 }
 
 #endif

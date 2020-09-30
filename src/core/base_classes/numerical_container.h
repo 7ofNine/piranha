@@ -51,28 +51,28 @@ namespace piranha
 	template <class T, class Derived>
 	class NumericalContainer: numerical_container_tag
 	{
-			template <class, class>
+			template <typename>
 			friend struct numerical_container_constructor_selector;
 
-			template <class, class, class>
+			template <typename, typename>
 			friend struct numerical_container_equality_selector;
 
-			template <class, class>
+			template <typename>
 			friend struct numerical_container_add_selector;
 
-			template <class, class>
+			template <typename>
 			friend struct numerical_container_subtract_selector;
 
-			template <class, class>
+			template <typename>
 			friend struct numerical_container_multiply_selector;
 
-			template <class, class>
+			template <typename>
 			friend struct numerical_container_divide_selector;
 
-			template <class>
+			template <typename>
 			friend struct numerical_container_print_tex_selector;
 
-			template <class>
+			template <typename>
 			friend struct numerical_container_print_pretty_selector;
 
 		public:

@@ -50,19 +50,17 @@
 namespace piranha
 {
 	// Implementation of echelon level determination.
-	template <class CfSeries, class Enable = void>
-	struct EchelonLevelImpl
+	template <class CfSeries>
+	constexpr int  EchelonLevelImpl()
 	{
-		static const int value = EchelonLevelImpl<typename CfSeries::TermType::CfType>::value + 1;
+		if constexpr (std::is_base_of_v<BaseSeriesTag, CfSeries>){
+			return  EchelonLevelImpl<typename CfSeries::TermType::CfType>() + 1;
+		}
+		else //coefficients are not series
+		{
+			return  0;
+		}
 	};
-
-
-	template <class FinalCf>
-	struct EchelonLevelImpl<FinalCf, typename std::enable_if_t<!std::is_base_of_v<BaseSeriesTag, FinalCf>>>
-	{
-		static const int value = 0;
-	};
-
 
 	// Struct to define the container used in series - like a template typedef.
 	template <class Term>
@@ -75,7 +73,7 @@ namespace piranha
 
 	// These accessors are used in generic code that must work on both plain series (i.e., iterators) and sorted representations
 	// of series as returned by get_sorted_series (i.e., pointers to pointers of terms).
-	template <class Iterator, class Enable = void>
+	template <class Iterator>
 	struct FromIterator
 	{
 		static const typename Iterator::value_type *get(const Iterator &it)
@@ -85,9 +83,8 @@ namespace piranha
 	};
 
 
-	template <class Iterator>
-	//	requires std::is_pointer<Iterator>
-	struct FromIterator<Iterator, typename std::enable_if_t<std::is_pointer_v<typename Iterator::value_type> >>
+	template <typename Iterator> requires std::is_pointer_v<typename Iterator::value_type>
+	struct FromIterator<Iterator>
 	{
 		static typename Iterator::value_type get(const Iterator &it)
 		{
@@ -125,16 +122,16 @@ namespace piranha
 			template <int>
 			friend class SeriesFlattener;
 
-			template <class, class>
+			template <typename>
 			friend struct BaseSeriesAddSelector;
 
-			template <class, class>
+			template <typename>
 			friend struct BaseSeriesSubtractSelector;
 
-			template <class, class, class>
+			template <typename, typename>
 			friend struct BaseSeriesMultiplySelector;
 
-			template <class, class>
+			template <typename>
 			friend struct BaseSeriesEqualToSelector;
 
 		public:
@@ -150,7 +147,7 @@ namespace piranha
 			typedef typename SeriesContainer<TermType>::Type ContainerType;
 
 			/// Echelon level.
-			static const int echelonLevel = EchelonLevelImpl<typename TermType::CfType>::value;
+			constexpr static int echelonLevel = EchelonLevelImpl<typename TermType::CfType>();
 
 			/// Type resulting from series evaluation.
 			/**

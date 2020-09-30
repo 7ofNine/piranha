@@ -166,10 +166,16 @@ namespace piranha
 		return BaseSeriesSubtractSelector<T>::run(*derived_cast, x, argsTuple);
 	}
 
+
+	template<typename T>
+	concept ComplexNumerical =  boost::is_complex<T>::value && 
+					(std::is_integral_v<typename T::value_type> ||
+					std::is_floating_point_v<typename T::value_type>);
+
 	// This helper is needed because the standard complex<> class is missing comparison
 	// operators against scalar types different from complex<>::value_type - whereas this
 	// comparison is instead available in both the mp classes and the numerical coefficient classes.
-	template <class T, class Enable = void>
+	template <typename T>
 	struct MultDivCoefficientsChecker
 	{
 		static bool checkZero(const T &x)
@@ -188,10 +194,8 @@ namespace piranha
 	// NOTE: it might be possible to use generically the code below exclusively,
 	// but in case T is a series, extraction of real and imaginary part would be
 	// quite a bit more expensive. So this also serves as an optimisation.
-	template <class T>
-	struct MultDivCoefficientsChecker<T, typename std::enable_if_t<boost::is_complex<T>::value && (
-		std::is_integral_v<typename T::value_type> ||
-		std::is_floating_point_v<typename T::value_type>)>>
+	template <ComplexNumerical T>
+	struct MultDivCoefficientsChecker<T>
 	{
 		static bool checkZero(const T &c)
 		{

@@ -85,10 +85,10 @@ namespace piranha
 					void setup(const SubSeries &, const ArgsTuple *) {}
 			};
 
-			template <class, class>
+			template <typename>
 			friend struct ExpoVectorPowDouble;
 
-			template <class, class>
+			template <typename>
 			friend struct ExpoVectorPowRational;
 
 		public:

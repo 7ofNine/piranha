@@ -28,111 +28,80 @@
 
 namespace piranha
 {
-	template <class T, class Enable = void>
-	class NamedSeriesAddSelector
+	template <class T>
+	struct NamedSeriesAddSelector
 	{
-        public: 
 
 		template <class Derived>
 		static Derived & run(Derived &series, T const &x)
 		{
-			return series.baseAdd(x, series.argumentsTuple);
+			if constexpr (std::is_base_of_v<BaseSeriesTag, T>)
+			{
+				return series.template mergeWithSeries<true>(x);
+			}
+			else
+			{
+				return series.baseAdd(x, series.argumentsTuple);
+			}
 		}
 	};
 
 
 	template <class T>
-	class NamedSeriesAddSelector<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
+	struct NamedSeriesSubtractSelector
 	{
-        public:
-
 		template <class Derived>
-		static Derived & run(Derived & series, T const & other)
+		static Derived& run(Derived& series, T const& x)
 		{
-			return series.template mergeWithSeries<true>(other);
+			if constexpr (std::is_base_of_v<BaseSeriesTag, T>)
+			{
+				return series.template mergeWithSeries<false>(x);
+			}
+			else
+			{
+				return series.baseSubtract(x, series.argumentsTuple);
+			}
 		}
 	};
 
-
-
-	template <class T, class Enable = void>
-	class NamedSeriesSubtractSelector
-	{
-        public:
-
-		template <class Derived>
-		static Derived & run(Derived &series, T const &x)
-		{
-			return series.baseSubtract(x, series.argumentsTuple);
-		}
-	};
-
-
-	template <class T>
-	class NamedSeriesSubtractSelector<T,typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag,T> >>
-	{
-        public:
-
-		template <class Derived>
-		static Derived &run(Derived &series, T const &other)
-		{
-			return series.template mergeWithSeries<false>(other);
-		}
-	};
-	 
 
 	// select which type of multiplicaiton to execute
 	// multiply with a consant
-	template <class T, class Enable = void>
-	class NamedSeriesMultiplySelector
+	template <typename T>
+	struct NamedSeriesMultiplySelector
 	{
-        public:
-
 		template <class Derived>
-		static Derived &run(Derived &series, T const &x)
+		static Derived& run(Derived& series, T const& x)
 		{
-			return series.multiplyNumberHelper(x);
-		}
-	};
-	 
-
-	//multiply with another series
-	template <class T>
-	class NamedSeriesMultiplySelector<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
-	{
-        public:
-
-		template <class Derived>
-		static Derived & run(Derived & series, T const & other)
-		{
-			return series.multiplyBySeries(other);
-		}
-	};
-	 
-
-    template <class T, class Enable = void>
-	class NamedSeriesEqualitySelector
-	{
-        public:
-
-		template <class Derived>
-		static bool run(const Derived & series, T const & x)
-		{
-			return series.baseEqualTo(x);
+			if constexpr (std::is_base_of_v<BaseSeriesTag, T>)
+			{
+				return series.multiplyBySeries(x);
+			}
+			else
+			{
+				return series.multiplyNumberHelper(x);
+			}
 		}
 	};
 
-	template <class T>
-	class NamedSeriesEqualitySelector<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
-	{
-        public:
 
+	template <typename T>
+	struct NamedSeriesEqualitySelector
+	{
 		template <class Derived>
-		static bool run(const Derived &series, T const &other)
+		static bool run(const Derived& series, T const& x)
 		{
-			return series.isEqualTo(other);
+			if constexpr (std::is_base_of_v<BaseSeriesTag, T>)
+			{
+				return series.isEqualTo(x);
+			}
+			else
+			{
+				return series.baseEqualTo(x);
+			}
 		}
 	};
+
 }
 
 #endif

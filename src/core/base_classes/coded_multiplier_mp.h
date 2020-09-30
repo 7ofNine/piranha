@@ -40,25 +40,26 @@
 // Meta-programming methods for coded multiplier.
 
 namespace piranha {
+
         // Getter method for final coefficient of flattened series term.
-        template <class Cf, class Enable = void>
+        template <typename Cf>
         struct final_cf_getter_impl
         {
-                static const Cf &run(const Cf &cf)
-                {
-                        return cf;
-                }
+            static const Cf &run(const Cf &cf)
+            {
+                return cf;
+            }
         };
 
-        template <class CfSeries>
-        struct final_cf_getter_impl<CfSeries,typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag,CfSeries> >>
+        template <typename CfSeries>  requires std::is_base_of_v<BaseSeriesTag, CfSeries>
+        struct final_cf_getter_impl<CfSeries> 
         {
-                static const typename FinalCf<CfSeries>::Type &run(CfSeries const &cfSeries)
-                {
-                        PIRANHA_ASSERT(cfSeries.length() == 1);
+            static const typename FinalCf<CfSeries>::Type &run(CfSeries const &cfSeries)
+            {
+                PIRANHA_ASSERT(cfSeries.length() == 1);
 
-                        return final_cf_getter_impl<typename CfSeries::TermType::CfType>::run(cfSeries.begin()->cf);
-                }
+                return final_cf_getter_impl<typename CfSeries::TermType::CfType>::run(cfSeries.begin()->cf);
+            }
         };
 
 
@@ -72,35 +73,34 @@ namespace piranha {
         };
 
 
-        // Generalised reverse lexicographic ordering implementation.
-        template <class Term, class Enable = void>
+// Generalised reverse lexicographic ordering implementation.
+        template <typename Term>
         struct key_revlex_comparison_impl
         {
-                static bool run(const Term *t1, const Term *t2)
-                {
-                        return t1->key.revlexComparison(t2->key);
-                }
+            static bool run(const Term *t1, const Term *t2)
+            {
+                return t1->key.revlexComparison(t2->key);
+            }
         };
 
 
-        template <class Term>
-        struct key_revlex_comparison_impl<Term,typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag,typename Term::CfType> >>
+        template <typename Term> requires std::is_base_of_v<BaseSeriesTag, typename Term::CfType>
+        struct key_revlex_comparison_impl<Term>
         {
-                static bool run(const Term *t1, const Term *t2)
+            static bool run(const Term *t1, const Term *t2)
+            {
+                if (t1->key.elementsEqualTo(t2->key))
                 {
-                        if (t1->key.elementsEqualTo(t2->key))
-            {
-                                PIRANHA_ASSERT(t1->cf.length() == 1 && t2->cf.length() == 1);
+                    PIRANHA_ASSERT(t1->cf.length() == 1 && t2->cf.length() == 1);
 
-                                return key_revlex_comparison_impl<typename Term::CfType::TermType>::run(&(*t1->cf.begin()), &(*t2->cf.begin()));
-
-                        } else
-            {
-                                return t1->key.revlexComparison(t2->key);
-                        }
+                    return key_revlex_comparison_impl<typename Term::CfType::TermType>::run(&(*t1->cf.begin()), &(*t2->cf.begin()));
                 }
+                else
+                {
+                    return t1->key.revlexComparison(t2->key);
+                }
+            }
         };
-
 
         // Default value handler class. Suitable for use with POD integral types.
         template <class T>

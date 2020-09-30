@@ -126,51 +126,50 @@ namespace piranha
 	// These structs are used to select at compile time which low-level methods in BaseSeries
 	// to call to implement arithmetic operations - based on the type of argument.
 
-	template <class T, class Enable = void>
+	template <typename T>
+	concept  Series = std::is_base_of_v<BaseSeriesTag, T>;
+
+	template <typename T, typename U>
+	concept SimilarSeries = std::conjunction_v< Series<T>, std::disjunction_v<std::is_same_v<U, T>, std::is_same_v < U, std::complex<T>> > >;
+
+
+	template<typename T>
 	struct BaseSeriesAddSelector
 	{
-		template <class Derived, class ArgsTuple>
+		template <typename Derived, typename ArgsTuple>
 		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
 		{
-			return series.template mergeWithNumber<true>(x, argsTuple);
+			if constexpr (Series<T>)
+			{
+				return series.template mergeTerms<true>(x, argsTuple); // with sign
+			}
+			else
+			{
+				return series.template mergeWithNumber<true>(x, argsTuple);
+			}
 		}
 	};
 
 
-	template <class T>
-	struct BaseSeriesAddSelector<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
-	{
-		template <class Derived, class ArgsTuple>
-		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
-		{
-			return series.template mergeTerms<true>(other, argsTuple); // with sign
-		}
-	};
-
-
-	template <class T, class Enable = void>
+	template <typename T>
 	struct BaseSeriesSubtractSelector
 	{
 		template <class Derived, class ArgsTuple>
-		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
+		static Derived &run(Derived& series, const T& x, const ArgsTuple& argsTuple)
 		{
-			return series.template mergeWithNumber<false>(x, argsTuple); // without sign
+			if constexpr (Series<T>)
+			{
+				return series.template mergeTerms<false>(x, argsTuple); // subtract
+			}
+			else
+			{
+				return series.template mergeWithNumber<false>(x, argsTuple); // subtract 
+			}
 		}
 	};
 
 
-	template <class T>
-	struct BaseSeriesSubtractSelector<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
-	{
-		template <class Derived, class ArgsTuple>
-		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
-		{
-			return series.template mergeTerms<false>(other, argsTuple); // without sign
-		}
-	};
-
-
-	template <class Derived, class T, class Enable = void>
+	template <typename Derived, typename T>
 	struct BaseSeriesMultiplySelector
 	{
 		template <class ArgsTuple>
@@ -181,11 +180,10 @@ namespace piranha
 	};
 
 
-	template <class Derived, class T>
-	struct BaseSeriesMultiplySelector<Derived, T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> &&
-		(std::is_same_v<Derived, T> || std::is_same_v<Derived, std::complex<T> >)>>
+	template <typename Derived, typename T> requires std::is_base_of_v<BaseSeriesTag, T> && (std::is_same_v<Derived, T> || std::is_same_v<Derived, std::complex<T> >)
+	struct BaseSeriesMultiplySelector<Derived, T>
 	{
-		template <class ArgsTuple>
+		template <typename ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
 		{
 			series.multiply_by_series(other, argsTuple);
@@ -193,29 +191,28 @@ namespace piranha
 		}
 	};
 
+
     //////////////////////////////////////////////////////////////
     //
     //
-	template <class T, class Enable = void>
-	struct BaseSeriesEqualToSelector
+
+	template <typename T>
+	struct BaseSeriesEqualToSelector 
 	{
 		template <class Derived>
-		static bool run(const Derived &series, const T &x)
+		static bool run(const Derived& series, const T& x)
 		{
-			return series.genericNumericalComparison(x);
+			if constexpr (Series<T>)
+			{
+				return series.genericSeriesComparison(x);
+			}
+			else
+			{
+				return series.genericNumericalComparison(x);
+			}
 		}
 	};
 
-
-	template <class T>
-	struct BaseSeriesEqualToSelector<T, typename std::enable_if_t<std::is_base_of_v<BaseSeriesTag, T> >>
-	{
-		template <class Derived>
-		static bool run(const Derived &series, const T &other)
-		{
-			return series.genericSeriesComparison(other);
-		}
-	};
 }
 
 #endif

@@ -46,7 +46,7 @@ namespace piranha
 		typedef std::complex<double> type;
 	};
 
-	template <class T, class Enable = void>
+	template <typename T>
 	struct numerical_container_constructor_selector
 	{
 		static const T &run(const T &x)
@@ -55,12 +55,12 @@ namespace piranha
 		}
 	};
 
-	template <class T>
-	struct numerical_container_constructor_selector<T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag, T> >>
+	template <class T> requires std::is_base_of_v<numerical_container_tag, T>
+	struct numerical_container_constructor_selector<T> 
 	{
-		static const typename T::numerical_type &run(const T &other)
+		static const typename T::numerical_type &run(const T &x)
 		{
-			return other.get_value();
+			return x.get_value();
 		}
 	};
 
@@ -133,69 +133,64 @@ namespace piranha
 		}
 	};
 
-	template <class Derived, class T, class Enable = void>
+
+	template <typename Derived, typename T>
 	struct numerical_container_equality_selector
 	{
 		static bool run(const Derived &cf, const T &x)
 		{
-			return numerical_container_value_comparison<typename Derived::numerical_type,T>::run(cf.m_value,x);
+			if constexpr (std::is_base_of_v<numerical_container_tag, T>)
+			{
+				return numerical_container_value_comparison<typename Derived::numerical_type, typename T::numerical_type>::run(cf.m_value, x.get_value());
+			}
+			else
+			{
+				return numerical_container_value_comparison<typename Derived::numerical_type, T>::run(cf.m_value, x);
+			}
 		}
 	};
 
-	template <class Derived, class T>
-	struct numerical_container_equality_selector<Derived,T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag,T> >>
-	{
-		static bool run(const Derived &cf, const T &other)
-		{
-			return numerical_container_value_comparison<typename Derived::numerical_type,typename T::numerical_type>::run(cf.m_value,other.get_value());
-		}
-	};
 
-	template <class T, class Enable = void>
+	template <typename T>
 	struct numerical_container_add_selector
 	{
-		template <class Derived>
+		template <typename Derived>
 		static Derived &run(Derived &cf, const T &x)
 		{
-			cf.m_value += x;
+			if constexpr (std::is_base_of_v<numerical_container_tag, T>)
+			{
+				cf.m_value += x.get_value();
+			}
+			else
+			{
+				cf.m_value += x;
+			}
+			
 			return cf;
 		}
 	};
 
-	template <class T>
-	struct numerical_container_add_selector<T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag,T> >>
-	{
-		template <class Derived>
-		static Derived &run(Derived &cf, const T &other)
-		{
-			cf.m_value += other.get_value();
-			return cf;
-		}
-	};
 
-	template <class T, class Enable = void>
+	template <typename T>
 	struct numerical_container_subtract_selector
 	{
-		template <class Derived>
-		static Derived &run(Derived &cf, const T &x)
+		template <typename Derived>
+		static Derived& run(Derived& cf, const T& x)
 		{
-			cf.m_value -= x;
+			if constexpr (std::is_base_of_v<numerical_container_tag, T>)
+			{
+				cf.m_value -= x.get_value();
+			}
+			else
+			{
+				cf.m_value -= x;
+			}
 			return cf;
 		}
 	};
 
-	template <class T>
-	struct numerical_container_subtract_selector<T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag,T> >>
-	{
-		template <class Derived>
-		static Derived &run(Derived &cf, const T &other)
-		{
-			cf.m_value -= other.get_value();
-			return cf;
-		}
-	};
 
-	template <class T, class U>
+	template <typename T, typename U>
 	struct numerical_container_value_multiplication
 	{
 		static void run(T &x, const U &y)
@@ -204,29 +199,27 @@ namespace piranha
 		}
 	};
 
-	template <class T, class Enable = void>
+
+	template <typename T>
 	struct numerical_container_multiply_selector
 	{
-		template <class Derived>
+		template <typename Derived>
 		static Derived &run(Derived &cf, const T &x)
 		{
-			numerical_container_value_multiplication<typename Derived::numerical_type,T>::run(cf.m_value,x);
+			if constexpr (std::is_base_of_v<numerical_container_tag, T>)
+			{
+				numerical_container_value_multiplication<typename Derived::numerical_type,typename T::numerical_type>::run(cf.m_value, x.get_value());
+			}
+			else
+			{
+				numerical_container_value_multiplication<typename Derived::numerical_type, T>::run(cf.m_value, x);
+			}
 			return cf;
 		}
 	};
 
-	template <class T>
-	struct numerical_container_multiply_selector<T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag,T> >>
-	{
-		template <class Derived>
-		static Derived &run(Derived &cf, const T &other)
-		{
-			numerical_container_value_multiplication<typename Derived::numerical_type,typename T::numerical_type>::run(cf.m_value,other.get_value());
-			return cf;
-		}
-	};
 
-	template <class T, class U>
+	template <typename T, typename U>
 	struct numerical_container_value_division
 	{
 		static void run(T &x, const U &y)
@@ -235,27 +228,25 @@ namespace piranha
 		}
 	};
 
-	template <class T, class Enable = void>
+
+	template <typename T>
 	struct numerical_container_divide_selector
 	{
-		template <class Derived>
-		static Derived &run(Derived &cf, const T &x)
+		template <typename Derived>
+		static Derived& run(Derived& cf, const T& x)
 		{
-			numerical_container_value_division<typename Derived::numerical_type,T>::run(cf.m_value,x);
+			if constexpr ( std::is_base_of_v<numerical_container_tag, T>)
+			{
+				numerical_container_value_division<typename Derived::numerical_type, typename T::numerical_type>::run(cf.m_value, x.get_value());
+			}
+			else
+			{
+				numerical_container_value_division<typename Derived::numerical_type, T>::run(cf.m_value, x);
+			}
 			return cf;
 		}
 	};
 
-	template <class T>
-	struct numerical_container_divide_selector<T,typename std::enable_if_t<std::is_base_of_v<numerical_container_tag,T> >>
-	{
-		template <class Derived>
-		static Derived &run(Derived &cf, const T &other)
-		{
-			numerical_container_value_division<typename Derived::numerical_type,typename T::numerical_type>::run(cf.m_value,other.get_value());
-			return cf;
-		}
-	};
 }
 
 #endif
