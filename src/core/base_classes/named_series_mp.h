@@ -21,8 +21,9 @@
 #ifndef PIRANHA_NAMED_SERIES_MP_H
 #define PIRANHA_NAMED_SERIES_MP_H
 
-
+#include "../type_traits.h"
 #include "base_series_tag.h"
+
 
 #include <type_traits>
 
@@ -35,7 +36,7 @@ namespace piranha
 		template <class Derived>
 		static Derived & run(Derived &series, T const &x)
 		{
-			if constexpr (std::is_base_of_v<BaseSeriesTag, T>)
+			if constexpr (PiranhaSeries<T>)
 			{
 				return series.template mergeWithSeries<true>(x);
 			}
@@ -53,7 +54,7 @@ namespace piranha
 		template <class Derived>
 		static Derived& run(Derived& series, T const& x)
 		{
-			if constexpr (std::is_base_of_v<BaseSeriesTag, T>)
+			if constexpr (PiranhaSeries<T>)
 			{
 				return series.template mergeWithSeries<false>(x);
 			}
@@ -73,7 +74,7 @@ namespace piranha
 		template <class Derived>
 		static Derived& run(Derived& series, T const& x)
 		{
-			if constexpr (std::is_base_of_v<BaseSeriesTag, T>)
+			if constexpr (PiranhaSeries<T>)
 			{
 				return series.multiplyBySeries(x);
 			}
@@ -91,7 +92,7 @@ namespace piranha
 		template <class Derived>
 		static bool run(const Derived& series, T const& x)
 		{
-			if constexpr (std::is_base_of_v<BaseSeriesTag, T>)
+			if constexpr (PiranhaSeries<T>)
 			{
 				return series.isEqualTo(x);
 			}

@@ -22,12 +22,12 @@
 #define PIRANHA_JACOBI_ANGER_TOOLBOX_H
 
 #include <algorithm>
-#include <boost/numeric/conversion/cast.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <cstddef>
 #include <complex>
 #include <string>
 #include <vector>
+
+#include <boost/numeric/conversion/cast.hpp>
 
 #include "../config.h"
 #include "../exceptions.h"

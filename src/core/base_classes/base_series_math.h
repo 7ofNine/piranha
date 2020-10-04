@@ -27,6 +27,7 @@
 #include "../math.h"
 #include "../mp.h"
 #include "../settings.h"
+#include "../type_traits.h"
 #include "base_series_def.h"
 #include "base_series_mp.h"
 #include "base_series_tag.h"
@@ -256,7 +257,7 @@ namespace piranha
 	template <class T, class ArgsTuple>
 	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseDivideBy(const T &x, const ArgsTuple &argsTuple)
 	{
-        static_assert((!std::is_base_of_v<BaseSeriesTag,T>), "Cannot divide by another series.");
+        static_assert((!PiranhaSeries<T>), "Cannot divide by another series.");
 
 		return divideCoefficientsBy(x, argsTuple);
 	}

@@ -27,6 +27,7 @@
 #include "../exceptions.h"
 #include "../integer_typedefs.h"
 #include "../mp.h"
+#include "../type_traits.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
@@ -51,7 +52,7 @@ namespace piranha {
             }
         };
 
-        template <typename CfSeries>  requires std::is_base_of_v<BaseSeriesTag, CfSeries>
+        template <PiranhaSeries CfSeries>
         struct final_cf_getter_impl<CfSeries> 
         {
             static const typename FinalCf<CfSeries>::Type &run(CfSeries const &cfSeries)
@@ -84,7 +85,7 @@ namespace piranha {
         };
 
 
-        template <typename Term> requires std::is_base_of_v<BaseSeriesTag, typename Term::CfType>
+        template <typename Term> requires PiranhaSeries<typename Term::CfType>
         struct key_revlex_comparison_impl<Term>
         {
             static bool run(const Term *t1, const Term *t2)

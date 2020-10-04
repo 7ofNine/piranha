@@ -27,11 +27,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include <boost/functional/hash.hpp>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <boost/unordered_map.hpp>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -49,7 +49,7 @@
 namespace piranha
 {
 	/// Dictionary for evaluation.
-	typedef boost::unordered_map<std::string, double> EvalDict;
+	typedef std::unordered_map<std::string, double> EvalDict;
 
 	/// Named series toolbox.
 	/**

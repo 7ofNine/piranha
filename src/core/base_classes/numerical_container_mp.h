@@ -21,9 +21,11 @@
 #ifndef PIRANHA_NUMERICAL_CONTAINER_MP_H
 #define PIRANHA_NUMERICAL_CONTAINER_MP_H
 
-#include <boost/lexical_cast.hpp>
 
+#include "../type_traits.h"
 #include "numerical_container_tag.h"
+
+#include <boost/lexical_cast.hpp>
 
 #include <complex>
 #include <iostream>
@@ -55,7 +57,7 @@ namespace piranha
 		}
 	};
 
-	template <class T> requires std::is_base_of_v<numerical_container_tag, T>
+	template <PiranhaNumerical T>
 	struct numerical_container_constructor_selector<T> 
 	{
 		static const typename T::numerical_type &run(const T &x)
@@ -139,7 +141,7 @@ namespace piranha
 	{
 		static bool run(const Derived &cf, const T &x)
 		{
-			if constexpr (std::is_base_of_v<numerical_container_tag, T>)
+			if constexpr (PiranhaNumerical<T>)
 			{
 				return numerical_container_value_comparison<typename Derived::numerical_type, typename T::numerical_type>::run(cf.m_value, x.get_value());
 			}
@@ -157,7 +159,7 @@ namespace piranha
 		template <typename Derived>
 		static Derived &run(Derived &cf, const T &x)
 		{
-			if constexpr (std::is_base_of_v<numerical_container_tag, T>)
+			if constexpr (PiranhaNumerical<T>)
 			{
 				cf.m_value += x.get_value();
 			}
@@ -177,7 +179,7 @@ namespace piranha
 		template <typename Derived>
 		static Derived& run(Derived& cf, const T& x)
 		{
-			if constexpr (std::is_base_of_v<numerical_container_tag, T>)
+			if constexpr (PiranhaNumerical<T>)
 			{
 				cf.m_value -= x.get_value();
 			}
@@ -206,7 +208,7 @@ namespace piranha
 		template <typename Derived>
 		static Derived &run(Derived &cf, const T &x)
 		{
-			if constexpr (std::is_base_of_v<numerical_container_tag, T>)
+			if constexpr (PiranhaNumerical<T>)
 			{
 				numerical_container_value_multiplication<typename Derived::numerical_type,typename T::numerical_type>::run(cf.m_value, x.get_value());
 			}
@@ -235,7 +237,7 @@ namespace piranha
 		template <typename Derived>
 		static Derived& run(Derived& cf, const T& x)
 		{
-			if constexpr ( std::is_base_of_v<numerical_container_tag, T>)
+			if constexpr (PiranhaNumerical<T>)
 			{
 				numerical_container_value_division<typename Derived::numerical_type, typename T::numerical_type>::run(cf.m_value, x.get_value());
 			}

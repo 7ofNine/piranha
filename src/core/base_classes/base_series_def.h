@@ -30,6 +30,7 @@
 #include "../type_traits.h"
 #include "base_series_mp.h"
 #include "base_series_tag.h"
+#include "base_term.h"
 
 #include <boost/functional/hash.hpp>
 #include <boost/unordered_set.hpp>
@@ -53,7 +54,7 @@ namespace piranha
 	template <class CfSeries>
 	constexpr int  EchelonLevelImpl()
 	{
-		if constexpr (std::is_base_of_v<BaseSeriesTag, CfSeries>){
+		if constexpr (PiranhaSeries<CfSeries>){
 			return  EchelonLevelImpl<typename CfSeries::TermType::CfType>() + 1;
 		}
 		else //coefficients are not series
@@ -62,12 +63,15 @@ namespace piranha
 		}
 	};
 
+	
+
 	// Struct to define the container used in series - like a template typedef.
 	template <class Term>
 	struct SeriesContainer
 	{
 		//typedef std::unordered_set<Term> Type;
 		typedef boost::unordered_set<Term, boost::hash<Term>, std::equal_to<Term>, CountingAllocator<Term, std::allocator<Term> > > Type;
+		//using Type = std::unordered_set<Term, Hasher<Term>, std::equal_to<Term>, CountingAllocator<Term, std::allocator<Term> > >;
 	};
 
 
@@ -133,6 +137,8 @@ namespace piranha
 
 			template <typename>
 			friend struct BaseSeriesEqualToSelector;
+
+
 
 		public:
 

@@ -23,6 +23,7 @@
 
 #include "../config.h"
 #include "../exceptions.h"
+#include "../type_traits.h"
 #include "base_series_tag.h"
 
 #include <complex>
@@ -126,12 +127,6 @@ namespace piranha
 	// These structs are used to select at compile time which low-level methods in BaseSeries
 	// to call to implement arithmetic operations - based on the type of argument.
 
-	template <typename T>
-	concept  Series = std::is_base_of_v<BaseSeriesTag, T>;
-
-	template <typename T, typename U>
-	concept SimilarSeries = std::conjunction_v< Series<T>, std::disjunction_v<std::is_same_v<U, T>, std::is_same_v < U, std::complex<T>> > >;
-
 
 	template<typename T>
 	struct BaseSeriesAddSelector
@@ -139,7 +134,7 @@ namespace piranha
 		template <typename Derived, typename ArgsTuple>
 		static Derived &run(Derived &series, const T &x, const ArgsTuple &argsTuple)
 		{
-			if constexpr (Series<T>)
+			if constexpr (PiranhaSeries<T>)
 			{
 				return series.template mergeTerms<true>(x, argsTuple); // with sign
 			}
@@ -157,7 +152,7 @@ namespace piranha
 		template <class Derived, class ArgsTuple>
 		static Derived &run(Derived& series, const T& x, const ArgsTuple& argsTuple)
 		{
-			if constexpr (Series<T>)
+			if constexpr (PiranhaSeries<T>)
 			{
 				return series.template mergeTerms<false>(x, argsTuple); // subtract
 			}
@@ -180,7 +175,7 @@ namespace piranha
 	};
 
 
-	template <typename Derived, typename T> requires std::is_base_of_v<BaseSeriesTag, T> && (std::is_same_v<Derived, T> || std::is_same_v<Derived, std::complex<T> >)
+	template <typename T, typename  Derived>  requires std::is_base_of_v<BaseSeriesTag, T> && (std::is_same_v<Derived, T> || std::is_same_v<Derived, std::complex<T> >)
 	struct BaseSeriesMultiplySelector<Derived, T>
 	{
 		template <typename ArgsTuple>
@@ -202,7 +197,7 @@ namespace piranha
 		template <class Derived>
 		static bool run(const Derived& series, const T& x)
 		{
-			if constexpr (Series<T>)
+			if constexpr (PiranhaSeries<T>)
 			{
 				return series.genericSeriesComparison(x);
 			}

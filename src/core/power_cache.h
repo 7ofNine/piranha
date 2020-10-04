@@ -21,8 +21,11 @@
 #ifndef PIRANHA_POWER_CACHE_H
 #define PIRANHA_POWER_CACHE_H
 
-#include <boost/unordered_map.hpp>
+
 #include <vector>
+#include <unordered_map>
+
+#include <boost/unordered_map.hpp>
 
 #include "exceptions.h"
 #include "settings.h"

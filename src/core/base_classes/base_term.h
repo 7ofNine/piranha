@@ -21,14 +21,14 @@
 #ifndef PIRANHA_BASE_TERM_H
 #define PIRANHA_BASE_TERM_H
 
-#include <boost/algorithm/string.hpp>
-#include <boost/static_assert.hpp>
 #include <cstddef>
 #include <iostream>
 #include <memory>
 #include <string>
 #include <utility> // For std::pair.
 #include <vector>
+
+#include <boost/algorithm/string.hpp>
 
 #include "../exceptions.h"
 #include "../settings.h"
@@ -72,6 +72,21 @@ namespace piranha
             {
 				return t.key;
 			}
+	};
+
+
+	// TODO: do we need this currently nowhere used!!
+	/// Hasher functor.
+	/**
+	* Useful in STL-like containers.
+	*/
+	template<typename T>
+	struct Hasher
+	{
+		std::size_t operator()(const T& t) const noexcept
+		{
+			return t.key.hash_value();
+		}
 	};
 
 
@@ -179,14 +194,14 @@ namespace piranha
 			template <int N>
 			typename BaseTermGetHelper<N, BaseTerm>::Type &get() 
 			{
-				BOOST_STATIC_ASSERT(N == 0 || N == 1);
+				static_assert(N == 0 || N == 1);
 				return BaseTermGetHelper<N, BaseTerm>::run(*this);
 			}
 
 			template <int N>
 			const typename BaseTermGetHelper<N, BaseTerm>::Type &get() const 
 			{
-				BOOST_STATIC_ASSERT(N == 0 || N == 1);
+				static_assert(N == 0 || N == 1);
 				return BaseTermGetHelper<N, BaseTerm>::run(*this);
 			}
 
@@ -288,7 +303,7 @@ namespace piranha
 			 */
 			struct Hasher 
 			{
-				std::size_t operator()(const BaseTerm &t) const 
+				std::size_t operator()(const BaseTerm &t) const noexcept
 				{
 					return t.key.hash_value();
 				}

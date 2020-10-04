@@ -25,6 +25,7 @@
 #include "base_classes/base_series_tag.h"
 #include "config.h"
 #include "mp.h"
+#include "base_classes/numerical_container_tag.h"
 
 #include <boost/type_traits/integral_constant.hpp>
 #include <boost/type_traits/is_complex.hpp>
@@ -74,6 +75,15 @@ namespace piranha
 	};
 
 
+	// Piranha Series type
+	template <typename T>
+	concept  PiranhaSeries = std::is_base_of_v<BaseSeriesTag, T>;
+
+	//template <typename T, typename Derived>
+	//concept PiranhaSimilarSeries = requires {
+	//	std::conjunction < std::is_base_of<BaseSeriesTag, T>, std::disjunction <std::is_same<Derived, T>, std::is_same<Derived, std::complex<T> > >};
+	////std::is_base_of_v<BaseSeriesTag, T> && (std::is_same_v<Derived, T> || std::is_same_v<Derived, std::complex<T> >)
+
 
 	/// Default type trait for exact ring operations.
 	/**
@@ -88,7 +98,7 @@ namespace piranha
 	 * Inherits the type trait from the value_type of the complex class. Specialisation is disabled
 	 * if T is not a series type (in that case, the series type trait specialisation will be used).
 	 */
-	template <typename T> requires boost::is_complex<T>::value && (!std::is_base_of_v<BaseSeriesTag, T>)
+	template <typename T> requires boost::is_complex<T>::value && (!PiranhaSeries<T>)
 	struct is_ring_exact<T>:
 		is_ring_exact<typename T::value_type>
 	{};
@@ -97,7 +107,7 @@ namespace piranha
 	/**
 	 * Will be true if coefficient and key are ring exact.
 	 */
-	template <typename T> requires std::is_base_of_v<BaseSeriesTag, T>
+	template <PiranhaSeries T>
 	struct is_ring_exact<T> 
 	{
 		static const bool value = is_ring_exact<typename T::TermType::CfType>::value && is_ring_exact<typename T::TermType::KeyType>::value;
@@ -117,7 +127,7 @@ namespace piranha
 	 * Inherits the type trait from the value_type of the complex class. Specialisation is disabled
 	 * if T is not a series type (in that case, the series type trait specialisation will be used).
 	 */
-	template <typename T> requires boost::is_complex<T>::value && (!std::is_base_of_v<BaseSeriesTag, T>)
+	template <typename T> requires boost::is_complex<T>::value && (!PiranhaSeries<T>)
 	struct is_trig_exact<T>:
 		is_trig_exact<typename T::value_type>
 	{};
@@ -126,7 +136,7 @@ namespace piranha
 	/**
 	 * Will be true if either coefficient or key are trig exact.
 	 */
-	template <typename T> requires std::is_base_of_v<BaseSeriesTag, T>
+	template <PiranhaSeries T>
 	struct is_trig_exact<T>
 	{
 		static const bool value = is_trig_exact<typename T::TermType::CfType>::value || is_trig_exact<typename T::TermType::KeyType>::value;
@@ -145,7 +155,7 @@ namespace piranha
 	 * Inherits the type trait from the value_type of the complex class. Specialisation is disabled
 	 * if T is not a series type (in that case, the series type trait specialisation will be used).
 	 */
-	template <typename T> requires boost::is_complex<T>::value && (!std::is_base_of_v<BaseSeriesTag, T>)
+	template <typename T> requires boost::is_complex<T>::value && (!PiranhaSeries<T>)
 	struct is_divint_exact<T>:
 		is_divint_exact<typename T::value_type>
 	{};
@@ -154,7 +164,7 @@ namespace piranha
 	/**
 	 * Will be true if either coefficient or key are divint exact.
 	 */
-	template <class T> requires std::is_base_of_v<BaseSeriesTag, T>
+	template <PiranhaSeries T>
 	struct is_divint_exact<T>
 	{
 		static const bool value = is_divint_exact<typename T::TermType::CfType>::value || is_divint_exact<typename T::TermType::KeyType>::value;
@@ -172,7 +182,7 @@ namespace piranha
 	/**
 	 * Will be true if series has a degree_type typedef which is rational.
 	 */
-	template <typename T> requires std::is_base_of_v<BaseSeriesTag, T>&& std::is_same_v<typename T::degree_type, mp_rational>
+	template <PiranhaSeries T> requires std::is_same_v<typename T::degree_type, mp_rational>
 	struct is_rational_exponent<T>:
 	boost::true_type {};
 
@@ -187,7 +197,7 @@ namespace piranha
 	};
 
 
-	template <typename T> requires (!std::is_base_of_v<BaseSeriesTag, T>)
+	template <typename T> requires (!PiranhaSeries<T>)
 	struct FinalCfImplementation<T> 
 	{
 		using Type = T;
@@ -195,15 +205,19 @@ namespace piranha
 
 
 
+
 	/// Final coefficient type.
 	/**
 	 * Coefficient type at the end of the echelon recursion.
 	 */
-	template <typename T> requires std::is_base_of_v<BaseSeriesTag, T>
+	template <PiranhaSeries T>
 	struct FinalCf
 	{
 		using Type = typename FinalCfImplementation<typename T::TermType::CfType>::Type;
 	};
+
+	template <typename T>
+	concept PiranhaNumerical = std::is_base_of_v<numerical_container_tag, T>;
 }
 
 #endif
