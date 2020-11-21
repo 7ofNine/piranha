@@ -190,17 +190,20 @@ namespace piranha
 
         // write header of file. 
         outfile << std::setw(termIdText.length()) << termIdText << " " << std::setw(printCoeffWidth) << std::right << coefficientText << " ";
-        for (std::size_t i = 0; i < expSymbols.size(); ++i)
-        {
-            outfile << std::setw(6) << std::right << expSymbols[i].getName() << " ";
-        }
+
+		for (auto symbol : expSymbols)
+		{
+			outfile << std::setw(6) << std::right << symbol.getName() << " ";
+		}
 
         outfile << "  |  ";
 
-        for (std::size_t i = 0; i < trigSymbols.size(); ++i)
-        {
-            outfile << std::setw(6) << std::right << trigSymbols[i].getName() << " ";
-        }
+
+		for (auto symbol : trigSymbols)
+		{
+			outfile << std::setw(6) << std::right << symbol.getName() << " ";
+		}
+
         outfile << std::endl;
 
 

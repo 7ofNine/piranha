@@ -32,7 +32,7 @@ typedef dpoly poly;
 int main()
 {
 #ifdef DEBUG
-settings::set_debug(false);
+settings::set_debug(true);
 #endif
 //settings::set_nthread(16);
   Psym x("x"), y("y"), z("z"), t("t");

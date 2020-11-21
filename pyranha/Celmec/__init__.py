@@ -17,7 +17,7 @@
 # Free Software Foundation, Inc.,
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from .detail import __check_uniform_type
+from pyranha.Celmec.detail import __check_uniform_type
 
 def r_a(e,M):
     """
@@ -174,6 +174,7 @@ def mdelaunay2oe(md_elements):
     from pyranha.Math import root
     from pyranha.Core import psym, is_iteratable
     from pyranha import manipulators
+
     if not is_iteratable(md_elements):
         raise TypeError('Please provide a list of modified Delaunay arguments as input parameter.')
     if len(md_elements) != 6:
@@ -458,6 +459,7 @@ class lie_cache(object):
         self.__p_list = deepcopy(p_list)
         self.__q_list = deepcopy(q_list)
         self.__container = [deepcopy(arg)]
+
     def __getitem__(self,n):
         """
         Require the Lie derivative of order n.
@@ -486,6 +488,7 @@ class lie_theory(object):
         __metaclass__ = __abc_meta
     except ImportError:
         __abs_method = __null_decorator
+
     def __init__(self,H,eps_name,p_names,q_names,he_solvers,verbose = True):
         """
         Construct a Lie theory from:
@@ -527,9 +530,11 @@ class lie_theory(object):
         self.__init_list = None
         # Run the calculations.
         self.__compute_theory()
+
     def __print(self,args):
         if self.__verbose:
             print(args)
+
     def __repr__(self):
         retval = ''
         retval += 'Hamiltonian:\n\t' + str(self.__H) + '\n\n'
@@ -538,6 +543,7 @@ class lie_theory(object):
         retval += 'Coordinates:\n\t' + str(self.__q_names) + '\n'
         retval += 'Order:\n\t' + str(self.__order) + '\n'
         return retval
+
     def __compute_theory(self):
         from pyranha.Core import psym, integer
         self.__chi_list = []
@@ -572,6 +578,7 @@ class lie_theory(object):
             self.__inverse.append([lieS(eps_series ** (i + 1),-chi_n,x,self.__p_names,self.__q_names,limit = s_limit) for x in state_series])
             self.__print(H_n.filtered([None, lambda t: t[1].degree(self.__eps_name) < i + 2]))
     @__abs_method
+
     def solve_last(self,init,t):
         """
         Given a dictionary of initial conditions for all symbolic variables, return a dictionary with the value of
@@ -581,6 +588,7 @@ class lie_theory(object):
         t -- time the return dictionary refers to
         """
         raise NotImplementedError('\'solve_last\' method has not been implemented.')
+
     def set_init(self,init):
         """
         Set initial conditions of the theory.
@@ -600,6 +608,7 @@ class lie_theory(object):
                 cur_init[s_names[j]] = self.__inverse[i][j].eval(init_list[-1])
             init_list.append(cur_init)
         self.__init_list = init_list
+
     def evaluate(self,t):
         """
         Return dictionary of symbolic variables evaluated at time t.
@@ -615,30 +624,35 @@ class lie_theory(object):
                 cur_eval[s_names[j]] = d[j].eval(evals[-1])
             evals.append(cur_eval)
         return evals[-1]
+
     @property
     def H(self):
         """
         List of Hamiltonians for all the orders of the theory.
         """
         return self.__H_list
+
     @property
     def direct(self):
         """
         List of direct coordinate transformations for all the orders of the theory.
         """
         return self.__direct
+
     @property
     def inverse(self):
         """
         List of inverse coordinate transformations for all the orders of the theory.
         """
         return self.__inverse
+
     @property
     def chi(self):
         """
         List of generating functions for all the orders of the theory.
         """
         return self.__chi_list
+
     @property
     def init_list(self):
         """
@@ -648,30 +662,35 @@ class lie_theory(object):
         if self.__init_list is None:
             raise ValueError
         return deepcopy(self.__init_list)
+
     @property
     def series_type(self):
         """
         Series type used in the theory.
         """
         return self.__series_type
+
     @property
     def eps_name(self):
         """
         Name of the small quantity.
         """
         return self.__eps_name
+
     @property
     def p_names(self):
         """
         List of names of the momenta.
         """
         return self.__p_names
+
     @property
     def q_names(self):
         """
         List of names of the coordinates.
         """
         return self.__q_names
+
     @property
     def order(self):
         """

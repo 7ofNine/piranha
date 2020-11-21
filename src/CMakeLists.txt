@@ -30,7 +30,7 @@ SET(Boost_USE_STATIC_RUNTIME OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_DEBUG_PYTHON ON)
 
-FIND_PACKAGE(Boost 1.69.0 REQUIRED COMPONENTS thread ${PYRANHA_BOOST_PYTHON_TARGET})
+FIND_PACKAGE(Boost 1.74.0 REQUIRED COMPONENTS thread ${PYRANHA_BOOST_PYTHON_TARGET})
 if(Boost_FOUND)
 	MESSAGE(STATUS "Found Boost libraries: ${Boost_LIBRARIES}")
     SET(PYRANHA_BOOST_LIBRARIES "${Boost_LIBRARIES}" PARENT_SCOPE)
@@ -38,7 +38,6 @@ else()
 	MESSAGE(FATAL "Couldn't find Boost libraries")
 endif()
 
-#ADD_COMPILE_OPTIONS(/wd4996)   #suppress deprecated warnings
 ADD_COMPILE_OPTIONS(/wd4251)   # suppress dll interface warnings for stl items. 
 # define target piranha.dll
 ADD_LIBRARY(piranha SHARED ${SRC_LIST} ${SRC_LIST_HEADERS}) # define target piranha.dll
@@ -97,6 +96,7 @@ endif()
       
 # Target to get the header files into MSVC		
 SET(INCS
+                settings.cpp.template
                 piranha.h
                 core/utils.h
                 core/utils.h
@@ -214,6 +214,21 @@ SET(INCS
                 ../pyranha/stl_containers.h
                 )
 SOURCE_GROUP(TREE ${CMAKE_SOURCE_DIR} PREFIX "Header Files" FILES ${INCS})
-ADD_LIBRARY(Headers STATIC ${INCS})
+
+SET(PYRANHA_PYTHON
+    ../pyranha/detail.py
+    ../pyranha/global.__init__.py
+    ../pyranha/template.__init__.py
+    ../pyranha/template.global.__init__.py
+    ../pyranha/Celmec/__init__.py
+    ../pyranha/Celmec/detail.py
+    ../pyranha/Celmec/low_thrust.py
+    ../pyranha/Test/__init__.py
+    ../pyranha/Test/detail.py
+    ../extras/template.ipy_profile_pyranha.py
+) 
+SOURCE_GROUP(TREE ${CMAKE_SOURCE_DIR} PREFIX "Python" FILES ${PYRANHA_PYTHON})   
+
+ADD_LIBRARY(Headers STATIC ${INCS} ${PYRANHA_PYTHON})
 TARGET_INCLUDE_DIRECTORIES(Headers PRIVATE ${Boost_INCLUDE_DIR})
 SET_TARGET_PROPERTIES(Headers PROPERTIES LINKER_LANGUAGE CXX)

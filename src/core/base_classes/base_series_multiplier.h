@@ -21,11 +21,8 @@
 #ifndef PIRANHA_BASE_SERIES_MULTIPLIER_H
 #define PIRANHA_BASE_SERIES_MULTIPLIER_H
 
-#include <algorithm>
-#include <boost/lambda/lambda.hpp>
-#include <boost/numeric/conversion/cast.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/tuple/tuple.hpp>
+
+
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -35,11 +32,19 @@
 #include "base_series_multiplier_mp.h"
 #include "null_truncator.h"
 
+#include <boost/numeric/conversion/cast.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/tuple/tuple.hpp>
+#include <boost/lambda/lambda.hpp>
+
+#include <algorithm>
+#include <functional>
 #include <cmath>
 #include <cstddef>
 #include <iterator>
 #include <vector>
 #include <type_traits>
+
 #define DC static_cast<Derived *>(this)
 
 namespace piranha
@@ -165,6 +170,7 @@ namespace piranha
 				PIRANHA_ASSERT(terms1.empty() && terms2.empty());
 
 				std::transform(container1.begin(), container1.end(), std::insert_iterator<std::vector<typename Series1::TermType const *> >(terms1, terms1.begin()), &(boost::lambda::_1));
+				//std::transform(container1.begin(), container1.end(), std::insert_iterator<std::vector<typename Series1::TermType const*> >(terms1, terms1.begin()), [](typename Series1::TermType const t) -> typename Series1::TermType const * {return &t; });
 				std::transform(container2.begin(), container2.end(), std::insert_iterator<std::vector<typename Series2::TermType const *> >(terms2, terms2.begin()), &(boost::lambda::_1));
 			}
 

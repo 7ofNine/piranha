@@ -19,8 +19,8 @@
 
 class __psyms(object):
     def __repr__(self):
-        from pyranha.Core import Psym
-        l = Psym.list()
+        from pyranha.Core import psym
+        l = psym.list()
         retval = ''
         if not l:
             return 'No symbols defined.'
@@ -31,10 +31,10 @@ class __psyms(object):
         Create psyms from a string of space-separated names.
         """
         try:
-            import IPython.ipapi
+            from IPython import get_ipython
         except ImportError:
             raise ImportError("IPython not available.")
-        ip = IPython.ipapi.get()
+        ip = get_ipython()
         for i in names.split():
             try:
                 # Try to fetch the psym from the psym manager.
@@ -45,11 +45,12 @@ class __psyms(object):
 class __series(object):
     def __repr__(self):
         try:
-            import IPython.ipapi
+           from IPython import get_ipython
         except ImportError:
             raise ImportError("IPython not available.")
         import pyranha
-        ip_ns = IPython.ipapi.get().user_ns
+        ip = get_ipython()
+        ip_ns = ip.user_ns
         l = [(
                 x,
                 ip_ns[x].__short_type__,
@@ -61,6 +62,7 @@ class __series(object):
         m0, m1 = max([len(t[0]) for t in l]), max([len(t[1]) for t in l])
         return reduce(lambda a,b: a+ b,
             ['Series: \'' + t[0] + '\'' + (' ' * (m0 - len(t[0]))) + ' - \'' + t[1] + '\'' + (' ' * (m1 - len(t[1]))) + ' - ' + str(t[2]) + '\n' for t in l])[0:-1]
+
     def __call__(self,names,series_t = None):
         """
         Create series from a string of space-separated names. If the optional parameter series_t is None,
@@ -68,7 +70,7 @@ class __series(object):
         series creation.
         """
         try:
-            import IPython.ipapi
+            from IPython import get_ipython
         except ImportError:
             raise ImportError("IPython not available.")
         import pyranha
@@ -78,7 +80,7 @@ class __series(object):
             if series_t not in pyranha.manipulators:
                 raise TypeError(str(type(series_t)) + " is not recognized as a valid series type.")
             s_type = series_t().__short_type__
-        ip = IPython.ipapi.get()
+        ip = get_ipython()
         for i in names.split():
             try:
                 # Try to fetch the psym from the psym manager.

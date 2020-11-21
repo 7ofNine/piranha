@@ -8,9 +8,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10.0 FATAL_ERROR)
 PROJECT(Piranha CXX)
 
 # This syntax was introduced by CMake 2.6 to handle backwards compatibility.
-IF(COMMAND cmake_policy)
-    CMAKE_POLICY(VERSION 2.6)
-ENDIF(COMMAND cmake_policy)
+#IF(COMMAND cmake_policy)
+#    CMAKE_POLICY(VERSION 2.6)
+#ENDIF(COMMAND cmake_policy)
 
 # we want to organize projects in folders
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)

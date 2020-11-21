@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # Copyright (C) 2007, 2008 by Francesco Biscani
 # bluescarni@gmail.com
 #
@@ -21,15 +21,25 @@ class __truncators(object):
     def __init__(self):
         from pyranha.Truncators import _Truncators
         self.__list = [x for x in dir(_Truncators) if x.endswith('_truncator')]
+        #print('self : ' +str(dir(self)) + '\n')
+        #print('self.__list: ' + str(self.__list) + '\n')
         for n in self.__list:
             exec('self.%s = _Truncators.%s()' % (n.split('_truncator')[0][2:],n))
+            #print('self : ' +str(dir(self)) + '\n')
+
     def __repr__(self):
         from pyranha.Truncators import _Truncators
         retval = ''
         for n in self.__list:
-            exec('t = _Truncators.%s()' % n)
-            retval += ('%s: %s\n' % (n.split('_truncator')[0][2:],str(t)))
+            loc = {'_Truncators' : _Truncators, 'n' : n}          # not sure why this requires the locals but similar construction in __init__ doesn't??
+            exec('t = _Truncators.%s()' % n, {}, loc)
+            #print('t          : ' + str(loc['t']) + '\n')                  
+            #print('n          : ' + str(loc['n']) +'\n')
+            #print('_Truncators: ' + str(loc['_Truncators']) + '\n')
+            t = loc['t']
+            retval += ('%s: %s\n' % (n.split('_truncator')[0][2:], str(t)))
         return retval
+
     def unset(self):
         from pyranha.Truncators import _Truncators
         _Truncators.unset()

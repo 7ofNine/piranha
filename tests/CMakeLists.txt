@@ -131,9 +131,9 @@ CREATE_BOOST_TEST(test_cf_series)
 CREATE_BOOST_TEST(test_fateman_poly_1)
 CREATE_BOOST_TEST(test_fateman_poly_2)
 CREATE_BOOST_TEST(test_small_poly)  # runs for ever??
-CREATE_BOOST_TEST(test_gastineau)
+CREATE_BOOST_TEST(test_gastineau)   # currently returns an error for elp3a length  is 60204 instead of 60205 but the numbers in the next step agree again 
 CREATE_BOOST_TEST(test_pearce_sparse_poly_1)
-CREATE_BOOST_TEST(test_pearce_sparse_poly_2)
+#CREATE_BOOST_TEST(test_pearce_sparse_poly_2) needs too much memory
 CREATE_BOOST_TEST(test_binomial)
 #ADD_DEPENDENCIES(RUN_TEST_PREPARE test_binomial)
 CREATE_BOOST_TEST(test_celmec)

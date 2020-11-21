@@ -32,6 +32,7 @@ class lt_base(object):
         self.__thrust = thrust
         self.__axis = axis
         self.__trunc_order = trunc_order
+
     def _numerical_integrator(self,s0,tf,n):
         """
         Return a list of n state vectors starting from t = 0 to t = tf assuming as initial conditions
@@ -49,6 +50,7 @@ class lt_base(object):
             retval[3 + axis] = retval[3 + axis] + thrust
             return retval
         return odeint(dyn,s0,linspace(0,tf,n))
+
     def _H1(self,mdelaunay):
         # Perturbed Hamiltonian.
         from pyranha.Core import rational
@@ -63,18 +65,22 @@ class lt_base(object):
         # Position vector in space.
         r = dot(Rxq,ro)
         return -r[self.__axis]
+
     def Hamiltonian(self,cartesian):
         from math import sqrt
         x, y, z, vx, vy, vz = cartesian
         v2 = vx ** 2 + vy ** 2 + vz ** 2
         r = sqrt(x ** 2 + y ** 2 + z ** 2)
         return v2 / 2. - 1. / r - self.thrust * cartesian[self.axis]
+
     @property
     def thrust(self):
         return self.__thrust
+
     @property
     def axis(self):
         return self.__axis
+
     @property
     def trunc_order(self):
         return self.__trunc_order
@@ -103,16 +109,19 @@ class lt_divergent_mdel(pyranha.Celmec.lie_theory,lt_base):
         pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['dlam','p','q'],[lambda Hn: Lam ** 3 * Hn.integrate('dlam')] * order,verbose = verbose)
         # Reset the truncator on exit.
         truncators.unset()
+
     def solve_last(self,init,t):
         from copy import deepcopy
         retval = deepcopy(init)
         retval['dlam'] = retval['dlam'] + 1. / (retval['Lam'] ** 3) * t
         return retval
+
     def numerical(self,tf,n):
         from pyranha.Celmec import mdelaunay2oe, oe2s
         init_list = self.init_list[0]
         s0 = oe2s(mdelaunay2oe([init_list['Lam'],init_list['P'],init_list['Q'],init_list['dlam'] + init_list['lam0'],init_list['p'],init_list['q']]))
         return self._numerical_integrator(s0,tf,n)
+
     def cartesian(self,t):
         from pyranha.Celmec import mdelaunay2oe, oe2s
         tmp = self.evaluate(t)
@@ -145,6 +154,7 @@ class lt_convergent_planar(pyranha.Celmec.lie_theory,lt_base):
         self.__c_P_list = [c.partial('P') for c in self.__c_list]
         # Reset the truncator on exit.
         truncators.unset()
+
     def cosp_P(self,P,init):
         from copy import deepcopy
         if self.order != 1:
@@ -154,6 +164,7 @@ class lt_convergent_planar(pyranha.Celmec.lie_theory,lt_base):
         init_copy = deepcopy(init)
         init_copy['P'] = P
         return (H - H0) / (self.thrust * self.__c_list[0].eval(init_copy))
+
     def solve_last(self,init,t):
         from copy import deepcopy
         from math import sqrt
@@ -163,47 +174,58 @@ class lt_convergent_planar(pyranha.Celmec.lie_theory,lt_base):
             raise ValueError('Cannot solve for non unitary order.')
         # Value of the hamiltonian in the last set of variables.
         H_last = self.H[1].eval(init)
+
         # Define functions for evaluation of c1(P) and its derivatives.
         def c1_P(P):
             init_copy = deepcopy(init)
             init_copy['P'] = P
             return self.__c_list[0].eval(init_copy)
+
         def c1_Lam_P(P):
             init_copy = deepcopy(init)
             init_copy['P'] = P
             return self.__c_Lam_list[0].eval(init_copy)
+
         def c1_P_P(P):
             init_copy = deepcopy(init)
             init_copy['P'] = P
             return self.__c_P_list[0].eval(init_copy)
+
         # cos(p) as a function of P.
         def cosp_P(P):
             return (H_last + 1. / (2. * init['Lam'] ** 2)) / (self.thrust * c1_P(P))
+
         # Define integrand function.
         def I_P(P):
             c1 = c1_P(P)
             c2p = cosp_P(P) ** 2
             return 1. / (self.thrust * c1 * sqrt(1. - c2p))
+
         # Time as a function of P.
         def t_P(P):
             return quad(I_P,init['P'],P)[0]
+
         # P as function of time.
         def P_t(t):
             return fsolve(lambda P: t_P(P) - t,init['P'])
+
         # cos(p) as a function of time.
         def cosp_t(t):
             return cosp_P(P_t(t))
+
         def lam_t(t):
             def f(time):
                 P = P_t(time)
                 return c1_Lam_P(P) * cosp_P(P)
             return init['lam'] + 1. / (init['Lam'] ** 3) * t + self.thrust * quad(f,0,t)[0]
+
         def p_t(t):
             # TODO: no need to integrate here... acos with checks?
             def f(time):
                 P = P_t(time)
                 return c1_P_P(P) * cosp_P(P)
             return init['p'] + self.thrust * quad(f,0,t)[0]
+
         # Build return values.
         init_copy = deepcopy(init)
         init_copy['P'] = P_t(t)
@@ -212,11 +234,13 @@ class lt_convergent_planar(pyranha.Celmec.lie_theory,lt_base):
         init_copy['p'] = p_t(t)
         init_copy['q'] = 0.
         return init_copy
+
     def numerical(self,tf,n):
         from pyranha.Celmec import mdelaunay2oe, oe2s
         init_list = self.init_list[0]
         s0 = oe2s(mdelaunay2oe([init_list['Lam'],init_list['P'],0,init_list['lam'],init_list['p'],0]))
         return self._numerical_integrator(s0,tf,n)
+
     def cartesian(self,t):
         from pyranha.Celmec import mdelaunay2oe, oe2s
         tmp = self.evaluate(t)
@@ -252,16 +276,19 @@ class lt_divergent_poincare(pyranha.Celmec.lie_theory,lt_base):
         pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','y','z'],['dlam','x','v'],[lambda Hn: Lam ** 3 * Hn.integrate('dlam')] * order, verbose = verbose)
         # Reset truncator on exit.
         truncators.unset()
+
     def solve_last(self,init,t):
         from copy import deepcopy
         retval = deepcopy(init)
         retval['dlam'] = retval['dlam'] + 1. / (retval['Lam'] ** 3) * t
         return retval
+
     def numerical(self,tf,n):
         from pyranha.Celmec import poincare2mdelaunay, mdelaunay2oe, oe2s
         init_list = self.init_list[0]
         s0 = oe2s(mdelaunay2oe(poincare2mdelaunay([init_list['Lam'],init_list['y'],init_list['z'],init_list['dlam'] + init_list['lam0'],init_list['x'],init_list['v']])))
         return self._numerical_integrator(s0,tf,n)
+
     def cartesian(self,t):
         from pyranha.Celmec import poincare2mdelaunay, mdelaunay2oe, oe2s
         tmp = self.evaluate(t)
@@ -287,5 +314,6 @@ class lt_convergent(pyranha.Celmec.lie_theory,lt_base):
         pyranha.Celmec.lie_theory.__init__(self,H,'eps',['Lam','P','Q'],['lam','p','q'],[lambda Hn: Lam ** 3 * sum([t for t in Hn if t.h_degree('lam') != 0]).integrate('lam')] * order,verbose = verbose)
         # Reset the truncator on exit.
         truncators.unset()
+
     def solve_last(self,init,t):
         raise NotImplementedError('Solution of this theory has not been implemented.')

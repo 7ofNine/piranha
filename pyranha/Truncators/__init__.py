@@ -18,8 +18,8 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #print("Truncators.__init__.py.20 " + str(dir()))  #DEBUG
-from ._Truncators import *
-from .detail import __truncators
+from pyranha.Truncators._Truncators import *
+from pyranha.Truncators.detail import __truncators
 
 truncators = __truncators()
 #print("Truncators.__init__.py.25 " + str(dir()))   #DEBUG

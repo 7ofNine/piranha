@@ -18,8 +18,8 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #print("Core.__init__.py.20 " + str(dir())) #DEBUG
-from ._Core import *
-from .impl import *
+from pyranha.Core._Core import *
+from pyranha.Core.impl  import *
 
 def is_iteratable(arg):
     """
@@ -143,10 +143,10 @@ def load(*args):
     Type of series will be inferred - if possible - from the files' extensions.
     """
     try:
-        import IPython.ipapi
+        from IPython import get_ipython
     except ImportError:
         raise ImportError("IPython not available.")
-    ip = IPython.ipapi.get()
+    ip = get_ipython()
     args_list = list(args)
     for i in args_list:
         s = i.split(".")

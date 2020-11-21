@@ -270,13 +270,10 @@ namespace piranha
 	template <class LayoutTuple, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::applyLayoutToTerms(LayoutTuple const &layoutTuple, ArgsTuple const &argsTuple, Derived &retval) const
 	{
-		const_iterator const itEnd = end();
-		for (const_iterator it = begin(); it != itEnd; ++it) 
+		for (TermType term : *this)
 		{
-			TermType term(*it);
-			term.cf.applyLayout( layoutTuple, argsTuple);
+			term.cf.applyLayout(layoutTuple, argsTuple);
 			term.key.applyLayout(layoutTuple, argsTuple);
-
 			retval.insert(term, argsTuple);
 		}
 	}
@@ -407,13 +404,9 @@ namespace piranha
 		BaseSeries<__PIRANHA_BASE_SERIES_TP>::flattenTerms(const ArgsTuple &argsTuple) const
 	{
 		std::vector<TermType> retval;
-		TermType term;
-		const const_iterator itf(end());
-		for (const_iterator it = begin(); it != itf; ++it) 
+
+		for (TermType term : *this)
 		{
-			// Create the term that will be inserted at the end of the recursion.
-			term = *it;
-			// Start the recursion.
 			SeriesFlattener<echelonLevel>::run(term.cf, term, retval, argsTuple);
 		}
 		return retval;

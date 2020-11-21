@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})  # everything under here needs the py
 link_directories(${PIRANHA_PYTHON_LIBRARIES_DIR})    # pyconfig.h sets required pylib (or pylib_d) which gets messed up by boost wrap_python.h when _DEBUG is set, it temporary unsets it. This requires the python library dir explicitly available
                                                      # the pyconfig.h only contains the names not the path!!! We don't set _DEBUG hence we have to provide the library dir separately
 
+
 MACRO(PYTHON_CPPMODULE arg1)
     #SET_TARGET_PROPERTIES(${arg1} PROPERTIES CXX_STANDARD 17)
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES PREFIX "")

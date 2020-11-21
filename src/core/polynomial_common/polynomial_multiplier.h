@@ -59,17 +59,17 @@ struct ThreadedBlockedMultiplier
     : m_nominal_block_size(nominal_block_size), m_size1(size1), m_thread_id(thread_id), m_thread_n(thread_n),
 	  m_barrier(barrier), m_cur_idx1_start(cur_idx1_start), m_breakout(breakout), m_func(func), m_idx_vector1(idx_vector1), m_idx_vector2(idx_vector2)
 	{
-//#ifdef _DEBUG
-//		std::cout << "threaded_blocked_multiplier" << std::endl 
-//			      << "nominal_block_size: " << nominal_block_size << std::endl 
-//				  << "size1: " << size1 << std::endl
-//				  << "size2: " << size2 << std::endl
-//				  << "thread_id: " << thread_id << std::endl
-//				  << "thread_n:  " << thread_n << std:: endl
-//				  << "cur_idx1_start: " << cur_idx1_start <<std::endl
-//				  << "breakout: " << breakout << std::endl
-//				  <<std::flush;
-//#endif
+#ifdef _DEBUG
+		std::cout << "threaded_blocked_multiplier" << std::endl 
+			      << "nominal_block_size: " << nominal_block_size << std::endl 
+				  << "size1: " << size1 << std::endl
+				  << "size2: " << size2 << std::endl
+				  << "thread_id: " << thread_id << std::endl
+				  << "thread_n:  " << thread_n << std:: endl
+				  << "cur_idx1_start: " << cur_idx1_start <<std::endl
+				  << "breakout: " << breakout << std::endl
+				  <<std::flush;
+#endif
 		// Sanity checks.
 		PIRANHA_ASSERT(thread_n > 0 && thread_id < thread_n && (barrier || thread_n == 1));
 
@@ -90,7 +90,7 @@ struct ThreadedBlockedMultiplier
 
 		if (m_thread_id == 0)
 		{
-	//		std::cout << "polynomial_multiplier::(): 2 : threadid = " << m_thread_id << std::endl << std::flush;
+//			std::cout << "polynomial_multiplier::(): 2 : threadid = " << m_thread_id << std::endl << std::flush;
 			// The first thread is in charge of the initial setup of the indices vectors.
 			// TODO: exception handling, in case of both single and multi thread.
 			m_idx_vector1.resize(boost::numeric_cast<BlockSequence::size_type>(m_thread_n));
@@ -147,10 +147,11 @@ struct ThreadedBlockedMultiplier
 //					std::cout << "polynomial_multiplier::(): 9 : threadid = " << m_thread_id << std::endl << std::flush;
 					if (!m_func.block2_advance(m_idx_vector1,m_idx_vector2,m_nominal_block_size,orig2,wrap_count))
 					{
+//						std::cout << "polynomial_multiplier::(): 9a : break" << std::endl << std::flush;
 						m_breakout = true;
 					}
 				}
-
+//				std::cout << "polynomial_multiplier::(): 10a : threadid = " << m_thread_id << std::endl << std::flush;
 				sync();
 //				std::cout << "polynomial_multiplier::(): 10 : threadid = " << m_thread_id << std::endl << std::flush;
 
@@ -169,6 +170,7 @@ struct ThreadedBlockedMultiplier
 		{
 //			std::cout << "polynomial_multiplier::sync(): threadid = " << m_thread_id << std::endl << std::flush;
 			m_barrier->wait();
+//			std::cout << "polynomial_multiplier::sync(): finished : threadid = " << m_thread_id << std::endl << std::flush;
 		}
 	}
 
@@ -457,7 +459,7 @@ struct polynomial_multiplier
 //				const std::size_t nthread = settings::get_nthread();
 				//TODO:GUT corrected below. There are problems with the number of threads in several places. This is one.
 				const std::size_t nthread = std::min(settings::get_nthread(), std::min(size1, size2));
-//  timing      const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
+	const boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
 				
                 // Variables needed by the multiplier.
 				BlockSequence s1;
@@ -482,7 +484,7 @@ struct polynomial_multiplier
 					}
 					tg.join_all();
 				}
- // timing     std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() << " micro seconds" <<std::endl;
+		std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() << " micro seconds" <<std::endl;
 				PIRANHA_DEBUG(std::cout << "Done multiplying\n");
 
 				const MaxFastInt i_f = this->m_fast_h.upper();

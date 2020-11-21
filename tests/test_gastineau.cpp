@@ -45,7 +45,7 @@ try{
     elp3 = elp3.pow(3);
 	stype elp3a(elp3);
     std::cout << "copy construct :" << " length: " << elp3a.length() << " atoms: " << elp3a.atoms() << std::endl;
-    retval += (elp3a.length() != elp3.length())||(elp3a.length() != 60205);
+    retval += (elp3a.length() != elp3.length())||(elp3a.length() != 60205);   // currently elp3.length result in 60204 ???
     std::cout << "copy construct : " << retval << std::endl;
 
 	dfs square  = elp3 * elp3a;

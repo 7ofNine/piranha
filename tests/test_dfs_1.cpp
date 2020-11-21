@@ -24,6 +24,8 @@
 //#include "../src/manipulators/qps.h"
 #include "piranha.h"
 
+#include <exception>
+
 using namespace piranha;
 using namespace piranha::manipulators;
 
@@ -35,9 +37,14 @@ typedef dfs stype;
 int main()
 {
 	settings::set_debug(true);
-	stype elp3("elp3.dfs");
-	elp3 *= elp3;
-	std::cout << (elp3*elp3).length() << std::endl;
+	try {
+		stype elp3("elp3.dfs");
+		elp3 *= elp3;
+		std::cout << (elp3 * elp3).length() << std::endl;
+	} catch (std::exception &e)
+	{
+		std::cout << e.what() << std::endl;
+	}
 //    qps test("testxxxx.qps");
 //    test *= test;
 	return 0;

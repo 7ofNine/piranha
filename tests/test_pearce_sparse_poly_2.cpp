@@ -50,7 +50,7 @@ int main()
     t1*=t2;
 
     std::cout << std::endl << t1.length() << std::endl;
- } catch(std::exception ex)
+ } catch(std::exception &ex)
  {
     std::cout << ex.what() << std::endl;
     return 1;

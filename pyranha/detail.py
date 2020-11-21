@@ -162,18 +162,18 @@ def __series_deepcopy(self,memo):
     #print("pyranha.detail.py.147") #DEBUG
     return self.__copy__()
 
-def __add_method(module_name,method_name,function):
+def __add_method(module_name, method_name, function):
     """
     Add a method to a manipulator.
     """
-    __cur_manip = {}
+    loc = {'module_name' : module_name, 'method_name' : method_name, 'function' : function} 
     #print("pyranha.detail.py.153 " + module_name ) #DEBUG
-    exec("import %s.%s as __cur_manip" % ("pyranha", module_name), {}, __cur_manip)
+    exec("import %s.%s as __cur_manip" % ("pyranha", module_name), {}, loc)
     #print("pyranha.detail.py.155 " + str(__cur_manip)) #DEBUG
-    exec("__cur_manip['__cur_manip'].%s.%s = function" % (module_name.lower(),method_name))
+    exec("__cur_manip.%s.%s = function" % (module_name.lower(), method_name), {}, loc)
     # Try to take care of the complex counterpart.
     try:
-        exec("__cur_manip['__cur_manip'].%s.%s = function " % ((module_name.lower()+'c'),method_name))
+        exec("__cur_manip.%s.%s = function " % ((module_name.lower()+'c'), method_name), {}, loc)
     except AttributeError:
         pass
 
@@ -181,14 +181,14 @@ def __add_property(module_name, property_name, fget=None, fset=None, fdel=None, 
     """
     Add a property to a manipulator.
     """
-    __cur_manip = {}
+    loc = {'module_name' : module_name, 'property_name' : property_name, 'fget' : fget, 'fset' : fset, 'fdel' : fdel, 'doc' : doc }
     #print("pyranha.detail.py.165 " + module_name) #DEBUG
-    exec("import %s.%s as __cur_manip" % ("pyranha", module_name), {}, __cur_manip )   # how can we avoid exec !!! causes issues
-    #print("pyranha.detail.py.167 " + str(__cur_manip)) #DEBUG #exec keeps __cur_manip it locally and it is not visible. That is Python3!!
-    exec("__cur_manip['__cur_manip'].%s.%s = property(fget,fset,fdel,doc)" % (module_name.lower(),property_name))
+    exec("import %s.%s as __cur_manip" % ("pyranha", module_name), {}, loc )   # how can we avoid exec !!! causes issues
+    #print("pyranha.detail.py.167 :" + str(__cur_manip['__cur_manip']) + '\n') #DEBUG #exec keeps __cur_manip it locally and it is not visible. That is Python3!!
+    exec("__cur_manip.%s.%s = property(fget,fset,fdel,doc)" % (module_name.lower(), property_name), {}, loc)
     try:
         #print("pyranha.detail.py.187")  #DEBUG
-        exec("__cur_manip['__cur_manip'].%s.%s = property(fget,fset,fdel,doc) " % ((module_name.lower()+'c'),property_name))
+        exec("__cur_manip.%s.%s = property(fget,fset,fdel,doc) " % ((module_name.lower()+'c'),property_name), {}, loc)
     except AttributeError:
         #print("pyranha.detail.py.190")  #DEBUG
         pass
@@ -220,9 +220,10 @@ from functools import reduce
 if len([x for x in pyranha.__all__ if x not in pyranha.__manipulators__]) > 0:
     #print("pyranha.detail.py.192")
     #exec ("import %s as __last_manipulator" % pyranha.__manipulators__[-1])
-    __last_manipulator = {}
-    exec("from . import %s as __last_manipulator" % pyranha.__manipulators__[-1], globals(), __last_manipulator)
-    last_manipulator = __last_manipulator['__last_manipulator']
+    loc = {}
+    glob = {'__name__' : __name__}
+    exec("from . import %s as __last_manipulator" % pyranha.__manipulators__[-1], glob, loc)
+    last_manipulator = loc['__last_manipulator']
     #print("pyranha.detail.py.194" + str(last_manipulator)) #DEBUG
     ds = getattr(last_manipulator, pyranha.__manipulators__[-1].lower(), "") # fix it: for setting the default series type. worked in Python 2
     #print("pyranha.detail.py.195") #DEBUG
