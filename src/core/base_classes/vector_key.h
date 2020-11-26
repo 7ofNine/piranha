@@ -129,7 +129,7 @@ namespace piranha
 
 			/// Is padding needed in order to be compatible with argsTuple?
 			template <class ArgsTuple>
-			bool needsPadding(const ArgsTuple &argsTuple) const
+			bool needsPadding(const ArgsTuple &argsTuple) const                                                        // here is argsTuple actually used.
 			{
 				return (container.size() < argsTuple.template get<Position>().size());
 			}
@@ -137,10 +137,10 @@ namespace piranha
 
 			/// Is this insertion-compatible with argsTuple?
 			template <class ArgsTuple>
-			bool isInsertable(const ArgsTuple &argsTuple) const
-			{
-				return (container.size() <= argsTuple.template get<Position>().size());
-			}
+			bool isInsertable(const ArgsTuple &argsTuple) const                                                        // here is argetuple actually used 
+			{                                                                                                          // it is actually handed through from
+				return (container.size() <= argsTuple.template get<Position>().size());                                // named_series and the the 
+			}                                                                                                          // Vector Key has actually as such nothing todo with names!!!! 
 
 
 			/// Number of atoms.

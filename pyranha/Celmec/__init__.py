@@ -489,7 +489,7 @@ class lie_theory(object):
     except ImportError:
         __abs_method = __null_decorator
 
-    def __init__(self,H,eps_name,p_names,q_names,he_solvers,verbose = True):
+    def __init__(self, H, eps_name, p_names, q_names, he_solvers, verbose = True):
         """
         Construct a Lie theory from:
         

@@ -39,6 +39,7 @@ namespace piranha
 	class celmec
 	{
 		public:
+			// radius vector r/a in terms of mean anomaly
 			static Derived r_a(const Derived &e_series, const Derived &M_series) 
             {
 				// First let's build 1+1/2 e^2.
@@ -68,7 +69,7 @@ namespace piranha
 				return retval;
 			}
 
-
+			//  inverse of radius vector a/r in terms of mean anomaly
 			static Derived a_r(const Derived &e, const Derived &M) 
             {
 				Derived retval;
@@ -84,7 +85,7 @@ namespace piranha
 				return retval;
 			}
 
-
+			// cos of excentric anomaly in terms of mean anomaly
 			static Derived cos_E(const Derived &e_series, const Derived &M_series) 
             {
 				// First let's build 1/2 e.
@@ -111,7 +112,7 @@ namespace piranha
 				return retval;
 			}
 
-
+			// sin of excentric anomaly in terms of mean anomaly
 			static Derived sin_E(const Derived &e_series, const Derived &M_series) 
             {
 				const int n = e_series.psi();
@@ -132,7 +133,7 @@ namespace piranha
 				return retval;
 			}
 
-
+			// sin of true anomaly in terms of mean anomaly
 			static Derived sin_f(const Derived &e_series, const Derived &M_series) 
             {
 				Derived tmp(e_series);
@@ -159,7 +160,7 @@ namespace piranha
 				return retval;
 			}
 
-
+			// cos of true anomaly in terms of mean anomaly
 			static Derived cos_f(const Derived &e_series, const Derived &M_series) 
             {
 				// 2*(1-e**2).

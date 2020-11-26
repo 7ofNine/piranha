@@ -87,6 +87,7 @@ namespace piranha
 
 
 	// This functor will disentangle and build the flattened terms iterating recursively through the echelon levels.
+	// N is the echelon level we are working on
 	template <int N>
 	class SeriesFlattener
 	{
