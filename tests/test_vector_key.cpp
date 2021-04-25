@@ -8,6 +8,7 @@
 using namespace std;
 using namespace piranha;
 using boost::test_tools::output_test_stream;
+namespace utf = boost::unit_test;
 
 namespace {
 	// create a derived type to test the vector_key
@@ -42,15 +43,15 @@ namespace {
 	using KeyType1 = Intermediate<int, 1>;
 }
 
-
-BOOST_AUTO_TEST_CASE(simple_construction)
+void setup() { PsymManager::clear(); }
+BOOST_AUTO_TEST_CASE(simple_construction, *utf::fixture(&setup))
 {
 	KeyType constructed;
 	BOOST_TEST((constructed.size() == 0)); // this is also a test for size()
 
 }
 
-BOOST_AUTO_TEST_CASE(copy_construction)
+BOOST_AUTO_TEST_CASE(copy_construction, *utf::fixture(&setup))
 {
 	KeyType constructed;
 	BOOST_CHECK_NO_THROW(KeyType tmp = KeyType());    
@@ -59,7 +60,7 @@ BOOST_AUTO_TEST_CASE(copy_construction)
 }
 
 
-BOOST_AUTO_TEST_CASE(construct_with_psym)
+BOOST_AUTO_TEST_CASE(construct_with_psym, *utf::fixture(&setup))
 {
 	Psym t1("t1");
 	Psym t2("t2");
@@ -97,7 +98,7 @@ BOOST_AUTO_TEST_CASE(construct_with_psym)
 
 // how to test that tested through derived class TrigVector
 // does not exist fro ExpoVector. Is that really needed??
-BOOST_AUTO_TEST_CASE(construct_from_different_position)
+BOOST_AUTO_TEST_CASE(construct_from_different_position, *utf::fixture(&setup))
 {
 	//KeyType1 temp1;  
 	//temp1.resize(3);
@@ -108,7 +109,7 @@ BOOST_AUTO_TEST_CASE(construct_from_different_position)
 }
 
 
-BOOST_AUTO_TEST_CASE(resize)
+BOOST_AUTO_TEST_CASE(resize, *utf::fixture(&setup))
 {
 	KeyType constructed;
 	constructed.resize(5);
@@ -116,7 +117,7 @@ BOOST_AUTO_TEST_CASE(resize)
 }
 
 
-BOOST_AUTO_TEST_CASE(swapkey)
+BOOST_AUTO_TEST_CASE(swapkey, *utf::fixture(&setup))
 {
 	KeyType temp;
 	temp.resize(3);
@@ -134,7 +135,7 @@ BOOST_AUTO_TEST_CASE(swapkey)
 	BOOST_TEST(temp1[2] == 3);
 }
 
-BOOST_AUTO_TEST_CASE(needs_padding)
+BOOST_AUTO_TEST_CASE(needs_padding, *utf::fixture(&setup))
 {
 	Psym t1("t1");
 	Psym t2("t2");
@@ -148,7 +149,7 @@ BOOST_AUTO_TEST_CASE(needs_padding)
 	BOOST_TEST(temp.needsPadding(polyOnlyArgs));
 }
 
-BOOST_AUTO_TEST_CASE(isInsertable)
+BOOST_AUTO_TEST_CASE(isInsertable, *utf::fixture(&setup))
 {
 	Psym t1("t1");
 	Psym t2("t2");
@@ -166,14 +167,14 @@ BOOST_AUTO_TEST_CASE(isInsertable)
 	BOOST_TEST(!temp.isInsertable(polyOnlyArgs));
 }
 
-BOOST_AUTO_TEST_CASE(atoms)
+BOOST_AUTO_TEST_CASE(atoms, *utf::fixture(&setup))
 {
 	KeyType temp;
 	BOOST_TEST(temp.atoms() ==1 );
 }
 
 
-BOOST_AUTO_TEST_CASE(padRight)
+BOOST_AUTO_TEST_CASE(padRight, *utf::fixture(&setup))
 {
 	KeyType temp;
 	Psym t1("t1");
@@ -192,7 +193,7 @@ BOOST_AUTO_TEST_CASE(padRight)
 	BOOST_CHECK_THROW(temp.padRight(polyOnlyArgs), assertion_error);
 }
 
-BOOST_AUTO_TEST_CASE(applyLayout)
+BOOST_AUTO_TEST_CASE(applyLayout, *utf::fixture(&setup))
 {	// seems only to be used from namedSeries
 	// needed but not really used in the method, why is actually in the template
 	Psym t1("t1");
@@ -247,7 +248,7 @@ BOOST_AUTO_TEST_CASE(applyLayout)
 	BOOST_TEST(temp[2] == 1);
 }
 
-BOOST_AUTO_TEST_CASE(trimTest)
+BOOST_AUTO_TEST_CASE(trimTest, *utf::fixture(&setup))
 {
 	// trimflags is an Ntuple of vector<bool>,
 	// true: don't trim (the key value at that index != 0
@@ -296,7 +297,7 @@ BOOST_AUTO_TEST_CASE(trimTest)
 	BOOST_TEST(trimFlags.get<0>()[2] == false);
 }
 
-BOOST_AUTO_TEST_CASE(trim)
+BOOST_AUTO_TEST_CASE(trim, *utf::fixture(&setup))
 {
 
 	boost::tuple<VectorPsym> polyOnlyArgs; // ArgsTuple is not used for anything, why is it here?
@@ -330,7 +331,7 @@ BOOST_AUTO_TEST_CASE(trim)
 }
 
 
-BOOST_AUTO_TEST_CASE(invert)
+BOOST_AUTO_TEST_CASE(invert, *utf::fixture(&setup))
 {
 	KeyType temp;
 	temp.resize(2);
@@ -343,7 +344,7 @@ BOOST_AUTO_TEST_CASE(invert)
 	BOOST_TEST(temp[1] == -2);
 }
 
-BOOST_AUTO_TEST_CASE(subscript_operator)
+BOOST_AUTO_TEST_CASE(subscript_operator, *utf::fixture(&setup))
 {
 	// is this a usefull test we already did that many times above
 	KeyType temp;
@@ -361,7 +362,7 @@ BOOST_AUTO_TEST_CASE(subscript_operator)
 	BOOST_TEST(temp1 == 2);
 }
 
-BOOST_AUTO_TEST_CASE(iterators)
+BOOST_AUTO_TEST_CASE(iterators, *utf::fixture(&setup))
 {
 	KeyType temp;
 	temp.resize(3);
@@ -379,7 +380,7 @@ BOOST_AUTO_TEST_CASE(iterators)
 	BOOST_TEST((*(eiterator-1)) == 3);
 }
 
-BOOST_AUTO_TEST_CASE(revlex_comparison)
+BOOST_AUTO_TEST_CASE(revlex_comparison, *utf::fixture(&setup))
 {
 	KeyType temp;
 	temp.resize(3);
@@ -407,7 +408,7 @@ BOOST_AUTO_TEST_CASE(revlex_comparison)
 }
 
 
-BOOST_AUTO_TEST_CASE(lexComparison)
+BOOST_AUTO_TEST_CASE(lexComparison, *utf::fixture(&setup))
 {
 	KeyType temp;
 	temp.resize(3);
@@ -437,7 +438,7 @@ BOOST_AUTO_TEST_CASE(lexComparison)
 	BOOST_CHECK_THROW(temp.lexComparison(temp1), assertion_error);
 }
 
-BOOST_AUTO_TEST_CASE(operatorEqual)
+BOOST_AUTO_TEST_CASE(operatorEqual, *utf::fixture(&setup))
 {
 	KeyType temp;
 	temp.resize(3);
@@ -456,7 +457,7 @@ BOOST_AUTO_TEST_CASE(operatorEqual)
 	temp == temp1;
 }
 
-BOOST_AUTO_TEST_CASE(elementsEqualTo)
+BOOST_AUTO_TEST_CASE(elementsEqualTo, *utf::fixture(&setup))
 {
 	// Hmm. The code is identical to operator==. wht is this good for
 	// even used anywhere
@@ -478,7 +479,7 @@ BOOST_AUTO_TEST_CASE(elementsEqualTo)
 	temp.elementsEqualTo(temp1);
 }
 
-BOOST_AUTO_TEST_CASE(printElements)
+BOOST_AUTO_TEST_CASE(printElements, *utf::fixture(&setup))
 {
 	// this is a protected member hence we use a tes wrapper
 	KeyType temp;
@@ -500,7 +501,7 @@ BOOST_AUTO_TEST_CASE(printElements)
 }
 
 
-BOOST_AUTO_TEST_CASE(printElementsSorted)
+BOOST_AUTO_TEST_CASE(printElementsSorted, *utf::fixture(&setup))
 {
 	KeyType temp;
 	temp.resize(3);
@@ -518,7 +519,7 @@ BOOST_AUTO_TEST_CASE(printElementsSorted)
 	BOOST_CHECK_THROW(temp.pprintElementsSorted(output, std::vector<std::pair<bool, std::size_t>>()), assertion_error);
 }
 
-BOOST_AUTO_TEST_CASE(elementsAreZero)
+BOOST_AUTO_TEST_CASE(elementsAreZero, *utf::fixture(&setup))
 {
 	KeyType temp;
 
@@ -537,7 +538,7 @@ BOOST_AUTO_TEST_CASE(elementsAreZero)
 	BOOST_TEST(!temp.pElementsAreZero());
 }
 
-BOOST_AUTO_TEST_CASE(elementsHasher)
+BOOST_AUTO_TEST_CASE(elementsHasher, *utf::fixture(&setup))
 {
 	//// not a real test. just to eecute the algorithm
 	KeyType temp;

@@ -185,9 +185,9 @@ BOOST_AUTO_TEST_CASE(swap_test)
 
     mono00.swap(mono01);
     BOOST_TEST((mono01 == savedmono00)); // equality only covers the key!! why???
-    BOOST_TEST(mono01.cf == savedmono00.cf);
+    BOOST_TEST((mono01.cf == savedmono00.cf));
     BOOST_TEST((mono00 == savedmono01));
-    BOOST_TEST(mono00.cf == savedmono01.cf);
+    BOOST_TEST((mono00.cf == savedmono01.cf));
 }
 
 BOOST_AUTO_TEST_CASE(printPlain_test)

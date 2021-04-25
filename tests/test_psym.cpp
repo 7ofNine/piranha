@@ -12,6 +12,7 @@
 using namespace std;
 using namespace piranha;
 using boost::test_tools::output_test_stream;
+using namespace boost::unit_test;
 
 namespace {
 	static int const DEFAULT_ORDER = 1;
@@ -26,7 +27,9 @@ namespace {
 	static const string name9 = "name9";
 }
 
-BOOST_AUTO_TEST_CASE(construction_test)
+void setup() { PsymManager::clear(); }
+
+BOOST_AUTO_TEST_CASE(construction_test, *fixture(&setup))
 {
 	
 	// construct with name only
@@ -120,7 +123,7 @@ BOOST_AUTO_TEST_CASE(construction_test)
 	BOOST_TEST(symbol9.order() == DEFAULT_ORDER);
 }
 
-BOOST_AUTO_TEST_CASE(operator_test)
+BOOST_AUTO_TEST_CASE(operator_test, *fixture(&setup))
 {
 	// construct with name1
 	Psym symbol1(name1);
@@ -141,7 +144,7 @@ BOOST_AUTO_TEST_CASE(operator_test)
 	BOOST_TEST((symbol1 == symbol));
 }
 
-BOOST_AUTO_TEST_CASE(setter_getter_test)
+BOOST_AUTO_TEST_CASE(setter_getter_test, *fixture(&setup))
 {
 	//int const defaultOrder = 1; // the default order set in constructor
 	Psym symbol1(name1);
@@ -178,7 +181,7 @@ BOOST_AUTO_TEST_CASE(setter_getter_test)
 	BOOST_TEST(symbol3.eval(-1.0) == 1.0);
 }
 
-BOOST_AUTO_TEST_CASE(list_test)
+BOOST_AUTO_TEST_CASE(list_test, *fixture(&setup))
 {
 	// at the beginning the list is empty
 	BOOST_TEST(Psym::list().empty());
@@ -408,7 +411,7 @@ BOOST_AUTO_TEST_CASE(list_test)
 
 }
 
-BOOST_AUTO_TEST_CASE(output_test)
+BOOST_AUTO_TEST_CASE(output_test, *fixture(&setup))
 {
 	output_test_stream output;
 

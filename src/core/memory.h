@@ -45,18 +45,16 @@ namespace piranha
 	{
 			template <class U, class Allocator2>
 			friend class CountingAllocator;
-			typedef typename Allocator::template rebind<T>::other alloc;
+			using AllocatorType = typename std::allocator_traits<Allocator>:: template rebind_alloc<T>;
+			using AllocInterface = std::allocator_traits<AllocatorType>;
+			//typedef typename Allocator::template rebind<T>::other alloc;
 			//using alloc = typename std::allocator_traits<Allocator>::template rebind_alloc<T>;
 			//using allocTypes = std::allocator_traits<alloc>;
-			static_assert((std::is_same_v<T,typename alloc::value_type>), "Type mismatch in counting allocator.");
+			static_assert((std::is_same_v<T,typename AllocatorType::value_type>), "Type mismatch in counting allocator.");
 		public:
-			typedef typename alloc::size_type size_type;
-			typedef typename alloc::difference_type difference_type;
-			typedef typename alloc::pointer pointer;
-			typedef typename alloc::const_pointer const_pointer;
-			typedef typename alloc::reference reference;
-			typedef typename alloc::const_reference const_reference;
-			typedef typename alloc::value_type value_type;
+			typedef typename AllocatorType::size_type size_type;
+			typedef typename AllocatorType::difference_type difference_type;
+			typedef typename AllocatorType::value_type value_type;
 			template <class U>  // TODO: IS that used anywhere?? should we implement this differently. Provide interface class??
 			struct rebind {
 				typedef CountingAllocator<U,Allocator> other;
@@ -65,15 +63,15 @@ namespace piranha
 			CountingAllocator(const CountingAllocator &a):m_alloc(a.m_alloc) {}
 			template <class U>
 			CountingAllocator(const CountingAllocator<U,Allocator> &a):m_alloc(a.m_alloc) {}
-			pointer address(reference x)
-			{
-				return m_alloc.address(x);
-			}
-			const_pointer address(const_reference x) const
-			{
-				return m_alloc.address(x);
-			}
-			pointer allocate(const size_type &n, const void *hint = 0)
+			//T* address(reference x)
+			//{
+			//	return m_alloc.address(x);
+			//}
+			//const T* address(const_reference x) const
+			//{
+			//	return m_alloc.address(x);
+			//}
+			T* allocate(const size_type &n)
 			{
 				// TODO: guard overflow here?
 				const std::size_t add = n * sizeof(value_type);
@@ -86,28 +84,28 @@ namespace piranha
 					PIRANHA_THROW(memory_error, "memory limit reached");
 				}
 
-				pointer retval = m_alloc.allocate(n,hint);
+				T* retval = m_alloc.allocate(n);
 				counter += add;
 				return retval;
 			}
 
-			void deallocate(pointer p, const size_type &n)
+			void deallocate(T* p, const size_type &n)
 			{
 				m_alloc.deallocate(p, n);
 				counter -= n * sizeof(value_type);
 			}
 
-			size_type max_size() const
+			//size_type max_size() const
+			//{
+			//	return m_alloc.max_size();
+			//}
+			void construct(T* p, const value_type &val)
 			{
-				return m_alloc.max_size();
+				AllocInterface::construct(m_alloc, p, val);
 			}
-			void construct(pointer p, const value_type &val)
+			void destroy(T* p)
 			{
-				m_alloc.construct(p,val);
-			}
-			void destroy(pointer p)
-			{
-				m_alloc.destroy(p);
+				AllocInterface::destroy(m_alloc, p);
 			}
 			bool operator==(const CountingAllocator &c) const
 			{
@@ -118,7 +116,7 @@ namespace piranha
 				return (m_alloc != c.m_alloc);
 			}
 		private:
-			alloc m_alloc;
+			AllocatorType m_alloc;
 	};
 
 

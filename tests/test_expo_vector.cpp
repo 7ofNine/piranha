@@ -9,19 +9,22 @@ using namespace std;
 using namespace piranha;
 using namespace::manipulators;
 using boost::test_tools::output_test_stream;
+using namespace boost::unit_test;
+
 namespace {
 
 	using KeyType = ExpoVector<short int, 0>;// 0 is the position of the key i.e. echelon level
 	using KeyRational = ExpoVector<mp_rational, 0>; // rational exponents are possible. when are they actually really used?
 }
 
-BOOST_AUTO_TEST_CASE(simple_construction)
+void setup() { PsymManager::clear(); }
+BOOST_AUTO_TEST_CASE(simple_construction, *fixture(&setup))
 {
 	KeyType constructed;
 	BOOST_TEST(constructed.size() == 0);
 }
 
-BOOST_AUTO_TEST_CASE(string_construction)
+BOOST_AUTO_TEST_CASE(string_construction, *fixture(&setup))
 {
 	Psym p1("p1");
 	Psym p2("p2");
@@ -46,7 +49,7 @@ BOOST_AUTO_TEST_CASE(string_construction)
 	//BOOST_REQUIRE_THROW(( BaseExpoVector constructed5(" ", polyOnlyArgs), assertion_error)); ?
 }
 
-BOOST_AUTO_TEST_CASE(psym_construction)
+BOOST_AUTO_TEST_CASE(psym_construction, *fixture(&setup))
 {
 	// these are the same tests as for VectorKey
 	Psym t1("t1");
@@ -82,7 +85,7 @@ BOOST_AUTO_TEST_CASE(psym_construction)
 }
 
 
-BOOST_AUTO_TEST_CASE(multiply)
+BOOST_AUTO_TEST_CASE(multiply, *fixture(&setup))
 {
 	KeyType expo1;
 	expo1.resize(3);
@@ -108,7 +111,7 @@ BOOST_AUTO_TEST_CASE(multiply)
 	BOOST_CHECK_THROW(expo2.multiply(expo1, result), assertion_error);
 }
 
-BOOST_AUTO_TEST_CASE(printPlain)
+BOOST_AUTO_TEST_CASE(printPlain, *fixture(&setup))
 {
 	// corresponds to printElements in vectorKey
 	KeyType temp;
@@ -143,7 +146,7 @@ BOOST_AUTO_TEST_CASE(printPlain)
 	BOOST_CHECK_THROW(temp.printPlain(output, polyOnly4Args), assertion_error);
 }
 
-BOOST_AUTO_TEST_CASE(printPlainSorted)
+BOOST_AUTO_TEST_CASE(printPlainSorted, *fixture(&setup))
 {
 	KeyType temp;
 	temp.resize(3);
@@ -170,7 +173,7 @@ BOOST_AUTO_TEST_CASE(printPlainSorted)
 
 }
 
-BOOST_AUTO_TEST_CASE(printPretty)
+BOOST_AUTO_TEST_CASE(printPretty, *fixture(&setup))
 {
 	Psym t1("t1");
 	Psym t2("t2");
@@ -243,7 +246,7 @@ BOOST_AUTO_TEST_CASE(printPretty)
 	// more cases??
 }
 
-BOOST_AUTO_TEST_CASE(printTex)
+BOOST_AUTO_TEST_CASE(printTex, *fixture(&setup))
 {
 	Psym t1("t1");
 	Psym t2("t2");
@@ -316,7 +319,7 @@ BOOST_AUTO_TEST_CASE(printTex)
 	// more cases?? neagtive numbers ??
 }
 
-BOOST_AUTO_TEST_CASE(evalTest)
+BOOST_AUTO_TEST_CASE(evalTest, *fixture(&setup))
 {
 	Psym t1("t1", "-1.0;2.0");
 	Psym t2("t2", "-3.0;4.0");
@@ -334,7 +337,7 @@ BOOST_AUTO_TEST_CASE(evalTest)
 	BOOST_TEST(temp.eval(-1.0, polyOnlyArgs) == 147.0);
 }
 
-BOOST_AUTO_TEST_CASE(ignorable)
+BOOST_AUTO_TEST_CASE(ignorable, *fixture(&setup))
 {
 	Psym t1("t1");
 	Psym t2("t2");
@@ -353,7 +356,7 @@ BOOST_AUTO_TEST_CASE(ignorable)
 	BOOST_TEST(!temp.isIgnorable(polyOnlyArgs));
 }
 
-BOOST_AUTO_TEST_CASE(unity)
+BOOST_AUTO_TEST_CASE(unity, *fixture(&setup))
 {
 	KeyType temp;
 	temp.resize(3);
@@ -373,7 +376,7 @@ BOOST_AUTO_TEST_CASE(unity)
 
 }
 
-BOOST_AUTO_TEST_CASE(comparison)
+BOOST_AUTO_TEST_CASE(comparison, *fixture(&setup))
 {
 	KeyType temp;
 	temp.resize(3);
@@ -404,7 +407,7 @@ BOOST_AUTO_TEST_CASE(comparison)
 
 }
 
-BOOST_AUTO_TEST_CASE(norm_test)
+BOOST_AUTO_TEST_CASE(norm_test, *fixture(&setup))
 {
 	Psym t1("t1","-1.0;2.0");
 	Psym t2("t2","-3.0;4.0");
@@ -421,7 +424,7 @@ BOOST_AUTO_TEST_CASE(norm_test)
 	BOOST_TEST(temp.norm(polyOnlyArgs) == 1125);
 }
 
-BOOST_AUTO_TEST_CASE(hash_test)
+BOOST_AUTO_TEST_CASE(hash_test, * fixture(&setup))
 {
 	//// not a real test. just to eecute the algorithm
 	// this iidentical to wht is done for VectorKey
@@ -436,7 +439,7 @@ BOOST_AUTO_TEST_CASE(hash_test)
 	BOOST_CHECK_NO_THROW(temp.hash_value());
 }
 
-BOOST_AUTO_TEST_CASE(degree)
+BOOST_AUTO_TEST_CASE(degree, *fixture(&setup))
 {
 	Psym t1("t1", "-1.0;2.0", 3);
 	Psym t2("t2", "-3.0;4.0", 2);
@@ -463,7 +466,7 @@ BOOST_AUTO_TEST_CASE(degree)
 }
 
 
-BOOST_AUTO_TEST_CASE(partialDegree)
+BOOST_AUTO_TEST_CASE(partialDegree, *fixture(&setup))
 {
 	Psym s1("n1", "1;2;3");
 	Psym s2("n2");
@@ -513,7 +516,7 @@ BOOST_AUTO_TEST_CASE(partialDegree)
 	BOOST_TEST((degree = temp.partialDegree(posTuple)) == 12);
 }
 
-BOOST_AUTO_TEST_CASE(order)
+BOOST_AUTO_TEST_CASE(order, *fixture(&setup))
 {
 	// for ExpoVector this is defined tobe the same as degree 
 
@@ -541,7 +544,7 @@ BOOST_AUTO_TEST_CASE(order)
 	BOOST_TEST(temp.order(polySym) == 10);
 }
 
-BOOST_AUTO_TEST_CASE(partialOrder)
+BOOST_AUTO_TEST_CASE(partialOrder, *fixture(&setup))
 {
 	//for ExpoVector defined to be identical to partialDegree
 	Psym s1("n1", "1;2;3");
@@ -592,7 +595,7 @@ BOOST_AUTO_TEST_CASE(partialOrder)
 	BOOST_TEST((degree = temp.partialOrder(posTuple)) == 12);
 }
 
-BOOST_AUTO_TEST_CASE(partialDerivative)
+BOOST_AUTO_TEST_CASE(partialDerivative, *fixture(&setup))
 {
 	// how to test this? it requires a series in the 
 	// call to partial as a template parameter.
@@ -686,7 +689,7 @@ BOOST_AUTO_TEST_CASE(partialDerivative)
 
 }
 
-BOOST_AUTO_TEST_CASE(power)
+BOOST_AUTO_TEST_CASE(power, *fixture(&setup))
 {
 	Psym s1("n1", "1;2;3");
 	Psym s2("n2");
@@ -741,7 +744,7 @@ BOOST_AUTO_TEST_CASE(power)
 	BOOST_TEST(newTemp[2] == 0);
 }
 
-BOOST_AUTO_TEST_CASE(A_substitute)
+BOOST_AUTO_TEST_CASE(A_substitute, *fixture(&setup))
 {
 	// how to implement a test? requires a series
 	//should we wait until we understand where it is used and how to actually test it
@@ -751,7 +754,7 @@ BOOST_AUTO_TEST_CASE(A_substitute)
 	BOOST_FAIL("Needs investigation to implement");
 }
 
-BOOST_AUTO_TEST_CASE(A_eiSubstitute)
+BOOST_AUTO_TEST_CASE(A_eiSubstitute, *fixture(&setup))
 {
 	// is that actually anywhere used and functional??
 	//should we wait until we understand where it is used and how to actually test it

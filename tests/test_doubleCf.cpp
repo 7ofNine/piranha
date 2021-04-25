@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(construction_test)
 
     // copy construction
     double_cf value06(value02);
-    BOOST_TEST(value06 == value02);
+    BOOST_TEST((value06 == value02));
     BOOST_TEST(value06.get_value() == 99.01);
 
     double_cf value07(string(" -2.51"), emptyTuple); // does not work for char * !!, needs new definition
@@ -347,7 +347,7 @@ BOOST_AUTO_TEST_CASE(trim_test)
     trimFlags.get<0>() = flags;
 
     double_cf value(-1.1, emptyTuple);
-    BOOST_TEST(value.trim(trimFlags, emptyTuple) == value); // trim does nothing. Should it do something? when is it actually really usefull. Only if _cf
+    BOOST_TEST((value.trim(trimFlags, emptyTuple) == value)); // trim does nothing. Should it do something? when is it actually really usefull. Only if _cf
                                                             // has key that can be trimmend. series_cf.
 }
 
@@ -447,7 +447,7 @@ BOOST_AUTO_TEST_CASE(equality_test)
     double_cf value02(9.99, emptyTuple);
     BOOST_TEST(value00 == 9.99);   // where and how are these comparisons defined??
     BOOST_TEST(!(value00 == 0.0)); 
-    BOOST_TEST(value00 == value02);
+    BOOST_TEST((value00 == value02));
     BOOST_TEST(!(value00 == value01));
 }
 //template <class U>
@@ -463,7 +463,7 @@ BOOST_AUTO_TEST_CASE(nonequality_test)
     double_cf value00(9.99, emptyTuple);
     double_cf value02(-9.99, emptyTuple);
     BOOST_TEST(value00 != -99.0);
-    BOOST_TEST(value00 != value02);
+    BOOST_TEST((value00 != value02));
 }
 //// Math.
 //template <class ArgsTuple>

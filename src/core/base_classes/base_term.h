@@ -315,7 +315,8 @@ namespace piranha
 			/// Key.
 			KeyType		        key;
 			/// Rebound allocator for term type.
-			static AllocatorType	allocator;
+			static AllocatorType	allocator;    //TODO: where is that actually used. Basseries uses is to allocate terms but is it necessary to prpagate it down to this level
+			                                      // the allocator itself is not used in the baseTerm anywhere !!!
 			/// Separator between coefficient and key in I/O.
 			static const char separator = Separator;
 	};

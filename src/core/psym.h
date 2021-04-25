@@ -46,6 +46,13 @@ namespace piranha
 	struct  PsymManager
     {
 
+		// resret the PsymManager. This shall only be used for testing purposes and not
+		// a general interface
+		PIRANHA_VISIBLE static void clear()
+		{
+			container.clear(); // empty the container of Psyms
+		}
+
         //implementation of a Psym stored in the PsymManager
 		class  PsymImpl
         {
