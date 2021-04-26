@@ -36,7 +36,7 @@ int main()
 		poly a(a_), b(b_);
 		a = a.pow((MaxFastInt)20);
 		poly c(a);
-		c+= (const MaxFastInt)1;
+		c+= 1.0;
 		a*=c;
 	}
 	return 0;
