@@ -70,8 +70,8 @@ namespace piranha
 	struct SeriesContainer
 	{
 		//typedef std::unordered_set<Term> Type;
-		typedef boost::unordered_set<Term, boost::hash<Term>, std::equal_to<Term>, CountingAllocator<Term, std::allocator<Term> > > Type;
-		//using Type = std::unordered_set<Term, Hasher<Term>, std::equal_to<Term>, CountingAllocator<Term, std::allocator<Term> > >;
+		typedef boost::unordered_set<Term, boost::hash<Term>, std::equal_to<Term>, CountingAllocator<Term> > Type;
+		//using Type = std::unordered_set<Term, Hasher<Term>, std::equal_to<Term>, CountingAllocator<Term> >;
 	};
 
 

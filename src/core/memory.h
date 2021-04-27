@@ -25,12 +25,14 @@
 #include "exceptions.h"
 #include "integer_typedefs.h"
 #include "settings.h"
+#include "config.h"
 
 #include <cstdlib>
 #include <cstddef>
 #include <memory>
 #include <new> // For std::bad_alloc.
 #include <type_traits>
+#include <atomic>
 
 namespace piranha
 {
@@ -44,7 +46,7 @@ namespace piranha
 	// anyways as long as we using an non pre-allocated heap or memory pool.
 	//
 
-	template <typename T, typename Allocator>
+	template <typename T, typename Allocator = std::allocator<T> >
 	class CountingAllocator: public BaseCountingAllocator
 	{
 			template <class U, class Allocator2>
@@ -81,7 +83,7 @@ namespace piranha
 				std::size_t       memLimit = settings::get_memory_limit();
 				// Formulate in this way in order to avoid bogus values when doing memLimit - add
 				// (which is unsigned arithmetic).
-				if (add > memLimit || current > memLimit - add) // reqquest bigger than memory limit or already exceeded
+				if (add > memLimit || current > memLimit - add) // reqquest bigger than memory limit or would  exceeded it
                 {
 					PIRANHA_THROW(memory_error, "memory limit reached");
 				}
@@ -102,11 +104,6 @@ namespace piranha
 	private:
 			AllocatorType m_alloc;
 	};
-
-
-	template <class T>
-	class std_counting_allocator: public CountingAllocator<T, std::allocator<char> > {};
-
 
 }
 

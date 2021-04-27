@@ -27,19 +27,19 @@
 
 namespace piranha
 {
-	class PIRANHA_VISIBLE BaseCountingAllocator
+	class PIRANHA_VISIBLE BaseCountingAllocator   //this way all classes derived from this one share the counter
 	{
 	public:
 		using CounterType = std::atomic_size_t;
 	
 	
-		static std::size_t count() noexcept
+		static CounterType::value_type count() noexcept
 		{
 			return counter;
 		}
 	protected:
 
-			static CounterType counter;
+			static inline CounterType counter = 0;
 	};
 }
 

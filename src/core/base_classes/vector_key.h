@@ -33,6 +33,8 @@
 
 #include <cstddef>
 #include <iostream>
+#include <iomanip>
+#include <ios>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -57,7 +59,7 @@ namespace piranha
 
 			// The index into the vector is the same as into the argDescr. This is how the the symbols get
 		    // connected to the related numeric factors/exponents
-			typedef std::vector<T, CountingAllocator<T, std::allocator<T> > > ContainerType;
+			typedef std::vector<T, CountingAllocator<T> > ContainerType;
 
 		public:
 

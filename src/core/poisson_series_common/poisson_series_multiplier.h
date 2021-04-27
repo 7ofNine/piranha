@@ -197,8 +197,8 @@ namespace piranha
                                                           const GenericTruncator &truncator)
 					{
 						stats::trace_stat("mult_st", std::size_t(0), increment);
-						std::vector<CfType1, std_counting_allocator<CfType1> > vc_cos;
-                        std::vector<CfType1, std_counting_allocator<CfType1> > vc_sin;
+						std::vector<CfType1, CountingAllocator<CfType1>  > vc_cos;
+                        std::vector<CfType1, CountingAllocator<CfType1>  > vc_sin;
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
 						// one for cosines, one for sines.
 						// The +1 is needed because we need the number of possible codes between min and max, e.g.:
@@ -414,7 +414,7 @@ namespace piranha
 					{
 						stats::trace_stat("mult_st", std::size_t(0), increment);
 
-						typedef coded_hash_table<CfType1, MaxFastInt, std_counting_allocator<char> > csht;
+						typedef coded_hash_table<CfType1, MaxFastInt, CountingAllocator<char> > csht;
 						typedef typename csht::iterator c_iterator;
 						// Let's find a sensible size hint.
 						const std::size_t n_codes = boost::numeric_cast<std::size_t>(boost::numeric::width(this->m_fast_h) + 1);

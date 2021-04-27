@@ -290,9 +290,9 @@ struct PolynomialHashFunctor: public BaseCodedFunctor<Series1, Series2, ArgsTupl
 	typedef typename FinalCf<Series2>::Type cf_type2;
 	typedef typename Series1::TermType term_type1;
 	typedef typename Series2::TermType term_type2;
-	typedef std::pair<cf_type1,MaxFastInt> cterm_type;
+	typedef std::pair<cf_type1, MaxFastInt> cterm_type;
 	typedef BaseCodedFunctor<Series1, Series2, ArgsTuple, GenericTruncator, PolynomialHashFunctor<Series1, Series2, ArgsTuple, GenericTruncator> > Ancestor;
-	typedef coded_hash_table<cf_type1, MaxFastInt, std_counting_allocator<char> > csht_type;
+	typedef coded_hash_table<cf_type1, MaxFastInt, CountingAllocator<char> > csht_type;
 
 	PolynomialHashFunctor(cterm_type &cterm, std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
 		std::vector<MaxFastInt> &ck1, std::vector<MaxFastInt> &ck2,
@@ -412,7 +412,7 @@ struct polynomial_multiplier
 			bool performVectorCodedMultiplication(std::vector<cf_type1> &tc1, std::vector<cf_type2> &tc2,
 				                                  std::vector<term_type1 const *> &t1, std::vector<term_type2 const *> &t2, const GenericTruncator &trunc)
 			{
-				std::vector<cf_type1, std_counting_allocator<cf_type1> > vc;
+				std::vector<cf_type1, CountingAllocator<cf_type1> > vc;
 				// Try to allocate the space for vector coded multiplication.
 				// The +1 is needed because we need the number of possible codes between min and max.
 				PIRANHA_ASSERT(boost::numeric::width(this->m_fast_h) + 1 >= 0);
@@ -514,7 +514,7 @@ struct polynomial_multiplier
 				                                std::vector<const term_type1 *> &t1,  std::vector<const term_type2 *> &t2,
                                                 GenericTruncator const &truncator)
 			{
-				typedef coded_hash_table<cf_type1, MaxFastInt, std_counting_allocator<char> > csht;
+				typedef coded_hash_table<cf_type1, MaxFastInt, CountingAllocator<char> > csht;
 
 				typedef typename csht::iterator c_iterator;
 				stats::trace_stat("mult_st", std::size_t(0), increment);
