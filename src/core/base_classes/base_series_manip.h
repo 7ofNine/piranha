@@ -24,6 +24,7 @@
 #include <boost/tuple/tuple.hpp>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include "../config.h"
 #include "../exceptions.h"
@@ -71,24 +72,23 @@ namespace piranha
 	};
 
 
-	// TODO: update doc here.
-	/// High-level insertion function.
-	/**
-	 * This function is used to insert terms into a series. It requires that the number of arguments
-	 * of each element of the term is smaller or equal to the series',
-	 * otherwise an assertion fails and the program aborts. base_pseries::mergeArgs,
-	 * base_pseries::append_cf_args, base_pseries::append_trig_args, etc. can be used to add the needed arguments
-	 * to the series.
-	 *
-	 * This function performs some checks and then calls llInsert.
-	 *
-	 * CanonicalCheck: true: a canonicality check is done for the key of term. For an exponential key this means no effect.
-	 *                       For a trigonometric key this means that the first (?) argument in the key is not negative, which
-	 *						 might mean changing the signs of the coefficent and keys (sinus) of the term
-	 * Sign: true : add the term , for an insert just add the positive value of the term
-	 *	     false: subtract the term. For a new insert that means insert the negative value of the term.
-	 *       Warning: this is somewhat confusing!!
-	 */
+	// High-level insertion function.
+	//
+	// This function is used to insert terms into a series. It requires that the number of arguments
+	// of each element of the term is smaller or equal to the series',
+	// otherwise an assertion fails and the program aborts. base_pseries::mergeArgs,
+	// base_pseries::append_cf_args, base_pseries::append_trig_args, etc. can be used to add the needed arguments
+	// to the series.
+	//
+	// This function performs some checks and then calls llInsert.
+	//
+	// CanonicalCheck: true: a canonicality check is done for the key of term. For an exponential key this means no effect.
+	//                       For a trigonometric key this means that the first (?) argument in the key is not negative, which
+	//						 might mean changing the signs of the coefficent and keys (sinus) of the term
+	// Sign: true : add the term , for an insert just add the positive value of the term
+	//	     false: subtract the term. For a new insert that means insert the negative value of the term.
+	//       Warning: this is somewhat confusing!!
+	//
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool CanonicalCheck, bool Sign, class Term2, class ArgsTuple>
 	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::insert(const Term2 &term2, const ArgsTuple &argsTuple)
@@ -103,12 +103,11 @@ namespace piranha
 		// Make sure the appropriate routines for the management of arguments have been called.
 		PIRANHA_ASSERT(convertedTerm.result.cf.isInsertable(argsTuple) && convertedTerm.result.key.isInsertable(argsTuple));
 
-		TermType *newTerm(0); //NULL pointer
+		TermType *newTerm = nullptr;
 		if (convertedTerm.result.cf.needsPadding(argsTuple) || convertedTerm.result.key.needsPadding(argsTuple)) 
 		{
-			newTerm = TermType::AllocatorInterface::allocate(TermType::allocator, 1);                      // TODO: Should we or can we use an implementation of new??
-			TermType::AllocatorInterface::construct(TermType::allocator, newTerm, convertedTerm.result);
-
+			newTerm = CountingInterface::allocate(allocator, 1, 0);
+			CountingInterface::construct(allocator, newTerm, convertedTerm.result);
 			newTerm->cf.padRight(argsTuple);
 			newTerm->key.padRight(argsTuple);
 		}
@@ -119,28 +118,21 @@ namespace piranha
 			{
 				if (newTerm == 0) 
 				{
-					newTerm = TermType::AllocatorInterface::allocate(TermType::allocator, 1);
-					TermType::AllocatorInterface::construct(TermType::allocator, newTerm, convertedTerm.result);
+					newTerm = CountingInterface::allocate(allocator, 1, 0);
+					CountingInterface::construct(allocator, newTerm, convertedTerm.result);
 				}
 				newTerm->canonicalise(argsTuple);
 			}
 		}
 
-		const TermType *insertTerm(0);
-		if (newTerm) 
-		{
-			insertTerm = newTerm;
+		const TermType *insertTerm = newTerm != nullptr ? newTerm : &convertedTerm.result;
 
-		} else 
-		{
-			insertTerm = &convertedTerm.result;
-		}
 		llInsert<Sign>(*insertTerm, argsTuple);
 		
-		if (newTerm) 
+		if (newTerm != nullptr) 
 		{
-			TermType::AllocatorInterface::destroy(TermType::allocator, newTerm);
-			TermType::AllocatorInterface::deallocate(TermType::allocator, newTerm, 1);
+			CountingInterface::destroy(allocator, newTerm);
+			CountingInterface::deallocate(allocator, newTerm, 1);
 		}
 	}
 

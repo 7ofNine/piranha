@@ -33,6 +33,9 @@
 #include <new> // For std::bad_alloc.
 #include <type_traits>
 #include <atomic>
+#include <iostream>  //temp only for debug
+#include <iomanip>
+
 
 namespace piranha
 {
@@ -66,10 +69,6 @@ namespace piranha
 			
 			CountingAllocator(const CountingAllocator& a) = default;
 
-			//CountingAllocator(CountingAllocator &&) = delete;
-
-			// CountingAllocator& operator=(CountingAllocator &&) = delete;
-
 			~CountingAllocator() = default;
 			
 			template <class U>
@@ -87,19 +86,31 @@ namespace piranha
                 {
 					PIRANHA_THROW(memory_error, "memory limit reached");
 				}
-
-				T* retval = AllocInterface::allocate(m_alloc, n);
 				counter += add;   // this is atomic
+				T* retval = AllocInterface::allocate(m_alloc, n);
+
 				return retval;
 			}
 
 			constexpr void deallocate(T* p, const size_type n)
 			{
+				std::size_t subtract = n * sizeof(value_type);
+
+
+				if (subtract > counter)
+				{
+					PIRANHA_THROW(memory_error, "memory underflow");
+				}
+				
 				AllocInterface::deallocate(m_alloc, p, n);
-				counter -= n * sizeof(value_type);  //this is atomic
+				counter -= subtract;  //this is atomic
 			}
 
-			bool operator==(const CountingAllocator&) const = default;
+			bool operator==(const CountingAllocator& c) const
+			{
+				return (m_alloc == c.m_alloc);
+			}
+
 
 	private:
 			AllocatorType m_alloc;

@@ -434,6 +434,12 @@ namespace piranha
 		private:
 
 			ContainerType container;
+
+			//allocator for the terms of the series
+			CountingAllocator<Term> allocator;
+
+			//access the allocator through this interface. The modern way.
+			using CountingInterface = std::allocator_traits<decltype(allocator)>;
 	};
 
 #define E0_SERIES_TP_DECL class Cf, class Key, class Multiplier, class Truncator, class Allocator

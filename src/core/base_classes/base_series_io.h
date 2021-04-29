@@ -248,10 +248,10 @@ namespace piranha
 	}
 
 
-	/// Trivial destructor.
-	/**
-	 * No side effects. Contains compile-time checks.
-	 */
+	// Trivial destructor.
+	
+	// No side effects. Contains compile-time checks.
+	
 	template <__PIRANHA_BASE_SERIES_TP_DECL>
 	inline BaseSeries<__PIRANHA_BASE_SERIES_TP>::~BaseSeries()
 	{

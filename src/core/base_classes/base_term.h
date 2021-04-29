@@ -212,7 +212,7 @@ namespace piranha
 			}
 
 			// I/O.
-			/// Print in plain format.
+			// Print in plain format.
 			template <class ArgsTuple>
 			void printPlain(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
@@ -221,7 +221,7 @@ namespace piranha
 				key.printPlain(outStream, argsTuple); // print key
 			}
 			
-			/// Print in pretty format.
+			// Print in pretty format.
 			template <class ArgsTuple>
 			void printPretty(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
@@ -243,7 +243,7 @@ namespace piranha
 				}
 			}
 
-			/// Print in tex format.
+			// Print in tex format.
 			template <class ArgsTuple>
 			void printTex(std::ostream &outStream, const ArgsTuple &argsTuple) const 
 			{
@@ -267,40 +267,40 @@ namespace piranha
 				}
 			}
 
-			/// Equality test.
-			/**
-			 * Equality is defined by the equality of the keys.
-			 */
+			// Equality test.
+			//
+			// Equality is defined by the equality of the keys.
+			//
 			bool operator==(const BaseTerm &t) const 
 			{
 				return (key == t.key);
 			}
 
-			/// Check if the term is canonical.
+			// Check if the term is canonical.
             // TODO: why is this on the BAseTerm level???
-			/**
-			 * Will always return true, re-implement in derived term if necessary.
-			 */
+			//
+			// Will always return true, re-implement in derived term if necessary.
+			//
 			template <class ArgsTuple>
 			bool isCanonical(const ArgsTuple &) const 
 			{
 				return true;
 			}
 
-			/// Canonicalise the term.
+			// Canonicalise the term.
             // TODO: why is this on the BAseTerm level???
-			/**
-			 * Won't do anything, re-implement in derived term if necessary.
-			 */
+			//
+			// Won't do anything, re-implement in derived term if necessary.
+			//
 			template <class ArgsTuple>
 			void canonicalise(const ArgsTuple &) {}
 			
 
 			// TODO: do we need this currently nowhere used!!
-			/// Hasher functor.
-			/**
-			 * Useful in STL-like containers.
-			 */
+			// Hasher functor.
+			//
+			// Useful in STL-like containers.
+			//
 			struct Hasher 
 			{
 				std::size_t operator()(const BaseTerm &t) const noexcept
@@ -310,30 +310,20 @@ namespace piranha
 			};
 
 			// Data members.
-			/// Coefficient.
+			// Coefficient.
 			mutable CfType		cf;
-			/// Key.
+			// Key.
 			KeyType		        key;
-			/// Rebound allocator for term type.
-			static AllocatorType	allocator;    //TODO: where is that actually used. Basseries uses is to allocate terms but is it necessary to prpagate it down to this level
-			                                      // the allocator itself is not used in the baseTerm anywhere !!!
-			/// Separator between coefficient and key in I/O.
-			static const char separator = Separator;
+
+			static inline const char separator = Separator;
 	};
 
-	// Static members initializations.
-	template <__PIRANHA_BASE_TERM_TP_DECL>
-	typename BaseTerm<__PIRANHA_BASE_TERM_TP>::AllocatorType
-	BaseTerm<__PIRANHA_BASE_TERM_TP>::allocator;
 
-	template <__PIRANHA_BASE_TERM_TP_DECL>
-	const char BaseTerm<__PIRANHA_BASE_TERM_TP>::separator;
-
-	/// Overload of hash_value function for piranha::BaseTerm.
-    /// Don't rename is used by boost and name is required.
-	/**
-	 * The key's hash_value() method is used to calculate the term's hash value.
-	 */
+	// Overload of hash_value function for piranha::BaseTerm.
+    // Don't rename is used by boost and name is required.
+	//
+	// The key's hash_value() method is used to calculate the term's hash value.
+	//
 	template <__PIRANHA_BASE_TERM_TP_DECL>
 	inline std::size_t hash_value(const BaseTerm<__PIRANHA_BASE_TERM_TP> &t)
 	{
