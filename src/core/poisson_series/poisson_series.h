@@ -59,7 +59,7 @@
 
 namespace piranha
 {
-	template < E1_SERIES_TP_DECL = std::allocator<char> >
+	template < E1_SERIES_TP_DECL>
 	class poisson_series:
 				public POISSON_SERIES_BASE_ANCESTOR,
 				public POISSON_SERIES_NAMED_ANCESTOR,
@@ -93,15 +93,24 @@ namespace piranha
 }
 
 #define COMPLEX_POISSON_SERIES std::complex<POISSON_SERIES>
-#define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf, Key0, Mult0, Trunc0, Allocator>
-#define COMPLEX_POISSON_SERIES_TERM piranha::FourierSeriesTerm<std::complex<COMPLEX_POISSON_SERIES_POLYNOMIAL_CF>, Key1, '|', Allocator>
-#define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::BaseSeries<COMPLEX_POISSON_SERIES_TERM,'\n', Allocator, COMPLEX_POISSON_SERIES>
+
+#define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf, Key0, Mult0, Trunc0>
+
+#define COMPLEX_POISSON_SERIES_TERM piranha::FourierSeriesTerm<std::complex<COMPLEX_POISSON_SERIES_POLYNOMIAL_CF>, Key1, '|'>
+
+#define COMPLEX_POISSON_SERIES_BASE_ANCESTOR piranha::BaseSeries<COMPLEX_POISSON_SERIES_TERM,'\n', COMPLEX_POISSON_SERIES>
+
 #define COMPLEX_POISSON_SERIES_NAMED_ANCESTOR piranha::NamedSeries<boost::tuple<piranha::PolyArgsDescr, piranha::TrigArgsDescriptor>, \
 	COMPLEX_POISSON_SERIES_TERM, COMPLEX_POISSON_SERIES>
+
 #define COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX piranha::BaseSeriesComplex< POISSON_SERIES>
+
 #define COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX piranha::named_series_complex< POISSON_SERIES>
+
 #define COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR piranha::BinomialExponentiation< COMPLEX_POISSON_SERIES>
+
 #define COMPLEX_POISSON_SERIES_DEGREE typename COMPLEX_POISSON_SERIES_TERM::CfType::TermType::KeyType::DegreeType
+
 #define COMPLEX_POISSON_SERIES_H_DEGREE typename COMPLEX_POISSON_SERIES_TERM::KeyType::HarmonicDegreeType
 
 namespace std

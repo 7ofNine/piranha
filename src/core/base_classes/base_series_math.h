@@ -48,9 +48,9 @@ namespace piranha
 {
 	// Do not use this to merge with self, assertion will fail.
     //merge terms of two series. wa precisely does that mean. make different types of terms from different series homogenous
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class Derived2, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::mergeTerms(const Derived2 &series2, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<PIRANHA_BASE_SERIES_TP>::mergeTerms(const Derived2 &series2, const ArgsTuple &argsTuple)
 	{
 		typedef typename Derived2::const_iterator const_iterator2;
 
@@ -94,9 +94,9 @@ namespace piranha
 	// Multiply (N = 0) or divide (N = 1) all the coefficients of the series by a generic quantity x.
     // handle multiplication adn division in one implementation
     //
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <int N, class T, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::multDivCoefficientsBy(const T &x, const ArgsTuple &argsTuple)
+	inline void BaseSeries<PIRANHA_BASE_SERIES_TP>::multDivCoefficientsBy(const T &x, const ArgsTuple &argsTuple)
 	{
 		const const_iterator itf = end();
 		bool needsRebuilding = false;
@@ -141,9 +141,9 @@ namespace piranha
 	 * Term is constructed from coefficient constructed from number and default key,
 	 * and then inserted into the series.
 	 */
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <bool Sign, class Number, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::mergeWithNumber(const Number &n, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<PIRANHA_BASE_SERIES_TP>::mergeWithNumber(const Number &n, const ArgsTuple &argsTuple)
 	{
 		typename Derived::TermType term(typename Derived::TermType::CfType(n, argsTuple), typename Derived::TermType::KeyType());
 
@@ -152,17 +152,17 @@ namespace piranha
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseAdd(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<PIRANHA_BASE_SERIES_TP>::baseAdd(const T &x, const ArgsTuple &argsTuple)
 	{
 		return BaseSeriesAddSelector<T>::run(*derived_cast, x, argsTuple);
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseSubtract(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<PIRANHA_BASE_SERIES_TP>::baseSubtract(const T &x, const ArgsTuple &argsTuple)
 	{
 		return BaseSeriesSubtractSelector<T>::run(*derived_cast, x, argsTuple);
 	}
@@ -210,9 +210,9 @@ namespace piranha
 	};
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::multiplyCoefficientsBy(const Number &x,
+	inline Derived &BaseSeries<PIRANHA_BASE_SERIES_TP>::multiplyCoefficientsBy(const Number &x,
 		const ArgsTuple &argsTuple)
 	{
 		if (MultDivCoefficientsChecker<Number>::checkZero(x)) 
@@ -228,17 +228,17 @@ namespace piranha
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseMultBy(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<PIRANHA_BASE_SERIES_TP>::baseMultBy(const T &x, const ArgsTuple &argsTuple)
 	{
 		return BaseSeriesMultiplySelector<Derived, T>::run(*derived_cast, x, argsTuple);
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::divideCoefficientsBy(const Number &x, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<PIRANHA_BASE_SERIES_TP>::divideCoefficientsBy(const Number &x, const ArgsTuple &argsTuple)
 	{
 		if (MultDivCoefficientsChecker<Number>::checkZero(x)) 
 		{
@@ -253,9 +253,9 @@ namespace piranha
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T, class ArgsTuple>
-	inline Derived &BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseDivideBy(const T &x, const ArgsTuple &argsTuple)
+	inline Derived &BaseSeries<PIRANHA_BASE_SERIES_TP>::baseDivideBy(const T &x, const ArgsTuple &argsTuple)
 	{
         static_assert((!PiranhaSeries<T>), "Cannot divide by another series.");
 
@@ -264,9 +264,9 @@ namespace piranha
 
 
     // partial derivative
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Series, class PosTuple, class ArgsTuple>
-	inline void BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(const Derived &in, Series &out, const PosTuple &posTuple, const ArgsTuple &argsTuple)
+	inline void BaseSeries<PIRANHA_BASE_SERIES_TP>::basePartial(const Derived &in, Series &out, const PosTuple &posTuple, const ArgsTuple &argsTuple)
 	{
         static_assert(boost::tuples::length<PosTuple>::value == boost::tuples::length<ArgsTuple>::value,
 			                 "Size mismatch between args tuple and pos tuple in partial derivative.");
@@ -295,9 +295,9 @@ namespace piranha
 	/**
 	 * Calls partial() on all terms of the series, and inserts the resulting terms into return value.
 	 */
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(int n, const PosTuple &posTuple, const ArgsTuple &argsTuple) const
+	inline Derived BaseSeries<PIRANHA_BASE_SERIES_TP>::basePartial(int n, const PosTuple &posTuple, const ArgsTuple &argsTuple) const
 	{
 		if (n < 0) 
 		{
@@ -316,17 +316,17 @@ namespace piranha
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class PosTuple, class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePartial(const PosTuple &posTuple, const ArgsTuple &argsTuple) const
+	inline Derived BaseSeries<PIRANHA_BASE_SERIES_TP>::basePartial(const PosTuple &posTuple, const ArgsTuple &argsTuple) const
 	{
 		return basePartial(1, posTuple, argsTuple);
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number, class ArgsTuple>
-	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::commonPowHandler(const Number &y, Derived &retval, const ArgsTuple &argsTuple) const
+	inline bool BaseSeries<PIRANHA_BASE_SERIES_TP>::commonPowHandler(const Number &y, Derived &retval, const ArgsTuple &argsTuple) const
 	{
 		PIRANHA_ASSERT(retval.empty());
 		// Handle the case of an empty series.
@@ -375,9 +375,9 @@ namespace piranha
 
 	/// Real exponentiation.
 	// Internally it will check if y is a real or an integer number.
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePow(const double &y,
+	inline Derived BaseSeries<PIRANHA_BASE_SERIES_TP>::basePow(const double &y,
 		const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
@@ -424,9 +424,9 @@ namespace piranha
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::basePow(const mp_rational &q, const ArgsTuple &argsTuple) const
+	inline Derived BaseSeries<PIRANHA_BASE_SERIES_TP>::basePow(const mp_rational &q, const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
 		if (!commonPowHandler(q, retval, argsTuple))
@@ -470,17 +470,17 @@ namespace piranha
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::realPower(const double, const ArgsTuple &) const
+	inline Derived BaseSeries<PIRANHA_BASE_SERIES_TP>::realPower(const double, const ArgsTuple &) const
 	{
 		PIRANHA_THROW(not_implemented_error, "real power for this series type has not been implemented");
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::negativeIntegerPower(const int n, const ArgsTuple &) const
+	inline Derived BaseSeries<PIRANHA_BASE_SERIES_TP>::negativeIntegerPower(const int n, const ArgsTuple &) const
 	{
 		(void)n;
 		PIRANHA_ASSERT(n < 0);
@@ -489,9 +489,9 @@ namespace piranha
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::rationalPower(const mp_rational &, const ArgsTuple &) const
+	inline Derived BaseSeries<PIRANHA_BASE_SERIES_TP>::rationalPower(const mp_rational &, const ArgsTuple &) const
 	{
 		PIRANHA_THROW(not_implemented_error, "rational power for this series type has not been implemented");
 	}
@@ -501,9 +501,9 @@ namespace piranha
 	/**
 	 * Exponentiation by squaring is used internally.
 	 */
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::naturalPower(const std::size_t n, const ArgsTuple &argsTuple) const
+	inline Derived BaseSeries<PIRANHA_BASE_SERIES_TP>::naturalPower(const std::size_t n, const ArgsTuple &argsTuple) const
 	{
 		Derived retval;
 		switch (n) {
@@ -567,18 +567,18 @@ namespace piranha
 
 
 	/// Nth root.
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseRoot(const int n, const ArgsTuple &argsTuple) const
+	inline Derived BaseSeries<PIRANHA_BASE_SERIES_TP>::baseRoot(const int n, const ArgsTuple &argsTuple) const
 	{
 		return basePow(mp_rational(1, n), argsTuple);
 	}
 
 
 	// Series inversion will use exponentiation to -1 as default.
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline Derived BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseInvert(const ArgsTuple &) const
+	inline Derived BaseSeries<PIRANHA_BASE_SERIES_TP>::baseInvert(const ArgsTuple &) const
 	{
 		PIRANHA_THROW(not_implemented_error, "inversion for this series type has not been implemented");
 	}

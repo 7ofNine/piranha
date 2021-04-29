@@ -44,9 +44,9 @@
 #include <type_traits>
 
 // Template parameters list for piranha::BaseSeries (declaration form).
-#define __PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Allocator, class Derived
+#define PIRANHA_BASE_SERIES_TP_DECL class Term, char Separator, class Derived
 // Template parameters list for piranha::BaseSeries (implementation form).
-#define __PIRANHA_BASE_SERIES_TP Term, Separator, Allocator, Derived
+#define PIRANHA_BASE_SERIES_TP Term, Separator, Derived
 
 namespace piranha
 {
@@ -54,7 +54,8 @@ namespace piranha
 	template <class CfSeries>
 	constexpr int  EchelonLevelImpl()
 	{
-		if constexpr (PiranhaSeries<CfSeries>){
+		if constexpr (PiranhaSeries<CfSeries>)
+		{
 			return  EchelonLevelImpl<typename CfSeries::TermType::CfType>() + 1;
 		}
 		else //coefficients are not series
@@ -98,22 +99,22 @@ namespace piranha
 
 
 
-	/// Base series class.
-	/**
-	 * This class provides the basic representation of a series as a collection of terms stored into a hash set. The class is intended
-	 * to be inherited together with (at least) either piranha::NamedSeries (for a top-level series) or piranha::cf_series (for a coefficient series).
-	 *
-	 * The methods in this class provide the lowest level of series manipulation, and allow to operate directly on the individual terms of the
-	 * series.
-	 *
-	 * @author Francesco Biscani (bluescarni@gmail.com)
-	 */
+	// Base series class.
+
+	//This class provides the basic representation of a series as a collection of terms stored into a hash set. The class is intended
+	 //to be inherited together with (at least) either piranha::NamedSeries (for a top-level series) or piranha::cf_series (for a coefficient series).
+	
+	 //The methods in this class provide the lowest level of series manipulation, and allow to operate directly on the individual terms of the
+	 //series.
+	
+	 //@author Francesco Biscani (bluescarni@gmail.com)
+	 
 
     //
     // for series multiplication it requires to be used in parallel with series_multiplcation which in turn requires
     // a multiplier and a truncator
     //
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	class BaseSeries: BaseSeriesTag
 	{
 			// Befriend meta-programming classes.
@@ -442,22 +443,31 @@ namespace piranha
 			using CountingInterface = std::allocator_traits<decltype(allocator)>;
 	};
 
-#define E0_SERIES_TP_DECL class Cf, class Key, class Multiplier, class Truncator, class Allocator
-#define E0_SERIES_TP Cf, Key ,Multiplier, Truncator, Allocator
-#define E0_SERIES_TERM(TermName) TermName<Cf, Key, '|', Allocator>
+#define E0_SERIES_TP_DECL class Cf, class Key, class Multiplier, class Truncator
+
+#define E0_SERIES_TP Cf, Key ,Multiplier, Truncator
+
+#define E0_SERIES_TERM(TermName) TermName<Cf, Key, '|'>
+
 #define E0_SERIES(SeriesName) SeriesName<E0_SERIES_TP>
+
 #define E0_SERIES_BASE_ANCESTOR(TermName, SeriesName) piranha::BaseSeries<E0_SERIES_TERM(TermName), '\n', \
-	Allocator, E0_SERIES(SeriesName) >
+	E0_SERIES(SeriesName) >
 
 #define E1_SERIES_TP_DECL class Cf, class Key0, class Key1, \
-						  class Mult0, class Mult1, class Trunc0, class Trunc1, class Allocator
-#define E1_SERIES_TP      Cf, Key0, Key1, Mult0, Mult1, Trunc0, Trunc1, Allocator
-#define E1_SERIES_COEFFICIENT(CfName)     CfName<Cf, Key0, Mult0, Trunc0, Allocator>
+						  class Mult0, class Mult1, class Trunc0, class Trunc1
+
+#define E1_SERIES_TP      Cf, Key0, Key1, Mult0, Mult1, Trunc0, Trunc1
+
+#define E1_SERIES_COEFFICIENT(CfName)     CfName<Cf, Key0, Mult0, Trunc0>
+
 #define E1_SERIES(SeriesName)             SeriesName<E1_SERIES_TP>
-#define E1_SERIES_TERM(TermName, CfName) TermName< CfName, Key1, '|', Allocator >
+
+#define E1_SERIES_TERM(TermName, CfName) TermName< CfName, Key1, '|'>
+
 #define E1_SERIES_BASE_ANCESTOR(TermName, CfName, SeriesName) piranha::BaseSeries<TermName< \
-	CfName, Key1, '|', Allocator>, \
-	'\n', Allocator, SeriesName >
+	CfName, Key1, '|'>, \
+	'\n', SeriesName >
 }
 
 #endif

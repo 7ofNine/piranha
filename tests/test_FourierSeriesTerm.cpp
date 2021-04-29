@@ -13,7 +13,7 @@
 using namespace piranha;
 
 namespace {
-    using FourierType = FourierSeriesTerm<double_cf, TrigVector<int, 0>, '|', std::allocator<char>>; // we keep the echelon level at 0. i.e. just numerical coefficients
+    using FourierType = FourierSeriesTerm<double_cf, TrigVector<int, 0>, '|'>; // we keep the echelon level at 0. i.e. just numerical coefficients
 }
 
 BOOST_AUTO_TEST_CASE(defaultconstruction_test)

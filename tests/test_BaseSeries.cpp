@@ -32,7 +32,7 @@ using boost::test_tools::output_test_stream;
 namespace {
 
     template< class Term>
-    class TSeries : public BaseSeries < Term, '!', std::allocator<char>, TSeries<Term> >
+    class TSeries : public BaseSeries < Term, '!', TSeries<Term> >
     {
     public: 
         TSeries() = default;
@@ -45,7 +45,7 @@ namespace {
         virtual ~TSeries() = default;
     };
 
-    using STerm = Monomial<double_cf, ExpoVector<int, 0>, '|', std::allocator<char>>; // a ploynomial like term with double coefficients
+    using STerm = Monomial<double_cf, ExpoVector<int, 0>, '|'>; // a ploynomial like term with double coefficients
     using SSeries = TSeries<STerm>;
 }
 

@@ -28,20 +28,20 @@
 namespace piranha
 {
 	/// Monomial class.
-	template <class Cf, class Key, char Separator, class Allocator>
-	class Monomial: public BaseTerm<Cf, Key, Separator, Allocator, Monomial<Cf, Key, Separator, Allocator> >
+	template <class Cf, class Key, char Separator>
+	class Monomial: public BaseTerm<Cf, Key, Separator, Monomial<Cf, Key, Separator> >
 	{
 			// Alias for the ancestor.
-			typedef BaseTerm<Cf, Key, Separator, Allocator, Monomial> ancestor;
+			typedef BaseTerm<Cf, Key, Separator, Monomial> ancestor;
 
 		public:
 
-			/// Alias for coefficient type.
-			typedef Cf CfType;
-			/// Alias for expo type.
-			typedef Key KeyType;
-			/// Result of the multiplication of two monomials.
-			typedef typename boost::tuple<Monomial> multiplication_result;
+			
+			typedef Cf CfType;   // Alias for coefficient type.
+			
+			typedef Key KeyType; /// Alias for exponents type.
+			
+			typedef typename boost::tuple<Monomial> multiplication_result; // Result of monomial multiplication.
 
 			PIRANHA_TERM_CTORS(Monomial);
 
@@ -52,9 +52,10 @@ namespace piranha
 			template <class Term1, class Term2, class ArgsTuple>
 			static void multiply(const Term1 &m1, const Term2 &m2, multiplication_result &res, const ArgsTuple &argsTuple) 
             {
-				// Perform the multiplication of exponents.
+				//  multipy exponents
 				m1.key.multiply(m2.key, res.template get<0>().key);
-				// Handle coefficient multiplication.
+
+				// multiply coefficients 
 				// TODO: maybe provide the semantics to coefficients for something like this:
 				// cf1.multiply_by_cf(cf2,res.template get<0>().cf,argsTuple),
 				// so that we can avoid a copy.

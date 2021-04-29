@@ -33,8 +33,8 @@
 #include "../exceptions.h"
 #include "../settings.h"
 
-#define __PIRANHA_BASE_TERM_TP_DECL class Cf, class Key, char Separator, class Allocator, class Derived
-#define __PIRANHA_BASE_TERM_TP Cf, Key, Separator, Allocator, Derived
+#define PIRANHA_BASE_TERM_TP_DECL class Cf, class Key, char Separator, class Derived
+#define PIRANHA_BASE_TERM_TP Cf, Key, Separator, Derived
 
 namespace piranha
 {
@@ -98,8 +98,6 @@ namespace piranha
 	// Key:  key i.e. e.g. ExpoVector<boost::int16_t, 0>, TrigVector<boost::int16_t, 1>,
 	//       last template parameter is actually the echelon level.
 	// Separator: print/read separator between coefficiemt and key e.g.:  '|'
-	// Allocator: specific allocator e.g. for statistics or performance improvements. but typicall std::allocator<char>
-	// Derived: CRTP pattern, typically the derived class e.g. FourierSeriesTerm<Cf, Trig, Separator, Allocator>, or Monomial0
 
 	// Concepts for Cf:  Cf(std::string, ArgsTuple) //constructor
 	//                   Cf(cf2,         ArgsTuple) // constructor from another coefficient of a different kind)
@@ -119,7 +117,7 @@ namespace piranha
 	//                   Key.operator==(Key)         // equality. Base terms only test the key
 	//	                 Key.hash_value();
 
-	template <__PIRANHA_BASE_TERM_TP_DECL>
+	template <PIRANHA_BASE_TERM_TP_DECL>
 	class BaseTerm
 	{
 		public:
@@ -132,21 +130,16 @@ namespace piranha
 				typedef typename BaseTermGetHelper<N, BaseTerm>::Type Type;
 			};
 
-			/// Alias for coefficient type.
+			// Alias for coefficient type.
 			typedef Cf CfType;
-			/// Alias for key type.
+			// Alias for key type.
 			typedef Key KeyType;
-			/// Alias for allocator type and interface
-			using AllocatorType = typename std::allocator_traits<Allocator>::template rebind_alloc<Derived>;
-			using AllocatorInterface = std::allocator_traits<AllocatorType>;
 
 
-
-
-			/// Empty ctor.
-			/**
-			 * Default-initializes coefficient and key.
-			 */
+			// Empty ctor.
+			//
+			// Default-initializes coefficient and key.
+			//
 			BaseTerm(): cf(), key() {}
 			
 			// Ctor from string.
@@ -186,10 +179,10 @@ namespace piranha
 			template <class Derived2, class ArgsTuple>
 			BaseTerm(const Derived2 &t, const ArgsTuple &argsTuple)
 			        : cf(t.cf, argsTuple), key(t.key) {}
-			
 
 			/// Ctor from coefficient - key pair.
 			BaseTerm(const CfType &cf, const KeyType &key): cf(cf), key(key) {}
+
 
 			template <int N>
 			typename BaseTermGetHelper<N, BaseTerm>::Type &get() 
@@ -324,8 +317,8 @@ namespace piranha
 	//
 	// The key's hash_value() method is used to calculate the term's hash value.
 	//
-	template <__PIRANHA_BASE_TERM_TP_DECL>
-	inline std::size_t hash_value(const BaseTerm<__PIRANHA_BASE_TERM_TP> &t)
+	template <PIRANHA_BASE_TERM_TP_DECL>
+	inline std::size_t hash_value(const BaseTerm<PIRANHA_BASE_TERM_TP> &t)
 	{
 		return t.key.hash_value();
 	}
@@ -337,14 +330,14 @@ namespace piranha
 			ancestor(str, argsTuple) {} \
 	explicit TermName(const CfType &c, const KeyType &t): ancestor(c, t) {} \
 	template <class Cf2, class ArgsTuple> \
-	explicit TermName(const TermName<Cf2, KeyType, Separator, Allocator> &term, const ArgsTuple &a): \
+	explicit TermName(const TermName<Cf2, KeyType, Separator> &term, const ArgsTuple &a): \
 			ancestor(term, a) {} \
 	template <class Cf2, class Key2> \
-	explicit TermName(const TermName<Cf2, Key2, Separator, Allocator> &term): \
+	explicit TermName(const TermName<Cf2, Key2, Separator> &term): \
 			ancestor(term) {}
 }
 
-#undef __PIRANHA_BASE_TERM_TP_DECL
-#undef __PIRANHA_BASE_TERM_TP
+#undef PIRANHA_BASE_TERM_TP_DECL
+#undef PIRANHA_BASE_TERM_TP
 
 #endif

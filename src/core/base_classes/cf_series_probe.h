@@ -25,59 +25,59 @@ namespace piranha
 {
     // check on insertability. What is the criterion? needs description
     // empty or if coefficient and key are insertable. determined by argsTuple?
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline bool CfSeries<__PIRANHA_CF_SERIES_TP>::isInsertable(const ArgsTuple &argsTuple) const
+	inline bool CfSeries<PIRANHA_CF_SERIES_TP>::isInsertable(const ArgsTuple &argsTuple) const
 	{
 		return (derived_const_cast->empty() || (derived_const_cast->begin()->cf.isInsertable(argsTuple) &&
 			                                    derived_const_cast->begin()->key.isInsertable(argsTuple)));
 	}
 
     // check on padding needed. What is padding??
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline bool CfSeries<__PIRANHA_CF_SERIES_TP>::needsPadding(const ArgsTuple &argsTuple) const
+	inline bool CfSeries<PIRANHA_CF_SERIES_TP>::needsPadding(const ArgsTuple &argsTuple) const
 	{
 		return (!derived_const_cast->empty() && (derived_const_cast->begin()->cf.needsPadding(argsTuple) ||
 			                                     derived_const_cast->begin()->key.needsPadding(argsTuple)));
 	}
 
     //empty series can be ignored
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline bool CfSeries<__PIRANHA_CF_SERIES_TP>::isIgnorable(const ArgsTuple &) const
+	inline bool CfSeries<PIRANHA_CF_SERIES_TP>::isIgnorable(const ArgsTuple &) const
 	{
 		return (derived_const_cast->empty());
 	}
 
     //norm of series
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline double CfSeries<__PIRANHA_CF_SERIES_TP>::norm(const ArgsTuple &argsTuple) const
+	inline double CfSeries<PIRANHA_CF_SERIES_TP>::norm(const ArgsTuple &argsTuple) const
 	{
 		return (derived_const_cast->baseNorm(argsTuple));
 	}
 
     //evaluate series for value t
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline typename TermEvalTypeDeterminer<Term>::Type CfSeries<__PIRANHA_CF_SERIES_TP>::eval(const double t, const ArgsTuple &argsTuple) const
+	inline typename TermEvalTypeDeterminer<Term>::Type CfSeries<PIRANHA_CF_SERIES_TP>::eval(const double t, const ArgsTuple &argsTuple) const
 	{
 		return (derived_const_cast->baseEval(t, argsTuple));
 	}
 
     // equality check
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	template <class T>
-	inline bool CfSeries<__PIRANHA_CF_SERIES_TP>::operator==(const T &x) const
+	inline bool CfSeries<PIRANHA_CF_SERIES_TP>::operator==(const T &x) const
 	{
 		return derived_const_cast->baseEqualTo(x);
 	}
 
     //inequality check
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	template <class T>
-	inline bool CfSeries<__PIRANHA_CF_SERIES_TP>::operator!=(const T &x) const
+	inline bool CfSeries<PIRANHA_CF_SERIES_TP>::operator!=(const T &x) const
 	{
 		return !(operator==(x));
 	}

@@ -33,9 +33,9 @@ namespace piranha
 	/**
 	  * The whole series is stored into a string when using it as coefficient in another series.
 	  */
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::constructFromString(const std::string &input, const ArgsTuple &argsTuple)
+	inline void CfSeries<PIRANHA_CF_SERIES_TP>::constructFromString(const std::string &input, const ArgsTuple &argsTuple)
 	{
 		typedef typename Derived::TermType TermType;
 		const char separator = Derived::separator;
@@ -59,18 +59,18 @@ namespace piranha
 
 
 	/// Print in plain mode.
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::printPlain(std::ostream &stream, const ArgsTuple &argsTuple) const
+	inline void CfSeries<PIRANHA_CF_SERIES_TP>::printPlain(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
 		derived_const_cast->printTermsPlain(stream, argsTuple);
 	}
 
 
 	/// Print in pretty mode.
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::printPretty(std::ostream &stream, const ArgsTuple &argsTuple) const
+	inline void CfSeries<PIRANHA_CF_SERIES_TP>::printPretty(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
 		if (derived_const_cast->length() > 1) 
         {
@@ -87,9 +87,9 @@ namespace piranha
 
 
 	/// Print in tex mode.
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline void CfSeries<__PIRANHA_CF_SERIES_TP>::printTex(std::ostream &stream, const ArgsTuple &argsTuple) const
+	inline void CfSeries<PIRANHA_CF_SERIES_TP>::printTex(std::ostream &stream, const ArgsTuple &argsTuple) const
 	{
 		if (derived_const_cast->length() > 1) 
         {

@@ -37,16 +37,16 @@ namespace piranha
 	/**
 	 * @return true if series has length one and the key of the only term is equivalent to unity, false otherwise.
 	 */
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::isSingleCf() const
+	template <PIRANHA_BASE_SERIES_TP_DECL>
+	inline bool BaseSeries<PIRANHA_BASE_SERIES_TP>::isSingleCf() const
 	{
 		return (length() == 1 && begin()->key.isUnity());
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline double BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseNorm(const ArgsTuple &argsTuple) const
+	inline double BaseSeries<PIRANHA_BASE_SERIES_TP>::baseNorm(const ArgsTuple &argsTuple) const
 	{
 		const const_iterator itf = end();
 		double retval = 0;
@@ -60,10 +60,10 @@ namespace piranha
 	}
 
 
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
-	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::EvalType
-		BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseEval(const double t, const ArgsTuple &argsTuple) const
+	inline typename BaseSeries<PIRANHA_BASE_SERIES_TP>::EvalType
+		BaseSeries<PIRANHA_BASE_SERIES_TP>::baseEval(const double t, const ArgsTuple &argsTuple) const
 	{
 		const const_iterator itf = end();
 		EvalType retval(0);
@@ -83,8 +83,8 @@ namespace piranha
 	/**
 	 * @return number of terms in the series.
 	 */
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::size_type BaseSeries<__PIRANHA_BASE_SERIES_TP>::length() const
+	template <PIRANHA_BASE_SERIES_TP_DECL>
+	inline typename BaseSeries<PIRANHA_BASE_SERIES_TP>::size_type BaseSeries<PIRANHA_BASE_SERIES_TP>::length() const
 	{
 		return container.size();
 	}
@@ -94,16 +94,16 @@ namespace piranha
 	/**
 	 * @return true if the series has zero terms, false otherwise.
 	 */
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::empty() const
+	template <PIRANHA_BASE_SERIES_TP_DECL>
+	inline bool BaseSeries<PIRANHA_BASE_SERIES_TP>::empty() const
 	{
 		return container.empty();
 	}
 
 
 	/// Number of atoms in the series.
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
-	inline typename BaseSeries<__PIRANHA_BASE_SERIES_TP>::size_type BaseSeries<__PIRANHA_BASE_SERIES_TP>::atoms() const
+	template <PIRANHA_BASE_SERIES_TP_DECL>
+	inline typename BaseSeries<PIRANHA_BASE_SERIES_TP>::size_type BaseSeries<PIRANHA_BASE_SERIES_TP>::atoms() const
 	{
 		size_type retval = 0;
 		const const_iterator itf = end();
@@ -127,9 +127,9 @@ namespace piranha
 	 * @return false if: lengths of series differ or at least one term of this series is not found in the other ,i.e. series are different
      *         true :    both series agree on BAseSeriesLevel. (no sorting!)
 	 */
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T>
-	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericSeriesComparison(const T &other) const
+	inline bool BaseSeries<PIRANHA_BASE_SERIES_TP>::genericSeriesComparison(const T &other) const
 	{
 		if (length() != other.length()) 
         {
@@ -186,9 +186,9 @@ namespace piranha
 	 *
 	 * @return true if series is mathematically equivalent to the input numerical quantity.
 	 */
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class Number>
-	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::genericNumericalComparison(const Number &x) const
+	inline bool BaseSeries<PIRANHA_BASE_SERIES_TP>::genericNumericalComparison(const Number &x) const
 	{
 		if (NumericalComparisonZeroCheck<Number>()(x))
         {
@@ -210,9 +210,9 @@ namespace piranha
 	 *
 	 * @return genericNumericalComparison() on x.
 	 */
-	template <__PIRANHA_BASE_SERIES_TP_DECL>
+	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class T>
-	inline bool BaseSeries<__PIRANHA_BASE_SERIES_TP>::baseEqualTo(const T &x) const
+	inline bool BaseSeries<PIRANHA_BASE_SERIES_TP>::baseEqualTo(const T &x) const
 	{
 		return BaseSeriesEqualToSelector<T>::run(*derived_const_cast, x);
 	}

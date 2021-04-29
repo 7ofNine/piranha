@@ -43,18 +43,18 @@
 #include "../type_traits.h"
 #include "expo_vector_mp.h"
 
-#define __PIRANHA_EXPO_VECTOR_TP_DECL class T, int Pos
-#define __PIRANHA_EXPO_VECTOR_TP T, Pos
+#define PIRANHA_EXPO_VECTOR_TP_DECL class T, int Pos
+#define PIRANHA_EXPO_VECTOR_TP T, Pos
 
 namespace piranha
 {
 	/// Exponents vector.
-	template < __PIRANHA_EXPO_VECTOR_TP_DECL >
-	class ExpoVector: public VectorKey<__PIRANHA_EXPO_VECTOR_TP, ExpoVector<__PIRANHA_EXPO_VECTOR_TP> >
+	template < PIRANHA_EXPO_VECTOR_TP_DECL >
+	class ExpoVector: public VectorKey<PIRANHA_EXPO_VECTOR_TP, ExpoVector<PIRANHA_EXPO_VECTOR_TP> >
 	{
 		private:
 
-			typedef VectorKey<__PIRANHA_EXPO_VECTOR_TP, ExpoVector<__PIRANHA_EXPO_VECTOR_TP> > Ancestor;
+			typedef VectorKey<PIRANHA_EXPO_VECTOR_TP, ExpoVector<PIRANHA_EXPO_VECTOR_TP> > Ancestor;
 
 			template <class SubSeries, class ArgsTuple>
 			class SubCache: public PowerCache<SubSeries, T, BaseSeriesArithmetics<SubSeries, ArgsTuple> >
@@ -535,11 +535,11 @@ namespace piranha
 
 
 	/// is_ring_exact type trait specialisation for ExpoVector.
-	template <__PIRANHA_EXPO_VECTOR_TP_DECL>
-	struct is_ring_exact<ExpoVector<__PIRANHA_EXPO_VECTOR_TP> >: boost::true_type {};
+	template <PIRANHA_EXPO_VECTOR_TP_DECL>
+	struct is_ring_exact<ExpoVector<PIRANHA_EXPO_VECTOR_TP> >: boost::true_type {};
 }
 
-#undef __PIRANHA_EXPO_VECTOR_TP_DECL
-#undef __PIRANHA_EXPO_VECTOR_TP
+#undef PIRANHA_EXPO_VECTOR_TP_DECL
+#undef PIRANHA_EXPO_VECTOR_TP
 
 #endif

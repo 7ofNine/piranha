@@ -35,26 +35,25 @@ namespace piranha
 	// Allocator: specific allocator e.g. for statistics or performance improvements. but typicall std::allocator<char>
     // 
     // there is no verification that Trig is actually a TrigVector class
-	template <class Cf, class Trig, char Separator, class Allocator>
-	class FourierSeriesTerm: public BaseTerm<Cf, Trig, Separator, Allocator, FourierSeriesTerm<Cf, Trig, Separator, Allocator> >
+	template <class Cf, class Trig, char Separator>
+	class FourierSeriesTerm: public BaseTerm<Cf, Trig, Separator, FourierSeriesTerm<Cf, Trig, Separator> >
 	{
 			// Alias for the ancestor.
-			typedef BaseTerm<Cf, Trig, Separator, Allocator, FourierSeriesTerm> ancestor;
+			typedef BaseTerm<Cf, Trig, Separator, FourierSeriesTerm> ancestor;
 
 		public:
 
-			/// Alias for coefficient type.
-			typedef Cf CfType;
-			/// Alias for trigonometric type.
-			typedef Trig KeyType;
-			/// Result of the multiplication of two terms. they result in tow cos or sin terms
-			typedef typename boost::tuple<FourierSeriesTerm, FourierSeriesTerm> multiplication_result;
+			
+			typedef Cf CfType;   // Alias for coefficient type.
+			
+			typedef Trig KeyType; // Alias for trigonometric type.
+			
+			typedef typename boost::tuple<FourierSeriesTerm, FourierSeriesTerm> multiplication_result; // Result of the multiplication of two terms. they result is two cos or sin terms
 
 			PIRANHA_TERM_CTORS(FourierSeriesTerm);
 
-			/// Check if the term is canonical.
-			template <class ArgsTuple>
-			bool isCanonical(const ArgsTuple &) const 
+			template <class ArgsTuple>                   
+			bool isCanonical(const ArgsTuple &) const    // Check if the term is canonical.
             {
 				return (ancestor::key.sign() > 0);
 			}
@@ -62,26 +61,27 @@ namespace piranha
 
 			// TODO: check if it makes sense to skip the check here and assume canonicalise will be used iff
 			// isCanonical has already been tested.
-			/// Canonicalise the term.
-			template <class ArgsTuple>
-			void canonicalise(ArgsTuple const &argsTuple) 
+			
+			template <class ArgsTuple>                     
+			void canonicalise(ArgsTuple const &argsTuple)    // Canonicalise the term.
             {
 				if (!isCanonical(argsTuple)) 
                 {
-					invert_trig_args(argsTuple);
+					invertTrigArgs(argsTuple);
 				}
 			}
 
 
-			/// Term multiplication.
-			/**
-			 * NOTE: the result of multiplication here _must_ be canonical.
-			 */
+			
+			//
+			// NOTE: the result of multiplication here _must_ be canonical.
+			//
 			template <class Term1, class Term2, class ArgsTuple>
-			static void multiply(const Term1 &t1, const Term2 &t2, multiplication_result & res, const ArgsTuple &argsTuple) 
+			static void multiply(const Term1 &t1, const Term2 &t2, multiplication_result & res, const ArgsTuple &argsTuple)  // Term multiplication.
             {
 				// Perform the trigonometric multiplication.
 				t1.key.multiply(t2.key, res.template get<0>().key, res.template get<1>().key);
+				
 				// Handle coefficient multiplication. Do the first coefficient, then assign the second one.
 				// TODO: maybe provide the semantics to coefficients for something like this:
 				// cf1.multiply_by_cf(cf2,res.template get<0>().cf,argsTuple),
@@ -90,6 +90,7 @@ namespace piranha
 				res.template get<0>().cf.multBy(t2.cf, argsTuple);
 				res.template get<0>().cf.divideBy(2, argsTuple);
 				res.template get<1>().cf = res.template get<0>().cf;
+
 				// Now adjust the signs according to werner's formulas.
 				if (t1.key.getFlavour() == t2.key.getFlavour()) 
                 {
@@ -118,7 +119,7 @@ namespace piranha
 
 			// Invert the sign of trigonometric multipliers.
 			template <class ArgsTuple>
-			void invert_trig_args(const ArgsTuple &argsTuple) 
+			void invertTrigArgs(const ArgsTuple &argsTuple) 
             {
 				ancestor::key.invertSign();
 				if (!(ancestor::key.getFlavour())) 

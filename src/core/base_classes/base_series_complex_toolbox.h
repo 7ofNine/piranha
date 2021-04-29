@@ -197,15 +197,18 @@ namespace piranha
 			}
 	};
 
-#define COMPLEX_E0_SERIES_TERM(TermName) TermName<std::complex<Cf>, Key, '|', Allocator>
+#define COMPLEX_E0_SERIES_TERM(TermName) TermName<std::complex<Cf>, Key, '|'>
+
 #define COMPLEX_E0_SERIES(SeriesName) std::complex<E0_SERIES(SeriesName)>
 #define COMPLEX_E0_SERIES_BASE_ANCESTOR(TermName, SeriesName) piranha::BaseSeries<COMPLEX_E0_SERIES_TERM(TermName), '\n', \
-	Allocator, COMPLEX_E0_SERIES(SeriesName) >
+	COMPLEX_E0_SERIES(SeriesName) >
 
-#define COMPLEX_E1_SERIES_TERM(TermName, CfName) TermName<std::complex<CfName>, Key1, '|', Allocator>
+#define COMPLEX_E1_SERIES_TERM(TermName, CfName) TermName<std::complex<CfName>, Key1, '|'>
+
 #define COMPLEX_E1_SERIES(SeriesName) std::complex<E1_SERIES(SeriesName)>
+
 #define COMPLEX_E1_SERIES_BASE_ANCESTOR(TermName, CfName, SeriesName) piranha::BaseSeries<COMPLEX_E1_SERIES_TERM(TermName, CfName), \
-	'\n', Allocator,COMPLEX_E1_SERIES(SeriesName) >
+	'\n', COMPLEX_E1_SERIES(SeriesName) >
 }
 
 #undef derived_const_cast

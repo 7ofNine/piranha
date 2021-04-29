@@ -19,7 +19,7 @@ using boost::test_tools::output_test_stream;
 // using ExpoVector as key otherwise we have to create intermediate classes
 // This could represent a polynomial monomial with integer exponents and double coefficients
 namespace {
-    using MonoType = Monomial<double_cf, ExpoVector<int, 0>, '|', std::allocator<char>>;
+    using MonoType = Monomial<double_cf, ExpoVector<int, 0>, '|'>;
 }
 
 /////////////////////////////////////////////////

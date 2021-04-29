@@ -33,8 +33,8 @@
 
 #define derived_const_cast static_cast<Derived const *>(this)
 #define derived_cast       static_cast<Derived *>(this)
-#define __PIRANHA_CF_SERIES_TP_DECL class Term, class Derived
-#define __PIRANHA_CF_SERIES_TP Term, Derived
+#define PIRANHA_CF_SERIES_TP_DECL class Term, class Derived
+#define PIRANHA_CF_SERIES_TP Term, Derived
 
 // TODO: split this off like in base/name series.
 
@@ -45,7 +45,7 @@ namespace piranha
 	/**
 	 * Intended to be inherited by piranha::BaseSeries.
 	 */
-	template <__PIRANHA_CF_SERIES_TP_DECL>
+	template <PIRANHA_CF_SERIES_TP_DECL>
 	class CfSeries
 	{
 		public:
@@ -180,16 +180,16 @@ namespace piranha
 	}
 
 
-#define CF_SERIES_TERM(TermName, Separator) TermName<Cf, Key, Separator, Allocator>
+#define CF_SERIES_TERM(TermName, Separator) TermName<Cf, Key, Separator>
 
 #define CF_SERIES_BASE_ANCESTOR(TermName, SeriesName, TermSeparator, Separator) \
 	piranha::BaseSeries<CF_SERIES_TERM(TermName, TermSeparator), Separator, \
-	Allocator,E0_SERIES(SeriesName)>
+	E0_SERIES(SeriesName)>
 
-#define COMPLEX_CF_SERIES_TERM(TermName, Separator) TermName<std::complex<Cf>, Key, Separator, Allocator>
+#define COMPLEX_CF_SERIES_TERM(TermName, Separator) TermName<std::complex<Cf>, Key, Separator>
 
 #define COMPLEX_CF_SERIES_BASE_ANCESTOR(TermName, SeriesName, TermSeparator, Separator) piranha::BaseSeries< \
-	COMPLEX_CF_SERIES_TERM(TermName, TermSeparator), Separator, Allocator, COMPLEX_E0_SERIES(SeriesName)>
+	COMPLEX_CF_SERIES_TERM(TermName, TermSeparator), Separator, COMPLEX_E0_SERIES(SeriesName)>
 }
 
 
@@ -198,8 +198,8 @@ namespace piranha
 #include "cf_series_math.h"
 #include "cf_series_probe.h"
 
-#undef __PIRANHA_CF_SERIES_TP
-#undef __PIRANHA_CF_SERIES_TP_DECL
+#undef PIRANHA_CF_SERIES_TP
+#undef PIRANHA_CF_SERIES_TP_DECL
 #undef derived_const_cast
 #undef derived_cast
 
