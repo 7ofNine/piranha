@@ -59,7 +59,7 @@ namespace piranha
 
 			// The index into the vector is the same as into the argDescr. This is how the the symbols get
 		    // connected to the related numeric factors/exponents
-			typedef std::vector<T, CountingAllocator<T> > ContainerType;
+		using ContainerType = std::vector<T, CountingAllocator<T> >;
 
 		public:
 
@@ -74,7 +74,7 @@ namespace piranha
 			/// Position in the series' arguments tuple.
 			// a series has Echelon+1 tuples as keys
 			constexpr static int position = Position;
-			/// Separator for string representation.
+			/// Separator of vectorKey elements for string representation.
 			/**
 			 * The separator character must not be used in the textual representation of value_type,
 			 * otherwise constructor from string will be confused.
@@ -82,13 +82,12 @@ namespace piranha
 			static const char separator = ';';
 
 
-			/// Default ctor.
-			/**
-			 * Constructs an empty vector key..
-			 */
+			// Default ctor.
+
+			// empty vector key.
 			VectorKey(): container() {}
 
-			/// Copy ctor.
+			// Copy ctor.
 			VectorKey(const VectorKey &other): container(other.container) {}
 
 
@@ -98,7 +97,7 @@ namespace piranha
 			VectorKey(const VectorKey<T, Position2, Derived2> &other): container(other.container) {}
 
 
-			/// Ctor from Psym.
+			// Construct from Psym. ??
 			/**
 			 * If the echelon level matches input integer n.
              * and the argstuple has one element and this element is the same as p given 
@@ -108,7 +107,7 @@ namespace piranha
              * Warning! there is no real verifyable relation from p to where the entry (1) is pushed onto the container!
 			 */
 			template <class ArgsTuple>
-			VectorKey(const Psym &p, const int &n, const ArgsTuple &argsTuple): container()
+			VectorKey(const Psym &p, const int n, const ArgsTuple &argsTuple): container()
 			{
 				(void)p;
 				(void)argsTuple;

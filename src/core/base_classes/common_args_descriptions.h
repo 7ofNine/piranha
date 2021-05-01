@@ -27,17 +27,13 @@ namespace piranha
 {
 	struct TrigArgsDescriptor 
 	{
-		static const std::string  name;
+		static inline const std::string  name = "trig";
 	};
-
-	const std::string TrigArgsDescriptor::name = "trig";
 
 	struct PolyArgsDescr 
 	{
-		static const std::string  name;
+		static inline const std::string  name = "poly";
 	};
-
-	const std::string PolyArgsDescr::name = "poly";
 }
 
 #endif

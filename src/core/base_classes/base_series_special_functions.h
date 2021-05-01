@@ -270,7 +270,7 @@ namespace piranha
 			}
 
 
-			/// Bessel function of the first kind of integer order divided by its argument**m.
+			// Bessel function of the first kind of integer order divided by its argument**m.
 			template <class ArgsTuple>
 			Derived baseBesselJDivm(const int order, const int m, const ArgsTuple &argsTuple) const
 			{

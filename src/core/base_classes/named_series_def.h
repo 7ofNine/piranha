@@ -48,15 +48,15 @@
 
 namespace piranha
 {
-	/// Dictionary for evaluation.
-	typedef std::unordered_map<std::string, double> EvalDict;
+	// Dictionary for evaluation.
+	typedef std::unordered_map<std::string, double> EvalDict;  //name to value
 
-	/// Named series toolbox.
-	/**
-	 * Toolbox for generating series with arguments.
-	 * ArgsDescr must be a boost::tuple of structures each one containing a static const string
-	 * called "name" naming the arguments of the series.
-	 */
+	// Named series toolbox.
+	//
+	// Toolbox for generating series with arguments.
+	// ArgsDescr must be a boost::tuple of structures each one containing a static const string
+	// called "name" naming the arguments of the series.
+	//
 
      //types for managing layouts of named series arguments. For details of layouts see named_series_manip.h
      typedef std::pair<bool, std::size_t> LayoutElement;
@@ -280,7 +280,7 @@ namespace piranha
 
 			// Data members.
 			ArgsTupleType                   argumentsTuple;  // the arguments of the NamedSeries. 
-			static std::vector<std::string> unknownData;
+			static std::vector<std::string> unknownData;     // TODO: what is this for ??   
 	};
 
 	// Initialization of static member.

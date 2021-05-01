@@ -79,10 +79,11 @@ namespace piranha
 			template <class Term1, class Term2, class ArgsTuple>
 			static void multiply(const Term1 &t1, const Term2 &t2, multiplication_result & res, const ArgsTuple &argsTuple)  // Term multiplication.
             {
-				// Perform the trigonometric multiplication.
+				// trigonometric multiplication.
 				t1.key.multiply(t2.key, res.template get<0>().key, res.template get<1>().key);
 				
-				// Handle coefficient multiplication. Do the first coefficient, then assign the second one.
+				// coefficient multiplication. First coefficient, then assign the second one.
+				// 
 				// TODO: maybe provide the semantics to coefficients for something like this:
 				// cf1.multiply_by_cf(cf2,res.template get<0>().cf,argsTuple),
 				// so that we can avoid a copy.
@@ -91,7 +92,7 @@ namespace piranha
 				res.template get<0>().cf.divideBy(2, argsTuple);
 				res.template get<1>().cf = res.template get<0>().cf;
 
-				// Now adjust the signs according to werner's formulas.
+				// adjust the signs according to werner's formulas. 
 				if (t1.key.getFlavour() == t2.key.getFlavour()) 
                 {
 					res.template get<0>().key.setFlavour(true);
@@ -110,14 +111,14 @@ namespace piranha
 					}
 				}
 
-				// Finally, canonicalise the retval terms.
+				// canonicalise the retval terms.
 				res.template get<0>().canonicalise(argsTuple);
 				res.template get<1>().canonicalise(argsTuple);
 			}
 
 		private:
 
-			// Invert the sign of trigonometric multipliers.
+			// invert sign of term.
 			template <class ArgsTuple>
 			void invertTrigArgs(const ArgsTuple &argsTuple) 
             {

@@ -48,8 +48,8 @@
 
 #define FOURIER_SERIES_TERM              E0_SERIES_TERM(piranha::FourierSeriesTerm)
 #define FOURIER_SERIES                   E0_SERIES(piranha::fourier_series)
-#define FOURIER_SERIES_BASE_ANCESTOR     E0_SERIES_BASE_ANCESTOR(piranha::FourierSeriesTerm,piranha::fourier_series)
-#define FOURIER_SERIES_NAMED_ANCESTOR    E0_SERIES_NAMED_ANCESTOR(boost::tuple<TrigArgsDescriptor>, FOURIER_SERIES_TERM ,piranha::fourier_series)
+#define FOURIER_SERIES_BASE_ANCESTOR     E0_SERIES_BASE_ANCESTOR(piranha::FourierSeriesTerm, piranha::fourier_series)
+#define FOURIER_SERIES_NAMED_ANCESTOR    E0_SERIES_NAMED_ANCESTOR(boost::tuple<TrigArgsDescriptor>, FOURIER_SERIES_TERM, piranha::fourier_series)
 #define FOURIER_SERIES_BINOMIAL_ANCESTOR piranha::BinomialExponentiation< FOURIER_SERIES>
 #define FOURIER_SERIES_H_DEGREE          typename FOURIER_SERIES_TERM::KeyType::HarmonicDegreeType
 #define FOURIER_SERIES_BASE_FOURIER_SERIES_ANCESTOR   piranha::BaseFourierSeries<0, FOURIER_SERIES>
@@ -57,7 +57,7 @@
 
 namespace piranha
 {
-	template < E0_SERIES_TP_DECL = std::allocator<char> >
+	template < E0_SERIES_TP_DECL>
 	class fourier_series:
 				public FOURIER_SERIES_BASE_ANCESTOR,
 				public FOURIER_SERIES_NAMED_ANCESTOR,

@@ -29,6 +29,10 @@
 #include <iostream>
 #include <type_traits>
 
+
+//TODO: this caould be integrated into ExpoVector using some concepts for selections
+// not using separate classes and structs etc. just some requires
+
 namespace piranha
 {
 	inline void expoVectorPrintElementPretty(std::ostream &outStream, const mp_rational &q)

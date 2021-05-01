@@ -50,13 +50,13 @@ namespace piranha
 {
 	/// Trigonometric vector.
 
-	template < class T, int Pos >
-	class TrigVector: public VectorKey<T, Pos, TrigVector<T, Pos> >
+	template < typename T, int EchelonLevel >
+	class TrigVector: public VectorKey<T, EchelonLevel, TrigVector<T, EchelonLevel> >
 	{
 #ifdef DEBUG
-        int TPos = Pos;
+        int TEchelonLevel = EchelonLevel;
 #endif
-			using Base =  VectorKey<T, Pos, TrigVector<T, Pos> >;
+			using Base =  VectorKey<T, EchelonLevel, TrigVector<T, EchelonLevel> >;
 
 			template <class SubSeries, class ArgsTuple>
 			class SubCache: public PowerCache<std::complex<SubSeries>, T, BaseSeriesArithmetics<std::complex<SubSeries>, ArgsTuple> >
@@ -883,13 +883,13 @@ namespace piranha
 
 
 	/// is_ring_exact type trait specialisation for TrigVector.
-	template <class T, int Pos>
-	struct is_ring_exact<TrigVector<T, Pos> >: boost::true_type {};
+	template <class T, int EchelonLevel>
+	struct is_ring_exact<TrigVector<T, EchelonLevel> >: boost::true_type {};
 
 
 	/// is_trig_exact type trait specialisation for TrigVector.
-	template <class T, int Pos>
-	struct is_trig_exact<TrigVector<T, Pos> >: boost::true_type {};
+	template <class T, int EchelonLevel>
+	struct is_trig_exact<TrigVector<T, EchelonLevel> >: boost::true_type {};
 }
 
 #endif

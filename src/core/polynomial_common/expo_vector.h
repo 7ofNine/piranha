@@ -43,8 +43,8 @@
 #include "../type_traits.h"
 #include "expo_vector_mp.h"
 
-#define PIRANHA_EXPO_VECTOR_TP_DECL class T, int Pos
-#define PIRANHA_EXPO_VECTOR_TP T, Pos
+#define PIRANHA_EXPO_VECTOR_TP_DECL class T, int EchelonLevel
+#define PIRANHA_EXPO_VECTOR_TP T, EchelonLevel
 
 namespace piranha
 {
@@ -112,7 +112,7 @@ namespace piranha
 
 
 			// Ctors.
-			/// Default ctor.
+			// Default ctor.
 			ExpoVector(): Ancestor() {}
 
 
