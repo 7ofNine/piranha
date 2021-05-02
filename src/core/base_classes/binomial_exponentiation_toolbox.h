@@ -45,7 +45,7 @@ namespace piranha
      * 
 	 */
     //
-    // requires the series_multiplication and truncator for the DerivedSeries
+    // requires the SeriesMultiplication and truncator for the DerivedSeries
     //
 
 	template <class Derived>

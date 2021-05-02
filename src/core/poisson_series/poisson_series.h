@@ -49,7 +49,7 @@
 #include "../polynomial_cf/polynomial_cf.h"
 
 #define POISSON_SERIES                   E1_SERIES(piranha::poisson_series)
-#define POISSON_SERIES_POLYNOMIAL_CF     E1_SERIES_COEFFICIENT(piranha::polynomial_cf)
+#define POISSON_SERIES_POLYNOMIAL_CF     E1_SERIES_COEFFICIENT(piranha::PolynomialCf)
 #define POISSON_SERIES_TERM              E1_SERIES_TERM(piranha::FourierSeriesTerm, POISSON_SERIES_POLYNOMIAL_CF)
 #define POISSON_SERIES_BASE_ANCESTOR     E1_SERIES_BASE_ANCESTOR(piranha::FourierSeriesTerm, POISSON_SERIES_POLYNOMIAL_CF, POISSON_SERIES)
 #define POISSON_SERIES_NAMED_ANCESTOR    E1_SERIES_NAMED_ANCESTOR(piranha::PolyArgsDescr, piranha::TrigArgsDescriptor, POISSON_SERIES_TERM, POISSON_SERIES)
@@ -65,10 +65,10 @@ namespace piranha
 				public POISSON_SERIES_NAMED_ANCESTOR,
 				public POISSON_SERIES_BINOMIAL_ANCESTOR,
 				public BaseHarmonicSeries<1, 1, POISSON_SERIES_H_DEGREE, POISSON_SERIES>,
-				public named_harmonic_series<POISSON_SERIES_H_DEGREE, POISSON_SERIES>,
-				public series_multiplication< POISSON_SERIES, Mult1, Trunc1>,
-				public jacobi_anger<1, POISSON_SERIES>,
-				public common_poisson_series< POISSON_SERIES>,
+				public NamedHarmonicSeries<POISSON_SERIES_H_DEGREE, POISSON_SERIES>,
+				public SeriesMultiplication< POISSON_SERIES, Mult1, Trunc1>,
+				public JacobiAnger<1, POISSON_SERIES>,
+				public CommonPoissonSeries< POISSON_SERIES>,
 				public BasePowerSeries<0, 0, POISSON_SERIES_DEGREE, POISSON_SERIES>,
 				public NamedPowerSeries< POISSON_SERIES_DEGREE, POISSON_SERIES>,
 				public BaseSeriesSpecialFunctions< POISSON_SERIES>,
@@ -87,14 +87,14 @@ namespace piranha
 			using POISSON_SERIES_BINOMIAL_ANCESTOR::realPower;
 			using POISSON_SERIES_BINOMIAL_ANCESTOR::negativeIntegerPower;
 			using POISSON_SERIES_BINOMIAL_ANCESTOR::rationalPower;
-			using common_poisson_series< POISSON_SERIES >::sub;
+			using CommonPoissonSeries< POISSON_SERIES >::sub;
 			NAMED_SERIES_BOILERPLATE(poisson_series, 0);
 	};
 }
 
 #define COMPLEX_POISSON_SERIES std::complex<POISSON_SERIES>
 
-#define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::polynomial_cf<Cf, Key0, Mult0, Trunc0>
+#define COMPLEX_POISSON_SERIES_POLYNOMIAL_CF piranha::PolynomialCf<Cf, Key0, Mult0, Trunc0>
 
 #define COMPLEX_POISSON_SERIES_TERM piranha::FourierSeriesTerm<std::complex<COMPLEX_POISSON_SERIES_POLYNOMIAL_CF>, Key1, '|'>
 
@@ -123,9 +123,9 @@ namespace std
 				public COMPLEX_POISSON_SERIES_NAMED_COMPLEX_TOOLBOX,
 				public COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR,
 				public piranha::BaseHarmonicSeries<1, 1, COMPLEX_POISSON_SERIES_H_DEGREE, COMPLEX_POISSON_SERIES>,
-				public piranha::named_harmonic_series<COMPLEX_POISSON_SERIES_H_DEGREE, COMPLEX_POISSON_SERIES>,
-				public piranha::series_multiplication< COMPLEX_POISSON_SERIES, Mult1, Trunc1>,
-				public piranha::common_poisson_series< COMPLEX_POISSON_SERIES>,
+				public piranha::NamedHarmonicSeries<COMPLEX_POISSON_SERIES_H_DEGREE, COMPLEX_POISSON_SERIES>,
+				public piranha::SeriesMultiplication< COMPLEX_POISSON_SERIES, Mult1, Trunc1>,
+				public piranha::CommonPoissonSeries< COMPLEX_POISSON_SERIES>,
 				public piranha::BasePowerSeries<0, 0, COMPLEX_POISSON_SERIES_DEGREE, COMPLEX_POISSON_SERIES>,
 				public piranha::NamedPowerSeries< COMPLEX_POISSON_SERIES_DEGREE, COMPLEX_POISSON_SERIES>,
 				public piranha::BaseSeriesSpecialFunctions< COMPLEX_POISSON_SERIES>,
@@ -147,7 +147,7 @@ namespace std
 			using COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR::negativeIntegerPower;
 			using COMPLEX_POISSON_SERIES_BINOMIAL_ANCESTOR::rationalPower;
 			using COMPLEX_POISSON_SERIES_BASE_COMPLEX_TOOLBOX::baseInvert;
-			using piranha::common_poisson_series< COMPLEX_POISSON_SERIES>::sub;
+			using piranha::CommonPoissonSeries< COMPLEX_POISSON_SERIES>::sub;
 			// Ctors.
 			NAMED_SERIES_BOILERPLATE(complex, 0);
 			COMPLEX_NAMED_SERIES_CTORS(POISSON_SERIES);

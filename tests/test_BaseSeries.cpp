@@ -19,9 +19,9 @@ using boost::test_tools::output_test_stream;
 // but to be able to test the primitive functions without all the overhead comming from a "real" polynomial.
 // This is similar to what we do for VectorKey tests.
 //
-// For baseMultBySeries properly to work one needs to inherit from series_multiplication. Really bad structure
+// For baseMultBySeries properly to work one needs to inherit from SeriesMultiplication. Really bad structure
 // this is e.g. needed for basePow otherwise we can't even multiply a base series with itself.
-// series_multiplication needs a Multiplier and a Truncator.
+// SeriesMultiplication needs a Multiplier and a Truncator.
 // Multipliers are BaseSeriesMultiplier
 //                 polynomial_multiplier       
 //                 poisson_series_multiplier 
@@ -170,7 +170,7 @@ BOOST_AUTO_TEST_CASE(BaseSeriesFromKeyTest)
 //void baseConstructFromPsym(const Psym&, const int, const ArgsTuple&);
  // Not sure that this is used anywhere explicitly
  // there is reference to it in named series via "constructFromPsym" which doesn't seem to be used
- // anywhere as well as in constructor polynomial_cf which also doesn;t seem to be in use
+ // anywhere as well as in constructor PolynomialCf which also doesn;t seem to be in use
  // i.e. purpose ?? and even is it correct (which requires a purpose)
  BOOST_AUTO_TEST_CASE(baseConstructFromPsym)
  {
@@ -746,7 +746,7 @@ BOOST_AUTO_TEST_CASE(BaseSeriesFromKeyTest)
  }
 
 
- // not sure what this is good for. requires series_multiplication and truncator
+ // not sure what this is good for. requires SeriesMultiplication and truncator
 // I don't think it is used anywhere. except to define split in cf_series and named_series
 // 
 //template <class Series, class ArgsTuple>
@@ -964,7 +964,7 @@ BOOST_AUTO_TEST_CASE(BaseSeriesFromKeyTest)
 
 
  //
- // requires series_multiplication to be usefull
+ // requires SeriesMultiplication to be usefull
  //
  //template <class T, class ArgsTuple>
  //Derived& baseMultBy(const T&, const ArgsTuple&);
@@ -1054,7 +1054,7 @@ BOOST_AUTO_TEST_CASE(BaseSeriesFromKeyTest)
  //Derived naturalPower(const std::size_t, const ArgsTuple&) const;
  BOOST_AUTO_TEST_CASE(naturalPower)
  {
-     //// not testable here. It requires inheritance from series_multiplication
+     //// not testable here. It requires inheritance from SeriesMultiplication
      //// series-multiplication in return requires Multiplicator and Truncator and so on.
      //// It seems to be easier to test through the final code if one doesn't want to restructure
      //// the whole code i.e. rewrite. the multiple inheritance and mutual dependencies kills it.

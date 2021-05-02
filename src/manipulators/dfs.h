@@ -34,7 +34,7 @@ namespace piranha
 namespace manipulators
 {
 	/// Fourier series manipulator.
-	typedef fourier_series
+	typedef FourierSeries
 	<
 		double_cf,
 		TrigVector<int16_t, 0>,

@@ -33,7 +33,7 @@ namespace piranha
 {
 	/// Named harmonic series toolbox.
 	template <class HDegree, class Derived>
-	class named_harmonic_series
+	class NamedHarmonicSeries
 	{
 		public:
 

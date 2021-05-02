@@ -34,7 +34,7 @@
 namespace piranha
 {
 	template <class Derived>
-	class common_fourier_series
+	class CommonFourierSeries
 	{
 		public:
 			std::complex<Derived> ei() const

@@ -33,15 +33,16 @@
 
 // 
 // for a series/polynomial to provide multiplication with another series even of its own type the 
-// implementing class has to inherit from series_multiplication. BaseSeries::baseMultiply depends on it.
-// i.e. why is it in a seperate class? Because it requires a Truncator? which is not necessary for a BaseSeries but BaseSeries wouldn't work without it. 
+// implementing class has to inherit from SeriesMultiplication. BaseSeries::baseMultiply depends on it.
+// 
+// TODO: i.e. why is it in a seperate class? Because it requires a Truncator? which is not necessary for a BaseSeries but BaseSeries wouldn't work without it. 
 // At least the NullTruncator is required. Set it up as default truncator??
 //
 // One also has to provide a Multiplier otherwise it doesn't know how to perform a mutliplcation/which algorithm to use
 namespace piranha
 {
 	template <class Derived, class Multiplier, class Truncator>
-	class series_multiplication
+	class SeriesMultiplication
 	{
 		public:
 

@@ -38,7 +38,7 @@
 namespace piranha
 {
 	template <int TrigPos, class Derived>
-	class jacobi_anger
+	class JacobiAnger
 	{
         static_assert(TrigPos >= 0, "Wrong trigonometric position in Jacobi-Anger toolbox.");
 		public:

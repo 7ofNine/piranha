@@ -41,8 +41,8 @@
 #include "common_polynomial_cf_toolbox.h"
 
 #define POLYNOMIAL_CF_TERM CF_SERIES_TERM(piranha::Monomial,'!')
-#define POLYNOMIAL_CF E0_SERIES(piranha::polynomial_cf)
-#define POLYNOMIAL_CF_BASE_ANCESTOR CF_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::polynomial_cf, '!', '?')
+#define POLYNOMIAL_CF E0_SERIES(piranha::PolynomialCf)
+#define POLYNOMIAL_CF_BASE_ANCESTOR CF_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::PolynomialCf, '!', '?')
 #define POLYNOMIAL_CF_CF_ANCESTOR piranha::CfSeries< POLYNOMIAL_CF_TERM, POLYNOMIAL_CF>
 #define POLYNOMIAL_CF_BINOMIAL_ANCESTOR piranha::BinomialExponentiation< POLYNOMIAL_CF>
 #define POLYNOMIAL_CF_DEGREE typename POLYNOMIAL_CF_TERM::KeyType::DegreeType
@@ -52,7 +52,7 @@ namespace piranha
 {
 	// NOTE: this assumes that exponents are in position 0 of arguments tuple. Can be made configurable at a later stage.
 	template <E0_SERIES_TP_DECL>
-	class polynomial_cf:
+	class PolynomialCf:
 				public POLYNOMIAL_CF_BASE_ANCESTOR,
 				public POLYNOMIAL_CF_CF_ANCESTOR,
 				public POLYNOMIAL_CF_BINOMIAL_ANCESTOR,
@@ -60,7 +60,7 @@ namespace piranha
 				public CommonPolynomialCf< POLYNOMIAL_CF>,
 				public BasePowerSeries<0, 1, POLYNOMIAL_CF_DEGREE, POLYNOMIAL_CF>,
 				public CfPowerSeries< POLYNOMIAL_CF_DEGREE, POLYNOMIAL_CF>,
-				public series_multiplication< POLYNOMIAL_CF, Multiplier, Truncator>,
+				public SeriesMultiplication< POLYNOMIAL_CF, Multiplier, Truncator>,
 				public BaseSeriesSpecialFunctions< POLYNOMIAL_CF>,
 				public CfSeriesSpecialFunctions< POLYNOMIAL_CF>
 	{
@@ -70,10 +70,10 @@ namespace piranha
 			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::negativeIntegerPower;
 			using POLYNOMIAL_CF_BINOMIAL_ANCESTOR::rationalPower;
 
-			CF_SERIES_CTORS(polynomial_cf);
+			CF_SERIES_CTORS(PolynomialCf);
 
 			template <class ArgsTuple>
-			explicit polynomial_cf(const Psym &p, const int &n, const ArgsTuple &a)
+			explicit PolynomialCf(const Psym &p, const int &n, const ArgsTuple &a)
             {
 				this->baseConstructFromPsym(p, n, a);
 			}
@@ -81,8 +81,8 @@ namespace piranha
 }
 
 #define COMPLEX_POLYNOMIAL_CF_TERM COMPLEX_CF_SERIES_TERM(piranha::Monomial, '!')
-#define COMPLEX_POLYNOMIAL_CF COMPLEX_E0_SERIES(piranha::polynomial_cf)
-#define COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR COMPLEX_CF_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::polynomial_cf, '!', '?')
+#define COMPLEX_POLYNOMIAL_CF COMPLEX_E0_SERIES(piranha::PolynomialCf)
+#define COMPLEX_POLYNOMIAL_CF_BASE_ANCESTOR COMPLEX_CF_SERIES_BASE_ANCESTOR(piranha::Monomial, piranha::PolynomialCf, '!', '?')
 #define COMPLEX_POLYNOMIAL_CF_CF_ANCESTOR piranha::CfSeries< COMPLEX_POLYNOMIAL_CF_TERM, COMPLEX_POLYNOMIAL_CF>
 #define COMPLEX_POLYNOMIAL_CF_BASE_COMPLEX_TOOLBOX piranha::BaseSeriesComplex< POLYNOMIAL_CF>
 #define COMPLEX_POLYNOMIAL_CF_CF_COMPLEX_TOOLBOX piranha::CfSeriesComplex< POLYNOMIAL_CF>
@@ -103,7 +103,7 @@ namespace std
 				public piranha::CommonPolynomialCf< COMPLEX_POLYNOMIAL_CF>,
 				public piranha::BasePowerSeries<0, 1, COMPLEX_POLYNOMIAL_CF_DEGREE, COMPLEX_POLYNOMIAL_CF>,
 				public piranha::CfPowerSeries< COMPLEX_POLYNOMIAL_CF_DEGREE, COMPLEX_POLYNOMIAL_CF>,
-				public piranha::series_multiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator>,
+				public piranha::SeriesMultiplication< COMPLEX_POLYNOMIAL_CF, Multiplier, Truncator>,
 				public piranha::BaseSeriesSpecialFunctions< COMPLEX_POLYNOMIAL_CF>,
 				public piranha::CfSeriesSpecialFunctions< COMPLEX_POLYNOMIAL_CF>
 	{

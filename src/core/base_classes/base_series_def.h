@@ -218,7 +218,7 @@ namespace piranha
 			void baseSwap(Derived &);
 
             //
-            // not sure what this is good for. requires series_multiplication and truncator
+            // not sure what this is good for. requires SeriesMultiplication and truncator
             // I don't think it is used anywhere. except to define split in cf_series and named_series
             // 
 			template <class Series, class ArgsTuple>
@@ -322,7 +322,7 @@ namespace piranha
 			Derived &baseSubtract(const T &, const ArgsTuple &);
 
             //
-            // requires series_multiplication to be usefull
+            // requires SeriesMultiplication to be usefull
             //
 			template <class T, class ArgsTuple>
 			Derived &baseMultBy(const T &, const ArgsTuple &);

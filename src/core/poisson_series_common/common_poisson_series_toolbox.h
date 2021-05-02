@@ -45,10 +45,11 @@
 
 namespace piranha
 {
-	// NOTE: this seems to be valid only for specific position of arguments. Document. Maybe put static const int "trig_index" or something like
+	// TODO: this seems to be valid only for specific position of arguments. Document. Maybe put static const int "trig_index" or something like
 	// that, as we do for power series?
+
 	template <class Derived>
-	class common_poisson_series
+	class CommonPoissonSeries
 	{
 		public:
 			std::complex<Derived> ei() const

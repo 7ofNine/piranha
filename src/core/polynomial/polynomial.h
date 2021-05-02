@@ -66,7 +66,7 @@ namespace piranha
 				public POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR, //piranha::NamedPolynomial<piranha::Polynomial<Cf,Key,Multiplier,Truncator> >
 				public BasePowerSeries<0, 1, POLYNOMIAL_DEGREE, POLYNOMIAL>,
 				public NamedPowerSeries<POLYNOMIAL_DEGREE, POLYNOMIAL>,
-				public series_multiplication< POLYNOMIAL, Multiplier, Truncator>,
+				public SeriesMultiplication< POLYNOMIAL, Multiplier, Truncator>,
 				public BaseSeriesSpecialFunctions< POLYNOMIAL>,
 				public NamedSeriesSpecialFunctions< POLYNOMIAL>,
 				boost::ring_operators < POLYNOMIAL,
@@ -120,7 +120,7 @@ namespace std
 				public COMPLEX_POLYNOMIAL_BINOMIAL_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_BASE_POLYNOMIAL_ANCESTOR,
 				public COMPLEX_POLYNOMIAL_NAMED_POLYNOMIAL_ANCESTOR,
-				public piranha::series_multiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator>,
+				public piranha::SeriesMultiplication< COMPLEX_POLYNOMIAL, Multiplier, Truncator>,
 				public piranha::BasePowerSeries<0, 1, COMPLEX_POLYNOMIAL_DEGREE, COMPLEX_POLYNOMIAL>,
 				public piranha::NamedPowerSeries< COMPLEX_POLYNOMIAL_DEGREE, COMPLEX_POLYNOMIAL>,
 				public piranha::BaseSeriesSpecialFunctions< COMPLEX_POLYNOMIAL>,

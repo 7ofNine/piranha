@@ -94,7 +94,7 @@ namespace piranha
 	//
 	// Simple composition of coefficient and key classes.
 	//
-	// Cf:   coefficients for series term e.g. double_cf, polynomial_cf
+	// Cf:   coefficients for series term e.g. double_cf, PolynomialCf
 	// Key:  key i.e. e.g. ExpoVector<boost::int16_t, 0>, TrigVector<boost::int16_t, 1>,
 	//       last template parameter is actually the echelon level.
 	// Separator: print/read separator between coefficiemt and key e.g.:  '|'
