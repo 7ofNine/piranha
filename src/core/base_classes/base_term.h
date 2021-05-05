@@ -38,7 +38,7 @@
 
 namespace piranha
 {
-	template <int N, class Term>
+	template <unsigned int N, class Term>
 	class BaseTermGetHelper
 	{
 		public:
@@ -124,7 +124,7 @@ namespace piranha
 
 			// Meta-programming to get the type of the component.
 			// Is N actually used for anything?
-			template <int N>
+			template <unsigned int N>
 			struct Component 
 			{
 				typedef typename BaseTermGetHelper<N, BaseTerm>::Type Type;
@@ -184,14 +184,14 @@ namespace piranha
 			BaseTerm(const CfType &cf, const KeyType &key): cf(cf), key(key) {}
 
 
-			template <int N>
+			template <unsigned int N>
 			typename BaseTermGetHelper<N, BaseTerm>::Type &get() 
 			{
 				static_assert(N == 0 || N == 1);
 				return BaseTermGetHelper<N, BaseTerm>::run(*this);
 			}
 
-			template <int N>
+			template <unsigned int N>
 			const typename BaseTermGetHelper<N, BaseTerm>::Type &get() const 
 			{
 				static_assert(N == 0 || N == 1);

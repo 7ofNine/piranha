@@ -636,7 +636,7 @@ namespace piranha
 	}
 
 
-	/// Flatten series.
+	// Flatten series.
 	/**
 	 * At echelon level 0, this method will return a vector of series each one consisting of a single term of the original series.
 	 * For echelon levels above 0, each coefficient series will also consist of only one term. This method, in other words, flattens

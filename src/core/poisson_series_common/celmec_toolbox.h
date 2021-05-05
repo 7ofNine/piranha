@@ -26,6 +26,7 @@
 #include <string>
 
 #include "../Psym.h"
+#include "../poisson_series/poisson_series.h"
 
 namespace piranha
 {
@@ -35,7 +36,7 @@ namespace piranha
 	 * special functions toolbox. Derived must be a Poisson series with
 	 * polynomial arguments in slot 0 of the arguments tuple.
 	 */
-	template <class Derived>
+	template <class Derived>  //requires(std::derived_from<Derived, PoissonSeries>) all the template parameters for PoissonSeries are needed. Mmh.
 	class celmec
 	{
 		public:

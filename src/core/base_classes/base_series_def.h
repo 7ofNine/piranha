@@ -143,47 +143,47 @@ namespace piranha
 
 		public:
 
-			/// Alias for term type.
+			// Alias for term type.
 			typedef Term TermType;
 
-			/// Term container.
-			/**
-			 * The underlying term container is a plain boost::unordered set. Term types must specialise the boost::hash class, which
-			 * will be used to provide the hash values for terms.
-			 */
+			// Term container.
+			//
+			// The underlying term container is a plain boost::unordered set. Term types must specialise the boost::hash class, which
+			// will be used to provide the hash values for terms.
+			//
 			typedef typename SeriesContainer<TermType>::Type ContainerType;
 
-			/// Echelon level.
+			// Echelon level.
 			constexpr static int echelonLevel = EchelonLevelImpl<typename TermType::CfType>();
 
-			/// Type resulting from series evaluation.
-			/**
-			 * Determined automatically at compile time. Will be double in case of series with scalar coefficients,
-			 * std::complex<double> in case of series with complex coefficients.
-			 */
+			// Type resulting from series evaluation.
+			//
+			// Determined automatically at compile time. Will be double in case of series with scalar coefficients,
+			// std::complex<double> in case of series with complex coefficients.
+			///
 			typedef typename TermEvalTypeDeterminer<Term>::Type EvalType;
 
 			/// Term separator in textual series representation.
 			static const char separator = Separator;
 
-			/// Const iterator over the series' terms.
+			// Const iterator over the series' terms.
 			typedef typename ContainerType::const_iterator const_iterator;
 
-			/// Size type.
+			// Size type.
 			typedef typename ContainerType::size_type size_type;
 
-			/** @name Series properties. */
-			//@{
+			// Series 
+			//
 			size_type length()       const;
 			bool      empty()        const;
 			bool      isSingleCf()   const;
 			size_type atoms()        const;
-			//@}
+			//
 
 
 		//protected:
-			/** @name Construction/destruction. */
-			//@{
+			// @name Construction/destruction. 
+			//
             //defined: base_series_io.h
 			template <class Key, class ArgsTuple>
 			static Derived baseSeriesFromKey(const Key &, const ArgsTuple &);
@@ -198,10 +198,10 @@ namespace piranha
 			void baseConstructFromPsym(const Psym &, const int, const ArgsTuple &);
 
 			~BaseSeries();
-			//@}
+			//
 
-			/** @name Series manipulation. */
-			//@{
+			// @name Series manipulation.
+			//
 			void eraseTerm(const const_iterator &);
 
 			void clearTerms();

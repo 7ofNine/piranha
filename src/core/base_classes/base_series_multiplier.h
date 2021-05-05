@@ -54,30 +54,26 @@ namespace piranha
 	 * This class is meant to be extended to build specific multipliers.
 	 */
 	template <class Series1, class Series2, class ArgsTuple, class Truncator, class Derived>
+		requires(std::is_same_v<typename Series1::TermType::KeyType, typename Series2::TermType::KeyType>)
 	class BaseSeriesMultiplier
 	{
-	//		friend class base_insert_multiplication_result;
-
 		protected:
 			// Alias for term type of first input series and return value series.
 			typedef typename Series1::TermType TermType1;
 			// Alias for term type of second input series.
 			typedef typename Series2::TermType TermType2;
 
-            static_assert((std::is_same_v<typename TermType1::KeyType, typename TermType2::KeyType>), "Key type mismatch in base multiplier.");
-
-			/// Compute block size for multiplication.
+			// Compute block size for multiplication.
 			/**
 			 * Resulting block size depends on the cache memory available, and will always be in the [16,8192] range. N is
 			 * the size of the base storage unit type used to store the result of the multiplication (e.g., coefficient type in vector coded, coded hash table
 			 * term in the sparse hashed multiplication, etc.).
 			 */
-			template <std::size_t N>
+			template <std::size_t N> requires(N > 0)
 			static std::size_t computeBlockSize()
 			{
 				// NOTE: this function is used typically considering only the output storage requirements, since storage of input series
 				//       will be a small fraction of storage for the output series.
-                static_assert(N > 0, "");
 
 				const std::size_t shift = boost::numeric_cast<std::size_t>(
 					        std::log(std::max<double>(16., std::sqrt(static_cast<double>((settings::cache_size * 1024) / N)))) / std::log(2.) - 1

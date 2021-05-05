@@ -37,10 +37,10 @@ namespace piranha
 	/**
 	 * N represents the position of trigonometric arguments in the arguments tuple.
 	 */
-	template <int N, class Derived>
+	template <unsigned int N, class Derived>
 	class BaseFourierSeries
 	{
-        static_assert(N >= 0, "Invalid arguments position in base Fourier series toolbox.");
+     //   static_assert(N >= 0, "Invalid arguments position in base Fourier series toolbox.");
 
 		//protected:
 		public:

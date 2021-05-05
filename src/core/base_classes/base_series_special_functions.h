@@ -178,7 +178,7 @@ namespace piranha
 			}
 
 
-			/// Bessel function of the first kind of integer order.
+			// Bessel function of the first kind of integer order.
 			template <class ArgsTuple>
 			Derived baseBesselJ(const int order, const ArgsTuple &argsTuple) const 
 			{

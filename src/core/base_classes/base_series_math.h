@@ -497,10 +497,10 @@ namespace piranha
 	}
 
 
-	/// Exponentiation to natural number.
-	/**
-	 * Exponentiation by squaring is used internally.
-	 */
+	// Exponentiation to natural number.
+	//
+	// Exponentiation by squaring is used internally.
+	//
 	template <PIRANHA_BASE_SERIES_TP_DECL>
 	template <class ArgsTuple>
 	inline Derived BaseSeries<PIRANHA_BASE_SERIES_TP>::naturalPower(const std::size_t n, const ArgsTuple &argsTuple) const

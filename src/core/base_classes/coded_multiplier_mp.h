@@ -104,11 +104,11 @@ namespace piranha {
         };
 
         // Default value handler class. Suitable for use with POD integral types.
-        template <class T>
+        template <class T> 
         struct cm_value_handler
         {
                 // Make really sure we use this only with integral types.
-        static_assert(std::is_integral_v<T>, "");
+   //     static_assert(std::is_integral_v<T>, "");
                 // Assign to the minmax vector the values in the array key.
                 template <class Key>
                 void assign(std::vector<boost::numeric::interval<T> > &minmax, const Key &key)

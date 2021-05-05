@@ -42,7 +42,7 @@ namespace piranha
 	{
 		public:
 
-			/// Bessel function of the first kind.
+			// Bessel function of the first kind.
 			Derived besselJ(const int &order) const 
             {
 				Derived retval(derived_const_cast->baseBesselJ(order, derived_const_cast->arguments()));
@@ -52,7 +52,7 @@ namespace piranha
 			}
 
 
-			/// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
+			// Partial derivative with respect to the argument of Bessel function of the first kind of integer order.
 			Derived dbesselJ(const int &order) const 
             {
 				Derived retval(derived_const_cast->baseDBesselJ(order, derived_const_cast->arguments()));
@@ -127,21 +127,21 @@ namespace piranha
 			}
 
 
-			/// Associated Legendre Function of degree n and order m.
-			/**
-			 * The additional input parameter self_qc is the quadratic conjugate of self, i.e. sqrt(1 - self ** 2).
-			 * It will be used when m is odd.
-			 */
+			// Associated Legendre Function of degree n and order m.
+			//
+			// The additional input parameter self_qc is the quadratic conjugate of self, i.e. sqrt(1 - self ** 2).
+			// It will be used when m is odd.
+			//
 			Derived legendrePnm(const int &n, const int &m, const Derived &self_qc) const
 			{
 				return impl_legendrePnm(n, m, &self_qc);
 			}
 
 
-			/// Legendre polynomial.
-			/**
-			 * Equivalent to legendrePnm(n,0).
-			 */
+			// Legendre polynomial.
+			//
+			// Equivalent to legendrePnm(n,0).
+			//
 			Derived legendrePn(const int &n) const
 			{
 				if (n < 0) {
@@ -263,14 +263,16 @@ namespace piranha
 			Derived impl_legendrePnm(const int &n_, const int &m_, const Derived *self_qc) const
 			{
 				// Take care of negative degree and/or order.
-				const int n = (n_ >= 0) ? n_ : (-n_ - 1), m = (m_ >= 0) ? m_ : -m_;
+				const int n = (n_ >= 0) ? n_ : (-n_ - 1);
+				const int m = (m_ >= 0) ? m_ : -m_;
 				Derived retval;
 				if (m > n) 
                 {
 					return retval;
 				}
 
-				std::vector<mp_rational> a_list, b_list;
+				std::vector<mp_rational> a_list;
+				std::vector<mp_rational> b_list;
 				a_list.push_back(mp_rational(-n));
 				a_list.push_back(mp_rational(n) + 1);
 				b_list.push_back(mp_rational(1));

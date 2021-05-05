@@ -49,13 +49,13 @@ namespace piranha
 	// T: type of key elements e.g boost::int16_t
 	// Position: echelon level, determines which key it is. Each level has it's own key
 	// Derived:  Derived class, for CRTP, static polymorphism
-	template <class T, int Position, class Derived>
+	template <class T, unsigned int Position, class Derived> 
 	class VectorKey
 	{
 #ifdef DEBUG
         int TPosition = Position;
 #endif
-        static_assert(Position >= 0, "Wrong position.");
+        //static_assert(Position >= 0, "Wrong position.");
 
 			// The index into the vector is the same as into the argDescr. This is how the the symbols get
 		    // connected to the related numeric factors/exponents

@@ -48,7 +48,7 @@ namespace piranha
 
 					GetType(const Series1 &s1, const Series2 &s2, Series1 &retval, const ArgsTuple &argsTuple):ancestor(s1, s2, retval, argsTuple) {}
 
-					/// Perform multiplication and place the result into m_retval.
+					// Perform multiplication and place the result into m_retval.
 					void perform_multiplication()
 					{
 						// Cache term pointers.

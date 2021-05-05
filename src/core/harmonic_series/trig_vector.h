@@ -480,11 +480,11 @@ namespace piranha
 			}
 
 
-			/// Harmonic degree of the variables at specified positions pos.
-			/**
-			 * pos_tuple must be a tuple of vectors of (bool,std::size_t) pairs.
-             * calculate the harmonic degree os the selected (posTuple) factors
-			 */
+			// Harmonic degree of the variables at specified positions pos.
+			//
+			// pos_tuple must be a tuple of vectors of (bool,std::size_t) pairs.
+            // calculate the harmonic degree os the selected (posTuple) factors
+			//
 			template <class PosTuple>
 			HarmonicDegreeType partialHarmonicDegree(const PosTuple &posTuple) const
 			{
@@ -506,20 +506,20 @@ namespace piranha
 			}
 
 
-			/// Minimum total harmonic degree.
-			/**
-			 * Provided for use within the harmonic series toolbox, and defined to be equivalent to harmonicDegree().
-			 */
+			// Minimum total harmonic degree.
+			//
+			// Provided for use within the harmonic series toolbox, and defined to be equivalent to harmonicDegree().
+			//
 			HarmonicDegreeType harmonicOrder() const
 			{
 				return harmonicDegree();
 			}
 
 
-			/// Minimum total harmonic degree of the variables at specified positions pos.
-			/**
-			 * Provided for use within the harmonic series toolbox, and defined to be equivalent to partialHarmonicDegree().
-			 */
+			// Minimum total harmonic degree of the variables at specified positions pos.
+			//
+			// Provided for use within the harmonic series toolbox, and defined to be equivalent to partialHarmonicDegree().
+			//
 			template <class PosTuple>
 			HarmonicDegreeType partialHarmonicOrder(const PosTuple &posSize) const
 			{
@@ -527,10 +527,10 @@ namespace piranha
 			}
 
 
-			/// Norm.
-			/**
-			 * The norm of a trigonometric part is always one.
-			 */
+			// Norm.
+			//
+			// The norm of a trigonometric part is always one.
+			//
             // what is the ArgsTuple good for? Just a verification???
 			template <class ArgsTuple>
 			double norm(const ArgsTuple &argsTuple) const
@@ -541,12 +541,12 @@ namespace piranha
 			}
 
 
-			/// Time evaluation of arguments.
-			/**
-			 * Returns the value assumed by the linear combination of arguments at time t.
-			 * @param[in] t double time of the evaluation.
-			 * @param[in] v vector of piranha::Psym pointers.
-			 */
+			// Time evaluation of arguments.
+			//
+			// Returns the value assumed by the linear combination of arguments at time t.
+			// @param[in] t double time of the evaluation.
+			// @param[in] v vector of piranha::Psym pointers.
+			//
 			template <class ArgsTuple>
 			double eval(const double t, const ArgsTuple &argsTuple) const
 			{
@@ -573,11 +573,11 @@ namespace piranha
 			}
 
 
-			/// Sign.
-			/**
-			 * Return the sign of the first non-zero element of the combination. Zero is considered positive.
-			 * This function is used to test for canonical form in piranha::poisson_series_term.
-			 */
+			// Sign.
+			//
+			// Return the sign of the first non-zero element of the combination. Zero is considered positive.
+			// This function is used to test for canonical form in piranha::poisson_series_term.
+			//
 			short int sign() const
 			{
 				const size_type w = this->size();
@@ -613,7 +613,7 @@ namespace piranha
 			}
 
 
-			/// All multipliers are zero and flavour is sine.
+			// All multipliers are zero and flavour is sine.
             // ArgsTuple is nowhere used!!!
 			template <class ArgsTuple>
 			bool isIgnorable(const ArgsTuple &) const
@@ -622,7 +622,7 @@ namespace piranha
 			}
 
 
-			/// Equality test.
+			// Equality test.
 			bool operator==(const TrigVector &trigVector) const
 			{
 				return (flavour == trigVector.flavour && this->elementsEqualTo(trigVector));
@@ -639,7 +639,7 @@ namespace piranha
                 return result;
             }
 
-			/// Less than.
+			// Less than.
 			bool operator<(const TrigVector &trigVector) const
 			{
                 //sin before cos

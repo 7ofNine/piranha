@@ -87,11 +87,11 @@ namespace piranha
 			std::complex<mpq_cf> ei(const ArgsTuple &) const;
 	};
 
-	/// is_ring_exact type trait specialisation for mpq_cf.
+	// is_ring_exact type trait specialisation for mpq_cf.
 	template <>
 	struct is_ring_exact<mpq_cf>: boost::true_type {};
 
-	/// is_divint_exact type trait specialisation for mpq_cf.
+	// is_divint_exact type trait specialisation for mpq_cf.
 	template <>
 	struct is_divint_exact<mpq_cf>: boost::true_type {};
 }
