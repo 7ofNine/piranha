@@ -26,7 +26,7 @@
 
 namespace piranha
 {
-	/// Coefficient power series toolbox.
+	// Coefficient power series toolbox.
 	template <class Degree, class Derived>
 	class CfPowerSeries
 	{

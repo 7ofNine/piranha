@@ -32,26 +32,23 @@
 namespace piranha
 {
 	/// Power series toolbox.
-	template <int ExpoArgsPosition, int ExpoTermPosition, class Degree, class Derived>
+	template <unsigned int ExpoArgsPosition, int ExpoTermPosition, class Degree, class Derived> requires(ExpoArgsPosition <= PIRANHA_MAX_ECHELON_LEVEL)
 	class BasePowerSeries
 	{
-        static_assert(ExpoArgsPosition >= 0, "Invalid exponent argument position.");
-
-
             //compare functor for the total exponential degree
 			template <class Term>
 			class CompareDegree
 			{
                 public:
-				explicit CompareDegree(VectorPsym const & s) :symbols(s) {}
+					explicit CompareDegree(VectorPsym const& syms) :symbols(syms) {}
 
-				bool operator()(Term const &term1, Term const &term2) const 
+				bool operator()(Term const &term1, Term const &term2) const
                 {
 					return (term1.template get<ExpoTermPosition>().degree(symbols) < term2.template get<ExpoTermPosition>().degree(symbols));
 				}
 
 				private:
-					VectorPsym const & symbols;
+					VectorPsym const & symbols; //? why are they kept localy??
 			};
 
 
@@ -60,9 +57,9 @@ namespace piranha
 			class CompareOrder
 			{
 				public:
-					explicit CompareOrder(VectorPsym const & s) :symbols(s) {}
+					explicit CompareOrder(VectorPsym const& syms):symbols(syms) {}
 
-					bool operator()(Term const &term1, Term const &term2) const 
+					bool operator()(Term const &term1, Term const &term2) const
 					{
 						return (term1.template get<ExpoTermPosition>().order(symbols) < term2.template get<ExpoTermPosition>().order(symbols));
 					}
@@ -92,9 +89,9 @@ namespace piranha
 			{
                 public:
 
-				ComparePartialDegree(PositionTuple const &p):positionTuple(p) {}
+					ComparePartialDegree(PositionTuple const& p) :positionTuple(p) {}
 
-				bool operator()(Term const &term1, Term const &term2) const 
+				bool operator()(Term const &term1, Term const &term2) const
                 {
 					return (term1.template get<ExpoTermPosition>().partialDegree(positionTuple) < term2.template get<ExpoTermPosition>().partialDegree(positionTuple));
 				}
@@ -110,9 +107,9 @@ namespace piranha
 			{
                 public:
 
-				ComparePartialOrder(PositionTuple const &p):positionTuple(p) {}
+					ComparePartialOrder(PositionTuple const& p) :positionTuple(p) {}
 
-				bool operator()(Term const &term1, Term const &term2) const 
+				bool operator()(Term const &term1, Term const &term2) const
                 {
 					return (term1.template get<ExpoTermPosition>().partialOrder(positionTuple) < term2.template get<ExpoTermPosition>().partialOrder(positionTuple));
 				}
@@ -143,10 +140,10 @@ namespace piranha
 			}
 
 
-			/// Get the order of the power series.
-			/**
-			 * The order is defined as the minimum degree of the terms composing the series.
-			 */
+			// Get the order of the power series.
+			//
+			// The order is defined as the minimum degree of the terms composing the series.
+			//
 			Degree order(VectorPsym const & symbols) const 
             {
 				if (derived_const_cast->empty()) 
@@ -171,7 +168,7 @@ namespace piranha
 			}
 
 		//protected:
-			/// Get the degree of the power series for specific variables.
+			// Get the degree of the power series for specific variables.
 			template <class PositionTuple>
 			Degree basePartialDegree(PositionTuple const &positionTuple) const 
             {
@@ -183,19 +180,14 @@ namespace piranha
 				auto begin = derived_const_cast->begin();
 				auto end = derived_const_cast->end();
 
-				//for (Derived::const_iterator it = begin; it ++; it != end)
-				//{
-				//	auto it2 = it;
-				//}
-				//const typename Derived::const_iterator result(std::max_element(derived_const_cast->begin(), derived_const_cast->end(),
-					const typename Derived::const_iterator result(std::max_element(begin, end, 
+				const typename Derived::const_iterator result(std::max_element(begin, end, 
                                                               ComparePartialDegree<typename Derived::TermType, PositionTuple>(positionTuple) ));
 
 				return result->template get<ExpoTermPosition>().partialDegree(positionTuple);
 			}
 
 
-			/// Get the mininum degree of the power series for specific variables.
+			// Get the mininum degree of the power series for specific variables.
 			template <class PositionTuple>
 			Degree basePartialOrder(PositionTuple const &positionTuple) const 
             {
