@@ -58,7 +58,7 @@ namespace piranha
                 static_assert(sizeof(char) == sizeof(bool), "Wrong char-bool size ratio.");
                 // TODO: where is this used? Find out and wipe it.
                 static_assert(sizeof(std::size_t) == sizeof(void *), "std::size_t and void * are not the same size.");
-                static_assert(__PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
+                static_assert(PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
                 static_assert(settings::cache_size > 0 && lg<settings::cache_size>::value > 1, "Invalid value for cache size.");
                 // Startup report.
                 std::cout << "Piranha version: " << "@PIRANHA_VERSION_STRING@" << std::endl;
