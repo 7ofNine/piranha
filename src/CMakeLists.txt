@@ -37,15 +37,27 @@ else()
 	MESSAGE(FATAL "Couldn't find Boost libraries")
 endif()
 
+# mp++.
+# NOTE: put the minimum version in a variable
+# so that we can re-use it in the config-file package
+# machinery below.
+set (PIRANHA_MIN_MPPP_VERSION 0.22)
+find_package(mp++ REQUIRED)
+if(${mp++_VERSION} VERSION_LESS ${PIRANHA_MIN_MPPP_VERSION})
+    message(FATAL_ERROR "The minimum mp++ version required by obake is ${_OBAKE_MIN_MPPP_VERSION}, but version ${mp++_VERSION} was found instead.")
+endif()
+
+
 ADD_COMPILE_OPTIONS(/wd4251)   # suppress dll interface warnings for stl items. 
+
 # define target piranha.dll
 ADD_LIBRARY(piranha SHARED ${SRC_LIST} ${SRC_LIST_HEADERS}) # define target piranha.dll
 set_property(TARGET piranha PROPERTY CXX_STANDARD_REQUIRED YES)
 
-TARGET_INCLUDE_DIRECTORIES(piranha PRIVATE ${Boost_INCLUDE_DIR})
+TARGET_INCLUDE_DIRECTORIES(piranha PRIVATE ${Boost_INCLUDE_DIR} $<INSTALL_INTERFACE:include>)
 SET_PROPERTY(TARGET piranha PROPERTY COMPILE_DEFINITIONS _PIRANHA_DLL_EXPORT_API) # The dll exports its intefraces
 #SET_PROPERTY(TARGET piranha PROPERTY CXX_STANDARD 17)
-TARGET_LINK_LIBRARIES(piranha ${MANDATORY_LIBRARIES} Boost::thread)
+TARGET_LINK_LIBRARIES(piranha ${MANDATORY_LIBRARIES} Boost::thread mp++::mp++)
 
 # copy libraries so that we actually can run the tests and/or the single projects
 if(BUILD_TESTS)

@@ -23,6 +23,7 @@
 
 #include "../exceptions.h"
 #include "../mp.h"
+#include "mp++/mp++.hpp"
 
 #include <boost/numeric/conversion/cast.hpp>
 
@@ -91,11 +92,11 @@ namespace piranha
 	};
 
 
-	//// Default behaviour is to refuse to do anything is resulting expo vector is not unity.
+	// Default behaviour is to refuse to do anything is resulting expo vector is not unity.
 	template <typename T>
 	struct ExpoVectorPowRational
 	{
-		template <class ExpoVector>
+		template <typename ExpoVector>
 		static ExpoVector run(const ExpoVector &expoVector, const mp_rational &q)
 		{
 			typedef typename ExpoVector::size_type  size_type;

@@ -33,37 +33,37 @@ namespace piranha
         #define derived_const_cast static_cast<Derived const *>(this)
         #define derived_cast       static_cast<Derived *>(this)
 
-        /// Toolbox of useful functions for wrapping GMP-like classes.
-        /**
-         * CRTP-based.
-         */
+        // Toolbox of useful functions for wrapping GMP-like classes.
+        //
+        // CRTP-based.
+        //
         template <class T, class Derived>
         class gmp_toolbox {
 
                 public:
 
-            /// Absolute value.
+            // Absolute value.
                         Derived abs() const
                         {
                                 return (((*derived_const_cast) >= 0) ? (*derived_const_cast) : -(*derived_const_cast));
                         }
 
-                        /// Const reference to internal type.
+                        // Const reference to internal type.
                         const T &get_internal() const
                         {
                                 return derived_const_cast->m_value;
                         }
 
-                        /// Print to stream.
+                        // Print to stream.
                         std::ostream &print(std::ostream &s) const
                         {
                                 return (s << derived_const_cast->m_value);
                         }
 
-                        /// Rising factorial.
-                        /**
-                         * @see piranha::generic_r_factorial.
-                         */
+                        // Rising factorial.
+                        //
+                        // @see piranha::generic_r_factorial.
+                        //
                         Derived r_factorial(const int &n) const
                         {
                                 return generic_r_factorial(*derived_const_cast,n);
@@ -95,6 +95,7 @@ namespace piranha
         #undef derived_const_cast
         #undef derived_cast
 
+
         // Function for generic exponentiation to rational.
         template <class T, class Rational>
         inline T rat_pow(const T &x, const Rational &q)
@@ -103,11 +104,12 @@ namespace piranha
                 return x.pow(n).root(q.get_den().to_int());
         }
 
-        /// Function for generic double factorial of multiprecision integer class.
-        /**
-         * @throws value_error if n is negative.
-         * @throws std::overflow_error if n cannot be converted to int type.
-         */
+
+        // Function for generic double factorial of multiprecision integer class.
+        //
+        // @throws value_error if n is negative.
+        // @throws std::overflow_error if n cannot be converted to int type.
+        //
         template <class Integer>
         inline Integer generic_double_factorial(const Integer &n)
         {

@@ -29,6 +29,7 @@
 #include <string>
 
 #include "math.h"
+
 // For now we support only GMP.
 #include "mp/piranha_gmp.h"
 
@@ -145,7 +146,7 @@ namespace piranha
 		return false;
 	}
 
-	/// Bessel function of the first kind.
+	// Bessel function of the first kind.
 	inline mp_rational besselJ(const int &order, const mp_rational &arg)
 	{
 		if (arg != 0) {
