@@ -5,9 +5,8 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp.template ${CMAKE_CURRENT
 SET(SRC_LIST ${SRC_LIST} degree_truncator.cpp
                          norm_truncator.cpp
                          math.cpp
-                         settings.cpp
-                         Psym.cpp
                          stats.cpp
+                         settings.cpp
                          settings.cpp.template
 )
 

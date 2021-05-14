@@ -54,16 +54,16 @@ namespace piranha
 
 				typedef typename Derived::const_iterator const_iterator;
 				// Make sure that the position tuple contains just one symbol in position N and that
-				// the symbol is actually present.
+				// the symbol is actually present. and that how it was verified by the caller in named_fourier_series
 				PIRANHA_ASSERT(posTuple.template get<N>().size() == 1);
 				PIRANHA_ASSERT(posTuple.template get<N>()[0].first);
 				Derived retval;
 				const std::size_t    pos  = posTuple.template get<N>()[0].second;
 				const const_iterator  itf  = DerivedConstCast->end();
 
-				for (const_iterator it = DerivedConstCast->begin(); it != itf; ++it) 
+				for (const_iterator it = DerivedConstCast->begin(); it != itf; ++it) // iterating through the terms of the series
                 {
-					if (it->key[pos] == 0) 
+					if (it->key[pos] == 0)  // in the position determined the term considered doesn't have the name present. would give infinite during integration. This term becomes a secular term
                     {
 						PIRANHA_THROW(value_error,"cannot procede with integration, one of the terms of the"
 							          " Fourier series does not contain the symbol in its trigonometric arguments.");
@@ -72,11 +72,11 @@ namespace piranha
 					typename Derived::TermType tmp(*it);
 					if (it->key.getFlavour()) 
                     {
-						tmp.cf.divideBy(  it->key[pos], argsTuple);
+						tmp.cf.divideBy(  it->key[pos], argsTuple);  // cos integrated gives sin
 
 					} else 
                     {
-						tmp.cf.divideBy( -it->key[pos], argsTuple);
+						tmp.cf.divideBy( -it->key[pos], argsTuple); // sin integrated gives cos. invert the sign
 					}
 
 					tmp.key.setFlavour(!tmp.key.getFlavour());

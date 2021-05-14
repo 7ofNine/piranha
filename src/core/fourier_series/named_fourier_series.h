@@ -45,7 +45,7 @@ namespace piranha
 				const Psym p(name);
 				const PositionTupleType positionTuple = psyms2pos(VectorPsym(1, p), derivedConstCast->arguments());
 				Derived retval;
-				if (positionTuple.get_head()[0].first)
+				if (positionTuple.get_head()[0].first)  // here we assume that the trigonometric variable (key) is in echelon level 0
                 {
 					retval = derivedConstCast->baseIntegrate(positionTuple, derivedConstCast->arguments());
 					retval.setArguments(derivedConstCast->arguments());
