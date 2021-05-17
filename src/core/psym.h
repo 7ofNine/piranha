@@ -466,6 +466,13 @@ namespace piranha
 
 		return vectorPsym;
 	}
+
+	using EvalVectors = std::array<std::vector<std::vector<double>> &, PIRANHA_MAX_ECHELON_LEVEL>; // we don't use and/or intend to use anything higher than echeclonLevel 2
+	using ArgsVector = std::array<VectorPsym, PIRANHA_MAX_ECHELON_LEVEL>; 
+	//EvalVectors args2EvalVectors(ArgsTupleType const & argdTuple)
+	//{
+
+	//}
 }
 
 #pragma warning (pop)

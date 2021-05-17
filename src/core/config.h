@@ -34,7 +34,7 @@
 //#define PIRANHA_VISIBLE __attribute__ ((visibility("default")))
 //#endif
 
-#define PIRANHA_MAX_ECHELON_LEVEL (1)
+#define PIRANHA_MAX_ECHELON_LEVEL (2)
 
 
 #endif
