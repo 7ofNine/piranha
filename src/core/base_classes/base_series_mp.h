@@ -182,7 +182,9 @@ namespace piranha
 		template <typename ArgsTuple>
 		static Derived &run(Derived &series, const T &other, const ArgsTuple &argsTuple)
 		{
+			//std::cout << "BaseSeriesMultiplication_selector::run : 0" << std::endl << std::flush;
 			series.multiply_by_series(other, argsTuple);
+			//std::cout << "BaseSeriesMultiplication_selector::run : 1" << std::endl << std::flush;
 			return series;
 		}
 	};

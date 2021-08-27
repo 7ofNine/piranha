@@ -42,7 +42,7 @@ namespace piranha
         double settings::m_numerical_zero = 1E-80;
         bool settings::m_debug = false;
         const std::string settings::m_version = "@PIRANHA_VERSION_STRING@";
-        const std::size_t settings::cache_size = _PIRANHA_CACHE_SIZE;
+        const std::size_t settings::cache_size = PIRANHA_CACHE_SIZE;
         bool settings::blocker = false;
         unsigned settings::m_nthread = std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1;
         settings::startup_class settings::startup;

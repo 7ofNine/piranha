@@ -46,7 +46,7 @@ namespace {
         outfile = std::ofstream(fileName.c_str(), std::ios_base::trunc);
         if (outfile.fail())
         {
-            std::cout << "Error printing series to file " << fileName << "." << std::endl;
+            //std::cout << "Error printing series to file " << fileName << "." << std::endl;
             outfile.close();
             return false;
         }else
@@ -420,7 +420,7 @@ namespace piranha
 				std::string sectionName = input;
 				boost::trim_if(sectionName, boost::is_any_of("[]"));
 
-				std::cout << "New section found: " << sectionName << std::endl;
+				//std::cout << "New section found: " << sectionName << std::endl;
 				
                 std::vector<std::string> splitInput;
 				boost::split(splitInput, sectionName, boost::is_any_of("_"));
@@ -437,12 +437,12 @@ namespace piranha
 
 				} else 
                 {
-					std::cout << "Found unknown section '" << sectionName << "', ignoring." << std::endl;
+					//std::cout << "Found unknown section '" << sectionName << "', ignoring." << std::endl;
 					unknownData.push_back(input);
 				}
 			} else 
             {
-				std::cout << "Found string not belonging to any (known) section: " << input << std::endl;
+				//std::cout << "Found string not belonging to any (known) section: " << input << std::endl;
 				unknownData.push_back(input);
 			}
 		}
@@ -464,7 +464,7 @@ namespace piranha
 			// If we found a new section, step back the cursor before exiting.
 			if (line.size() > 2 && line[0] == '[' && line[line.size() - 1] == ']') 
             {
-				std::cout << "Finished parsing " << argumentTypeName << " argument." << std::endl;
+				//std::cout << "Finished parsing " << argumentTypeName << " argument." << std::endl;
 				infile.seekg(currentPosition);
 				appendArg(argumentTypeName, Psym(name, timeEval)); // TODO: No protection against empty name ???
 				return;
@@ -474,16 +474,16 @@ namespace piranha
 			boost::split(splitArgument, line, boost::is_any_of("="));
 			if (splitArgument.size() != 2) 
             {
-				std::cout << "Invalid line in " << argumentTypeName << " argument section: \"" << line << "\"" << std::endl;
+				//std::cout << "Invalid line in " << argumentTypeName << " argument section: \"" << line << "\"" << std::endl;
 
 			} else if (splitArgument[0] == "name") 
             {
-				std::cout << "name = " << splitArgument[1] << std::endl;
+				//std::cout << "name = " << splitArgument[1] << std::endl;
 				name = splitArgument[1];
 
 			} else if (splitArgument[0] == "time_eval") 
             {
-				std::cout << "time_eval = " << splitArgument[1] << std::endl;
+				//std::cout << "time_eval = " << splitArgument[1] << std::endl;
 				timeEval = splitArgument[1];
 
 			} else 

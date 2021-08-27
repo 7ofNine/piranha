@@ -29,7 +29,7 @@
 
 #define PIRANHA_THROW(ex, s) P_EX_THROW(ex, s)
 
-#if defined _PIRANHA_ENABLE_ASSERTS
+#if defined PIRANHA_ENABLE_ASSERTS
 #define PIRANHA_ASSERT(result) \
 	if (!(result)) \
 	{ \
@@ -42,6 +42,6 @@
 	}
 #else
 #define PIRANHA_ASSERT(__arg)
-#endif // _PIRANHA_ENABLE_ASSERTS
+#endif // PIRANHA_ENABLE_ASSERTS
 
 #endif
