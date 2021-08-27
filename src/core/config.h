@@ -25,7 +25,7 @@
 //#ifdef _PIRANHA_WIN32
 #ifdef PIRANHA_DLL_EXPORT_API
 #define PIRANHA_VISIBLE __declspec(dllexport)
-#elif defined ( _PIRANHA_DLL_IMPORT_API )
+#elif defined ( PIRANHA_DLL_IMPORT_API )
 #define PIRANHA_VISIBLE __declspec(dllimport)
 #else
 #define PIRANHA_VISIBLE

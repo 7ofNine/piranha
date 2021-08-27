@@ -44,6 +44,7 @@ BOOST_PYTHON_MODULE(_Dfs)
     common_fourier_series_instantiation(inst);
     series_trigonometric_instantiation(inst);
     series_sub_instantiation<dfs, dfs>(inst);
+
     class_<dfsc> instc = series_basic_instantiation<dfsc>(std::string("dfsc"), std::string("Fourier series with complex double precision coefficients."));
     series_complex_instantiation(instc, inst);
     common_fourier_series_instantiation(instc);
