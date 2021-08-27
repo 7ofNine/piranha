@@ -34,14 +34,14 @@ int main()
 #ifdef DEBUG
 settings::set_debug(true);
 #endif
-  Psym x("x"), y("y"), z("z"), t("t");
-  poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(1) , b(a);
-  a = a.pow(20);
-  poly c(a);
-  c+=1;
-  a*=c;
+  //Psym x("x"), y("y"), z("z"), t("t");
+  //poly a = poly(x) + poly(y) + poly(z) + poly(t) + poly(1) , b(a);
+  //a = a.pow(20);
+  //poly c(a);
+  //c+=1;
+  //a*=c;
 
-  std::cout << std::endl << a.length() << std::endl;
+  //std::cout << std::endl << a.length() << std::endl;
 
   return 0;
 }

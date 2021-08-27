@@ -462,6 +462,7 @@ struct BaseCodedFunctor
 					derived_cast->cacheTermsPointers(derived_cast->series1, derived_cast->series2);
 				}
 				
+				//std::cout << "coded_multiplier::performMultiplication  : 0" << std::endl << std::flush;
                 // NOTE: hard coded value of 1000.
 				if ((algo == settings::ALGORITHM_AUTOMATIC && double(derived_cast->terms1.size()) * double(derived_cast->terms2.size()) < 1000)
 					|| algo == settings::ALGORITHM_PLAIN)
@@ -493,10 +494,14 @@ struct BaseCodedFunctor
 				} else
 				{
 					// Sort input series for better cache usage and multi-threaded implementation.
+					//std::cout << "coded_multiplier::performMultiplication  : 1" << std::endl << std::flush;
 					std::sort(derived_cast->terms1.begin(), derived_cast->terms1.end(), key_revlex_comparison());
+					//std::cout << "coded_multiplier::performMultiplication  : 2" << std::endl << std::flush;
 					std::sort(derived_cast->terms2.begin(), derived_cast->terms2.end(), key_revlex_comparison());
+					//std::cout << "coded_multiplier::performMultiplication  : 3" << std::endl << std::flush;
 					derived_cast->llPerformMultiplication(NullTruncator::template GetType<Series1, Series2, typename Derived::ArgsTupleType>(
 						                                                                     derived_cast->terms1, derived_cast->terms2, derived_cast->argsTuple));
+					//std::cout << "coded_multiplier::performMultiplication  : 4" << std::endl << std::flush;
 				}
 			}
 
@@ -527,7 +532,9 @@ struct BaseCodedFunctor
 					vec_res = false;
 				} else 
 				{
+					//std::cout << "coded_multiplier::llPerformMultiplication  1:  " << std::endl << std::flush;
 					vec_res = derived_cast->performVectorCodedMultiplication(cf1Cache, cf2Cache, derived_cast->terms1, derived_cast->terms2, trunc);
+					//std::cout << "coded_multiplier::llPerformMultiplication  2:  " << std::endl << std::flush;
 				}
 
 				if (!vec_res) 
@@ -544,8 +551,11 @@ struct BaseCodedFunctor
                     trace_mult_type(MULTIPLICATION_HASH);
 				} else 
 				{
+					//std::cout << "coded_multiplier::llPerformMultiplication  3:  " << std::endl << std::flush;
 					trace_mult_type(MULTIPLICATION_VECTOR);
+					//std::cout << "coded_multiplier  4:  " << std::endl << std::flush;
 				}
+				//std::cout << "coded_multiplier::llPerformMultiplication  5:  " << std::endl << std::flush;
 			}
 
 

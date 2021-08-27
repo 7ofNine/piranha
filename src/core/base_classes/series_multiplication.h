@@ -92,7 +92,7 @@ namespace piranha
 					return;
 				}
 
-
+				//std::cout << "series_multiplication::multiply by_series  : 0" << std::endl << std::flush;
 				const settings::MultiplicationAlgorithm algo = settings::getMultiplicationAlgorithm();
 				// Optimize the cases of single coefficient series.
 				if (s2.isSingleCf() && algo == settings::ALGORITHM_AUTOMATIC)
@@ -108,8 +108,11 @@ namespace piranha
 				{   // the normal case. two series with several terms
 					Derived retval;
 					typename Multiplier::template get_type<Derived, Derived2, ArgsTuple, Truncator> multiplier(*derived_const_cast, s2, retval, argsTuple);
+					//std::cout << "series_multiplication::multiply by_series  : 1" << std::endl << std::flush;
 					multiplier.performMultiplication();
+					//std::cout << "series_multiplication::multiply by_series  : 2" << std::endl << std::flush;
 					derived_cast->baseSwap(retval);
+					//std::cout << "series_multiplication::multiply by_series  : 3" << std::endl << std::flush;
 				}
 			}
 	};

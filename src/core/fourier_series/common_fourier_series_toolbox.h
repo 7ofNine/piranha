@@ -44,14 +44,20 @@ namespace piranha
 				retval.trim();
 				return retval;
 			}
+
+
 			Derived cos() const
 			{
 				return ei().real();
 			}
+
+
 			Derived sin() const
 			{
 				return ei().imag();
 			}
+
+
 		//protected:
 			template <class ArgsTuple>
 			std::complex<Derived> base_ei(const ArgsTuple &argsTuple) const
@@ -69,8 +75,10 @@ namespace piranha
                 {
 					// Cache and sort the terms according to the criterion defined in the truncator.
 					std::vector<term_type const *> cache(derived_const_cast->template get_sorted_series<Derived>(argsTuple));
+					
 					// Reverse the series, we want to start multiplication from the least significant terms.
 					std::reverse(cache.begin(),cache.end());
+					
 					// Let's find out if there is a constant term. If there is one, it will be skipped
 					// and multiplied by the result of the Jacobi-Anger expansion of the other terms later.
 					// We treat it this way because the constant term may be a phase with arbitrary value,
@@ -86,6 +94,7 @@ namespace piranha
 							break;
 						}
 					}
+
 					// Expand using Jacobi-Anger's identity.
 					derived_const_cast->jacang(cache, it, retval, argsTuple);
 					if (it != it_f)

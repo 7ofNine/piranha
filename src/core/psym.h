@@ -120,13 +120,13 @@ namespace piranha
 
 			mutable int order;                    // the order of the symbol. Used for truncations. to make truncations specific to the symbol
                                                   // do we have to save it? 
-            static const std::string	separator; // separator between timeValue elements. Leave in this position for readability during debug
+            static constexpr std::string	separator = ";"; // separator between timeValue elements. Leave in this position for readability during debug
 			
 		};
 
 		// PsymManager global storage variable
 		typedef std::set<PsymImpl>  ContainerType; // the set is sorted by name in the PsymImpl
-		static ContainerType        container;
+		static inline ContainerType        container;
 	};
 
 	// Forward declaration for use in the typedef below.
@@ -466,6 +466,13 @@ namespace piranha
 
 		return vectorPsym;
 	}
+
+	using EvalVectors = std::array<std::vector<std::vector<double>> &, PIRANHA_MAX_ECHELON_LEVEL>; // we don't use and/or intend to use anything higher than echeclonLevel 2
+	using ArgsVector = std::array<VectorPsym, PIRANHA_MAX_ECHELON_LEVEL>; 
+	//EvalVectors args2EvalVectors(ArgsTupleType const & argdTuple)
+	//{
+
+	//}
 }
 
 #pragma warning (pop)

@@ -99,24 +99,24 @@ struct ThreadedBlockedMultiplier
 		}
 
 		sync();
-//		std::cout << "polynomial_multiplier::(): 3 : threadid = " << m_thread_id << std::endl << std::flush;
+		//std::cout << "polynomial_multiplier::(): 3 : threadid = " << m_thread_id << std::endl << std::flush;
 		BlockSequence orig2(m_idx_vector2.size());
 		
 		while (m_cur_idx1_start != m_size1)
 		{
-//			std::cout << "polynomial_multiplier::(): 4 : threadid = " << m_thread_id << std::endl << std::flush;
-//			std::cout << "polynomial_multiplier::(): " << m_cur_idx1_start <<std::endl <<std::flush;
+			//std::cout << "polynomial_multiplier::(): 4 : threadid = " << m_thread_id << std::endl << std::flush;
+			//std::cout << "polynomial_multiplier::(): " << m_cur_idx1_start <<std::endl <<std::flush;
 			sync();
 			
 			if (m_thread_id == 0)
 			{
-//				std::cout << "polynomial_multiplier::(): 5 : threadid = " << m_thread_id << std::endl << std::flush;
+				//std::cout << "polynomial_multiplier::(): 5 : threadid = " << m_thread_id << std::endl << std::flush;
 				m_func.blocksSetup(m_cur_idx1_start ,m_nominal_block_size, m_idx_vector1, m_idx_vector2);
 				m_breakout = false;
 			}
 
 			sync();
-//			std::cout << "polynomial_multiplier::(): 6 : threadid = " << m_thread_id << std::endl << std::flush;
+			//std::cout << "polynomial_multiplier::(): 6 : threadid = " << m_thread_id << std::endl << std::flush;
 			const std::size_t i_start = m_idx_vector1[m_thread_id].first, i_end = m_idx_vector1[m_thread_id].second;
 			// Remember the original block sequence for the second series.
 			std::copy(m_idx_vector2.begin(), m_idx_vector2.end(), orig2.begin());
@@ -125,7 +125,7 @@ struct ThreadedBlockedMultiplier
 
 			while (true)
 			{
-//				std::cout << "polynomial_multiplier::(): 7 : threadid = " << m_thread_id << std::endl << std::flush;;
+				//std::cout << "polynomial_multiplier::(): 7 : threadid = " << m_thread_id << std::endl << std::flush;;
 				const std::size_t j_start = m_idx_vector2[m_thread_id].first, j_end = m_idx_vector2[m_thread_id].second;
 				// NOTE: here maybe we can put a preemptive check on j start/end so that if the inner
 				// cycle is empty we skip this part altogether.
@@ -134,33 +134,36 @@ struct ThreadedBlockedMultiplier
 					for (std::size_t j = j_start; j < j_end; ++j)
 					{
 						// TODO: truncation.
+						//std::cout << "polynomial_multiplier::(): 7a : threadid = " << m_thread_id << "  i/j = "  << i << "/" << j << std::endl << std::flush;;
 						m_func(i,j);
-
+						//std::cout << "polynomial_multiplier::(): 7b : threadid = " << m_thread_id << "  i/j = " << i << "/" << j << std::endl << std::flush;;
 					}
 				}
 
 				sync();
-//				std::cout << "polynomial_multiplier::(): 8 : threadid = " << m_thread_id << std::endl << std::flush;
+				//std::cout << "polynomial_multiplier::(): 8 : threadid = " << m_thread_id << std::endl << std::flush;
 
 				if (m_thread_id == 0)
 				{
-//					std::cout << "polynomial_multiplier::(): 9 : threadid = " << m_thread_id << std::endl << std::flush;
+					//std::cout << "polynomial_multiplier::(): 9 : threadid = " << m_thread_id << std::endl << std::flush;
 					if (!m_func.block2_advance(m_idx_vector1,m_idx_vector2,m_nominal_block_size,orig2,wrap_count))
 					{
-//						std::cout << "polynomial_multiplier::(): 9a : break" << std::endl << std::flush;
+						//std::cout << "polynomial_multiplier::(): 9a : break  threadid = " << m_thread_id << std::endl << std::flush;
 						m_breakout = true;
 					}
 				}
-//				std::cout << "polynomial_multiplier::(): 10a : threadid = " << m_thread_id << std::endl << std::flush;
+				//std::cout << "polynomial_multiplier::(): 10 : threadid = " << m_thread_id << std::endl << std::flush;
 				sync();
-//				std::cout << "polynomial_multiplier::(): 10 : threadid = " << m_thread_id << std::endl << std::flush;
+				//std::cout << "polynomial_multiplier::(): 10a : threadid = " << m_thread_id << std::endl << std::flush;
 
 				if (m_breakout)
 				{
+					//std::cout << "polynomial_multiplier::(): 11 : threadid = " << m_thread_id << std::endl << std::flush;
 					break;
 				}
 			}
 		}
+		//std::cout << "polynomial_multiplier::(): 11 : threadid = " << m_thread_id << std::endl << std::flush;
 	}
 
 
@@ -484,7 +487,7 @@ struct polynomial_multiplier
 					}
 					tg.join_all();
 				}
-		std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() << " micro seconds" <<std::endl;
+		//std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() << " micro seconds" <<std::endl;
 				PIRANHA_DEBUG(std::cout << "Done multiplying\n");
 
 				const MaxFastInt i_f = this->m_fast_h.upper();

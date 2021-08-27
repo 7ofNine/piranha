@@ -1,16 +1,19 @@
+#
+# pyranha/CMakeList
+#
 SET(PYRANHA_INSTALL_PATH ${PYTHON_MODULES_PATH}/pyranha)
-MESSAGE (STATUS " pyranha install path ${PYRANHA_INSTALL_PATH}")
+MESSAGE (STATUS "pyranha install path ${PYRANHA_INSTALL_PATH}")
+
 ADD_COMPILE_OPTIONS(/bigobj)
 ADD_COMPILE_OPTIONS(/wd4244) # Boost python shows a lot of size warnings with 64 bit compilation. Boost should fix that
 ADD_COMPILE_OPTIONS(/wd4251)
-ADD_DEFINITIONS(-D_PIRANHA_DLL_IMPORT_API -DBOOST_BIND_GLOBAL_PLACEHOLDERS)  # here we import piranha.dll until boost/python fixes the deprecated warnings
+ADD_COMPILE_DEFINITIONS(_PIRANHA_DLL_IMPORT_API BOOST_BIND_GLOBAL_PLACEHOLDERS)  # here we import piranha.dll until boost/python fixes the deprecated warnings
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})  # everything under here needs the python declarations
 link_directories(${PIRANHA_PYTHON_LIBRARIES_DIR})    # pyconfig.h sets required pylib (or pylib_d) which gets messed up by boost wrap_python.h when _DEBUG is set, it temporary unsets it. This requires the python library dir explicitly available
                                                      # the pyconfig.h only contains the names not the path!!! We don't set _DEBUG hence we have to provide the library dir separately
 
 
 MACRO(PYTHON_CPPMODULE arg1)
-    #SET_TARGET_PROPERTIES(${arg1} PROPERTIES CXX_STANDARD 17)
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES PREFIX "")
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES SUFFIX ".pyd")
 	SET_TARGET_PROPERTIES(${arg1} PROPERTIES FOLDER "Pyranha") # we want to put these projects into a Pyranha folder in VS
@@ -22,17 +25,13 @@ MACRO(PYTHON_CPPMODULE arg1)
 		RUNTIME DESTINATION ${PYRANHA_INSTALL_PATH}/${DIR_ARG}
 #		LIBRARY DESTINATION ${PYRANHA_INSTALL_PATH}/${DIR_ARG}
 	)
-	IF(WIN32 AND NOT MINGW)
-		INSTALL(FILES ${WIN_MSVC_DLL_FILES} DESTINATION ${PYRANHA_INSTALL_PATH}/${DIR_ARG}/Microsoft.VC90.CRT)
-	ENDIF(WIN32 AND NOT MINGW)
 ENDMACRO(PYTHON_CPPMODULE)
 
 
 MACRO(PYRANHA_MANIPULATOR_INIT arg1)
 	STRING(REGEX REPLACE "^_" "" DIR_ARG ${arg1})
 	SET(MODULE_NAME ${DIR_ARG})  # we use DIR_ARG because it is the name without "_". Needed in the __init__.py file
-	CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../template.__init__.py
-		${CMAKE_CURRENT_SOURCE_DIR}/__init__.py)
+	CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../template.__init__.py ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py)
 	INSTALL(FILES __init__.py DESTINATION ${PYRANHA_INSTALL_PATH}/${DIR_ARG})
 ENDMACRO(PYRANHA_MANIPULATOR_INIT)
 
@@ -59,7 +58,7 @@ SET(MODULE_LIST ${MODULE_LIST}"Test",\ )
 ADD_SUBDIRECTORY(Truncators)
 SET(MODULE_LIST ${MODULE_LIST}"Truncators",\ )
 
-# GUI (optional).
+# GUI (optional). There is not much in it.
 IF(BUILD_PYRANHA_GUI)
 	SET(MODULE_LIST ${MODULE_LIST}"Gui",\ )
 	ADD_SUBDIRECTORY(Gui)

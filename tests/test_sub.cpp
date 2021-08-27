@@ -31,15 +31,20 @@ int main()
 {
 	{
 		// This one fails if we do not handle correctly argsTuple inside substitution.
-		qps e(Psym("e")), ph(Psym("ph")), th(Psym("th"));
+		qps e(Psym("e"));
+		qps ph(Psym("ph"));
+		qps th(Psym("th"));
 		truncators::Degree::set(10); // this is global
 		qps trigsub = (e*th.cos()+1).pow(-1).sub("th",ph.pow(2));
 	}
     truncators::Degree::unset(); // deactivate truncation
 	int retval = 0;
-	Psym x("x"), y("y"), z("z");
+	Psym x("x");
+	Psym y("y");
+	Psym z("z");
+
     zpoly f = zpoly(x) + zpoly(y) + zpoly(z);
-    zpoly g = f.pow(40); 
+    zpoly g = f.pow(40); ///original 40
 
     zpoly tempg = g.sub("x", zpoly(x) + 1).sub("x", zpoly(x) - 1);
     tempg.printPlain(std::cout);
