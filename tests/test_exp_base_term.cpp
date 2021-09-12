@@ -26,10 +26,24 @@ using namespace piranha;
 namespace {
 	class Mock {};
 
-	using TestTerm = ExpBaseTerm< mppp::real, ExpoVector<int16_t, 0>, Mock>;
+	using TestKey = ExpoVector<int16_t, 0> ;
+
+	using TestTerm = ExpBaseTerm< mppp::real, TestKey, Mock>;
 }
 BOOST_AUTO_TEST_CASE(construction_test)
 {
 	
 	TestTerm first;
+
+	mppp::real cf1 = { 1.0 };
+	Psym const t1("t1");
+	Psym const t2("t2");
+
+	VectorPsym tpsyms = { t1, t2 };
+	boost::tuple<VectorPsym> const polyArgs(tpsyms);
+
+	// what are the arguments for on this level????
+	TestKey key1("1,2", polyArgs);
+
+	TestTerm second(cf1, key1);
 }

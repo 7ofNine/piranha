@@ -324,7 +324,7 @@ namespace piranha
 		// Key.
 		KeyType		        key;
 
-		//static inline const char separator = Separator;
+		static inline constexpr char separator = '|';
 	};
 
 
