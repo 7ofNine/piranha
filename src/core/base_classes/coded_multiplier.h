@@ -464,8 +464,8 @@ struct BaseCodedFunctor
 				
 				//std::cout << "coded_multiplier::performMultiplication  : 0" << std::endl << std::flush;
                 // NOTE: hard coded value of 1000.
-				if ((algo == settings::ALGORITHM_AUTOMATIC && double(derived_cast->terms1.size()) * double(derived_cast->terms2.size()) < 1000)
-					|| algo == settings::ALGORITHM_PLAIN)
+				if ((algo == settings::MultiplicationAlgorithm::AUTOMATIC && double(derived_cast->terms1.size()) * double(derived_cast->terms2.size()) < 1000)
+					|| algo == settings::MultiplicationAlgorithm::PLAIN)
 				{
 					derived_cast->performPlainMultiplication();
 					trace_mult_type(MULTIPLICATION_PLAIN);
@@ -478,9 +478,9 @@ struct BaseCodedFunctor
 				determineViability();
 				if (!m_gr_is_viable)
 				{
-					if (algo == settings::ALGORITHM_VECTOR_CODED || algo == settings::ALGORITHM_HASH_CODED)
+					if (algo == settings::MultiplicationAlgorithm::VECTOR_CODED || algo == settings::MultiplicationAlgorithm::HASH_CODED)
                     {
-						PIRANHA_THROW(value_error, "coded multiplication requested, but coded representation is infeasible");
+						PIRANHA_THROW(value_error, "coded multiplication requested, but coded representation is not feasible");
 					}
 					derived_cast->performPlainMultiplication();
 					trace_mult_type(MULTIPLICATION_PLAIN);
@@ -527,7 +527,7 @@ struct BaseCodedFunctor
 				
                 bool vec_res;
 				
-                if ((algo == settings::ALGORITHM_AUTOMATIC && is_sparse()) || algo == settings::ALGORITHM_HASH_CODED) 
+                if ((algo == settings::MultiplicationAlgorithm::AUTOMATIC && is_sparse()) || algo == settings::MultiplicationAlgorithm::HASH_CODED) 
 				{
 					vec_res = false;
 				} else 
@@ -539,7 +539,7 @@ struct BaseCodedFunctor
 
 				if (!vec_res) 
 				{
-					if (algo == settings::ALGORITHM_VECTOR_CODED) 
+					if (algo == settings::MultiplicationAlgorithm::VECTOR_CODED) 
 					{
 						PIRANHA_THROW(value_error, "vector coded multiplication requested, but vector coded representation is infeasible");
 					}

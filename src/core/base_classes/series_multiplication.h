@@ -95,10 +95,10 @@ namespace piranha
 				//std::cout << "series_multiplication::multiply by_series  : 0" << std::endl << std::flush;
 				const settings::MultiplicationAlgorithm algo = settings::getMultiplicationAlgorithm();
 				// Optimize the cases of single coefficient series.
-				if (s2.isSingleCf() && algo == settings::ALGORITHM_AUTOMATIC)
+				if (s2.isSingleCf() && algo == settings::MultiplicationAlgorithm::AUTOMATIC)
 				{
 					derived_cast->baseMultBy(s2.begin()->cf, argsTuple);
-				} else if (derived_const_cast->isSingleCf() && algo == settings::ALGORITHM_AUTOMATIC)
+				} else if (derived_const_cast->isSingleCf() && algo == settings::MultiplicationAlgorithm::AUTOMATIC)
 				{
 					Derived tmp;
 					tmp.insertRange(s2.begin(), s2.end(), argsTuple);

@@ -281,14 +281,14 @@ namespace piranha
 				// will use just one thread.
 				if (double(terms1.size()) * double(terms2.size()) < 2500)
                 {
-					stats::trace_stat("mult_st", std::size_t(0), increment);
+					stats::trace_stat("mult_st: plain-base", std::size_t(0), increment);
 
 					PlainWorker w(*DC, retval);
 					w();
 
 				} else
                 {
-					stats::trace_stat("mult_mt", std::size_t(0), increment);
+					stats::trace_stat("mult_mt: plain", std::size_t(0), increment);
 					// TODO: fix numeric casting here.
 					// If size1 is less than the number of desired threads,
 					// use size1 as number of threads.

@@ -75,6 +75,8 @@ ENDIF()
 INCLUDE(PiranhaFindBoost)
 PIRANHA_BOOST_SETUP()
 
+MESSAGE(STATUS "thread library: ${Boost_thread_LIBRARY_RELEASE}")
+
 # Find MPIR, the Windows incarnation of GMP/MPFR. The C and CXX are combined into the same dll and use the same header
 FIND_PACKAGE(MPIR MODULE REQUIRED) # we have findMPIR in our local cmake script folder
 
@@ -132,7 +134,14 @@ SET(PIRANHA_INSTALL_PATH ${CMAKE_INSTALL_PREFIX} CACHE PATH "Path to the PYRANHA
 IF(BUILD_PYRANHA)
     SET(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} piranha) # the piranha.dll is needed
     ADD_SUBDIRECTORY(pyranha) #uses MANDATORY_LIBRARIES
-	
+
+# TEST
+#TEST
+SET(TEST_STRING $<TARGET_FILE:Boost::thread>)
+MESSAGE(STATUS "Boost thread: ${TEST_STRING}")
+
+#TEST
+#TEST	
     
     
 	# installation of PYRANHA
@@ -182,7 +191,7 @@ SET(EXAMPLES_FILES
 INSTALL(FILES ${THEORIES_FILES} DESTINATION "${THEORIES_INSTALL_PATH}")
 INSTALL(FILES ${EXAMPLES_FILES} DESTINATION "${EXAMPLES_INSTALL_PATH}")
             
-CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/COPYING" "${WIN_PKG_ROOT}/license.txt")
+#CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/COPYING" "${WIN_PKG_ROOT}/license.txt")
 
 #CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/Changelog" "${CMAKE_SOURCE_DIR}/windows_package/changelog.txt")   #ond day we update this one
 #INSTALL(FILES "${CMAKE_SOURCE_DIR}/windows_package/license.txt" "${CMAKE_SOURCE_DIR}/windows_package/changelog.txt" DESTINATION .) # change to winPackage

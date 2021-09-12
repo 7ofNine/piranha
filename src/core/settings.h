@@ -42,14 +42,28 @@ namespace piranha
 	class PIRANHA_VISIBLE settings
 	{
 		public:
-			enum MultiplicationAlgorithm
+			enum class MultiplicationAlgorithm
 			{
-				ALGORITHM_AUTOMATIC    = 0,
-				ALGORITHM_PLAIN        = 1,
-				ALGORITHM_VECTOR_CODED = 2,
-				ALGORITHM_HASH_CODED   = 3
+				AUTOMATIC    = 0,
+				PLAIN        = 1,
+				VECTOR_CODED = 2,
+				HASH_CODED   = 3
+
 			};
 
+			inline static std::string toString(MultiplicationAlgorithm algo)
+			{
+				switch (algo) {
+
+				case MultiplicationAlgorithm::AUTOMATIC:	return "automatic";
+				case MultiplicationAlgorithm::PLAIN:		return "plain";
+				case MultiplicationAlgorithm::VECTOR_CODED: return "vector coded";
+				case MultiplicationAlgorithm::HASH_CODED:   return "hash coded";
+				};
+			}
+
+			static inline constexpr std::underlying_type_t<MultiplicationAlgorithm> minAlgorithm = 0; //TODO: automatically determin it's values
+			static inline constexpr std::underlying_type_t<MultiplicationAlgorithm> maxAlgorithm = 3;
 
 			static BaseCountingAllocator::CounterType::value_type get_used_memory()
 			{
@@ -101,9 +115,9 @@ namespace piranha
 //			static_assert(cache_size > 0 && lg<cache_size>::value > 1, "Invalid value for cache size.");
 			static bool blocker;
 			static std::size_t get_max_pretty_print_size();
-			static void set_max_pretty_print_size(int);
+			static void set_max_pretty_print_size(std::size_t);
 			static std::size_t get_nthread();
-			static void set_nthread(const int &);
+			static void set_nthread(const unsigned int &);
 
 			static MultiplicationAlgorithm getMultiplicationAlgorithm()
 			{
@@ -113,7 +127,7 @@ namespace piranha
 
 			static void setMultiplicationAlgorithm(MultiplicationAlgorithm algorithm)
 			{
-				if (algorithm < 0 || algorithm > 3)
+				if (static_cast<std::underlying_type_t<MultiplicationAlgorithm>>(algorithm) < minAlgorithm || static_cast<std::underlying_type_t<MultiplicationAlgorithm>>(algorithm) > maxAlgorithm)
                 {
 					PIRANHA_THROW(value_error, "Invalid multiplication algorithm");
 				}

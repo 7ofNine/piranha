@@ -48,7 +48,12 @@ int main()
     // todo end
 
     
-    settings::setMultiplicationAlgorithm(settings::ALGORITHM_AUTOMATIC); // this seems to be the fastest for the situation here
+    settings::setMultiplicationAlgorithm(settings::MultiplicationAlgorithm::AUTOMATIC); // this seems to be the fastest for the situation here
+
+    std::cout << "===========================================================" << std::endl;
+    std::cout << " test celestical mechanics using " << settings::toString(settings::getMultiplicationAlgorithm()) << " for multiplication." << std::endl << std::flush;
+
+
 
 	Psym e("e"), M("M");
     truncators::Degree::unset();
@@ -57,7 +62,7 @@ int main()
     std::vector< ps > flattened;
     boost::posix_time::ptime time0 = boost::posix_time::microsec_clock::local_time();
     ps res(ps::r_a(ps(e), ps(M)));
-    std::cout << "Elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() /1000.0 << " milli seconds" <<std::endl;
+    std::cout << "Elapsed time for r/a: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() /1000.0 << " milli seconds" <<std::endl;
     std::cout << "test 1: res " << "length: " << res.length() << " atoms: " << res.atoms() << std::endl;
     retval += (res.length() != 401 || res.atoms() != 80805);
 //        flattened = res.flatten();
@@ -165,5 +170,8 @@ int main()
     std::cout<< "test 11: " << retval << '\n';
 
     std::cout << retval << std::endl << std::flush;
+
+    std::cout << "Total elapsed time: " << (double)(boost::posix_time::microsec_clock::local_time() - time0).total_microseconds() / 1000.0 << " milli seconds" << std::endl;
+    std::cout << "Statistics: " << stats::dump() << std::endl << std::flush;
 	return retval;
 }

@@ -47,6 +47,9 @@ if(BUILD_TESTS)
     # somehow ENVIRONMENT for tests properties doesn't wotk (yet?)
     # CMAKE still doesn't support copying runtime dependencies properly to the targets. It's a pain
     get_filename_component(BASE_NAME_THREAD ${Boost_THREAD_LIBRARY_RELEASE} NAME_WE)
+    get_fileName_component(BASE_NAME_THREAD_DEBUG ${Boost_THREAD_LIBRARY_DEBUG} NAME_WE)
+    
+    MESSAGE(STATUS "Boost thread DLL names: ${BASE_NAME_THREAD}  ${BASE_NAME_THREAD_DEBUG}")  
 
     add_custom_command(TARGET piranha POST_BUILD
                         COMMAND ${CMAKE_COMMAND} -E copy_if_different 
@@ -54,9 +57,14 @@ if(BUILD_TESTS)
                                 "${CMAKE_BINARY_DIR}/tests/$<CONFIG>/$<TARGET_FILE_NAME:piranha>"
                         COMMAND ${CMAKE_COMMAND} -E copy_if_different
                                 "${MPIR_INCLUDE_DIR}/mpir.dll" "${CMAKE_BINARY_DIR}/tests/$<CONFIG>/mpir.dll" 
-                        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+                                
+                        COMMAND ${CMAKE_COMMAND} -E copy_if_different                                              #TODO clean this up and use proper interface
                                 "${Boost_LIBRARY_DIR_RELEASE}/${BASE_NAME_THREAD}.dll"
                                 "${CMAKE_BINARY_DIR}/tests/$<CONFIG>/${BASE_NAME_THREAD}.dll"
+                        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+                                "${Boost_LIBRARY_DIR_DEBUG}/${BASE_NAME_THREAD_DEBUG}.dll"
+                                "${CMAKE_BINARY_DIR}/tests/DEBUG/${BASE_NAME_THREAD_DEBUG}.dll"        
+                                
     ) 
 endif()
 
@@ -66,7 +74,7 @@ if(BUILD_PYRANHA)
     
     string(TOUPPER ${PIRANHA_PYTHON_BASE} PIRANHA_PYTHON_BASE_UPPER)
     get_filename_component(BASE_NAME_PYTHON ${Boost_${PIRANHA_PYTHON_BASE_UPPER}_LIBRARY_RELEASE} NAME_WE)
-
+    
     INSTALL(TARGETS piranha RUNTIME DESTINATION .)
     SET(PYRANA_BOOST_INSTALL_FILES "${Boost_LIBRARY_DIR_RELEASE}/${BASE_NAME_THREAD}.dll" "${Boost_LIBRARY_DIR_RELEASE}/${BASE_NAME_PYTHON}.dll" )
     INSTALL(FILES  ${PYRANA_BOOST_INSTALL_FILES} DESTINATION . )

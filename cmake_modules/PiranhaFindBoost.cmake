@@ -36,6 +36,7 @@ MACRO(PIRANHA_BOOST_SETUP)
     if(Boost_FOUND)
         MESSAGE(STATUS "Found Boost libraries: ${Boost_LIBRARIES}")
         SET(PYRANHA_BOOST_LIBRARIES "${Boost_LIBRARIES}")  #push them up in scope??
+        MESSAGE(STATUS "thread library: ${Boost_thread_LIBRARY_RELEASE}")
     else()
         MESSAGE(FATAL "Couldn't find Boost libraries")
     endif()

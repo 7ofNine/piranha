@@ -47,7 +47,7 @@ namespace piranha
         unsigned settings::m_nthread = std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1;
         settings::startup_class settings::startup;
         std::size_t settings::m_max_pretty_print_size = 500;
-        settings::MultiplicationAlgorithm settings::multiplicationAlgorithm = settings::ALGORITHM_AUTOMATIC;
+        settings::MultiplicationAlgorithm settings::multiplicationAlgorithm = settings::MultiplicationAlgorithm::AUTOMATIC;
 
         settings::startup_class::startup_class()
         {
@@ -61,12 +61,14 @@ namespace piranha
                 static_assert(PIRANHA_MAX_ECHELON_LEVEL >= 0, "Max echelon level must be nonnegative.");
                 static_assert(settings::cache_size > 0 && lg<settings::cache_size>::value > 1, "Invalid value for cache size.");
                 // Startup report.
-                std::cout << "Piranha version: " << "@PIRANHA_VERSION_STRING@" << std::endl;
-                std::cout << "Piranha GIT revision: " << "@PIRANHA_GIT_REVISION@" << std::endl;
+                std::cout << "Piranha version         : " << "@PIRANHA_VERSION_STRING@" << std::endl;
+                std::cout << "Piranha GIT revision    : " << "@PIRANHA_GIT_REVISION@" << std::endl;
                 std::cout << "Number of cores detected: " <<
                         (std::thread::hardware_concurrency() ? std::thread::hardware_concurrency() : 1) << std::endl;
-                std::cout << "Piranha is ready." << std::endl;
-                std::cout << "_______________________________" << std::endl << std::flush;
+                std::cout << std::endl << std::endl << 
+                                                         "--------------------------" << std::endl <<
+                                                         "! Piranha core is ready. ! " << std::endl;
+                                            std::cout << "__________________________" << std::endl << std::flush;
         }
 
         /// Get version.
@@ -80,22 +82,18 @@ namespace piranha
                 return m_max_pretty_print_size;
         }
 
-        void settings::set_max_pretty_print_size(int n)
+        void settings::set_max_pretty_print_size(std::size_t n)
         {
                 if (n < 10) {
-                        PIRANHA_THROW(value_error,"invalid max size for pretty printing, "
-                                "please insert an integer greater than 10");
+                        PIRANHA_THROW(value_error,"Invalid max size for pretty printing, "
+                                "please use an integer greater than 10");
                 }
                 m_max_pretty_print_size = boost::numeric_cast<std::size_t>(n);
         }
 
-        void settings::set_nthread(const int &n)
+        void settings::set_nthread(const unsigned int &n)
         {
-                if (n <= 0) {
-                        PIRANHA_THROW(value_error,"invalid number of threads, "
-                                "please insert an integer greater than 0");
-                }
-                m_nthread = boost::numeric_cast<unsigned>(n);
+                m_nthread = n;
         }
 
         std::size_t settings::get_nthread()

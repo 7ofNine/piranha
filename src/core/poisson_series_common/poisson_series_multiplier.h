@@ -196,7 +196,7 @@ namespace piranha
                                                           std::vector<const TermType1 *> &t1,  std::vector<const TermType2 *> &t2,
                                                           const GenericTruncator &truncator)
 					{
-						stats::trace_stat("mult_st", std::size_t(0), increment);
+						stats::trace_stat("mult_st: vector-poisson", std::size_t(0), increment);
 						std::vector<CfType1, CountingAllocator<CfType1>  > vc_cos;
                         std::vector<CfType1, CountingAllocator<CfType1>  > vc_sin;
 						// Try to allocate the space for vector coded multiplication. We need two arrays of results,
@@ -412,7 +412,7 @@ namespace piranha
                                                         std::vector<const TermType1 *> &t1,  std::vector<const TermType2 *> &t2,
                                                         GenericTruncator const &truncator)
 					{
-						stats::trace_stat("mult_st", std::size_t(0), increment);
+						stats::trace_stat("mult_st: hash-poisson", std::size_t(0), increment);
 
 						typedef coded_hash_table<CfType1, MaxFastInt, CountingAllocator<char> > csht;
 						typedef typename csht::iterator c_iterator;

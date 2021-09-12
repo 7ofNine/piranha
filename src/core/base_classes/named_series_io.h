@@ -453,8 +453,9 @@ namespace piranha
 	inline void NamedSeries<PIRANHA_NAMED_SERIES_TP>::readArg(std::ifstream &infile, std::string const &argumentTypeName)
 	{
 		// Temporary attributes for the argument.
-		std::string name;
-        std::string timeEval;
+		std::string name("");
+        std::string timeEval("");
+		int order(0);
 		// Record stream position, so we can rewind once we finish parsing the argument.
 		std::streampos currentPosition = infile.tellg();
 		// Temporary storage.
@@ -466,7 +467,7 @@ namespace piranha
             {
 				//std::cout << "Finished parsing " << argumentTypeName << " argument." << std::endl;
 				infile.seekg(currentPosition);
-				appendArg(argumentTypeName, Psym(name, timeEval)); // TODO: No protection against empty name ???
+				appendArg(argumentTypeName, Psym(name, timeEval, order)); // TODO: No protection against empty name ???
 				return;
 			}
 
@@ -486,7 +487,11 @@ namespace piranha
 				//std::cout << "time_eval = " << splitArgument[1] << std::endl;
 				timeEval = splitArgument[1];
 
-			} else 
+			}
+			else if (splitArgument[0] == "order")
+			{
+				order = splitArgument[1] != "" ? std::stoi(splitArgument[1]) : 0;  //transform string to an integer
+			} else
             {
 				std::cout << "Unknown field in " << line << " argument section: \"" << splitArgument[0] << "\"" << std::endl;
 			}

@@ -137,10 +137,10 @@ BOOST_PYTHON_MODULE(_Core)
 
 
     enum_<settings::MultiplicationAlgorithm>("multiplication_algorithm")
-    .value("automatic",    settings::ALGORITHM_AUTOMATIC)
-    .value("plain",        settings::ALGORITHM_PLAIN)
-    .value("vector_coded", settings::ALGORITHM_VECTOR_CODED)
-    .value("hash_coded",   settings::ALGORITHM_HASH_CODED)
+    .value("automatic",    settings::MultiplicationAlgorithm::AUTOMATIC)
+    .value("plain",        settings::MultiplicationAlgorithm::PLAIN)
+    .value("vector_coded", settings::MultiplicationAlgorithm::VECTOR_CODED)
+    .value("hash_coded",   settings::MultiplicationAlgorithm::HASH_CODED)
     .export_values();
 
 
