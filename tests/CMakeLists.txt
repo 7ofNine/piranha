@@ -120,6 +120,9 @@ CREATE_BOOST_TEST(test_qps_series)
 CREATE_BOOST_TEST(test_numericalContainer)
 CREATE_BOOST_TEST(test_doubleCf)
 CREATE_BOOST_TEST(test_cf_series)
+
+# experimental part
+CREATE_BOOST_TEST(test_exp_base_term)
 # and several more we don't know yet. How to test the specific instantiation qps, dps etc.
 
 
